@@ -1,0 +1,17 @@
+{
+  "kind": "collectionType",
+  "collectionName": "service_pages",
+  "info": { "singularName": "service-page", "pluralName": "service-pages", "displayName": "Service Page" },
+  "options": { "draftAndPublish": true },
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "slug": { "type": "uid", "targetField": "title", "required": true },
+    "hero": { "type": "component", "repeatable": false, "component": "shared.hero-section" },
+    "body": { "type": "richtext" },
+    "steps": { "type": "component", "repeatable": true, "component": "shared.process-step" },
+    "promoCards": { "type": "component", "repeatable": true, "component": "shared.promo-card" },
+    "sortOrder": { "type": "integer", "default": 0 },
+    "isActive": { "type": "boolean", "default": true },
+    "seo": { "type": "component", "repeatable": false, "component": "shared.seo" }
+  }
+}

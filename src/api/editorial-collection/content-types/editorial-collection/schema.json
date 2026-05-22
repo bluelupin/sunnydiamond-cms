@@ -1,0 +1,18 @@
+{
+  "kind": "collectionType",
+  "collectionName": "editorial_collections",
+  "info": { "singularName": "editorial-collection", "pluralName": "editorial-collections", "displayName": "Editorial Collection" },
+  "options": { "draftAndPublish": true },
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "slug": { "type": "uid", "targetField": "title", "required": true },
+    "description": { "type": "richtext" },
+    "hero": { "type": "component", "repeatable": false, "component": "shared.hero-section" },
+    "featuredImage": { "type": "component", "repeatable": false, "component": "shared.image-asset" },
+    "productSection": { "type": "component", "repeatable": false, "component": "shared.editorial-section" },
+    "contentSections": { "type": "component", "repeatable": true, "component": "shared.promo-card" },
+    "sortOrder": { "type": "integer", "default": 0 },
+    "isActive": { "type": "boolean", "default": true },
+    "seo": { "type": "component", "repeatable": false, "component": "shared.seo" }
+  }
+}

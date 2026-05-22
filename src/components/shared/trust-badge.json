@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_shared_trust_badges",
+  "info": {
+    "displayName": "Trust Badge",
+    "description": "Homepage trust strip item"
+  },
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true
+    },
+    "icon": {
+      "type": "media",
+      "multiple": false
+    },
+    "sortOrder": {
+      "type": "integer",
+      "default": 0
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

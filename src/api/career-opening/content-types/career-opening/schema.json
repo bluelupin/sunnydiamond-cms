@@ -1,0 +1,19 @@
+{
+  "kind": "collectionType",
+  "collectionName": "career_openings",
+  "info": { "singularName": "career-opening", "pluralName": "career-openings", "displayName": "Career Opening" },
+  "options": { "draftAndPublish": true },
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "slug": { "type": "uid", "targetField": "title", "required": true },
+    "department": { "type": "string" },
+    "location": { "type": "string" },
+    "employmentType": { "type": "enumeration", "enum": ["full_time", "part_time", "contract", "internship"], "default": "full_time" },
+    "summary": { "type": "text" },
+    "description": { "type": "richtext" },
+    "applyCta": { "type": "component", "repeatable": false, "component": "shared.cta" },
+    "sortOrder": { "type": "integer", "default": 0 },
+    "isActive": { "type": "boolean", "default": true },
+    "seo": { "type": "component", "repeatable": false, "component": "shared.seo" }
+  }
+}

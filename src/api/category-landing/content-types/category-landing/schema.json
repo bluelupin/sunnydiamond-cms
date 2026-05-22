@@ -1,0 +1,18 @@
+{
+  "kind": "collectionType",
+  "collectionName": "category_landings",
+  "info": { "singularName": "category-landing", "pluralName": "category-landings", "displayName": "Category Landing" },
+  "options": { "draftAndPublish": true },
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "slug": { "type": "uid", "targetField": "title", "required": true },
+    "description": { "type": "richtext" },
+    "hero": { "type": "component", "repeatable": false, "component": "shared.hero-section" },
+    "categoryCards": { "type": "component", "repeatable": true, "component": "shared.category-card" },
+    "productSection": { "type": "component", "repeatable": false, "component": "shared.editorial-section" },
+    "editorialCards": { "type": "component", "repeatable": true, "component": "shared.promo-card" },
+    "sortOrder": { "type": "integer", "default": 0 },
+    "isActive": { "type": "boolean", "default": true },
+    "seo": { "type": "component", "repeatable": false, "component": "shared.seo" }
+  }
+}

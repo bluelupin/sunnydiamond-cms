@@ -129,3 +129,5 @@ dist
 build
 .strapi-updater.json
 .strapi-cloud.json
+crawled.md
+docs/adr/ADR-001-programmatic-seeding-strategy.md

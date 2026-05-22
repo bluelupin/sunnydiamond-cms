@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_shared_ctas",
+  "info": {
+    "displayName": "CTA",
+    "description": "Button or link target"
+  },
+  "attributes": {
+    "label": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "targetType": {
+      "type": "enumeration",
+      "enum": [
+        "internal",
+        "external",
+        "magento"
+      ],
+      "default": "internal"
+    },
+    "openInNewTab": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

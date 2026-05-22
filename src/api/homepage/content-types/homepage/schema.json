@@ -1,0 +1,27 @@
+{
+  "kind": "singleType",
+  "collectionName": "homepages",
+  "info": {
+    "singularName": "homepage",
+    "pluralName": "homepages",
+    "displayName": "Homepage"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "hero": { "type": "component", "repeatable": false, "component": "shared.hero-section" },
+    "trustBadges": { "type": "component", "repeatable": true, "component": "shared.trust-badge" },
+    "categoryNavigation": { "type": "component", "repeatable": true, "component": "shared.category-card" },
+    "diamondSourcingSection": { "type": "component", "repeatable": false, "component": "shared.editorial-section" },
+    "featuredCollectionSection": { "type": "component", "repeatable": false, "component": "shared.editorial-section" },
+    "giftingBanner": { "type": "component", "repeatable": false, "component": "shared.hero-section" },
+    "featuredProductsSection": { "type": "component", "repeatable": false, "component": "shared.editorial-section" },
+    "occasionsTeaser": { "type": "component", "repeatable": false, "component": "shared.editorial-section" },
+    "craftsmanshipSteps": { "type": "component", "repeatable": true, "component": "shared.process-step" },
+    "sunnyPromiseSection": { "type": "component", "repeatable": false, "component": "shared.editorial-section" },
+    "bespokeForYouCards": { "type": "component", "repeatable": true, "component": "shared.promo-card" },
+    "showroomTeaser": { "type": "component", "repeatable": false, "component": "shared.editorial-section" },
+    "seo": { "type": "component", "repeatable": false, "component": "shared.seo" }
+  }
+}

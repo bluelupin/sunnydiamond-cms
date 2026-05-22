@@ -1,0 +1,18 @@
+{
+  "kind": "singleType",
+  "collectionName": "about_pages",
+  "info": {
+    "singularName": "about-page",
+    "pluralName": "about-pages",
+    "displayName": "About Page"
+  },
+  "options": { "draftAndPublish": true },
+  "attributes": {
+    "hero": { "type": "component", "repeatable": false, "component": "shared.hero-section" },
+    "introTitle": { "type": "string" },
+    "introBody": { "type": "richtext" },
+    "storySections": { "type": "component", "repeatable": true, "component": "shared.promo-card" },
+    "processSteps": { "type": "component", "repeatable": true, "component": "shared.process-step" },
+    "seo": { "type": "component", "repeatable": false, "component": "shared.seo" }
+  }
+}

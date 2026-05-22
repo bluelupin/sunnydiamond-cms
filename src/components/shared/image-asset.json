@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_shared_image_assets",
+  "info": {
+    "displayName": "Image Asset",
+    "description": "Responsive image asset"
+  },
+  "attributes": {
+    "desktopImage": {
+      "type": "media",
+      "multiple": false
+    },
+    "mobileImage": {
+      "type": "media",
+      "multiple": false
+    },
+    "altText": {
+      "type": "string"
+    }
+  }
+}

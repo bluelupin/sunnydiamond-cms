@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_shared_process_steps",
+  "info": {
+    "displayName": "Process Step",
+    "description": "Craftsmanship or process step"
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "icon": {
+      "type": "media",
+      "multiple": false
+    },
+    "sortOrder": {
+      "type": "integer",
+      "default": 0
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "kind": "collectionType",
+  "collectionName": "showrooms",
+  "info": { "singularName": "showroom", "pluralName": "showrooms", "displayName": "Showroom" },
+  "options": { "draftAndPublish": true },
+  "attributes": {
+    "name": { "type": "string", "required": true },
+    "slug": { "type": "uid", "targetField": "name", "required": true },
+    "address": { "type": "text" },
+    "city": { "type": "string" },
+    "state": { "type": "string" },
+    "phone": { "type": "string" },
+    "email": { "type": "email" },
+    "mapUrl": { "type": "string" },
+    "openingHours": { "type": "text" },
+    "image": { "type": "component", "repeatable": false, "component": "shared.image-asset" },
+    "sortOrder": { "type": "integer", "default": 0 },
+    "isActive": { "type": "boolean", "default": true },
+    "seo": { "type": "component", "repeatable": false, "component": "shared.seo" }
+  }
+}

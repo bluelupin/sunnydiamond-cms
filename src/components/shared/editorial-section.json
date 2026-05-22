@@ -1,0 +1,24 @@
+{
+  "collectionName": "components_shared_editorial_sections",
+  "info": {
+    "displayName": "Editorial Section",
+    "description": "Editorial wrapper for product or content sections"
+  },
+  "attributes": {
+    "sectionTitle": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "cta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

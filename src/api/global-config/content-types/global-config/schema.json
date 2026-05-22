@@ -1,0 +1,20 @@
+{
+  "kind": "singleType",
+  "collectionName": "global_configs",
+  "info": {
+    "singularName": "global-config",
+    "pluralName": "global-configs",
+    "displayName": "Global Config"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "headerNavigationLinks": { "type": "component", "repeatable": true, "component": "shared.link-item" },
+    "footerLinkGroups": { "type": "component", "repeatable": true, "component": "shared.footer-link-group" },
+    "socialLinks": { "type": "component", "repeatable": true, "component": "shared.link-item" },
+    "paymentMethodLogos": { "type": "media", "multiple": true },
+    "footerCopyright": { "type": "string" },
+    "defaultSeo": { "type": "component", "repeatable": false, "component": "shared.seo" }
+  }
+}
