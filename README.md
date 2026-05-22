@@ -36,9 +36,12 @@ done
 ```
 ## Upload Provider
 
-Configure:
+By default, Strapi uses the local upload provider.
+
+To use AWS S3 with CloudFront delivery, set `UPLOAD_PROVIDER=aws-s3` and configure:
 
 ```env
+UPLOAD_PROVIDER=aws-s3
 AWS_ACCESS_KEY_ID=
 AWS_ACCESS_SECRET=
 AWS_REGION=

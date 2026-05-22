@@ -1,7 +1,7 @@
 import type { Core } from '@strapi/strapi';
 
 const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Plugin => {
-  if (env('NODE_ENV') === 'development') {
+  if (env('UPLOAD_PROVIDER') !== 'aws-s3') {
     return {};
   }
 
