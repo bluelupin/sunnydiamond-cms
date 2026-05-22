@@ -1,61 +1,88 @@
-# 🚀 Getting started with Strapi
+# Sunny Diamond CMS
 
-Strapi comes with a full featured [Command Line Interface](https://docs.strapi.io/dev-docs/cli) (CLI) which lets you scaffold and manage your project in seconds.
+Strapi CMS for Sunny Diamonds editorial and page content.
 
-### `develop`
+## Setup
 
-Start your Strapi application with autoReload enabled. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-develop)
+Install dependencies:
 
+```bash
+npm install
 ```
+
+Create a local `.env` file from the example:
+
+```bash
+cp .env.example .env
+```
+
+On Windows PowerShell:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+## Generate Strapi Secrets
+
+Do not reuse the placeholder values from `.env.example`. Generate unique values for every environment.
+
+Use OpenSSL:
+
+```bash
+
+for k in APP_KEYS API_TOKEN_SALT ADMIN_JWT_SECRET TRANSFER_TOKEN_SALT JWT_SECRET ENCRYPTION_KEY; do
+  echo "$k=$(openssl rand -base64 32)"
+done
+```
+## Upload Provider
+
+Configure:
+
+```env
+AWS_ACCESS_KEY_ID=
+AWS_ACCESS_SECRET=
+AWS_REGION=
+AWS_BUCKET=
+AWS_ACL=public-read
+AWS_SIGNED_URL_EXPIRES=900
+CDN_URL=https://your-cloudfront-domain.cloudfront.net
+CDN_ROOT_PATH=uploads
+```
+
+## Scripts
+
+Start Strapi in development:
+
+```bash
 npm run develop
-# or
-yarn develop
 ```
 
-### `start`
+Build the admin panel:
 
-Start your Strapi application with autoReload disabled. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-start)
-
-```
-npm run start
-# or
-yarn start
-```
-
-### `build`
-
-Build your admin panel. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-build)
-
-```
+```bash
 npm run build
-# or
-yarn build
 ```
 
-## ⚙️ Deployment
+Start Strapi without auto-reload:
 
-Strapi gives you many possible deployment options for your project including [Strapi Cloud](https://cloud.strapi.io). Browse the [deployment section of the documentation](https://docs.strapi.io/dev-docs/deployment) to find the best solution for your use case.
-
-```
-yarn strapi deploy
+```bash
+npm run start
 ```
 
-## 📚 Learn more
+## Deployment
 
-- [Resource center](https://strapi.io/resource-center) - Strapi resource center.
-- [Strapi documentation](https://docs.strapi.io) - Official Strapi documentation.
-- [Strapi tutorials](https://strapi.io/tutorials) - List of tutorials made by the core team and the community.
-- [Strapi blog](https://strapi.io/blog) - Official Strapi blog containing articles made by the Strapi team and the community.
-- [Changelog](https://strapi.io/changelog) - Find out about the Strapi product updates, new features and general improvements.
+If deploying from the outer repository folder, use this app as the root directory:
 
-Feel free to check out the [Strapi GitHub repository](https://github.com/strapi/strapi). Your feedback and contributions are welcome!
+```txt
+sunnydiamond-cms
+```
 
-## ✨ Community
+Strapi does not need a separate web/static directory. The deployment platform should run the Node app.
 
-- [Discord](https://discord.strapi.io) - Come chat with the Strapi community including the core team.
-- [Forum](https://forum.strapi.io/) - Place to discuss, ask questions and find answers, show your Strapi project and get feedback or just talk with other Community members.
-- [Awesome Strapi](https://github.com/strapi/awesome-strapi) - A curated list of awesome things related to Strapi.
+Typical deployment commands:
 
----
-
-<sub>🤫 Psst! [Strapi is hiring](https://strapi.io/careers).</sub>
+```txt
+Install Command: npm install
+Build Command: npm run build
+Start Command: npm run start
+```
