@@ -42,5 +42,6 @@ jobs:
             cd /home/forge/sunnydiamonds-cms-dev.on-forge.com
             git pull origin Version-1.0
             npm ci --omit=dev
-            pm2 startOrRestart sunnydiamond-cms
+            pm2 delete sunnydiamond-cms 2>/dev/null || true
+            pm2 start npm --name sunnydiamond-cms -- run start
             pm2 save
