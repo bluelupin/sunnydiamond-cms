@@ -30,7 +30,9 @@ jobs:
           APP_KEYS: ${{ secrets.APP_KEYS }}
           API_TOKEN_SALT: ${{ secrets.API_TOKEN_SALT }}
           ADMIN_JWT_SECRET: ${{ secrets.ADMIN_JWT_SECRET }}
+          TRANSFER_TOKEN_SALT: ${{ secrets.TRANSFER_TOKEN_SALT }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
 
       - name: Deploy to server
         uses: appleboy/ssh-action@v1
@@ -41,7 +43,7 @@ jobs:
           script: |
             cd /home/forge/sunnydiamonds-cms-dev.on-forge.com
             git pull origin Version-1.0
-            npm ci --omit=dev
-            pm2 delete sunnydiamond-cms 2>/dev/null || true
-            pm2 start npm --name sunnydiamond-cms -- run start
+            npm ci
+            NODE_ENV=production npm run build
+            pm2 startOrRestart ecosystem.config.cjs
             pm2 save
