@@ -1,17 +1,19 @@
 module.exports = {
   apps: [
     {
-      name: 'sunnydiamond-cms',
-      cwd: '/home/forge/sunnydiamonds-cms-dev.on-forge.com',
-      script: 'npm',
-      args: 'run start',
+      name: "sunnydiamond-cms",
+      script: "node_modules/.bin/strapi",
+      args: "start",
+      cwd: __dirname,
       instances: 1,
-      exec_mode: 'fork',
+      exec_mode: "fork",
       autorestart: true,
-      max_memory_restart: '1G',
+      watch: false,
+      max_memory_restart: "1G",
       env: {
-        NODE_ENV: 'production',
+        NODE_ENV: "production",
       },
+      time: true,
     },
   ],
 };
