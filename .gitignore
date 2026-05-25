@@ -125,6 +125,8 @@ coverage
 license.txt
 exports
 build
+.strapi
+dist
 .strapi-updater.json
 .strapi-cloud.json
 crawled.md
