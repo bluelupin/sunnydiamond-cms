@@ -18,6 +18,7 @@
     "giftingBanner": { "type": "component", "repeatable": false, "component": "shared.hero-section" },
     "featuredProductsSection": { "type": "component", "repeatable": false, "component": "shared.editorial-section" },
     "occasionsTeaser": { "type": "component", "repeatable": false, "component": "shared.editorial-section" },
+    "occasionCollections": { "type": "relation", "relation": "oneToMany", "target": "api::occasion.occasion" },
     "craftsmanshipSteps": { "type": "component", "repeatable": true, "component": "shared.process-step" },
     "sunnyPromiseSection": { "type": "component", "repeatable": false, "component": "shared.editorial-section" },
     "bespokeForYouCards": { "type": "component", "repeatable": true, "component": "shared.promo-card" },

@@ -775,6 +775,10 @@ export interface ApiHomepageHomepage extends Struct.SingleTypeSchema {
       'api::homepage.homepage'
     > &
       Schema.Attribute.Private;
+    occasionCollections: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::occasion.occasion'
+    >;
     occasionsTeaser: Schema.Attribute.Component<
       'shared.editorial-section',
       false

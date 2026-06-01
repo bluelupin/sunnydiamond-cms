@@ -69,6 +69,14 @@ const processStepPopulate = {
   },
 };
 
+const occasionPopulate = {
+  fields: ['title', 'slug', 'sortOrder', 'isActive'],
+  populate: {
+    image: imageAssetPopulate,
+    hero: heroPopulate,
+  },
+};
+
 const globalHeaderPopulate = {
   headerNavigationLinks: {
     fields: ['label', 'url', 'targetType', 'sortOrder', 'isActive'],
@@ -93,6 +101,7 @@ const homepageSectionsPopulate = {
   giftingBanner: heroPopulate,
   featuredProductsSection: editorialSectionPopulate,
   occasionsTeaser: editorialSectionPopulate,
+  occasionCollections: occasionPopulate,
   craftsmanshipSteps: processStepPopulate,
   sunnyPromiseSection: editorialSectionPopulate,
   bespokeForYouCards: promoCardPopulate,
@@ -110,6 +119,7 @@ const homepageShoppingBlocksPopulate = {
 const homepageEditorialBlocksPopulate = {
   diamondSourcingSection: homepageSectionsPopulate.diamondSourcingSection,
   occasionsTeaser: homepageSectionsPopulate.occasionsTeaser,
+  occasionCollections: homepageSectionsPopulate.occasionCollections,
   craftsmanshipSteps: homepageSectionsPopulate.craftsmanshipSteps,
   sunnyPromiseSection: homepageSectionsPopulate.sunnyPromiseSection,
   bespokeForYouCards: homepageSectionsPopulate.bespokeForYouCards,
