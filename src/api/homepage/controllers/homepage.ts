@@ -56,6 +56,7 @@ const promoCardPopulate = {
 const editorialSectionPopulate = {
   fields: ['sectionTitle', 'description', 'isActive'],
   populate: {
+    image: imageAssetPopulate,
     cta: ctaPopulate,
   },
 };

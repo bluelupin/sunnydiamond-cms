@@ -11,6 +11,11 @@
     "description": {
       "type": "text"
     },
+    "image": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset"
+    },
     "cta": {
       "type": "component",
       "repeatable": false,

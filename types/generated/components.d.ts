@@ -64,6 +64,7 @@ export interface SharedEditorialSection extends Struct.ComponentSchema {
   attributes: {
     cta: Schema.Attribute.Component<'shared.cta', false>;
     description: Schema.Attribute.Text;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     sectionTitle: Schema.Attribute.String;
   };
