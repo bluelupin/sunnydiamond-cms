@@ -21,11 +21,11 @@ const imageAssetPopulate = {
 
 const heroPopulate = {
   fields: ['eyebrow', 'title', 'subtitle', 'isActive'],
-  image: {
-    populate: imageAssetPopulate,
+  populate: {
+    image: imageAssetPopulate,
+    primaryCta: ctaPopulate,
+    secondaryCta: ctaPopulate,
   },
-  primaryCta: ctaPopulate,
-  secondaryCta: ctaPopulate,
 };
 
 const seoPopulate = {
@@ -38,9 +38,9 @@ const seoPopulate = {
 const categoryCardPopulate = {
   fields: ['title', 'sortOrder', 'isActive'],
   populate: {
-    image: mediaPopulate,
-    hoverImage: mediaPopulate,
-    cutoutImage: mediaPopulate,
+    image: imageAssetPopulate,
+    hoverImage: imageAssetPopulate,
+    cutoutImage: imageAssetPopulate,
     cta: ctaPopulate,
   },
 };
@@ -48,7 +48,7 @@ const categoryCardPopulate = {
 const promoCardPopulate = {
   fields: ['title', 'description', 'sortOrder', 'isActive'],
   populate: {
-    image: mediaPopulate,
+    image: imageAssetPopulate,
     cta: ctaPopulate,
   },
 };
@@ -74,12 +74,8 @@ const globalHeaderPopulate = {
 };
 
 const homepageShellPopulate = {
-  hero: {
-    populate: heroPopulate,
-  },
-  seo: {
-    populate: seoPopulate,
-  },
+  hero: heroPopulate,
+  seo: seoPopulate,
 };
 
 const homepageSectionsPopulate = {
@@ -89,36 +85,16 @@ const homepageSectionsPopulate = {
       icon: mediaPopulate,
     },
   },
-  categoryNavigation: {
-    populate: categoryCardPopulate,
-  },
-  diamondSourcingSection: {
-    populate: editorialSectionPopulate,
-  },
-  featuredCollectionSection: {
-    populate: editorialSectionPopulate,
-  },
-  giftingBanner: {
-    populate: heroPopulate,
-  },
-  featuredProductsSection: {
-    populate: editorialSectionPopulate,
-  },
-  occasionsTeaser: {
-    populate: editorialSectionPopulate,
-  },
-  craftsmanshipSteps: {
-    populate: processStepPopulate,
-  },
-  sunnyPromiseSection: {
-    populate: editorialSectionPopulate,
-  },
-  bespokeForYouCards: {
-    populate: promoCardPopulate,
-  },
-  showroomTeaser: {
-    populate: editorialSectionPopulate,
-  },
+  categoryNavigation: categoryCardPopulate,
+  diamondSourcingSection: editorialSectionPopulate,
+  featuredCollectionSection: editorialSectionPopulate,
+  giftingBanner: heroPopulate,
+  featuredProductsSection: editorialSectionPopulate,
+  occasionsTeaser: editorialSectionPopulate,
+  craftsmanshipSteps: processStepPopulate,
+  sunnyPromiseSection: editorialSectionPopulate,
+  bespokeForYouCards: promoCardPopulate,
+  showroomTeaser: editorialSectionPopulate,
 };
 
 const homepageShoppingBlocksPopulate = {

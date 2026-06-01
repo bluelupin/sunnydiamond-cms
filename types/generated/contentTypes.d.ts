@@ -451,6 +451,7 @@ export interface ApiAboutPageAboutPage extends Struct.SingleTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    contentSections: Schema.Attribute.Component<'shared.content-section', true>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -914,6 +915,7 @@ export interface ApiServicePageServicePage extends Struct.CollectionTypeSchema {
   };
   attributes: {
     body: Schema.Attribute.RichText;
+    contentSections: Schema.Attribute.Component<'shared.content-section', true>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -990,6 +992,7 @@ export interface ApiSupportPageSupportPage extends Struct.CollectionTypeSchema {
   };
   attributes: {
     body: Schema.Attribute.RichText;
+    contentSections: Schema.Attribute.Component<'shared.content-section', true>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

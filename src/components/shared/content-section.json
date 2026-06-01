@@ -1,0 +1,41 @@
+{
+  "collectionName": "components_shared_content_sections",
+  "info": {
+    "displayName": "Content Section",
+    "description": "Reusable editorial content section with optional responsive image and CTA"
+  },
+  "attributes": {
+    "eyebrow": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "body": {
+      "type": "richtext"
+    },
+    "image": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset"
+    },
+    "cta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
+    },
+    "layout": {
+      "type": "enumeration",
+      "enum": ["text_only", "image_left", "image_right", "full_bleed"],
+      "default": "text_only"
+    },
+    "sortOrder": {
+      "type": "integer",
+      "default": 0
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

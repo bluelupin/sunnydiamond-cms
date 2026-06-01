@@ -131,3 +131,4 @@ dist
 .strapi-cloud.json
 crawled.md
 docs/adr/ADR-001-programmatic-seeding-strategy.md
+docs/adr/0001-responsive-image-assets.md

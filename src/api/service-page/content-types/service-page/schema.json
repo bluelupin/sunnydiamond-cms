@@ -8,6 +8,7 @@
     "slug": { "type": "uid", "targetField": "title", "required": true },
     "hero": { "type": "component", "repeatable": false, "component": "shared.hero-section" },
     "body": { "type": "richtext" },
+    "contentSections": { "type": "component", "repeatable": true, "component": "shared.content-section" },
     "steps": { "type": "component", "repeatable": true, "component": "shared.process-step" },
     "promoCards": { "type": "component", "repeatable": true, "component": "shared.promo-card" },
     "sortOrder": { "type": "integer", "default": 0 },

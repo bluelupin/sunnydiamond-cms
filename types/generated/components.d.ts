@@ -8,12 +8,33 @@ export interface SharedCategoryCard extends Struct.ComponentSchema {
   };
   attributes: {
     cta: Schema.Attribute.Component<'shared.cta', false>;
-    cutoutImage: Schema.Attribute.Media;
-    hoverImage: Schema.Attribute.Media;
-    image: Schema.Attribute.Media;
+    cutoutImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    hoverImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedContentSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_content_sections';
+  info: {
+    description: 'Reusable editorial content section with optional responsive image and CTA';
+    displayName: 'Content Section';
+  };
+  attributes: {
+    body: Schema.Attribute.RichText;
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    eyebrow: Schema.Attribute.String;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    layout: Schema.Attribute.Enumeration<
+      ['text_only', 'image_left', 'image_right', 'full_bleed']
+    > &
+      Schema.Attribute.DefaultTo<'text_only'>;
+    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    title: Schema.Attribute.String;
   };
 }
 
@@ -134,7 +155,7 @@ export interface SharedPromoCard extends Struct.ComponentSchema {
   attributes: {
     cta: Schema.Attribute.Component<'shared.cta', false>;
     description: Schema.Attribute.Text;
-    image: Schema.Attribute.Media;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
@@ -173,6 +194,7 @@ declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
       'shared.category-card': SharedCategoryCard;
+      'shared.content-section': SharedContentSection;
       'shared.cta': SharedCta;
       'shared.editorial-section': SharedEditorialSection;
       'shared.footer-link-group': SharedFooterLinkGroup;

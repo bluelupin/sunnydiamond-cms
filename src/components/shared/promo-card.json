@@ -13,8 +13,9 @@
       "type": "text"
     },
     "image": {
-      "type": "media",
-      "multiple": false
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset"
     },
     "cta": {
       "type": "component",

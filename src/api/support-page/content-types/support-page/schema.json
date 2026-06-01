@@ -8,6 +8,7 @@
     "slug": { "type": "uid", "targetField": "title", "required": true },
     "hero": { "type": "component", "repeatable": false, "component": "shared.hero-section" },
     "body": { "type": "richtext" },
+    "contentSections": { "type": "component", "repeatable": true, "component": "shared.content-section" },
     "links": { "type": "component", "repeatable": true, "component": "shared.link-item" },
     "sortOrder": { "type": "integer", "default": 0 },
     "isActive": { "type": "boolean", "default": true },

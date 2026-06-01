@@ -10,16 +10,19 @@
       "required": true
     },
     "image": {
-      "type": "media",
-      "multiple": false
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset"
     },
     "hoverImage": {
-      "type": "media",
-      "multiple": false
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset"
     },
     "cutoutImage": {
-      "type": "media",
-      "multiple": false
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset"
     },
     "cta": {
       "type": "component",
