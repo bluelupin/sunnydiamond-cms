@@ -16,6 +16,11 @@
       "type": "media",
       "multiple": false
     },
+    "image": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset"
+    },
     "sortOrder": {
       "type": "integer",
       "default": 0

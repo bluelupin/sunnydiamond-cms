@@ -65,6 +65,7 @@ const processStepPopulate = {
   fields: ['title', 'description', 'sortOrder', 'isActive'],
   populate: {
     icon: mediaPopulate,
+    image: imageAssetPopulate,
   },
 };
 
