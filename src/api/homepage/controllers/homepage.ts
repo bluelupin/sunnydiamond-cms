@@ -133,6 +133,7 @@ const findPublishedSingle = async (
 ) => {
   return strapiInstance.documents(uid as any).findFirst({
     status: 'published',
+    sort: { updatedAt: 'desc' },
     populate,
   } as any);
 };
