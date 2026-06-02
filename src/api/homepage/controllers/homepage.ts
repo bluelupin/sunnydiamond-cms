@@ -70,10 +70,50 @@ const processStepPopulate = {
 };
 
 const occasionPopulate = {
-  fields: ['title', 'slug', 'sortOrder', 'isActive'],
   populate: {
     image: imageAssetPopulate,
     hero: heroPopulate,
+  },
+};
+
+const showroomPopulate = {
+  populate: {
+    image: imageAssetPopulate,
+    seo: seoPopulate,
+  },
+};
+
+const occasionSectionPopulate = {
+  populate: ['image', 'occasions', 'cta'],
+};
+
+const processSectionPopulate = {
+  fields: ['sectionTitle', 'description', 'sortOrder', 'isActive'],
+  populate: {
+    image: imageAssetPopulate,
+    steps: processStepPopulate,
+    cta: ctaPopulate,
+  },
+};
+
+const showroomSectionPopulate = {
+  populate: ['image', 'showrooms', 'cta'],
+};
+
+const collectionShowcaseSectionPopulate = {
+  fields: ['sectionTitle', 'description', 'magentoCollectionRef', 'sortOrder', 'isActive'],
+  populate: {
+    primaryImage: imageAssetPopulate,
+    secondaryImage: imageAssetPopulate,
+    collection: {
+      fields: ['title', 'slug', 'description', 'sortOrder', 'isActive'],
+      populate: {
+        featuredImage: imageAssetPopulate,
+        productSection: editorialSectionPopulate,
+        seo: seoPopulate,
+      },
+    },
+    cta: ctaPopulate,
   },
 };
 
@@ -97,15 +137,14 @@ const homepageSectionsPopulate = {
   },
   categoryNavigation: categoryCardPopulate,
   diamondSourcingSection: editorialSectionPopulate,
-  featuredCollectionSection: editorialSectionPopulate,
+  featuredCollectionSection: collectionShowcaseSectionPopulate,
   giftingBanner: heroPopulate,
   featuredProductsSection: editorialSectionPopulate,
-  occasionsTeaser: editorialSectionPopulate,
-  occasionCollections: occasionPopulate,
-  craftsmanshipSteps: processStepPopulate,
+  occasionSection: occasionSectionPopulate,
+  craftsmanshipSection: processSectionPopulate,
   sunnyPromiseSection: editorialSectionPopulate,
   bespokeForYouCards: promoCardPopulate,
-  showroomTeaser: editorialSectionPopulate,
+  showroomSection: showroomSectionPopulate,
 };
 
 const homepageShoppingBlocksPopulate = {
@@ -118,12 +157,11 @@ const homepageShoppingBlocksPopulate = {
 
 const homepageEditorialBlocksPopulate = {
   diamondSourcingSection: homepageSectionsPopulate.diamondSourcingSection,
-  occasionsTeaser: homepageSectionsPopulate.occasionsTeaser,
-  occasionCollections: homepageSectionsPopulate.occasionCollections,
-  craftsmanshipSteps: homepageSectionsPopulate.craftsmanshipSteps,
+  occasionSection: homepageSectionsPopulate.occasionSection,
+  craftsmanshipSection: homepageSectionsPopulate.craftsmanshipSection,
   sunnyPromiseSection: homepageSectionsPopulate.sunnyPromiseSection,
   bespokeForYouCards: homepageSectionsPopulate.bespokeForYouCards,
-  showroomTeaser: homepageSectionsPopulate.showroomTeaser,
+  showroomSection: homepageSectionsPopulate.showroomSection,
 };
 
 const findPublishedSingle = async (
@@ -147,12 +185,16 @@ export default factories.createCoreController(HOMEPAGE_UID as any, ({ strapi }) 
 
     const globalContentType = strapi.contentType(GLOBAL_CONFIG_UID);
     const homepageContentType = strapi.contentType(HOMEPAGE_UID);
-    const sanitizedGlobal = await strapi.contentAPI.sanitize.output(globalConfig, globalContentType, {
-      auth: ctx.state.auth,
-    });
-    const sanitizedHomepage = await strapi.contentAPI.sanitize.output(homepage, homepageContentType, {
-      auth: ctx.state.auth,
-    });
+    const sanitizedGlobal = globalConfig
+      ? await strapi.contentAPI.sanitize.output(globalConfig, globalContentType, {
+          auth: ctx.state.auth,
+        })
+      : null;
+    const sanitizedHomepage = homepage
+      ? await strapi.contentAPI.sanitize.output(homepage, homepageContentType, {
+          auth: ctx.state.auth,
+        })
+      : null;
 
     return {
       data: {
@@ -165,6 +207,10 @@ export default factories.createCoreController(HOMEPAGE_UID as any, ({ strapi }) 
 
   async sections(ctx) {
     const homepage = await findPublishedSingle(strapi, HOMEPAGE_UID, homepageSectionsPopulate);
+    if (!homepage) {
+      return this.transformResponse(null);
+    }
+
     const sanitizedHomepage = await this.sanitizeOutput(homepage, ctx);
 
     return this.transformResponse(sanitizedHomepage);
@@ -172,6 +218,10 @@ export default factories.createCoreController(HOMEPAGE_UID as any, ({ strapi }) 
 
   async shoppingBlocks(ctx) {
     const homepage = await findPublishedSingle(strapi, HOMEPAGE_UID, homepageShoppingBlocksPopulate);
+    if (!homepage) {
+      return this.transformResponse(null);
+    }
+
     const sanitizedHomepage = await this.sanitizeOutput(homepage, ctx);
 
     return this.transformResponse(sanitizedHomepage);
@@ -179,8 +229,45 @@ export default factories.createCoreController(HOMEPAGE_UID as any, ({ strapi }) 
 
   async editorialBlocks(ctx) {
     const homepage = await findPublishedSingle(strapi, HOMEPAGE_UID, homepageEditorialBlocksPopulate);
-    const sanitizedHomepage = await this.sanitizeOutput(homepage, ctx);
+    if (!homepage) {
+      return this.transformResponse(null);
+    }
 
-    return this.transformResponse(sanitizedHomepage);
+    const [sanitizedHomepage, occasions, showrooms] = await Promise.all([
+      this.sanitizeOutput(homepage, ctx),
+      strapi.documents('api::occasion.occasion').findMany({
+        status: 'published',
+        sort: { sortOrder: 'asc' },
+        populate: occasionPopulate,
+      } as any),
+      strapi.documents('api::showroom.showroom').findMany({
+        status: 'published',
+        sort: { sortOrder: 'asc' },
+        populate: showroomPopulate,
+      } as any),
+    ]);
+
+    const occasionContentType = strapi.contentType('api::occasion.occasion');
+    const showroomContentType = strapi.contentType('api::showroom.showroom');
+    const [sanitizedOccasions, sanitizedShowrooms] = await Promise.all([
+      strapi.contentAPI.sanitize.output(occasions, occasionContentType, {
+        auth: ctx.state.auth,
+      }),
+      strapi.contentAPI.sanitize.output(showrooms, showroomContentType, {
+        auth: ctx.state.auth,
+      }),
+    ]);
+
+    const editorialHomepage = sanitizedHomepage as any;
+
+    if (editorialHomepage?.occasionSection) {
+      editorialHomepage.occasionSection.occasions = sanitizedOccasions;
+    }
+
+    if (editorialHomepage?.showroomSection) {
+      editorialHomepage.showroomSection.showrooms = sanitizedShowrooms;
+    }
+
+    return this.transformResponse(editorialHomepage);
   },
 }));

@@ -1,0 +1,46 @@
+{
+  "collectionName": "components_shared_collection_showcase_sections",
+  "info": {
+    "displayName": "Collection Showcase Section",
+    "description": "Editorial collection showcase with CMS images and commerce references"
+  },
+  "attributes": {
+    "sectionTitle": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "primaryImage": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset"
+    },
+    "secondaryImage": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset"
+    },
+    "collection": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::editorial-collection.editorial-collection"
+    },
+    "magentoCollectionRef": {
+      "type": "string"
+    },
+    "cta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
+    },
+    "sortOrder": {
+      "type": "integer",
+      "default": 0
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

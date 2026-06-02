@@ -14,15 +14,14 @@
     "trustBadges": { "type": "component", "repeatable": true, "component": "shared.trust-badge" },
     "categoryNavigation": { "type": "component", "repeatable": true, "component": "shared.category-card" },
     "diamondSourcingSection": { "type": "component", "repeatable": false, "component": "shared.editorial-section" },
-    "featuredCollectionSection": { "type": "component", "repeatable": false, "component": "shared.editorial-section" },
+    "featuredCollectionSection": { "type": "component", "repeatable": false, "component": "shared.collection-showcase-section" },
     "giftingBanner": { "type": "component", "repeatable": false, "component": "shared.hero-section" },
     "featuredProductsSection": { "type": "component", "repeatable": false, "component": "shared.editorial-section" },
-    "occasionsTeaser": { "type": "component", "repeatable": false, "component": "shared.editorial-section" },
-    "occasionCollections": { "type": "relation", "relation": "oneToMany", "target": "api::occasion.occasion" },
-    "craftsmanshipSteps": { "type": "component", "repeatable": true, "component": "shared.process-step" },
+    "occasionSection": { "type": "component", "repeatable": false, "component": "shared.occasion-section" },
+    "craftsmanshipSection": { "type": "component", "repeatable": false, "component": "shared.process-section" },
     "sunnyPromiseSection": { "type": "component", "repeatable": false, "component": "shared.editorial-section" },
     "bespokeForYouCards": { "type": "component", "repeatable": true, "component": "shared.promo-card" },
-    "showroomTeaser": { "type": "component", "repeatable": false, "component": "shared.editorial-section" },
+    "showroomSection": { "type": "component", "repeatable": false, "component": "shared.showroom-section" },
     "seo": { "type": "component", "repeatable": false, "component": "shared.seo" }
   }
 }

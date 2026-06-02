@@ -17,6 +17,29 @@ export interface SharedCategoryCard extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedCollectionShowcaseSection
+  extends Struct.ComponentSchema {
+  collectionName: 'components_shared_collection_showcase_sections';
+  info: {
+    description: 'Editorial collection showcase with CMS images and commerce references';
+    displayName: 'Collection Showcase Section';
+  };
+  attributes: {
+    collection: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::editorial-collection.editorial-collection'
+    >;
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    description: Schema.Attribute.Text;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    magentoCollectionRef: Schema.Attribute.String;
+    primaryImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    secondaryImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    sectionTitle: Schema.Attribute.String;
+    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+  };
+}
+
 export interface SharedContentSection extends Struct.ComponentSchema {
   collectionName: 'components_shared_content_sections';
   info: {
@@ -132,6 +155,40 @@ export interface SharedLinkItem extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedOccasionSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_occasion_sections';
+  info: {
+    description: 'Homepage occasion block with reusable occasion records';
+    displayName: 'Occasion Section';
+  };
+  attributes: {
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    description: Schema.Attribute.Text;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    occasions: Schema.Attribute.Relation<'oneToMany', 'api::occasion.occasion'>;
+    sectionTitle: Schema.Attribute.String;
+    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+  };
+}
+
+export interface SharedProcessSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_process_sections';
+  info: {
+    description: 'Editorial process block with repeatable steps';
+    displayName: 'Process Section';
+  };
+  attributes: {
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    description: Schema.Attribute.Text;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    sectionTitle: Schema.Attribute.String;
+    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    steps: Schema.Attribute.Component<'shared.process-step', true>;
+  };
+}
+
 export interface SharedProcessStep extends Struct.ComponentSchema {
   collectionName: 'components_shared_process_steps';
   info: {
@@ -178,6 +235,23 @@ export interface SharedSeo extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedShowroomSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_showroom_sections';
+  info: {
+    description: 'Homepage showroom block with reusable showroom records';
+    displayName: 'Showroom Section';
+  };
+  attributes: {
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    description: Schema.Attribute.Text;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    sectionTitle: Schema.Attribute.String;
+    showrooms: Schema.Attribute.Relation<'oneToMany', 'api::showroom.showroom'>;
+    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+  };
+}
+
 export interface SharedTrustBadge extends Struct.ComponentSchema {
   collectionName: 'components_shared_trust_badges';
   info: {
@@ -196,6 +270,7 @@ declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
       'shared.category-card': SharedCategoryCard;
+      'shared.collection-showcase-section': SharedCollectionShowcaseSection;
       'shared.content-section': SharedContentSection;
       'shared.cta': SharedCta;
       'shared.editorial-section': SharedEditorialSection;
@@ -203,9 +278,12 @@ declare module '@strapi/strapi' {
       'shared.hero-section': SharedHeroSection;
       'shared.image-asset': SharedImageAsset;
       'shared.link-item': SharedLinkItem;
+      'shared.occasion-section': SharedOccasionSection;
+      'shared.process-section': SharedProcessSection;
       'shared.process-step': SharedProcessStep;
       'shared.promo-card': SharedPromoCard;
       'shared.seo': SharedSeo;
+      'shared.showroom-section': SharedShowroomSection;
       'shared.trust-badge': SharedTrustBadge;
     }
   }

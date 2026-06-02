@@ -751,7 +751,10 @@ export interface ApiHomepageHomepage extends Struct.SingleTypeSchema {
       'shared.category-card',
       true
     >;
-    craftsmanshipSteps: Schema.Attribute.Component<'shared.process-step', true>;
+    craftsmanshipSection: Schema.Attribute.Component<
+      'shared.process-section',
+      false
+    >;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -760,7 +763,7 @@ export interface ApiHomepageHomepage extends Struct.SingleTypeSchema {
       false
     >;
     featuredCollectionSection: Schema.Attribute.Component<
-      'shared.editorial-section',
+      'shared.collection-showcase-section',
       false
     >;
     featuredProductsSection: Schema.Attribute.Component<
@@ -775,18 +778,14 @@ export interface ApiHomepageHomepage extends Struct.SingleTypeSchema {
       'api::homepage.homepage'
     > &
       Schema.Attribute.Private;
-    occasionCollections: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::occasion.occasion'
-    >;
-    occasionsTeaser: Schema.Attribute.Component<
-      'shared.editorial-section',
+    occasionSection: Schema.Attribute.Component<
+      'shared.occasion-section',
       false
     >;
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<'shared.seo', false>;
-    showroomTeaser: Schema.Attribute.Component<
-      'shared.editorial-section',
+    showroomSection: Schema.Attribute.Component<
+      'shared.showroom-section',
       false
     >;
     sunnyPromiseSection: Schema.Attribute.Component<

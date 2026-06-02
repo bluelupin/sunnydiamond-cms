@@ -4,6 +4,10 @@ export async function seedCms(strapi: Core.Strapi) {
   strapi.log.info('Starting Strapi CMS programmatic seeding process...');
 
   try {
+    let seededShowrooms: any[] = [];
+    let seededOccasions: any[] = [];
+    let seededCollections: any[] = [];
+
     // 1. Seed Showrooms (api::showroom.showroom)
     const showroomCount = await strapi.documents('api::showroom.showroom').count({});
     if (showroomCount === 0) {
@@ -77,11 +81,16 @@ export async function seedCms(strapi: Core.Strapi) {
       ];
 
       for (const showroom of showrooms) {
-        await strapi.documents('api::showroom.showroom').create({ data: showroom });
+        const createdShowroom = await strapi.documents('api::showroom.showroom').create({ data: showroom });
+        seededShowrooms.push(createdShowroom);
       }
       strapi.log.info('Showrooms successfully seeded.');
     } else {
       strapi.log.info('Showrooms already exist. Skipping.');
+      seededShowrooms = await strapi.documents('api::showroom.showroom').findMany({
+        status: 'published',
+        sort: { sortOrder: 'asc' },
+      } as any);
     }
 
     // 2. Seed Occasions (api::occasion.occasion)
@@ -116,11 +125,16 @@ export async function seedCms(strapi: Core.Strapi) {
       ];
 
       for (const occasion of occasions) {
-        await strapi.documents('api::occasion.occasion').create({ data: occasion });
+        const createdOccasion = await strapi.documents('api::occasion.occasion').create({ data: occasion });
+        seededOccasions.push(createdOccasion);
       }
       strapi.log.info('Occasions successfully seeded.');
     } else {
       strapi.log.info('Occasions already exist. Skipping.');
+      seededOccasions = await strapi.documents('api::occasion.occasion').findMany({
+        status: 'published',
+        sort: { sortOrder: 'asc' },
+      } as any);
     }
 
     // 3. Seed Editorial Collections (api::editorial-collection.editorial-collection)
@@ -144,11 +158,16 @@ export async function seedCms(strapi: Core.Strapi) {
       ];
 
       for (const collection of collections) {
-        await strapi.documents('api::editorial-collection.editorial-collection').create({ data: collection });
+        const createdCollection = await strapi.documents('api::editorial-collection.editorial-collection').create({ data: collection });
+        seededCollections.push(createdCollection);
       }
       strapi.log.info('Editorial Collections successfully seeded.');
     } else {
       strapi.log.info('Editorial Collections already exist. Skipping.');
+      seededCollections = await strapi.documents('api::editorial-collection.editorial-collection').findMany({
+        status: 'published',
+        sort: { sortOrder: 'asc' },
+      } as any);
     }
 
     // 4. Seed Legal Pages (api::legal-page.legal-page)
@@ -296,6 +315,7 @@ export async function seedCms(strapi: Core.Strapi) {
         featuredCollectionSection: {
           sectionTitle: 'Alankara Collection',
           description: 'A stellar showcase of signature flawless rings, pendants, and tennis bracelets reflecting traditional mastery.',
+          magentoCollectionRef: 'alankara-collection',
           cta: { label: 'Explore Collection', url: '/products', targetType: 'internal' as 'internal' },
           isActive: true,
         },
@@ -312,17 +332,25 @@ export async function seedCms(strapi: Core.Strapi) {
           description: 'Traditional mastery bringing every diamond to radiant, eternal life. Highlighted by our signature Celestial Solitaire Ring, Lumiere Pendant Necklace, and Cascade Drop Earrings.',
           isActive: true,
         },
-        occasionsTeaser: {
+        occasionSection: {
           sectionTitle: 'Timeless Pieces for Every Occasion',
           description: 'Explore the highly curated jewelry selections suited perfectly for your Festival, Cocktail, or Wedding collections.',
+          occasions: {
+            connect: seededOccasions.map((occasion) => occasion.documentId).filter(Boolean),
+          },
           isActive: true,
         },
-        craftsmanshipSteps: [
-          { title: 'Design', description: 'Collaborate with our designers to sketch your perfect piece, tailored to your style and story.', sortOrder: 1, isActive: true },
-          { title: 'Source', description: 'Expert gemologists choose Belgium-sourced internally flawless stones adhering to conflict-free mandates.', sortOrder: 2, isActive: true },
-          { title: 'Craft', description: 'Master artisans set each stone to capture ultimate light in our dedicated atelier.', sortOrder: 3, isActive: true },
-          { title: 'Deliver', description: 'Secure complimentary shipping directly to your doorstep with guaranteed certification.', sortOrder: 4, isActive: true },
-        ],
+        craftsmanshipSection: {
+          sectionTitle: 'From Vision to Masterpiece',
+          description: 'Our process brings each diamond from first sketch to finished jewel.',
+          steps: [
+            { title: 'Design', description: 'Collaborate with our designers to sketch your perfect piece, tailored to your style and story.', sortOrder: 1, isActive: true },
+            { title: 'Source', description: 'Expert gemologists choose Belgium-sourced internally flawless stones adhering to conflict-free mandates.', sortOrder: 2, isActive: true },
+            { title: 'Craft', description: 'Master artisans set each stone to capture ultimate light in our dedicated atelier.', sortOrder: 3, isActive: true },
+            { title: 'Deliver', description: 'Secure complimentary shipping directly to your doorstep with guaranteed certification.', sortOrder: 4, isActive: true },
+          ],
+          isActive: true,
+        },
         sunnyPromiseSection: {
           sectionTitle: 'THE SUNNY PROMISE',
           description: 'Guided by heritage and perfected by pride every setting a masterpiece of expert precision.',
@@ -345,9 +373,12 @@ export async function seedCms(strapi: Core.Strapi) {
             isActive: true,
           },
         ],
-        showroomTeaser: {
+        showroomSection: {
           sectionTitle: 'Visit Our Showrooms',
           description: 'Step into our atelier to discover the Belgian-sourced mastery behind every stone. Located across Kochi, Calicut, Thrissur, Trivandrum, and Coimbatore.',
+          showrooms: {
+            connect: seededShowrooms.map((showroom) => showroom.documentId).filter(Boolean),
+          },
           isActive: true,
         },
         seo: {

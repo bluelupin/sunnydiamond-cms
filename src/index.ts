@@ -1,5 +1,6 @@
 import type { Core } from '@strapi/strapi';
 import { seedCms } from './utils/seeder';
+import { repairHomepageSections } from './utils/repair-homepage-sections';
 
 export default {
   /**
@@ -19,6 +20,8 @@ export default {
    */
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {
     await seedCms(strapi);
+    if (process.env.REPAIR_HOMEPAGE_SECTIONS && process.env.REPAIR_HOMEPAGE_SECTIONS === 'true') {
+      await repairHomepageSections(strapi);
+    }
   },
 };
-
