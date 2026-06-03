@@ -121,6 +121,19 @@ const globalHeaderPopulate = {
   headerNavigationLinks: {
     fields: ['label', 'url', 'targetType', 'sortOrder', 'isActive'],
   },
+  footerLinkGroups: {
+    fields: ['title', 'sortOrder', 'isActive'],
+    populate: {
+      links: {
+        fields: ['label', 'url', 'targetType', 'sortOrder', 'isActive'],
+      },
+    },
+  },
+  socialLinks: {
+    fields: ['label', 'url', 'targetType', 'sortOrder', 'isActive'],
+  },
+  paymentMethodLogos: mediaPopulate,
+  defaultSeo: seoPopulate,
 };
 
 const homepageShellPopulate = {
