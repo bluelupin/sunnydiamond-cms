@@ -1,39 +1,16 @@
 import { factories } from '@strapi/strapi';
+import {
+  ctaPopulate,
+  heroPopulate,
+  imageAssetPopulate,
+  mediaPopulate,
+  occasionPopulate,
+  seoPopulate,
+  showroomPopulate,
+} from '../../../utils/populate';
 
 const HOMEPAGE_UID = 'api::homepage.homepage';
 const GLOBAL_CONFIG_UID = 'api::global-config.global-config';
-
-const mediaPopulate = {
-  fields: ['name', 'alternativeText', 'caption', 'width', 'height', 'formats', 'hash', 'ext', 'mime', 'size', 'url'],
-};
-
-const ctaPopulate = {
-  fields: ['label', 'url', 'targetType', 'openInNewTab'],
-};
-
-const imageAssetPopulate = {
-  fields: ['altText'],
-  populate: {
-    desktopImage: mediaPopulate,
-    mobileImage: mediaPopulate,
-  },
-};
-
-const heroPopulate = {
-  fields: ['eyebrow', 'title', 'subtitle', 'isActive'],
-  populate: {
-    image: imageAssetPopulate,
-    primaryCta: ctaPopulate,
-    secondaryCta: ctaPopulate,
-  },
-};
-
-const seoPopulate = {
-  fields: ['metaTitle', 'metaDescription', 'canonicalUrl'],
-  populate: {
-    ogImage: mediaPopulate,
-  },
-};
 
 const categoryCardPopulate = {
   fields: ['title', 'sortOrder', 'isActive'],
@@ -69,22 +46,13 @@ const processStepPopulate = {
   },
 };
 
-const occasionPopulate = {
-  populate: {
-    image: imageAssetPopulate,
-    hero: heroPopulate,
-  },
-};
-
-const showroomPopulate = {
-  populate: {
-    image: imageAssetPopulate,
-    seo: seoPopulate,
-  },
-};
-
 const occasionSectionPopulate = {
-  populate: ['image', 'occasions', 'cta'],
+  fields: ['sectionTitle', 'description', 'sortOrder', 'isActive'],
+  populate: {
+    image: imageAssetPopulate,
+    occasions: occasionPopulate,
+    cta: ctaPopulate,
+  },
 };
 
 const processSectionPopulate = {
@@ -97,7 +65,42 @@ const processSectionPopulate = {
 };
 
 const showroomSectionPopulate = {
-  populate: ['image', 'showrooms', 'cta'],
+  fields: ['sectionTitle', 'description', 'sortOrder', 'isActive'],
+  populate: {
+    image: imageAssetPopulate,
+    showrooms: showroomPopulate,
+    cta: ctaPopulate,
+  },
+};
+
+const occasionRelationFallbackPopulate = {
+  image: {
+    populate: {
+      desktopImage: true,
+      mobileImage: true,
+    },
+  },
+  hero: {
+    populate: {
+      image: {
+        populate: {
+          desktopImage: true,
+          mobileImage: true,
+        },
+      },
+      primaryCta: true,
+      secondaryCta: true,
+    },
+  },
+};
+
+const showroomRelationFallbackPopulate = {
+  image: {
+    populate: {
+      desktopImage: true,
+      mobileImage: true,
+    },
+  },
 };
 
 const collectionShowcaseSectionPopulate = {
@@ -189,6 +192,71 @@ const findPublishedSingle = async (
   } as any);
 };
 
+// Strapi 5 does not fully hydrate collection relations nested inside fixed
+// components on this homepage single type. Keep this as one bounded query per
+// relation-backed section, not per item.
+const attachOccasionsAndShowrooms = async (
+  strapiInstance: typeof strapi,
+  homepage: any,
+  ctx: any
+) => {
+  if (!homepage) return homepage;
+
+  const needsOccasions = Boolean(homepage.occasionSection);
+  const needsShowrooms = Boolean(homepage.showroomSection);
+
+  if (!needsOccasions && !needsShowrooms) return homepage;
+
+  const [occasions, showrooms] = await Promise.all([
+    needsOccasions
+      ? strapiInstance.db.query('api::occasion.occasion').findMany({
+          where: {
+            isActive: true,
+            publishedAt: { $notNull: true },
+          },
+          orderBy: { sortOrder: 'asc' },
+          populate: occasionRelationFallbackPopulate,
+        } as any)
+      : Promise.resolve([]),
+    needsShowrooms
+      ? strapiInstance.db.query('api::showroom.showroom').findMany({
+          where: {
+            isActive: true,
+            publishedAt: { $notNull: true },
+          },
+          orderBy: { sortOrder: 'asc' },
+          populate: showroomRelationFallbackPopulate,
+        } as any)
+      : Promise.resolve([]),
+  ]);
+
+  const [sanitizedOccasions, sanitizedShowrooms] = await Promise.all([
+    needsOccasions
+      ? strapiInstance.contentAPI.sanitize.output(
+          occasions,
+          strapiInstance.contentType('api::occasion.occasion'),
+          { auth: ctx.state.auth }
+        )
+      : Promise.resolve([]),
+    needsShowrooms
+      ? strapiInstance.contentAPI.sanitize.output(
+          showrooms,
+          strapiInstance.contentType('api::showroom.showroom'),
+          { auth: ctx.state.auth }
+        )
+      : Promise.resolve([]),
+  ]);
+
+  if (needsOccasions) {
+    homepage.occasionSection.occasions = sanitizedOccasions ?? [];
+  }
+  if (needsShowrooms) {
+    homepage.showroomSection.showrooms = sanitizedShowrooms ?? [];
+  }
+
+  return homepage;
+};
+
 export default factories.createCoreController(HOMEPAGE_UID as any, ({ strapi }) => ({
   async shell(ctx) {
     const [globalConfig, homepage] = await Promise.all([
@@ -225,8 +293,9 @@ export default factories.createCoreController(HOMEPAGE_UID as any, ({ strapi }) 
     }
 
     const sanitizedHomepage = await this.sanitizeOutput(homepage, ctx);
+    const enrichedHomepage = await attachOccasionsAndShowrooms(strapi, sanitizedHomepage, ctx);
 
-    return this.transformResponse(sanitizedHomepage);
+    return this.transformResponse(enrichedHomepage);
   },
 
   async shoppingBlocks(ctx) {
@@ -246,41 +315,9 @@ export default factories.createCoreController(HOMEPAGE_UID as any, ({ strapi }) 
       return this.transformResponse(null);
     }
 
-    const [sanitizedHomepage, occasions, showrooms] = await Promise.all([
-      this.sanitizeOutput(homepage, ctx),
-      strapi.documents('api::occasion.occasion').findMany({
-        status: 'published',
-        sort: { sortOrder: 'asc' },
-        populate: occasionPopulate,
-      } as any),
-      strapi.documents('api::showroom.showroom').findMany({
-        status: 'published',
-        sort: { sortOrder: 'asc' },
-        populate: showroomPopulate,
-      } as any),
-    ]);
+    const sanitizedHomepage = await this.sanitizeOutput(homepage, ctx);
+    const enrichedHomepage = await attachOccasionsAndShowrooms(strapi, sanitizedHomepage, ctx);
 
-    const occasionContentType = strapi.contentType('api::occasion.occasion');
-    const showroomContentType = strapi.contentType('api::showroom.showroom');
-    const [sanitizedOccasions, sanitizedShowrooms] = await Promise.all([
-      strapi.contentAPI.sanitize.output(occasions, occasionContentType, {
-        auth: ctx.state.auth,
-      }),
-      strapi.contentAPI.sanitize.output(showrooms, showroomContentType, {
-        auth: ctx.state.auth,
-      }),
-    ]);
-
-    const editorialHomepage = sanitizedHomepage as any;
-
-    if (editorialHomepage?.occasionSection) {
-      editorialHomepage.occasionSection.occasions = sanitizedOccasions;
-    }
-
-    if (editorialHomepage?.showroomSection) {
-      editorialHomepage.showroomSection.showrooms = sanitizedShowrooms;
-    }
-
-    return this.transformResponse(editorialHomepage);
+    return this.transformResponse(enrichedHomepage);
   },
 }));
