@@ -15,6 +15,9 @@
     },
     "altText": {
       "type": "string"
+    },
+    "caption": {
+      "type": "string"
     }
   }
 }

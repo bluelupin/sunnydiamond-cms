@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_shared_craft_mosaic_sections",
+  "info": {
+    "displayName": "Craft Mosaic Section",
+    "description": "Grid mosaic displaying image layouts and textual elements"
+  },
+  "options": {},
+  "attributes": {
+    "tile": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.mosaic-tile"
+    }
+  }
+}

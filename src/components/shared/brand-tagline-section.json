@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_shared_brand_tagline_sections",
+  "info": {
+    "displayName": "Brand Tagline Section",
+    "description": "Footer brand statement accompanied by a logo mark"
+  },
+  "options": {},
+  "attributes": {
+    "icon": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset"
+    },
+    "tagline": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

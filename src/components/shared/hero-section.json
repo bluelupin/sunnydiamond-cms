@@ -16,18 +16,23 @@
     },
     "image": {
       "type": "component",
-      "repeatable": false,
-      "component": "shared.image-asset"
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "heroVideo": {
+      "type": "component",
+      "component": "shared.video-asset",
+      "repeatable": false
     },
     "primaryCta": {
       "type": "component",
-      "repeatable": false,
-      "component": "shared.cta"
+      "component": "shared.cta",
+      "repeatable": false
     },
     "secondaryCta": {
       "type": "component",
-      "repeatable": false,
-      "component": "shared.cta"
+      "component": "shared.cta",
+      "repeatable": false
     },
     "isActive": {
       "type": "boolean",

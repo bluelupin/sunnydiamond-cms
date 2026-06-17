@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_shared_legacy_child_blocks",
+  "info": {
+    "displayName": "Legacy Image Block",
+    "description": "Individual block for the legacy section"
+  },
+  "options": {},
+  "attributes": {
+    "description": {
+      "type": "richtext",
+      "required": true
+    },
+    "image": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    }
+  }
+}

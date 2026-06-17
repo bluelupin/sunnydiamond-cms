@@ -17,6 +17,12 @@
     },
     "canonicalUrl": {
       "type": "string"
+    },
+    "metaKeywords": {
+      "type": "string"
+    },
+    "structuredData": {
+      "type": "json"
     }
   }
 }

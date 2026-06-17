@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_shared_timeline_sections",
+  "info": {
+    "displayName": "Timeline Section",
+    "description": "Historical context milestone engine"
+  },
+  "options": {},
+  "attributes": {
+    "backgroundImage": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset"
+    },
+    "timelineMilestone": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.timeline-milestone"
+    }
+  }
+}

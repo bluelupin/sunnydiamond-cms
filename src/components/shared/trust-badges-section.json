@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_shared_trust_badges_sections",
+  "info": {
+    "displayName": "Trust Badges Section",
+    "description": "Grid panel of certificates, badges or security icons"
+  },
+  "options": {},
+  "attributes": {
+    "trustBadge": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.trust-badge-item"
+    }
+  }
+}

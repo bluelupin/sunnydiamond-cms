@@ -451,23 +451,41 @@ export interface ApiAboutPageAboutPage extends Struct.SingleTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
-    contentSections: Schema.Attribute.Component<'shared.content-section', true>;
+    brandTaglineSection: Schema.Attribute.Component<
+      'shared.brand-tagline-section',
+      false
+    >;
+    brillianceSection: Schema.Attribute.Component<
+      'shared.brilliance-section',
+      false
+    >;
+    craftMosaicSection: Schema.Attribute.Component<
+      'shared.craft-mosaic-section',
+      false
+    >;
+    craftSection: Schema.Attribute.Component<'shared.craft-section', false>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     hero: Schema.Attribute.Component<'shared.hero-section', false>;
-    introBody: Schema.Attribute.RichText;
-    introTitle: Schema.Attribute.String;
+    legacySection: Schema.Attribute.Component<'shared.legacy-section', false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::about-page.about-page'
     > &
       Schema.Attribute.Private;
-    processSteps: Schema.Attribute.Component<'shared.process-step', true>;
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<'shared.seo', false>;
-    storySections: Schema.Attribute.Component<'shared.promo-card', true>;
+    teamSection: Schema.Attribute.Component<'shared.team-section', false>;
+    timelineSection: Schema.Attribute.Component<
+      'shared.timeline-section',
+      false
+    >;
+    trustBadgesSection: Schema.Attribute.Component<
+      'shared.trust-badges-section',
+      false
+    >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

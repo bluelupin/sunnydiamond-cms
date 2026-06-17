@@ -1,0 +1,26 @@
+{
+  "collectionName": "components_shared_mosaic_tiles",
+  "info": {
+    "displayName": "Mosaic Tile",
+    "description": "Individual cell within the craft mosaic grid"
+  },
+  "options": {},
+  "attributes": {
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "image",
+        "textCard"
+      ],
+      "default": "image"
+    },
+    "image": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset"
+    },
+    "title": {
+      "type": "string"
+    }
+  }
+}

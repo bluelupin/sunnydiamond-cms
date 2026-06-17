@@ -1,0 +1,31 @@
+{
+  "collectionName": "components_shared_team_sections",
+  "info": {
+    "displayName": "Team Section",
+    "description": "Displays team members in grid, list, or carousel layouts"
+  },
+  "options": {},
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "required": true
+    },
+    "subheading": {
+      "type": "text"
+    },
+    "displayStyle": {
+      "type": "enumeration",
+      "enum": [
+        "grid",
+        "list",
+        "carousel"
+      ],
+      "default": "grid"
+    },
+    "teamMember": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.team-member"
+    }
+  }
+}

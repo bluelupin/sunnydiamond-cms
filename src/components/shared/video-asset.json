@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_shared_video_assets",
+  "info": {
+    "displayName": "Video Asset",
+    "description": "Video component with fallback alternative text"
+  },
+  "attributes": {
+    "heroVideo": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "videos"
+      ]
+    },
+    "altText": {
+      "type": "string",
+      "required": false
+    }
+  }
+}

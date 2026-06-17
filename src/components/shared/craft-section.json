@@ -1,0 +1,33 @@
+{
+  "collectionName": "components_shared_craft_sections",
+  "info": {
+    "displayName": "Craft Section",
+    "description": "Editorial section highlighting craft features with an video-asset option"
+  },
+  "options": {},
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "required": true
+    },
+    "subheading": {
+      "type": "string"
+    },
+    "backgroundImage": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset"
+    },
+    "videoUrl": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.video-asset"
+    },
+    "overlayOpacity": {
+      "type": "decimal",
+      "min": 0,
+      "max": 1,
+      "default": 0.5
+    }
+  }
+}

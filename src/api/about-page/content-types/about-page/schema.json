@@ -6,14 +6,59 @@
     "pluralName": "about-pages",
     "displayName": "About Page"
   },
-  "options": { "draftAndPublish": true },
+  "options": {
+    "draftAndPublish": true
+  },
   "attributes": {
-    "hero": { "type": "component", "repeatable": false, "component": "shared.hero-section" },
-    "introTitle": { "type": "string" },
-    "introBody": { "type": "richtext" },
-    "contentSections": { "type": "component", "repeatable": true, "component": "shared.content-section" },
-    "storySections": { "type": "component", "repeatable": true, "component": "shared.promo-card" },
-    "processSteps": { "type": "component", "repeatable": true, "component": "shared.process-step" },
-    "seo": { "type": "component", "repeatable": false, "component": "shared.seo" }
+    "hero": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.hero-section"
+    },
+    "brillianceSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.brilliance-section"
+    },
+    "legacySection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.legacy-section"
+    },
+    "teamSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.team-section"
+    },
+    "craftSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.craft-section"
+    },
+    "craftMosaicSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.craft-mosaic-section"
+    },
+    "timelineSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.timeline-section"
+    },
+    "trustBadgesSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.trust-badges-section"
+    },
+    "brandTaglineSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.brand-tagline-section"
+    },
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo"
+    }
   }
 }
