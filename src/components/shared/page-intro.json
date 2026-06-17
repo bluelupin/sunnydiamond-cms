@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_shared_page_intro_roots",
+  "info": {
+    "displayName": "Page Intro",
+    "description": "Intro heading, body description, and decorative asset"
+  },
+  "options": {},
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "required": true
+    },
+    "body": {
+      "type": "richtext",
+      "required": true
+    },
+    "decorativeImage": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset"
+    }
+  }
+}

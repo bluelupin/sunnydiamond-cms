@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_shared_learn_more_section_roots",
+  "info": {
+    "displayName": "Learn More Section",
+    "description": "Multi-tab modular container explaining technical elements"
+  },
+  "options": {},
+  "attributes": {
+    "sectionHeading": {
+      "type": "string",
+      "required": true
+    },
+    "tabs": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.learn-more-tab"
+    }
+  }
+}

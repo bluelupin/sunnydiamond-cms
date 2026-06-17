@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_shared_certificate_section_roots",
+  "info": {
+    "displayName": "Certificate Section",
+    "description": "Trust validation panel displaying analytical verification institutes"
+  },
+  "options": {},
+  "attributes": {
+    "sectionHeading": {
+      "type": "string",
+      "required": true
+    },
+    "sectionDescription": {
+      "type": "richtext"
+    },
+    "certificationLabs": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.cert-lab-card"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "collectionName": "components_shared_grade_stop_nodes",
+  "info": {
+    "displayName": "Grade Stop",
+    "description": "Specific slider metrics coordinates for diamond scales"
+  },
+  "options": {},
+  "attributes": {
+    "gradeCode": {
+      "type": "string",
+      "required": false
+    },
+    "gradeLongLabel": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_shared_faq_section_roots",
+  "info": {
+    "displayName": "FAQ Section",
+    "description": "Collapsible Accordion layout answering buyer questions"
+  },
+  "options": {},
+  "attributes": {
+    "sectionHeading": {
+      "type": "string",
+      "required": true
+    },
+    "faqItems": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.faq-item"
+    }
+  }
+}

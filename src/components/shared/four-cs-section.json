@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_shared_four_cs_section_roots",
+  "info": {
+    "displayName": "Four Cs Section",
+    "description": "Interactive layout featuring left visual panels and right information tracks"
+  },
+  "options": {},
+  "attributes": {
+    "cVisualPanel": {
+      "type": "component",
+      "component": "shared.c-visual-panel",
+      "repeatable": true
+    },
+    "cInfoPanel": {
+      "type": "component",
+      "component": "shared.c-info-panel",
+      "repeatable": true
+    }
+  }
+}

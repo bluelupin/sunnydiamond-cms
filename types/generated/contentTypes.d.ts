@@ -817,6 +817,47 @@ export interface ApiHomepageHomepage extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiLearnAboutDiamondsPageLearnAboutDiamondsPage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'learn_about_diamonds_pages';
+  info: {
+    displayName: 'Learn About Diamonds';
+    pluralName: 'learn-about-diamonds-pages';
+    singularName: 'learn-about-diamonds-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    certificateSection: Schema.Attribute.Component<
+      'shared.certificate-section',
+      false
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    ctaBanner: Schema.Attribute.Component<'shared.cta-banner', false>;
+    faqSection: Schema.Attribute.Component<'shared.faq-section', false>;
+    fourCsIntro: Schema.Attribute.Component<'shared.page-intro', false>;
+    fourCsSection: Schema.Attribute.Component<'shared.four-cs-section', false>;
+    hero: Schema.Attribute.Component<'shared.hero-section', false>;
+    learnMoreSection: Schema.Attribute.Component<
+      'shared.learn-more-section',
+      false
+    >;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::learn-about-diamonds-page.learn-about-diamonds-page'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiLegalPageLegalPage extends Struct.CollectionTypeSchema {
   collectionName: 'legal_pages';
   info: {
@@ -1557,6 +1598,7 @@ declare module '@strapi/strapi' {
       'api::faq.faq': ApiFaqFaq;
       'api::global-config.global-config': ApiGlobalConfigGlobalConfig;
       'api::homepage.homepage': ApiHomepageHomepage;
+      'api::learn-about-diamonds-page.learn-about-diamonds-page': ApiLearnAboutDiamondsPageLearnAboutDiamondsPage;
       'api::legal-page.legal-page': ApiLegalPageLegalPage;
       'api::news-article.news-article': ApiNewsArticleNewsArticle;
       'api::occasion.occasion': ApiOccasionOccasion;

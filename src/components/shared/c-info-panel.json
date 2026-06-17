@@ -1,0 +1,33 @@
+{
+  "collectionName": "components_shared_c_info_panel_subs",
+  "info": {
+    "displayName": "C Info Panel",
+    "description": "Right side metrics copy and editorial dynamic callouts"
+  },
+  "options": {},
+  "attributes": {
+    "displayTag": {
+      "type": "string",
+      "required": false
+    },
+    "sectionLabel": {
+      "type": "string",
+      "required": false
+    },
+    "description": {
+      "type": "text",
+      "required": false
+    },
+    "activeGradeCode": {
+      "type": "string",
+      "required": false
+    },
+    "activeGradeFullName": {
+      "type": "string",
+      "required": false
+    },
+    "brandNote": {
+      "type": "string"
+    }
+  }
+}

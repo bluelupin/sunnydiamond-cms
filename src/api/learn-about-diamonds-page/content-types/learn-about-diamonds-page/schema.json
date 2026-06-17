@@ -1,0 +1,50 @@
+{
+  "kind": "singleType",
+  "collectionName": "learn_about_diamonds_pages",
+  "info": {
+    "singularName": "learn-about-diamonds-page",
+    "pluralName": "learn-about-diamonds-pages",
+    "displayName": "Learn About Diamonds"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "hero": {
+      "type": "component",
+      "component": "shared.hero-section",
+      "repeatable": false
+    },
+    "fourCsIntro": {
+      "type": "component",
+      "component": "shared.page-intro",
+      "repeatable": false
+    },
+    "fourCsSection": {
+      "type": "component",
+      "component": "shared.four-cs-section",
+      "repeatable": false
+    },
+    "certificateSection": {
+      "type": "component",
+      "component": "shared.certificate-section",
+      "repeatable": false
+    },
+    "learnMoreSection": {
+      "type": "component",
+      "component": "shared.learn-more-section",
+      "repeatable": false
+    },
+    "ctaBanner": {
+      "type": "component",
+      "component": "shared.cta-banner",
+      "repeatable": false
+    },
+    "faqSection": {
+      "type": "component",
+      "component": "shared.faq-section",
+      "repeatable": false
+    }
+  }
+}

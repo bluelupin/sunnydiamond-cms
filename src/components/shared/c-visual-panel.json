@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_shared_c_visual_panel_subs",
+  "info": {
+    "displayName": "C Visual Panel",
+    "description": "Left panel layout containing images and interactive slider stop points"
+  },
+  "options": {},
+  "attributes": {
+    "visualImage": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "gradeStops": {
+      "type": "component",
+      "component": "shared.grade-stop",
+      "repeatable": true
+    }
+  }
+}

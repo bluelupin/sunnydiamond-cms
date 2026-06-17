@@ -24,6 +24,34 @@ export interface SharedBrillianceSection extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedCInfoPanel extends Struct.ComponentSchema {
+  collectionName: 'components_shared_c_info_panel_subs';
+  info: {
+    description: 'Right side metrics copy and editorial dynamic callouts';
+    displayName: 'C Info Panel';
+  };
+  attributes: {
+    activeGradeCode: Schema.Attribute.String;
+    activeGradeFullName: Schema.Attribute.String;
+    brandNote: Schema.Attribute.String;
+    description: Schema.Attribute.Text;
+    displayTag: Schema.Attribute.String;
+    sectionLabel: Schema.Attribute.String;
+  };
+}
+
+export interface SharedCVisualPanel extends Struct.ComponentSchema {
+  collectionName: 'components_shared_c_visual_panel_subs';
+  info: {
+    description: 'Left panel layout containing images and interactive slider stop points';
+    displayName: 'C Visual Panel';
+  };
+  attributes: {
+    gradeStops: Schema.Attribute.Component<'shared.grade-stop', true>;
+    visualImage: Schema.Attribute.Component<'shared.image-asset', false>;
+  };
+}
+
 export interface SharedCategoryCard extends Struct.ComponentSchema {
   collectionName: 'components_shared_category_cards';
   info: {
@@ -38,6 +66,34 @@ export interface SharedCategoryCard extends Struct.ComponentSchema {
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedCertLabCard extends Struct.ComponentSchema {
+  collectionName: 'components_shared_cert_lab_card_subs';
+  info: {
+    description: 'Individual grading laboratory information block';
+    displayName: 'Cert Lab Card';
+  };
+  attributes: {
+    ctaButtonLabel: Schema.Attribute.String;
+    ctaButtonUrl: Schema.Attribute.String;
+    labDescription: Schema.Attribute.Text & Schema.Attribute.Required;
+    labLogo: Schema.Attribute.Component<'shared.image-asset', false>;
+    labName: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedCertificateSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_certificate_section_roots';
+  info: {
+    description: 'Trust validation panel displaying analytical verification institutes';
+    displayName: 'Certificate Section';
+  };
+  attributes: {
+    certificationLabs: Schema.Attribute.Component<'shared.cert-lab-card', true>;
+    sectionDescription: Schema.Attribute.RichText;
+    sectionHeading: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
 
@@ -136,6 +192,21 @@ export interface SharedCta extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedCtaBanner extends Struct.ComponentSchema {
+  collectionName: 'components_shared_cta_banner_roots';
+  info: {
+    description: 'Action banner with deep call to action redirection';
+    displayName: 'CTA Banner';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    ctaButtonLabel: Schema.Attribute.String & Schema.Attribute.Required;
+    ctaButtonUrl: Schema.Attribute.String & Schema.Attribute.Required;
+    heading: Schema.Attribute.String & Schema.Attribute.Required;
+    subheading: Schema.Attribute.String;
+  };
+}
+
 export interface SharedEditorialSection extends Struct.ComponentSchema {
   collectionName: 'components_shared_editorial_sections';
   info: {
@@ -148,6 +219,30 @@ export interface SharedEditorialSection extends Struct.ComponentSchema {
     image: Schema.Attribute.Component<'shared.image-asset', false>;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     sectionTitle: Schema.Attribute.String;
+  };
+}
+
+export interface SharedFaqItem extends Struct.ComponentSchema {
+  collectionName: 'components_shared_faq_item_subs';
+  info: {
+    description: 'Accordion raw data entry mapping structural answers';
+    displayName: 'FAQ Item';
+  };
+  attributes: {
+    answer: Schema.Attribute.RichText & Schema.Attribute.Required;
+    question: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedFaqSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_faq_section_roots';
+  info: {
+    description: 'Collapsible Accordion layout answering buyer questions';
+    displayName: 'FAQ Section';
+  };
+  attributes: {
+    faqItems: Schema.Attribute.Component<'shared.faq-item', true>;
+    sectionHeading: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
 
@@ -175,6 +270,30 @@ export interface SharedFooterLinkGroup extends Struct.ComponentSchema {
     links: Schema.Attribute.Component<'shared.link-item', true>;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedFourCsSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_four_cs_section_roots';
+  info: {
+    description: 'Interactive layout featuring left visual panels and right information tracks';
+    displayName: 'Four Cs Section';
+  };
+  attributes: {
+    cInfoPanel: Schema.Attribute.Component<'shared.c-info-panel', true>;
+    cVisualPanel: Schema.Attribute.Component<'shared.c-visual-panel', true>;
+  };
+}
+
+export interface SharedGradeStop extends Struct.ComponentSchema {
+  collectionName: 'components_shared_grade_stop_nodes';
+  info: {
+    description: 'Specific slider metrics coordinates for diamond scales';
+    displayName: 'Grade Stop';
+  };
+  attributes: {
+    gradeCode: Schema.Attribute.String;
+    gradeLongLabel: Schema.Attribute.String;
   };
 }
 
@@ -207,6 +326,35 @@ export interface SharedImageAsset extends Struct.ComponentSchema {
     caption: Schema.Attribute.String;
     desktopImage: Schema.Attribute.Media;
     mobileImage: Schema.Attribute.Media;
+  };
+}
+
+export interface SharedLearnMoreSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_learn_more_section_roots';
+  info: {
+    description: 'Multi-tab modular container explaining technical elements';
+    displayName: 'Learn More Section';
+  };
+  attributes: {
+    sectionHeading: Schema.Attribute.String & Schema.Attribute.Required;
+    tabs: Schema.Attribute.Component<'shared.learn-more-tab', true>;
+  };
+}
+
+export interface SharedLearnMoreTab extends Struct.ComponentSchema {
+  collectionName: 'components_shared_learn_more_tab_subs';
+  info: {
+    description: 'Individual contextual tab details with item carousels';
+    displayName: 'Learn More Tab';
+  };
+  attributes: {
+    bottomCaption: Schema.Attribute.String;
+    carouselImages: Schema.Attribute.Component<'shared.image-asset', true>;
+    tabDescription: Schema.Attribute.Text & Schema.Attribute.Required;
+    tabLabel: Schema.Attribute.Enumeration<
+      ['SHAPE', 'FANCY_COLOUR', 'DIAMOND_ANATOMY', 'DIAMOND_CARE']
+    > &
+      Schema.Attribute.DefaultTo<'SHAPE'>;
   };
 }
 
@@ -283,6 +431,19 @@ export interface SharedOccasionSection extends Struct.ComponentSchema {
     occasions: Schema.Attribute.Relation<'oneToMany', 'api::occasion.occasion'>;
     sectionTitle: Schema.Attribute.String;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+  };
+}
+
+export interface SharedPageIntro extends Struct.ComponentSchema {
+  collectionName: 'components_shared_page_intro_roots';
+  info: {
+    description: 'Intro heading, body description, and decorative asset';
+    displayName: 'Page Intro';
+  };
+  attributes: {
+    body: Schema.Attribute.RichText & Schema.Attribute.Required;
+    decorativeImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    heading: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
 
@@ -480,22 +641,34 @@ declare module '@strapi/strapi' {
     export interface ComponentSchemas {
       'shared.brand-tagline-section': SharedBrandTaglineSection;
       'shared.brilliance-section': SharedBrillianceSection;
+      'shared.c-info-panel': SharedCInfoPanel;
+      'shared.c-visual-panel': SharedCVisualPanel;
       'shared.category-card': SharedCategoryCard;
+      'shared.cert-lab-card': SharedCertLabCard;
+      'shared.certificate-section': SharedCertificateSection;
       'shared.collection-showcase-section': SharedCollectionShowcaseSection;
       'shared.content-section': SharedContentSection;
       'shared.craft-mosaic-section': SharedCraftMosaicSection;
       'shared.craft-section': SharedCraftSection;
       'shared.cta': SharedCta;
+      'shared.cta-banner': SharedCtaBanner;
       'shared.editorial-section': SharedEditorialSection;
+      'shared.faq-item': SharedFaqItem;
+      'shared.faq-section': SharedFaqSection;
       'shared.feature-slide': SharedFeatureSlide;
       'shared.footer-link-group': SharedFooterLinkGroup;
+      'shared.four-cs-section': SharedFourCsSection;
+      'shared.grade-stop': SharedGradeStop;
       'shared.hero-section': SharedHeroSection;
       'shared.image-asset': SharedImageAsset;
+      'shared.learn-more-section': SharedLearnMoreSection;
+      'shared.learn-more-tab': SharedLearnMoreTab;
       'shared.legacy-image-block': SharedLegacyImageBlock;
       'shared.legacy-section': SharedLegacySection;
       'shared.link-item': SharedLinkItem;
       'shared.mosaic-tile': SharedMosaicTile;
       'shared.occasion-section': SharedOccasionSection;
+      'shared.page-intro': SharedPageIntro;
       'shared.process-section': SharedProcessSection;
       'shared.process-step': SharedProcessStep;
       'shared.promo-card': SharedPromoCard;
