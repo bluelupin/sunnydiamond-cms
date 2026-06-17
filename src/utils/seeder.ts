@@ -400,25 +400,72 @@ export async function seedCms(strapi: Core.Strapi) {
       strapi.log.info('Seeding About Page...');
       const aboutPageData = {
         hero: {
-          eyebrow: 'Our Heritage',
-          title: 'Crafting Brilliance Since 1987',
-          subtitle: 'At Sunny Diamonds, we believe every diamond carries a universe of light within it.',
+          eyebrow: 'Our Story',
+          title: 'Our Story',
+          subtitle: 'We source Internally Flawless Diamonds from Belgium and craft them into timeless masterpieces.',
           isActive: true,
         },
-        introTitle: 'Our Story',
-        introBody: 'At Sunny Diamonds, we believe every diamond carries a universe of light within it. Founded in 1987 by master jeweller Antoine Delacroix, our atelier has been dedicated to transforming the world\'s finest diamonds into wearable works of art.\n\nEach piece in our collection is meticulously handcrafted by our team of skilled artisans, combining centuries-old techniques with contemporary design sensibilities. We source only conflict-free, GIA-certified diamonds, ensuring that every stone meets our exacting standards for cut, clarity, color, and carat.\n\nOur custom design service allows you to collaborate directly with our designers to create a piece that is uniquely yours. From engagement rings that capture your love story to heirloom pieces that will be treasured for generations, we bring your vision to life with unparalleled craftsmanship.\n\nWe invite you to visit our flagship boutique or explore our online collection. Every purchase comes with complimentary shipping, a lifetime warranty, and the assurance that you are wearing something truly exceptional.',
-        storySections: [
-          { title: '35+', description: 'Years of Excellence', sortOrder: 1, isActive: true },
-          { title: '10,000+', description: 'Pieces Crafted', sortOrder: 2, isActive: true },
-          { title: '50+', description: 'Master Artisans', sortOrder: 3, isActive: true },
-        ],
-        processSteps: [
-          { title: 'Heritage Sourcing', description: 'Selecting internally flawless Belgium-cut stones.', sortOrder: 1, isActive: true },
-          { title: 'Legacy Handcrafting', description: 'Generations of knowledge and design detail poured into settings.', sortOrder: 2, isActive: true },
-        ],
+        brillianceSection: {
+          featureSlide: [
+            {
+              heading: 'Crafting rarity into timeless brilliance',
+              body: 'We source Internally Flawless Diamonds from Belgium and craft them into timeless masterpieces, creating jewellery that resonates with you.',
+            },
+          ],
+        },
+        legacySection: {
+          heading: 'Since 1997',
+          legacyImageBlock: [
+            {
+              description: 'The story behind the brilliance of every Sunny Diamonds piece begins with the regal vision of our founder. From legacy and care to legacy and customer trust, our journey has been built on craftsmanship, goodwill and care.',
+            },
+          ],
+        },
+        teamSection: {
+          heading: 'Faces Behind the Brilliance',
+          subheading: 'We source Internally Flawless Diamonds from Belgium and craft them into timeless masterpieces, creating jewellery that resonates with you.',
+          displayStyle: 'grid' as 'grid',
+          teamMember: [
+            { name: 'Boby Mathew', role: 'Chairman, Sunny Diamonds' },
+            { name: 'Sunny Boby Mathew', role: 'Managing Director, Sunny Diamonds' },
+            { name: 'Ryan Mathew', role: 'Director, Sunny Diamonds' },
+          ],
+        },
+        craftSection: {
+          heading: 'Handcrafted Brilliance',
+          subheading: 'We are committed to creating finely crafted diamond jewellery — from sourcing and crafting to quality assurance — every step is held to the highest standard.',
+          overlayOpacity: 0.2,
+        },
+        craftMosaicSection: {
+          tile: [
+            { type: 'textCard' as 'textCard', title: 'Ethically Sourced, conflict-free diamonds' },
+            { type: 'textCard' as 'textCard', title: 'Pinnacle of Craftsmanship and Artistry' },
+            { type: 'textCard' as 'textCard', title: 'Highest Level of Quality Checks' },
+          ],
+        },
+        timelineSection: {
+          timelineMilestone: [
+            { year: 1997, heading: 'Since 1997', body: 'The Sunny Diamonds journey begins with craftsmanship, goodwill and care.' },
+            { year: 2008, heading: 'Found in Chalakkudy', body: 'We are passionate to create more brilliant moments with each customer experience. Our first standalone showroom opened with the promise of trust, brilliance and care.' },
+            { year: 2023, heading: 'Crafting family heirlooms', body: 'Crafting family heirlooms at the pinnacle of diamond clarity.' },
+          ],
+        },
+        trustBadgesSection: {
+          trustBadge: [
+            { label: 'Friendly Reviews Diamonds' },
+            { label: '100% Moneyback Guarantee' },
+            { label: 'BIS Hallmark Jewellery' },
+            { label: '15 Days Return Policy' },
+            { label: 'Cash on Delivery' },
+          ],
+        },
+        brandTaglineSection: {
+          tagline: 'Crafting family heirlooms at the pinnacle of diamond clarity',
+        },
         seo: {
-          metaTitle: 'Our Legacy & Story | Sunny Diamonds',
-          metaDescription: 'Crafting premium jewelry since 1987. Explore the story and heritage behind our Belgic internally flawless diamonds.',
+          metaTitle: 'Our Story | Sunny Diamonds',
+          metaDescription: 'Learn about Sunny Diamonds\' legacy of crafting premium diamond jewellery with master artisans.',
+          canonicalUrl: '/about',
         },
         publishedAt: new Date(),
       };
@@ -429,7 +476,120 @@ export async function seedCms(strapi: Core.Strapi) {
       strapi.log.info('About Page already exists. Skipping.');
     }
 
-    // 8. Seed Contact Bespoke Page Single Type (api::contact-bespoke-page.contact-bespoke-page)
+    // 8. Seed Learn About Diamonds Page Single Type (api::learn-about-diamonds-page.learn-about-diamonds-page)
+    const learnAboutDiamondsPageCount = await strapi.documents('api::learn-about-diamonds-page.learn-about-diamonds-page').count({});
+    if (learnAboutDiamondsPageCount === 0) {
+      strapi.log.info('Seeding Learn About Diamonds Page...');
+      const learnAboutDiamondsPageData = {
+        hero: {
+          eyebrow: 'The 4Cs and Beyond',
+          title: 'Diamond Expertise',
+          subtitle: 'Master the 4Cs of diamond quality and learn how Sunny Diamonds certifies every stone.',
+          isActive: true,
+        },
+        fourCsIntro: {
+          heading: 'The 4Cs of Diamond Quality',
+          body: 'Diamond quality is defined by the harmony of cut, colour, clarity and carat. Sunny Diamonds focuses on the rarest grades, with internally flawless clarity, excellent cut and certified colourless stones.',
+        },
+        fourCsSection: {
+          cVisualPanel: [
+            { gradeStops: [{ gradeCode: 'IF', gradeLongLabel: 'Internally Flawless' }, { gradeCode: 'FL', gradeLongLabel: 'Flawless' }] },
+            { gradeStops: [{ gradeCode: 'Excellent', gradeLongLabel: 'Excellent Cut' }, { gradeCode: 'Triple Excellent', gradeLongLabel: 'Triple Excellent Cut' }] },
+            { gradeStops: [{ gradeCode: 'D-F', gradeLongLabel: 'Colourless' }] },
+            { gradeStops: [{ gradeCode: '0.10 ct', gradeLongLabel: '0.10 Carat' }, { gradeCode: '2.00 ct', gradeLongLabel: '2.00 Carat' }] },
+          ],
+          cInfoPanel: [
+            {
+              displayTag: 'C1',
+              sectionLabel: 'CLARITY',
+              description: 'Clarity measures how free a diamond is from inclusions or surface imperfections, with Internally Flawless being the rarest.',
+              activeGradeCode: 'IF',
+              activeGradeFullName: 'Internally Flawless',
+              brandNote: 'Sunny Diamonds offer only IF & Flawless grade diamonds.',
+            },
+            {
+              displayTag: 'C2',
+              sectionLabel: 'CUT',
+              description: 'A diamond\'s cut is the most important of the 4Cs. It governs the way light enters and reflects, giving the stone its brilliance.',
+              activeGradeCode: 'Excellent',
+              activeGradeFullName: 'Excellent Cut',
+              brandNote: 'We only craft with Excellent and Triple Excellent cut diamonds.',
+            },
+            {
+              displayTag: 'C3',
+              sectionLabel: 'COLOUR',
+              description: 'Diamonds naturally come in a D to Z colour scale, where D is icy white and Z carries the warmest tint of yellow or brown.',
+              activeGradeCode: 'D-F',
+              activeGradeFullName: 'Colourless',
+              brandNote: 'All Sunny Diamonds are certified D-F Colourless grade.',
+            },
+            {
+              displayTag: 'C4',
+              sectionLabel: 'CARAT',
+              description: 'Carat is the unit of weight for a diamond. While larger stones command higher value, brilliance and beauty are defined by the harmony of all four Cs.',
+              activeGradeCode: '1.00 ct',
+              activeGradeFullName: 'One Carat',
+              brandNote: 'Available in a wide range of carat weights, certified for purity.',
+            },
+          ],
+        },
+        certificateSection: {
+          sectionHeading: 'Certified Brilliance',
+          sectionDescription: 'Certification gives you confidence about what you are investing in. Independent grading verifies cut, colour, clarity and carat, and each Sunny Diamond carries an independent lab report matched to your piece for lifetime traceability.',
+          certificationLabs: [
+            { labName: 'GIA', labDescription: 'The Gemological Institute of America' },
+            { labName: 'AGS', labDescription: 'American Gem Society' },
+            { labName: 'HRD', labDescription: 'The HRD Antwerp Diamond Lab' },
+            { labName: 'IGI', labDescription: 'The International Gemological Institute' },
+          ],
+        },
+        learnMoreSection: {
+          sectionHeading: 'Learn more about Diamonds',
+          tabs: [
+            {
+              tabLabel: 'SHAPE' as 'SHAPE',
+              tabDescription: 'Shape gives a diamond its identity. Explore the four classic forms that define our collection and the language jewellers use to read them.',
+              bottomCaption: 'Each cushion-shape diamond is laser-cut',
+            },
+            {
+              tabLabel: 'FANCY_COLOUR' as 'FANCY_COLOUR',
+              tabDescription: 'Fancy colour diamonds are valued for natural hue, tone and saturation beyond the classic D to Z scale.',
+            },
+            {
+              tabLabel: 'DIAMOND_ANATOMY' as 'DIAMOND_ANATOMY',
+              tabDescription: 'A diamond is read through table, crown, girdle, pavilion and culet, each affecting light return and brilliance.',
+            },
+            {
+              tabLabel: 'DIAMOND_CARE' as 'DIAMOND_CARE',
+              tabDescription: 'Clean with mild soap and warm water, store separately to avoid scratches, and visit our atelier annually for inspection and polish.',
+            },
+          ],
+        },
+        ctaBanner: {
+          heading: 'Discover What Speaks to You',
+          subheading: 'Find your diamond, crafted around the moment you will wear it — to suit your occasion and preferences.',
+          ctaButtonLabel: 'BOOK A CONSULTATION',
+          ctaButtonUrl: '/book-appointment',
+        },
+        faqSection: {
+          sectionHeading: 'Frequently Asked Questions',
+          faqItems: [
+            { question: 'What factors determine a diamond\'s overall value?', answer: 'A diamond\'s value is set by the interplay of the 4Cs — Cut, Colour, Clarity and Carat — together with shape, fluorescence and certification.' },
+            { question: 'How can I verify the authenticity of my diamond?', answer: 'Every Sunny Diamonds piece ships with an independent GIA, IGI or HRD certificate and a laser-inscribed identification number matched to the stone.' },
+            { question: 'What are the different diamond cuts offered at Sunny Diamonds?', answer: 'We craft with Round Brilliant, Cushion, Princess, Oval, Emerald, Pear and Marquise cuts — each finished to Excellent or Triple Excellent grade.' },
+            { question: 'How will I properly care for my diamond to ensure it lasts?', answer: 'Clean with mild soap and warm water, store separately to avoid scratches, and visit our atelier annually for a complimentary inspection and polish.' },
+          ],
+        },
+        publishedAt: new Date(),
+      };
+
+      await strapi.documents('api::learn-about-diamonds-page.learn-about-diamonds-page').create({ data: learnAboutDiamondsPageData });
+      strapi.log.info('Learn About Diamonds Page successfully seeded.');
+    } else {
+      strapi.log.info('Learn About Diamonds Page already exists. Skipping.');
+    }
+
+    // 9. Seed Contact Bespoke Page Single Type (api::contact-bespoke-page.contact-bespoke-page)
     const contactPageCount = await strapi.documents('api::contact-bespoke-page.contact-bespoke-page').count({});
     if (contactPageCount === 0) {
       strapi.log.info('Seeding Contact Bespoke Page...');
