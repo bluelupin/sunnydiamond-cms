@@ -273,6 +273,19 @@ export interface SharedFooterLinkGroup extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedFooterTickerItem extends Struct.ComponentSchema {
+  collectionName: 'components_shared_footer_ticker_items';
+  info: {
+    description: 'Short trust or service message shown in the footer ticker';
+    displayName: 'Footer Ticker Item';
+  };
+  attributes: {
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    label: Schema.Attribute.String & Schema.Attribute.Required;
+    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+  };
+}
+
 export interface SharedFourCsSection extends Struct.ComponentSchema {
   collectionName: 'components_shared_four_cs_section_roots';
   info: {
@@ -657,6 +670,7 @@ declare module '@strapi/strapi' {
       'shared.faq-section': SharedFaqSection;
       'shared.feature-slide': SharedFeatureSlide;
       'shared.footer-link-group': SharedFooterLinkGroup;
+      'shared.footer-ticker-item': SharedFooterTickerItem;
       'shared.four-cs-section': SharedFourCsSection;
       'shared.grade-stop': SharedGradeStop;
       'shared.hero-section': SharedHeroSection;

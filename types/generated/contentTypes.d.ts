@@ -737,6 +737,10 @@ export interface ApiGlobalConfigGlobalConfig extends Struct.SingleTypeSchema {
       'shared.footer-link-group',
       true
     >;
+    footerTickerItems: Schema.Attribute.Component<
+      'shared.footer-ticker-item',
+      true
+    >;
     headerNavigationLinks: Schema.Attribute.Component<'shared.link-item', true>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<

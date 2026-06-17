@@ -12,6 +12,7 @@
   "attributes": {
     "headerNavigationLinks": { "type": "component", "repeatable": true, "component": "shared.link-item" },
     "footerLinkGroups": { "type": "component", "repeatable": true, "component": "shared.footer-link-group" },
+    "footerTickerItems": { "type": "component", "repeatable": true, "component": "shared.footer-ticker-item" },
     "socialLinks": { "type": "component", "repeatable": true, "component": "shared.link-item" },
     "paymentMethodLogos": { "type": "media", "multiple": true },
     "footerCopyright": { "type": "string" },

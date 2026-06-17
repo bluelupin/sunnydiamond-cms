@@ -132,6 +132,9 @@ const globalHeaderPopulate = {
       },
     },
   },
+  footerTickerItems: {
+    fields: ['label', 'sortOrder', 'isActive'],
+  },
   socialLinks: {
     fields: ['label', 'url', 'targetType', 'sortOrder', 'isActive'],
   },

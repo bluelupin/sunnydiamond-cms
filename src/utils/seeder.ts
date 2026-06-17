@@ -1,12 +1,125 @@
 import type { Core } from '@strapi/strapi';
+import crypto from 'crypto';
+
+const seedHash = (data: Record<string, unknown>) =>
+  crypto
+    .createHash('sha256')
+    .update(JSON.stringify(data, (key, value) => (key === 'publishedAt' ? '__published_at__' : value)))
+    .digest('hex');
+
+const publicReadActions = [
+  'api::about-page.about-page.find',
+  'api::learn-about-diamonds-page.learn-about-diamonds-page.find',
+  'api::contact-bespoke-page.contact-bespoke-page.find',
+  'api::global-config.global-config.find',
+  'api::homepage.homepage.find',
+  'api::homepage.homepage.shell',
+  'api::homepage.homepage.sections',
+  'api::homepage.homepage.shoppingBlocks',
+  'api::homepage.homepage.editorialBlocks',
+  'api::showroom.showroom.find',
+  'api::showroom.showroom.findOne',
+  'api::occasion.occasion.find',
+  'api::occasion.occasion.findOne',
+  'api::editorial-collection.editorial-collection.find',
+  'api::editorial-collection.editorial-collection.findOne',
+  'api::legal-page.legal-page.find',
+  'api::legal-page.legal-page.findOne',
+  'api::service-page.service-page.find',
+  'api::service-page.service-page.findOne',
+  'api::support-page.support-page.find',
+  'api::support-page.support-page.findOne',
+  'api::category-landing.category-landing.find',
+  'api::category-landing.category-landing.findOne',
+  'api::blog-post.blog-post.find',
+  'api::blog-post.blog-post.findOne',
+  'api::news-article.news-article.find',
+  'api::news-article.news-article.findOne',
+];
 
 export async function seedCms(strapi: Core.Strapi) {
   strapi.log.info('Starting Strapi CMS programmatic seeding process...');
 
   try {
+    const countExistingRows = (uid: string) => strapi.db.query(uid as any).count({});
+    const seedStore = strapi.store({ type: 'plugin', name: 'sunny-cms-seeder' });
+    const shouldUpsertChangedSeeds = process.env.CMS_SEED_UPSERT === 'true';
+    const seedSingleType = async (uid: string, label: string, data: Record<string, unknown>) => {
+      const count = await countExistingRows(uid);
+      const hashKey = `${uid}:hash`;
+      const nextHash = seedHash(data);
+      const currentHash = await seedStore.get({ key: hashKey });
+
+      if (count === 0) {
+        strapi.log.info(`Seeding ${label}...`);
+        await strapi.documents(uid as any).create({ data, status: 'published' } as any);
+        await seedStore.set({ key: hashKey, value: nextHash });
+        strapi.log.info(`${label} successfully seeded.`);
+        return;
+      }
+
+      if (currentHash === nextHash) {
+        strapi.log.info(`${label} seed unchanged. Skipping.`);
+        return;
+      }
+
+      if (!shouldUpsertChangedSeeds) {
+        strapi.log.info(`${label} already exists and seed changed. Set CMS_SEED_UPSERT=true to upsert.`);
+        return;
+      }
+
+      const existing = await strapi.db.query(uid as any).findOne({
+        orderBy: [{ publishedAt: 'desc' }, { updatedAt: 'desc' }],
+      } as any);
+
+      if (!existing?.documentId) {
+        strapi.log.warn(`${label} exists but no documentId was found. Skipping upsert.`);
+        return;
+      }
+
+      strapi.log.info(`Upserting ${label} from changed seed content...`);
+      await strapi.documents(uid as any).update({
+        documentId: existing.documentId,
+        data,
+        status: 'published',
+      } as any);
+      await seedStore.set({ key: hashKey, value: nextHash });
+      strapi.log.info(`${label} successfully upserted.`);
+    };
+    const ensurePublicReadPermissions = async () => {
+      const publicRole = await strapi.db.query('plugin::users-permissions.role').findOne({
+        where: { type: 'public' },
+        populate: ['permissions'],
+      } as any);
+
+      if (!publicRole) {
+        strapi.log.warn('Public role not found. Skipping public read permission seeding.');
+        return;
+      }
+
+      const existingActions = new Set((publicRole.permissions ?? []).map((permission: any) => permission.action));
+      const missingActions = publicReadActions.filter((action) => !existingActions.has(action));
+
+      if (missingActions.length === 0) {
+        strapi.log.info('Public read permissions already exist. Skipping.');
+        return;
+      }
+
+      await Promise.all(
+        missingActions.map((action) =>
+          strapi.db.query('plugin::users-permissions.permission').create({
+            data: { action, role: publicRole.id },
+          } as any)
+        )
+      );
+
+      strapi.log.info(`Seeded ${missingActions.length} public read permission(s).`);
+    };
     let seededShowrooms: any[] = [];
     let seededOccasions: any[] = [];
     let seededCollections: any[] = [];
+
+    await ensurePublicReadPermissions();
 
     // 1. Seed Showrooms (api::showroom.showroom)
     const showroomCount = await strapi.documents('api::showroom.showroom').count({});
@@ -201,10 +314,7 @@ export async function seedCms(strapi: Core.Strapi) {
     }
 
     // 5. Seed Global Config Single Type (api::global-config.global-config)
-    const globalConfigCount = await strapi.documents('api::global-config.global-config').count({});
-    if (globalConfigCount === 0) {
-      strapi.log.info('Seeding Global Config...');
-      const globalConfigData = {
+    const globalConfigData = {
         headerNavigationLinks: [
           { label: 'Jewellery', url: '/products', targetType: 'internal' as 'internal', sortOrder: 1, isActive: true },
           { label: 'Collection', url: '/products', targetType: 'internal' as 'internal', sortOrder: 2, isActive: true },
@@ -265,6 +375,12 @@ export async function seedCms(strapi: Core.Strapi) {
             ],
           },
         ],
+        footerTickerItems: [
+          { label: '100% MONEYBACK GUARANTEE', sortOrder: 1, isActive: true },
+          { label: 'BIS HALMARK FOR JEWELLERY', sortOrder: 2, isActive: true },
+          { label: 'CASH ON DELIVERY', sortOrder: 3, isActive: true },
+          { label: 'INTERNALLY FLAWLESS DIAMONDS', sortOrder: 4, isActive: true },
+        ],
         socialLinks: [
           { label: 'Instagram', url: 'https://instagram.com/sunnydiamonds', targetType: 'external' as 'external', sortOrder: 1, isActive: true },
           { label: 'Facebook', url: 'https://facebook.com/sunnydiamonds', targetType: 'external' as 'external', sortOrder: 2, isActive: true },
@@ -274,20 +390,12 @@ export async function seedCms(strapi: Core.Strapi) {
           metaTitle: 'Sunny Diamonds - Internally Flawless Diamonds',
           metaDescription: 'Fine jewellery designed with a tradition of excellence. Handcrafted conflict-free diamonds sourced from Belgium.',
         },
-        publishedAt: new Date(),
-      };
-
-      await strapi.documents('api::global-config.global-config').create({ data: globalConfigData });
-      strapi.log.info('Global Config successfully seeded.');
-    } else {
-      strapi.log.info('Global Config already exists. Skipping.');
-    }
+      publishedAt: new Date(),
+    };
+    await seedSingleType('api::global-config.global-config', 'Global Config', globalConfigData);
 
     // 6. Seed Homepage Single Type (api::homepage.homepage)
-    const homepageCount = await strapi.documents('api::homepage.homepage').count({});
-    if (homepageCount === 0) {
-      strapi.log.info('Seeding Homepage...');
-      const homepageData = {
+    const homepageData = {
         hero: {
           eyebrow: '20 Years of Legacy',
           title: 'Fine jewellery designed with a tradition of excellence',
@@ -388,17 +496,10 @@ export async function seedCms(strapi: Core.Strapi) {
         publishedAt: new Date(),
       };
 
-      await strapi.documents('api::homepage.homepage').create({ data: homepageData });
-      strapi.log.info('Homepage successfully seeded.');
-    } else {
-      strapi.log.info('Homepage already exists. Skipping.');
-    }
+    await seedSingleType('api::homepage.homepage', 'Homepage', homepageData);
 
     // 7. Seed About Page Single Type (api::about-page.about-page)
-    const aboutPageCount = await strapi.documents('api::about-page.about-page').count({});
-    if (aboutPageCount === 0) {
-      strapi.log.info('Seeding About Page...');
-      const aboutPageData = {
+    const aboutPageData = {
         hero: {
           eyebrow: 'Our Story',
           title: 'Our Story',
@@ -470,17 +571,10 @@ export async function seedCms(strapi: Core.Strapi) {
         publishedAt: new Date(),
       };
 
-      await strapi.documents('api::about-page.about-page').create({ data: aboutPageData });
-      strapi.log.info('About Page successfully seeded.');
-    } else {
-      strapi.log.info('About Page already exists. Skipping.');
-    }
+    await seedSingleType('api::about-page.about-page', 'About Page', aboutPageData);
 
     // 8. Seed Learn About Diamonds Page Single Type (api::learn-about-diamonds-page.learn-about-diamonds-page)
-    const learnAboutDiamondsPageCount = await strapi.documents('api::learn-about-diamonds-page.learn-about-diamonds-page').count({});
-    if (learnAboutDiamondsPageCount === 0) {
-      strapi.log.info('Seeding Learn About Diamonds Page...');
-      const learnAboutDiamondsPageData = {
+    const learnAboutDiamondsPageData = {
         hero: {
           eyebrow: 'The 4Cs and Beyond',
           title: 'Diamond Expertise',
@@ -493,10 +587,48 @@ export async function seedCms(strapi: Core.Strapi) {
         },
         fourCsSection: {
           cVisualPanel: [
-            { gradeStops: [{ gradeCode: 'IF', gradeLongLabel: 'Internally Flawless' }, { gradeCode: 'FL', gradeLongLabel: 'Flawless' }] },
-            { gradeStops: [{ gradeCode: 'Excellent', gradeLongLabel: 'Excellent Cut' }, { gradeCode: 'Triple Excellent', gradeLongLabel: 'Triple Excellent Cut' }] },
-            { gradeStops: [{ gradeCode: 'D-F', gradeLongLabel: 'Colourless' }] },
-            { gradeStops: [{ gradeCode: '0.10 ct', gradeLongLabel: '0.10 Carat' }, { gradeCode: '2.00 ct', gradeLongLabel: '2.00 Carat' }] },
+            {
+              gradeStops: [
+                { gradeCode: 'I3', gradeLongLabel: 'Included' },
+                { gradeCode: 'I2', gradeLongLabel: 'Included' },
+                { gradeCode: 'I1', gradeLongLabel: 'Included' },
+                { gradeCode: 'SI2', gradeLongLabel: 'Slight' },
+                { gradeCode: 'SI1', gradeLongLabel: 'Slight' },
+                { gradeCode: 'VS2', gradeLongLabel: 'Very Slight' },
+                { gradeCode: 'VS1', gradeLongLabel: 'Very Slight' },
+                { gradeCode: 'VVS2', gradeLongLabel: 'Very Very Slight' },
+                { gradeCode: 'VVS1', gradeLongLabel: 'Very Very Slight' },
+                { gradeCode: 'IF', gradeLongLabel: 'Internally Flawless' },
+                { gradeCode: 'FL', gradeLongLabel: 'Flawless' },
+              ],
+            },
+            {
+              gradeStops: [
+                { gradeCode: 'Poor', gradeLongLabel: 'Poor' },
+                { gradeCode: 'Fair', gradeLongLabel: 'Fair' },
+                { gradeCode: 'Good', gradeLongLabel: 'Good' },
+                { gradeCode: 'Very Good', gradeLongLabel: 'Very Good' },
+                { gradeCode: 'Excellent', gradeLongLabel: 'Excellent' },
+              ],
+            },
+            {
+              gradeStops: [
+                { gradeCode: 'S-Z', gradeLongLabel: 'Light Yellow' },
+                { gradeCode: 'N-R', gradeLongLabel: 'Very Light' },
+                { gradeCode: 'K-M', gradeLongLabel: 'Faint' },
+                { gradeCode: 'G-J', gradeLongLabel: 'Near Colourless' },
+                { gradeCode: 'D-F', gradeLongLabel: 'Colourless' },
+              ],
+            },
+            {
+              gradeStops: [
+                { gradeCode: '0.10 ct', gradeLongLabel: '0.10 ct' },
+                { gradeCode: '0.25 ct', gradeLongLabel: '0.25 ct' },
+                { gradeCode: '0.50 ct', gradeLongLabel: '0.50 ct' },
+                { gradeCode: '1.00 ct', gradeLongLabel: '1.00 ct' },
+                { gradeCode: '2.00 ct', gradeLongLabel: '2.00 ct' },
+              ],
+            },
           ],
           cInfoPanel: [
             {
@@ -583,17 +715,10 @@ export async function seedCms(strapi: Core.Strapi) {
         publishedAt: new Date(),
       };
 
-      await strapi.documents('api::learn-about-diamonds-page.learn-about-diamonds-page').create({ data: learnAboutDiamondsPageData });
-      strapi.log.info('Learn About Diamonds Page successfully seeded.');
-    } else {
-      strapi.log.info('Learn About Diamonds Page already exists. Skipping.');
-    }
+    await seedSingleType('api::learn-about-diamonds-page.learn-about-diamonds-page', 'Learn About Diamonds Page', learnAboutDiamondsPageData);
 
     // 9. Seed Contact Bespoke Page Single Type (api::contact-bespoke-page.contact-bespoke-page)
-    const contactPageCount = await strapi.documents('api::contact-bespoke-page.contact-bespoke-page').count({});
-    if (contactPageCount === 0) {
-      strapi.log.info('Seeding Contact Bespoke Page...');
-      const contactPageData = {
+    const contactPageData = {
         hero: {
           eyebrow: 'Get in Touch',
           title: 'Contact Us',
@@ -624,11 +749,7 @@ export async function seedCms(strapi: Core.Strapi) {
         publishedAt: new Date(),
       };
 
-      await strapi.documents('api::contact-bespoke-page.contact-bespoke-page').create({ data: contactPageData });
-      strapi.log.info('Contact Bespoke Page successfully seeded.');
-    } else {
-      strapi.log.info('Contact Bespoke Page already exists. Skipping.');
-    }
+    await seedSingleType('api::contact-bespoke-page.contact-bespoke-page', 'Contact Bespoke Page', contactPageData);
 
     strapi.log.info('Strapi CMS programmatic seeding completed successfully.');
   } catch (error) {

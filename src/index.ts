@@ -19,7 +19,7 @@ export default {
    * run jobs, or perform some special logic.
    */
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {
-    // await seedCms(strapi);
+    await seedCms(strapi);
     if (process.env.REPAIR_HOMEPAGE_SECTIONS && process.env.REPAIR_HOMEPAGE_SECTIONS === 'true') {
       await repairHomepageSections(strapi);
     }
