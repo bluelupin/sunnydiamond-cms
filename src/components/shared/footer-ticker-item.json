@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_shared_footer_ticker_items",
+  "info": {
+    "displayName": "Footer Ticker Item",
+    "description": "Short trust or service message shown in the footer ticker"
+  },
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true
+    },
+    "sortOrder": {
+      "type": "integer",
+      "default": 0
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

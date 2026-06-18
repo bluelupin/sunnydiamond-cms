@@ -1,12 +1,125 @@
 import type { Core } from '@strapi/strapi';
+import crypto from 'crypto';
+
+const seedHash = (data: Record<string, unknown>) =>
+  crypto
+    .createHash('sha256')
+    .update(JSON.stringify(data, (key, value) => (key === 'publishedAt' ? '__published_at__' : value)))
+    .digest('hex');
+
+const publicReadActions = [
+  'api::about-page.about-page.find',
+  'api::learn-about-diamonds-page.learn-about-diamonds-page.find',
+  'api::contact-bespoke-page.contact-bespoke-page.find',
+  'api::global-config.global-config.find',
+  'api::homepage.homepage.find',
+  'api::homepage.homepage.shell',
+  'api::homepage.homepage.sections',
+  'api::homepage.homepage.shoppingBlocks',
+  'api::homepage.homepage.editorialBlocks',
+  'api::showroom.showroom.find',
+  'api::showroom.showroom.findOne',
+  'api::occasion.occasion.find',
+  'api::occasion.occasion.findOne',
+  'api::editorial-collection.editorial-collection.find',
+  'api::editorial-collection.editorial-collection.findOne',
+  'api::legal-page.legal-page.find',
+  'api::legal-page.legal-page.findOne',
+  'api::service-page.service-page.find',
+  'api::service-page.service-page.findOne',
+  'api::support-page.support-page.find',
+  'api::support-page.support-page.findOne',
+  'api::category-landing.category-landing.find',
+  'api::category-landing.category-landing.findOne',
+  'api::blog-post.blog-post.find',
+  'api::blog-post.blog-post.findOne',
+  'api::news-article.news-article.find',
+  'api::news-article.news-article.findOne',
+];
 
 export async function seedCms(strapi: Core.Strapi) {
   strapi.log.info('Starting Strapi CMS programmatic seeding process...');
 
   try {
+    const countExistingRows = (uid: string) => strapi.db.query(uid as any).count({});
+    const seedStore = strapi.store({ type: 'plugin', name: 'sunny-cms-seeder' });
+    const shouldUpsertChangedSeeds = process.env.CMS_SEED_UPSERT === 'true';
+    const seedSingleType = async (uid: string, label: string, data: Record<string, unknown>) => {
+      const count = await countExistingRows(uid);
+      const hashKey = `${uid}:hash`;
+      const nextHash = seedHash(data);
+      const currentHash = await seedStore.get({ key: hashKey });
+
+      if (count === 0) {
+        strapi.log.info(`Seeding ${label}...`);
+        await strapi.documents(uid as any).create({ data, status: 'published' } as any);
+        await seedStore.set({ key: hashKey, value: nextHash });
+        strapi.log.info(`${label} successfully seeded.`);
+        return;
+      }
+
+      if (currentHash === nextHash) {
+        strapi.log.info(`${label} seed unchanged. Skipping.`);
+        return;
+      }
+
+      if (!shouldUpsertChangedSeeds) {
+        strapi.log.info(`${label} already exists and seed changed. Set CMS_SEED_UPSERT=true to upsert.`);
+        return;
+      }
+
+      const existing = await strapi.db.query(uid as any).findOne({
+        orderBy: [{ publishedAt: 'desc' }, { updatedAt: 'desc' }],
+      } as any);
+
+      if (!existing?.documentId) {
+        strapi.log.warn(`${label} exists but no documentId was found. Skipping upsert.`);
+        return;
+      }
+
+      strapi.log.info(`Upserting ${label} from changed seed content...`);
+      await strapi.documents(uid as any).update({
+        documentId: existing.documentId,
+        data,
+        status: 'published',
+      } as any);
+      await seedStore.set({ key: hashKey, value: nextHash });
+      strapi.log.info(`${label} successfully upserted.`);
+    };
+    const ensurePublicReadPermissions = async () => {
+      const publicRole = await strapi.db.query('plugin::users-permissions.role').findOne({
+        where: { type: 'public' },
+        populate: ['permissions'],
+      } as any);
+
+      if (!publicRole) {
+        strapi.log.warn('Public role not found. Skipping public read permission seeding.');
+        return;
+      }
+
+      const existingActions = new Set((publicRole.permissions ?? []).map((permission: any) => permission.action));
+      const missingActions = publicReadActions.filter((action) => !existingActions.has(action));
+
+      if (missingActions.length === 0) {
+        strapi.log.info('Public read permissions already exist. Skipping.');
+        return;
+      }
+
+      await Promise.all(
+        missingActions.map((action) =>
+          strapi.db.query('plugin::users-permissions.permission').create({
+            data: { action, role: publicRole.id },
+          } as any)
+        )
+      );
+
+      strapi.log.info(`Seeded ${missingActions.length} public read permission(s).`);
+    };
     let seededShowrooms: any[] = [];
     let seededOccasions: any[] = [];
     let seededCollections: any[] = [];
+
+    await ensurePublicReadPermissions();
 
     // 1. Seed Showrooms (api::showroom.showroom)
     const showroomCount = await strapi.documents('api::showroom.showroom').count({});
@@ -201,10 +314,7 @@ export async function seedCms(strapi: Core.Strapi) {
     }
 
     // 5. Seed Global Config Single Type (api::global-config.global-config)
-    const globalConfigCount = await strapi.documents('api::global-config.global-config').count({});
-    if (globalConfigCount === 0) {
-      strapi.log.info('Seeding Global Config...');
-      const globalConfigData = {
+    const globalConfigData = {
         headerNavigationLinks: [
           { label: 'Jewellery', url: '/products', targetType: 'internal' as 'internal', sortOrder: 1, isActive: true },
           { label: 'Collection', url: '/products', targetType: 'internal' as 'internal', sortOrder: 2, isActive: true },
@@ -265,6 +375,12 @@ export async function seedCms(strapi: Core.Strapi) {
             ],
           },
         ],
+        footerTickerItems: [
+          { label: '100% MONEYBACK GUARANTEE', sortOrder: 1, isActive: true },
+          { label: 'BIS HALMARK FOR JEWELLERY', sortOrder: 2, isActive: true },
+          { label: 'CASH ON DELIVERY', sortOrder: 3, isActive: true },
+          { label: 'INTERNALLY FLAWLESS DIAMONDS', sortOrder: 4, isActive: true },
+        ],
         socialLinks: [
           { label: 'Instagram', url: 'https://instagram.com/sunnydiamonds', targetType: 'external' as 'external', sortOrder: 1, isActive: true },
           { label: 'Facebook', url: 'https://facebook.com/sunnydiamonds', targetType: 'external' as 'external', sortOrder: 2, isActive: true },
@@ -274,20 +390,12 @@ export async function seedCms(strapi: Core.Strapi) {
           metaTitle: 'Sunny Diamonds - Internally Flawless Diamonds',
           metaDescription: 'Fine jewellery designed with a tradition of excellence. Handcrafted conflict-free diamonds sourced from Belgium.',
         },
-        publishedAt: new Date(),
-      };
-
-      await strapi.documents('api::global-config.global-config').create({ data: globalConfigData });
-      strapi.log.info('Global Config successfully seeded.');
-    } else {
-      strapi.log.info('Global Config already exists. Skipping.');
-    }
+      publishedAt: new Date(),
+    };
+    await seedSingleType('api::global-config.global-config', 'Global Config', globalConfigData);
 
     // 6. Seed Homepage Single Type (api::homepage.homepage)
-    const homepageCount = await strapi.documents('api::homepage.homepage').count({});
-    if (homepageCount === 0) {
-      strapi.log.info('Seeding Homepage...');
-      const homepageData = {
+    const homepageData = {
         hero: {
           eyebrow: '20 Years of Legacy',
           title: 'Fine jewellery designed with a tradition of excellence',
@@ -388,52 +496,229 @@ export async function seedCms(strapi: Core.Strapi) {
         publishedAt: new Date(),
       };
 
-      await strapi.documents('api::homepage.homepage').create({ data: homepageData });
-      strapi.log.info('Homepage successfully seeded.');
-    } else {
-      strapi.log.info('Homepage already exists. Skipping.');
-    }
+    await seedSingleType('api::homepage.homepage', 'Homepage', homepageData);
 
     // 7. Seed About Page Single Type (api::about-page.about-page)
-    const aboutPageCount = await strapi.documents('api::about-page.about-page').count({});
-    if (aboutPageCount === 0) {
-      strapi.log.info('Seeding About Page...');
-      const aboutPageData = {
+    const aboutPageData = {
         hero: {
-          eyebrow: 'Our Heritage',
-          title: 'Crafting Brilliance Since 1987',
-          subtitle: 'At Sunny Diamonds, we believe every diamond carries a universe of light within it.',
+          eyebrow: 'Our Story',
+          title: 'Our Story',
+          subtitle: 'We source Internally Flawless Diamonds from Belgium and craft them into timeless masterpieces.',
           isActive: true,
         },
-        introTitle: 'Our Story',
-        introBody: 'At Sunny Diamonds, we believe every diamond carries a universe of light within it. Founded in 1987 by master jeweller Antoine Delacroix, our atelier has been dedicated to transforming the world\'s finest diamonds into wearable works of art.\n\nEach piece in our collection is meticulously handcrafted by our team of skilled artisans, combining centuries-old techniques with contemporary design sensibilities. We source only conflict-free, GIA-certified diamonds, ensuring that every stone meets our exacting standards for cut, clarity, color, and carat.\n\nOur custom design service allows you to collaborate directly with our designers to create a piece that is uniquely yours. From engagement rings that capture your love story to heirloom pieces that will be treasured for generations, we bring your vision to life with unparalleled craftsmanship.\n\nWe invite you to visit our flagship boutique or explore our online collection. Every purchase comes with complimentary shipping, a lifetime warranty, and the assurance that you are wearing something truly exceptional.',
-        storySections: [
-          { title: '35+', description: 'Years of Excellence', sortOrder: 1, isActive: true },
-          { title: '10,000+', description: 'Pieces Crafted', sortOrder: 2, isActive: true },
-          { title: '50+', description: 'Master Artisans', sortOrder: 3, isActive: true },
-        ],
-        processSteps: [
-          { title: 'Heritage Sourcing', description: 'Selecting internally flawless Belgium-cut stones.', sortOrder: 1, isActive: true },
-          { title: 'Legacy Handcrafting', description: 'Generations of knowledge and design detail poured into settings.', sortOrder: 2, isActive: true },
-        ],
+        brillianceSection: {
+          featureSlide: [
+            {
+              heading: 'Crafting rarity into timeless brilliance',
+              body: 'We source Internally Flawless Diamonds from Belgium and craft them into timeless masterpieces, creating jewellery that resonates with you.',
+            },
+          ],
+        },
+        legacySection: {
+          heading: 'Since 1997',
+          legacyImageBlock: [
+            {
+              description: 'The story behind the brilliance of every Sunny Diamonds piece begins with the regal vision of our founder. From legacy and care to legacy and customer trust, our journey has been built on craftsmanship, goodwill and care.',
+            },
+          ],
+        },
+        teamSection: {
+          heading: 'Faces Behind the Brilliance',
+          subheading: 'We source Internally Flawless Diamonds from Belgium and craft them into timeless masterpieces, creating jewellery that resonates with you.',
+          displayStyle: 'grid' as 'grid',
+          teamMember: [
+            { name: 'Boby Mathew', role: 'Chairman, Sunny Diamonds' },
+            { name: 'Sunny Boby Mathew', role: 'Managing Director, Sunny Diamonds' },
+            { name: 'Ryan Mathew', role: 'Director, Sunny Diamonds' },
+          ],
+        },
+        craftSection: {
+          heading: 'Handcrafted Brilliance',
+          subheading: 'We are committed to creating finely crafted diamond jewellery — from sourcing and crafting to quality assurance — every step is held to the highest standard.',
+          overlayOpacity: 0.2,
+        },
+        craftMosaicSection: {
+          tile: [
+            { type: 'textCard' as 'textCard', title: 'Ethically Sourced, conflict-free diamonds' },
+            { type: 'textCard' as 'textCard', title: 'Pinnacle of Craftsmanship and Artistry' },
+            { type: 'textCard' as 'textCard', title: 'Highest Level of Quality Checks' },
+          ],
+        },
+        timelineSection: {
+          timelineMilestone: [
+            { year: 1997, heading: 'Since 1997', body: 'The Sunny Diamonds journey begins with craftsmanship, goodwill and care.' },
+            { year: 2008, heading: 'Found in Chalakkudy', body: 'We are passionate to create more brilliant moments with each customer experience. Our first standalone showroom opened with the promise of trust, brilliance and care.' },
+            { year: 2023, heading: 'Crafting family heirlooms', body: 'Crafting family heirlooms at the pinnacle of diamond clarity.' },
+          ],
+        },
+        trustBadgesSection: {
+          trustBadge: [
+            { label: 'Friendly Reviews Diamonds' },
+            { label: '100% Moneyback Guarantee' },
+            { label: 'BIS Hallmark Jewellery' },
+            { label: '15 Days Return Policy' },
+            { label: 'Cash on Delivery' },
+          ],
+        },
+        brandTaglineSection: {
+          tagline: 'Crafting family heirlooms at the pinnacle of diamond clarity',
+        },
         seo: {
-          metaTitle: 'Our Legacy & Story | Sunny Diamonds',
-          metaDescription: 'Crafting premium jewelry since 1987. Explore the story and heritage behind our Belgic internally flawless diamonds.',
+          metaTitle: 'Our Story | Sunny Diamonds',
+          metaDescription: 'Learn about Sunny Diamonds\' legacy of crafting premium diamond jewellery with master artisans.',
+          canonicalUrl: '/about',
         },
         publishedAt: new Date(),
       };
 
-      await strapi.documents('api::about-page.about-page').create({ data: aboutPageData });
-      strapi.log.info('About Page successfully seeded.');
-    } else {
-      strapi.log.info('About Page already exists. Skipping.');
-    }
+    await seedSingleType('api::about-page.about-page', 'About Page', aboutPageData);
 
-    // 8. Seed Contact Bespoke Page Single Type (api::contact-bespoke-page.contact-bespoke-page)
-    const contactPageCount = await strapi.documents('api::contact-bespoke-page.contact-bespoke-page').count({});
-    if (contactPageCount === 0) {
-      strapi.log.info('Seeding Contact Bespoke Page...');
-      const contactPageData = {
+    // 8. Seed Learn About Diamonds Page Single Type (api::learn-about-diamonds-page.learn-about-diamonds-page)
+    const learnAboutDiamondsPageData = {
+        hero: {
+          eyebrow: 'The 4Cs and Beyond',
+          title: 'Diamond Expertise',
+          subtitle: 'Master the 4Cs of diamond quality and learn how Sunny Diamonds certifies every stone.',
+          isActive: true,
+        },
+        fourCsIntro: {
+          heading: 'The 4Cs of Diamond Quality',
+          body: 'Diamond quality is defined by the harmony of cut, colour, clarity and carat. Sunny Diamonds focuses on the rarest grades, with internally flawless clarity, excellent cut and certified colourless stones.',
+        },
+        fourCsSection: {
+          cVisualPanel: [
+            {
+              gradeStops: [
+                { gradeCode: 'I3', gradeLongLabel: 'Included' },
+                { gradeCode: 'I2', gradeLongLabel: 'Included' },
+                { gradeCode: 'I1', gradeLongLabel: 'Included' },
+                { gradeCode: 'SI2', gradeLongLabel: 'Slight' },
+                { gradeCode: 'SI1', gradeLongLabel: 'Slight' },
+                { gradeCode: 'VS2', gradeLongLabel: 'Very Slight' },
+                { gradeCode: 'VS1', gradeLongLabel: 'Very Slight' },
+                { gradeCode: 'VVS2', gradeLongLabel: 'Very Very Slight' },
+                { gradeCode: 'VVS1', gradeLongLabel: 'Very Very Slight' },
+                { gradeCode: 'IF', gradeLongLabel: 'Internally Flawless' },
+                { gradeCode: 'FL', gradeLongLabel: 'Flawless' },
+              ],
+            },
+            {
+              gradeStops: [
+                { gradeCode: 'Poor', gradeLongLabel: 'Poor' },
+                { gradeCode: 'Fair', gradeLongLabel: 'Fair' },
+                { gradeCode: 'Good', gradeLongLabel: 'Good' },
+                { gradeCode: 'Very Good', gradeLongLabel: 'Very Good' },
+                { gradeCode: 'Excellent', gradeLongLabel: 'Excellent' },
+              ],
+            },
+            {
+              gradeStops: [
+                { gradeCode: 'S-Z', gradeLongLabel: 'Light Yellow' },
+                { gradeCode: 'N-R', gradeLongLabel: 'Very Light' },
+                { gradeCode: 'K-M', gradeLongLabel: 'Faint' },
+                { gradeCode: 'G-J', gradeLongLabel: 'Near Colourless' },
+                { gradeCode: 'D-F', gradeLongLabel: 'Colourless' },
+              ],
+            },
+            {
+              gradeStops: [
+                { gradeCode: '0.10 ct', gradeLongLabel: '0.10 ct' },
+                { gradeCode: '0.25 ct', gradeLongLabel: '0.25 ct' },
+                { gradeCode: '0.50 ct', gradeLongLabel: '0.50 ct' },
+                { gradeCode: '1.00 ct', gradeLongLabel: '1.00 ct' },
+                { gradeCode: '2.00 ct', gradeLongLabel: '2.00 ct' },
+              ],
+            },
+          ],
+          cInfoPanel: [
+            {
+              displayTag: 'C1',
+              sectionLabel: 'CLARITY',
+              description: 'Clarity measures how free a diamond is from inclusions or surface imperfections, with Internally Flawless being the rarest.',
+              activeGradeCode: 'IF',
+              activeGradeFullName: 'Internally Flawless',
+              brandNote: 'Sunny Diamonds offer only IF & Flawless grade diamonds.',
+            },
+            {
+              displayTag: 'C2',
+              sectionLabel: 'CUT',
+              description: 'A diamond\'s cut is the most important of the 4Cs. It governs the way light enters and reflects, giving the stone its brilliance.',
+              activeGradeCode: 'Excellent',
+              activeGradeFullName: 'Excellent Cut',
+              brandNote: 'We only craft with Excellent and Triple Excellent cut diamonds.',
+            },
+            {
+              displayTag: 'C3',
+              sectionLabel: 'COLOUR',
+              description: 'Diamonds naturally come in a D to Z colour scale, where D is icy white and Z carries the warmest tint of yellow or brown.',
+              activeGradeCode: 'D-F',
+              activeGradeFullName: 'Colourless',
+              brandNote: 'All Sunny Diamonds are certified D-F Colourless grade.',
+            },
+            {
+              displayTag: 'C4',
+              sectionLabel: 'CARAT',
+              description: 'Carat is the unit of weight for a diamond. While larger stones command higher value, brilliance and beauty are defined by the harmony of all four Cs.',
+              activeGradeCode: '1.00 ct',
+              activeGradeFullName: 'One Carat',
+              brandNote: 'Available in a wide range of carat weights, certified for purity.',
+            },
+          ],
+        },
+        certificateSection: {
+          sectionHeading: 'Certified Brilliance',
+          sectionDescription: 'Certification gives you confidence about what you are investing in. Independent grading verifies cut, colour, clarity and carat, and each Sunny Diamond carries an independent lab report matched to your piece for lifetime traceability.',
+          certificationLabs: [
+            { labName: 'GIA', labDescription: 'The Gemological Institute of America' },
+            { labName: 'AGS', labDescription: 'American Gem Society' },
+            { labName: 'HRD', labDescription: 'The HRD Antwerp Diamond Lab' },
+            { labName: 'IGI', labDescription: 'The International Gemological Institute' },
+          ],
+        },
+        learnMoreSection: {
+          sectionHeading: 'Learn more about Diamonds',
+          tabs: [
+            {
+              tabLabel: 'SHAPE' as 'SHAPE',
+              tabDescription: 'Shape gives a diamond its identity. Explore the four classic forms that define our collection and the language jewellers use to read them.',
+              bottomCaption: 'Each cushion-shape diamond is laser-cut',
+            },
+            {
+              tabLabel: 'FANCY_COLOUR' as 'FANCY_COLOUR',
+              tabDescription: 'Fancy colour diamonds are valued for natural hue, tone and saturation beyond the classic D to Z scale.',
+            },
+            {
+              tabLabel: 'DIAMOND_ANATOMY' as 'DIAMOND_ANATOMY',
+              tabDescription: 'A diamond is read through table, crown, girdle, pavilion and culet, each affecting light return and brilliance.',
+            },
+            {
+              tabLabel: 'DIAMOND_CARE' as 'DIAMOND_CARE',
+              tabDescription: 'Clean with mild soap and warm water, store separately to avoid scratches, and visit our atelier annually for inspection and polish.',
+            },
+          ],
+        },
+        ctaBanner: {
+          heading: 'Discover What Speaks to You',
+          subheading: 'Find your diamond, crafted around the moment you will wear it — to suit your occasion and preferences.',
+          ctaButtonLabel: 'BOOK A CONSULTATION',
+          ctaButtonUrl: '/book-appointment',
+        },
+        faqSection: {
+          sectionHeading: 'Frequently Asked Questions',
+          faqItems: [
+            { question: 'What factors determine a diamond\'s overall value?', answer: 'A diamond\'s value is set by the interplay of the 4Cs — Cut, Colour, Clarity and Carat — together with shape, fluorescence and certification.' },
+            { question: 'How can I verify the authenticity of my diamond?', answer: 'Every Sunny Diamonds piece ships with an independent GIA, IGI or HRD certificate and a laser-inscribed identification number matched to the stone.' },
+            { question: 'What are the different diamond cuts offered at Sunny Diamonds?', answer: 'We craft with Round Brilliant, Cushion, Princess, Oval, Emerald, Pear and Marquise cuts — each finished to Excellent or Triple Excellent grade.' },
+            { question: 'How will I properly care for my diamond to ensure it lasts?', answer: 'Clean with mild soap and warm water, store separately to avoid scratches, and visit our atelier annually for a complimentary inspection and polish.' },
+          ],
+        },
+        publishedAt: new Date(),
+      };
+
+    await seedSingleType('api::learn-about-diamonds-page.learn-about-diamonds-page', 'Learn About Diamonds Page', learnAboutDiamondsPageData);
+
+    // 9. Seed Contact Bespoke Page Single Type (api::contact-bespoke-page.contact-bespoke-page)
+    const contactPageData = {
         hero: {
           eyebrow: 'Get in Touch',
           title: 'Contact Us',
@@ -464,11 +749,7 @@ export async function seedCms(strapi: Core.Strapi) {
         publishedAt: new Date(),
       };
 
-      await strapi.documents('api::contact-bespoke-page.contact-bespoke-page').create({ data: contactPageData });
-      strapi.log.info('Contact Bespoke Page successfully seeded.');
-    } else {
-      strapi.log.info('Contact Bespoke Page already exists. Skipping.');
-    }
+    await seedSingleType('api::contact-bespoke-page.contact-bespoke-page', 'Contact Bespoke Page', contactPageData);
 
     strapi.log.info('Strapi CMS programmatic seeding completed successfully.');
   } catch (error) {

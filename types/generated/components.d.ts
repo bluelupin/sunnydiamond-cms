@@ -273,21 +273,16 @@ export interface SharedFooterLinkGroup extends Struct.ComponentSchema {
   };
 }
 
-export interface SharedFormField extends Struct.ComponentSchema {
-  collectionName: 'components_shared_form_fields';
+export interface SharedFooterTickerItem extends Struct.ComponentSchema {
+  collectionName: 'components_shared_footer_ticker_items';
   info: {
-    description: 'Dynamic inputs for the frontend to render';
-    displayName: 'Form Field';
+    description: 'Short trust or service message shown in the footer ticker';
+    displayName: 'Footer Ticker Item';
   };
   attributes: {
-    dropdownOptions: Schema.Attribute.String;
-    fieldType: Schema.Attribute.Enumeration<
-      ['text', 'email', 'phone', 'date', 'dropdown', 'textarea']
-    > &
-      Schema.Attribute.DefaultTo<'text'>;
-    isRequired: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     label: Schema.Attribute.String & Schema.Attribute.Required;
-    placeholder: Schema.Attribute.String;
+    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
   };
 }
 
@@ -576,16 +571,6 @@ export interface SharedTeamSection extends Struct.ComponentSchema {
   };
 }
 
-export interface SharedTimeSlot extends Struct.ComponentSchema {
-  collectionName: 'components_shared_time_slots';
-  info: {
-    displayName: 'Time Slot';
-  };
-  attributes: {
-    timeString: Schema.Attribute.String & Schema.Attribute.Required;
-  };
-}
-
 export interface SharedTimelineMilestone extends Struct.ComponentSchema {
   collectionName: 'components_shared_timeline_milestones';
   info: {
@@ -685,7 +670,7 @@ declare module '@strapi/strapi' {
       'shared.faq-section': SharedFaqSection;
       'shared.feature-slide': SharedFeatureSlide;
       'shared.footer-link-group': SharedFooterLinkGroup;
-      'shared.form-field': SharedFormField;
+      'shared.footer-ticker-item': SharedFooterTickerItem;
       'shared.four-cs-section': SharedFourCsSection;
       'shared.grade-stop': SharedGradeStop;
       'shared.hero-section': SharedHeroSection;
@@ -705,7 +690,6 @@ declare module '@strapi/strapi' {
       'shared.showroom-section': SharedShowroomSection;
       'shared.team-member': SharedTeamMember;
       'shared.team-section': SharedTeamSection;
-      'shared.time-slot': SharedTimeSlot;
       'shared.timeline-milestone': SharedTimelineMilestone;
       'shared.timeline-section': SharedTimelineSection;
       'shared.trust-badge': SharedTrustBadge;
