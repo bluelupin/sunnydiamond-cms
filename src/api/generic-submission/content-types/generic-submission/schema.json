@@ -23,8 +23,7 @@
       "type": "email"
     },
     "phone": {
-      "type": "string",
-      "required": true
+      "type": "string"
     },
     "preferredShowroom": {
       "type": "enumeration",
@@ -43,6 +42,25 @@
       "type": "string"
     },
     "notes": {
+      "type": "text"
+    },
+    "sourcePage": {
+      "type": "string"
+    },
+    "utmSource": {
+      "type": "string"
+    },
+    "utmMedium": {
+      "type": "string"
+    },
+    "utmCampaign": {
+      "type": "string"
+    },
+    "consentAccepted": {
+      "type": "boolean",
+      "default": false
+    },
+    "internalNotes": {
       "type": "text"
     },
     "workflowStatus": {

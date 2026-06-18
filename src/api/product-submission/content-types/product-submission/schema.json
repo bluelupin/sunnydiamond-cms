@@ -42,6 +42,25 @@
     "requestDetails": {
       "type": "text"
     },
+    "sourcePage": {
+      "type": "string"
+    },
+    "utmSource": {
+      "type": "string"
+    },
+    "utmMedium": {
+      "type": "string"
+    },
+    "utmCampaign": {
+      "type": "string"
+    },
+    "consentAccepted": {
+      "type": "boolean",
+      "default": false
+    },
+    "internalNotes": {
+      "type": "text"
+    },
     "uploadedImage": {
       "type": "media",
       "multiple": false,

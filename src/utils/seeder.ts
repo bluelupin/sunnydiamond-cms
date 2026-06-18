@@ -17,6 +17,10 @@ const publicReadActions = [
   'api::homepage.homepage.sections',
   'api::homepage.homepage.shoppingBlocks',
   'api::homepage.homepage.editorialBlocks',
+  'api::generic-form.generic-form.find',
+  'api::generic-form.generic-form.findOne',
+  'api::product-form.product-form.find',
+  'api::product-form.product-form.findOne',
   'api::showroom.showroom.find',
   'api::showroom.showroom.findOne',
   'api::occasion.occasion.find',
@@ -86,6 +90,53 @@ export async function seedCms(strapi: Core.Strapi) {
       await seedStore.set({ key: hashKey, value: nextHash });
       strapi.log.info(`${label} successfully upserted.`);
     };
+    const seedCollectionByField = async (
+      uid: string,
+      label: string,
+      uniqueField: string,
+      records: Record<string, unknown>[]
+    ) => {
+      for (const record of records) {
+        const uniqueValue = record[uniqueField];
+        if (!uniqueValue) {
+          strapi.log.warn(`${label} seed record missing ${uniqueField}. Skipping.`);
+          continue;
+        }
+
+        const existing = await strapi.documents(uid as any).findFirst({
+          filters: { [uniqueField]: uniqueValue },
+        } as any);
+
+        const hashKey = `${uid}:${uniqueValue}:hash`;
+        const nextHash = seedHash(record);
+        const currentHash = await seedStore.get({ key: hashKey });
+
+        if (!existing) {
+          await strapi.documents(uid as any).create({ data: record, status: 'published' } as any);
+          await seedStore.set({ key: hashKey, value: nextHash });
+          strapi.log.info(`Seeded ${label}: ${uniqueValue}.`);
+          continue;
+        }
+
+        if (currentHash === nextHash) {
+          strapi.log.info(`${label} ${uniqueValue} seed unchanged. Skipping.`);
+          continue;
+        }
+
+        if (!shouldUpsertChangedSeeds) {
+          strapi.log.info(`${label} ${uniqueValue} already exists and seed changed. Set CMS_SEED_UPSERT=true to upsert.`);
+          continue;
+        }
+
+        await strapi.documents(uid as any).update({
+          documentId: existing.documentId,
+          data: record,
+          status: 'published',
+        } as any);
+        await seedStore.set({ key: hashKey, value: nextHash });
+        strapi.log.info(`Upserted ${label}: ${uniqueValue}.`);
+      }
+    };
     const ensurePublicReadPermissions = async () => {
       const publicRole = await strapi.db.query('plugin::users-permissions.role').findOne({
         where: { type: 'public' },
@@ -120,6 +171,104 @@ export async function seedCms(strapi: Core.Strapi) {
     let seededCollections: any[] = [];
 
     await ensurePublicReadPermissions();
+
+    const standardTimeSlots = [
+      { timeString: '9:00 AM - 10:00 AM' },
+      { timeString: '10:00 AM - 11:00 AM' },
+      { timeString: '11:00 AM - 12:00 PM' },
+      { timeString: '12:00 PM - 01:00 PM' },
+      { timeString: '01:00 PM - 02:00 PM' },
+      { timeString: '02:00 PM - 03:00 PM' },
+      { timeString: '03:00 PM - 04:00 PM' },
+      { timeString: '04:00 PM - 05:00 PM' },
+    ];
+
+    const showroomOptions = 'Calicut,Kochi,Thrissur,Coimbatore,Trivandrum';
+
+    await seedCollectionByField('api::generic-form.generic-form', 'Generic Form', 'formTag', [
+      {
+        formName: 'Contact Message',
+        formTag: 'contact-message',
+        submitButtonText: 'Send Message',
+        dynamicFields: [
+          { label: 'Name', fieldType: 'text' as 'text', placeholder: 'Your name', isRequired: true },
+          { label: 'Email', fieldType: 'email' as 'email', placeholder: 'Your email', isRequired: true },
+          { label: 'Message', fieldType: 'textarea' as 'textarea', placeholder: 'Your message', isRequired: true },
+        ],
+      },
+      {
+        formName: 'Book Appointment',
+        formTag: 'book-appointment',
+        submitButtonText: 'Request Appointment',
+        availableTimeSlots: standardTimeSlots,
+        dynamicFields: [
+          { label: 'Full Name', fieldType: 'text' as 'text', placeholder: 'Your full name', isRequired: true },
+          { label: 'Email', fieldType: 'email' as 'email', placeholder: 'you@example.com', isRequired: true },
+          { label: 'Phone', fieldType: 'phone' as 'phone', placeholder: '+91 00000 00000', isRequired: true },
+          { label: 'Preferred Showroom', fieldType: 'dropdown' as 'dropdown', placeholder: 'Select showroom', dropdownOptions: showroomOptions },
+          { label: 'Preferred Date', fieldType: 'date' as 'date', isRequired: true },
+          { label: 'Notes', fieldType: 'textarea' as 'textarea', placeholder: "Tell us about the occasion or pieces you'd like to see" },
+        ],
+      },
+      {
+        formName: 'Showroom Visit',
+        formTag: 'showroom-visit',
+        submitButtonText: 'Book A Visit',
+        availableTimeSlots: standardTimeSlots,
+        dynamicFields: [
+          { label: 'Full Name', fieldType: 'text' as 'text', placeholder: 'Your name', isRequired: true },
+          { label: 'Phone', fieldType: 'phone' as 'phone', placeholder: '+91 00000 00000', isRequired: true },
+          { label: 'Email', fieldType: 'email' as 'email', placeholder: 'Enter' },
+          { label: 'Preferred Showroom', fieldType: 'dropdown' as 'dropdown', placeholder: 'Select showroom', dropdownOptions: showroomOptions },
+          { label: 'Preferred Date', fieldType: 'date' as 'date' },
+          { label: 'Purpose of Visit', fieldType: 'dropdown' as 'dropdown', placeholder: '-select-', dropdownOptions: 'Engagement Ring,Wedding Jewellery,Gifting,Personal Collection,Just Browsing' },
+          { label: 'Notes', fieldType: 'textarea' as 'textarea', placeholder: 'Eg: I am looking for an engagement ring' },
+        ],
+      },
+    ]);
+
+    await seedCollectionByField('api::product-form.product-form', 'Product Form', 'formTag', [
+      {
+        formName: 'Product Video Call',
+        formTag: 'product-video-call',
+        submitButtonText: 'Schedule a Video Call',
+        allowImageUpload: false,
+        availableTimeSlots: standardTimeSlots,
+        dynamicFields: [
+          { label: 'Your Name', fieldType: 'text' as 'text', placeholder: 'Your name', isRequired: true },
+          { label: 'Phone No.', fieldType: 'phone' as 'phone', placeholder: '+91', isRequired: true },
+          { label: 'Email', fieldType: 'email' as 'email', placeholder: 'Enter' },
+          { label: 'Date', fieldType: 'date' as 'date' },
+          { label: 'Describe more about your visit', fieldType: 'textarea' as 'textarea', placeholder: 'Eg: I am looking for an engagement ring' },
+        ],
+      },
+      {
+        formName: 'Product Store Visit',
+        formTag: 'product-store-visit',
+        submitButtonText: 'Confirm Visit',
+        allowImageUpload: false,
+        availableTimeSlots: standardTimeSlots,
+        dynamicFields: [
+          { label: 'Your Name', fieldType: 'text' as 'text', placeholder: 'Your name', isRequired: true },
+          { label: 'Phone No.', fieldType: 'phone' as 'phone', placeholder: '+91', isRequired: true },
+          { label: 'Email', fieldType: 'email' as 'email', placeholder: 'Enter' },
+          { label: 'Date', fieldType: 'date' as 'date' },
+          { label: 'Describe more about your visit', fieldType: 'textarea' as 'textarea', placeholder: 'Eg: I am looking for an engagement ring' },
+        ],
+      },
+      {
+        formName: 'Product Personalisation',
+        formTag: 'product-personalisation',
+        submitButtonText: 'Get In Touch',
+        allowImageUpload: true,
+        dynamicFields: [
+          { label: 'Your Name', fieldType: 'text' as 'text', placeholder: 'Your name', isRequired: true },
+          { label: 'Phone No.', fieldType: 'phone' as 'phone', placeholder: '+91', isRequired: true },
+          { label: 'Email', fieldType: 'email' as 'email', placeholder: 'Enter' },
+          { label: 'Request Details', fieldType: 'textarea' as 'textarea', placeholder: 'Describe the gemstone, sizing, engraving or customisation you want' },
+        ],
+      },
+    ]);
 
     // 1. Seed Showrooms (api::showroom.showroom)
     const showroomCount = await strapi.documents('api::showroom.showroom').count({});
@@ -377,7 +526,7 @@ export async function seedCms(strapi: Core.Strapi) {
         ],
         footerTickerItems: [
           { label: '100% MONEYBACK GUARANTEE', sortOrder: 1, isActive: true },
-          { label: 'BIS HALMARK FOR JEWELLERY', sortOrder: 2, isActive: true },
+          { label: 'BIS HALLMARK FOR JEWELLERY', sortOrder: 2, isActive: true },
           { label: 'CASH ON DELIVERY', sortOrder: 3, isActive: true },
           { label: 'INTERNALLY FLAWLESS DIAMONDS', sortOrder: 4, isActive: true },
         ],
@@ -547,7 +696,7 @@ export async function seedCms(strapi: Core.Strapi) {
         timelineSection: {
           timelineMilestone: [
             { year: 1997, heading: 'Since 1997', body: 'The Sunny Diamonds journey begins with craftsmanship, goodwill and care.' },
-            { year: 2008, heading: 'Found in Chalakkudy', body: 'We are passionate to create more brilliant moments with each customer experience. Our first standalone showroom opened with the promise of trust, brilliance and care.' },
+            { year: 2008, heading: 'Founded in Chalakkudy', body: 'We are passionate to create more brilliant moments with each customer experience. Our first standalone showroom opened with the promise of trust, brilliance and care.' },
             { year: 2023, heading: 'Crafting family heirlooms', body: 'Crafting family heirlooms at the pinnacle of diamond clarity.' },
           ],
         },

@@ -762,12 +762,15 @@ export interface ApiGenericSubmissionGenericSubmission
     draftAndPublish: false;
   };
   attributes: {
+    consentAccepted: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     email: Schema.Attribute.Email;
     formTag: Schema.Attribute.String & Schema.Attribute.Required;
     fullName: Schema.Attribute.String & Schema.Attribute.Required;
+    internalNotes: Schema.Attribute.Text;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -775,16 +778,20 @@ export interface ApiGenericSubmissionGenericSubmission
     > &
       Schema.Attribute.Private;
     notes: Schema.Attribute.Text;
-    phone: Schema.Attribute.String & Schema.Attribute.Required;
+    phone: Schema.Attribute.String;
     preferredDate: Schema.Attribute.Date;
     preferredShowroom: Schema.Attribute.Enumeration<
       ['Calicut', 'Kochi', 'Thrissur', 'Coimbatore', 'Trivandrum']
     >;
     publishedAt: Schema.Attribute.DateTime;
     selectedTimeSlot: Schema.Attribute.String;
+    sourcePage: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    utmCampaign: Schema.Attribute.String;
+    utmMedium: Schema.Attribute.String;
+    utmSource: Schema.Attribute.String;
     workflowStatus: Schema.Attribute.Enumeration<
       ['New', 'Contacted', 'Closed']
     > &
@@ -1091,6 +1098,8 @@ export interface ApiProductSubmissionProductSubmission
     draftAndPublish: false;
   };
   attributes: {
+    consentAccepted: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1098,6 +1107,7 @@ export interface ApiProductSubmissionProductSubmission
     customerName: Schema.Attribute.String & Schema.Attribute.Required;
     customerPhone: Schema.Attribute.String & Schema.Attribute.Required;
     formTag: Schema.Attribute.String & Schema.Attribute.Required;
+    internalNotes: Schema.Attribute.Text;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -1110,10 +1120,14 @@ export interface ApiProductSubmissionProductSubmission
     requestDetails: Schema.Attribute.Text;
     requestedDate: Schema.Attribute.Date;
     selectedTimeSlot: Schema.Attribute.String;
+    sourcePage: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     uploadedImage: Schema.Attribute.Media<'images'>;
+    utmCampaign: Schema.Attribute.String;
+    utmMedium: Schema.Attribute.String;
+    utmSource: Schema.Attribute.String;
     workflowStatus: Schema.Attribute.Enumeration<
       ['New', 'Contacted', 'Closed']
     > &

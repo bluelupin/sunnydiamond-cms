@@ -23,7 +23,11 @@ const populate = {
   brillianceSection: {
     populate: {
       pinnedImage: imageAssetPopulate,
-      featureSlide: true,
+      featureSlide: {
+        populate: {
+          image: imageAssetPopulate,
+        },
+      },
     },
   },
   legacySection: {
@@ -73,12 +77,16 @@ const populate = {
     populate: {
       trustBadge: {
         populate: {
-          icon: true,
+          icon: imageAssetPopulate,
         },
       },
     },
   },
-  brandTaglineSection: true,
+  brandTaglineSection: {
+    populate: {
+      icon: imageAssetPopulate,
+    },
+  },
   seo: true,
 };
 

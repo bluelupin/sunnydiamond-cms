@@ -4,8 +4,28 @@
 
 import { factories } from '@strapi/strapi';
 
+const imageAssetPopulate = {
+  populate: {
+    desktopImage: true,
+    mobileImage: true,
+  },
+};
+
+const heroPopulate = {
+  populate: {
+    image: imageAssetPopulate,
+    heroVideo: {
+      populate: {
+        heroVideo: true,
+      },
+    },
+    primaryCta: true,
+    secondaryCta: true,
+  },
+};
+
 const populate = {
-  hero: true,
+  hero: heroPopulate,
   fourCsIntro: true,
   fourCsSection: {
     populate: {
@@ -25,15 +45,27 @@ const populate = {
   },
   certificateSection: {
     populate: {
-      certificationLabs: true,
+      certificationLabs: {
+        populate: {
+          labLogo: imageAssetPopulate,
+        },
+      },
     },
   },
   learnMoreSection: {
     populate: {
-      tabs: true,
+      tabs: {
+        populate: {
+          carouselImages: imageAssetPopulate,
+        },
+      },
     },
   },
-  ctaBanner: true,
+  ctaBanner: {
+    populate: {
+      backgroundImage: imageAssetPopulate,
+    },
+  },
   faqSection: {
     populate: {
       faqItems: true,
