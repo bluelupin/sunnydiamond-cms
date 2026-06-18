@@ -286,6 +286,24 @@ export interface SharedFooterTickerItem extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedFormField extends Struct.ComponentSchema {
+  collectionName: 'components_shared_form_fields';
+  info: {
+    description: 'Dynamic inputs for the frontend to render';
+    displayName: 'Form Field';
+  };
+  attributes: {
+    dropdownOptions: Schema.Attribute.String;
+    fieldType: Schema.Attribute.Enumeration<
+      ['text', 'email', 'phone', 'date', 'dropdown', 'textarea']
+    > &
+      Schema.Attribute.DefaultTo<'text'>;
+    isRequired: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    label: Schema.Attribute.String & Schema.Attribute.Required;
+    placeholder: Schema.Attribute.String;
+  };
+}
+
 export interface SharedFourCsSection extends Struct.ComponentSchema {
   collectionName: 'components_shared_four_cs_section_roots';
   info: {
@@ -571,6 +589,16 @@ export interface SharedTeamSection extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedTimeSlot extends Struct.ComponentSchema {
+  collectionName: 'components_shared_time_slots';
+  info: {
+    displayName: 'Time Slot';
+  };
+  attributes: {
+    timeString: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface SharedTimelineMilestone extends Struct.ComponentSchema {
   collectionName: 'components_shared_timeline_milestones';
   info: {
@@ -671,6 +699,7 @@ declare module '@strapi/strapi' {
       'shared.feature-slide': SharedFeatureSlide;
       'shared.footer-link-group': SharedFooterLinkGroup;
       'shared.footer-ticker-item': SharedFooterTickerItem;
+      'shared.form-field': SharedFormField;
       'shared.four-cs-section': SharedFourCsSection;
       'shared.grade-stop': SharedGradeStop;
       'shared.hero-section': SharedHeroSection;
@@ -690,6 +719,7 @@ declare module '@strapi/strapi' {
       'shared.showroom-section': SharedShowroomSection;
       'shared.team-member': SharedTeamMember;
       'shared.team-section': SharedTeamSection;
+      'shared.time-slot': SharedTimeSlot;
       'shared.timeline-milestone': SharedTimelineMilestone;
       'shared.timeline-section': SharedTimelineSection;
       'shared.trust-badge': SharedTrustBadge;
