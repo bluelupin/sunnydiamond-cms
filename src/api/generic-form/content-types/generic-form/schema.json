@@ -1,0 +1,25 @@
+{
+  "kind": "collectionType",
+  "collectionName": "generic_forms",
+  "info": {
+    "singularName": "generic-form",
+    "pluralName": "generic-forms",
+    "displayName": "Builder: Generic Forms"
+  },
+  "options": { "draftAndPublish": true },
+  "attributes": {
+    "formName": { "type": "string", "required": true },
+    "formTag": { "type": "uid", "targetField": "formName", "required": true },
+    "submitButtonText": { "type": "string", "default": "SUBMIT" },
+    "availableTimeSlots": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.time-slot"
+    },
+    "dynamicFields": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.form-field"
+    }
+  }
+}

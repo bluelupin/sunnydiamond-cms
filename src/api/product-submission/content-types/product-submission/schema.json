@@ -1,0 +1,62 @@
+{
+  "kind": "collectionType",
+  "collectionName": "product_submissions",
+  "info": {
+    "singularName": "product-submission",
+    "pluralName": "product-submissions",
+    "displayName": "Submissions: Product"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "formTag": {
+      "type": "string",
+      "required": true
+    },
+    "productName": {
+      "type": "string",
+      "required": true
+    },
+    "productId": {
+      "type": "string"
+    },
+    "customerName": {
+      "type": "string",
+      "required": true
+    },
+    "customerPhone": {
+      "type": "string",
+      "required": true
+    },
+    "customerEmail": {
+      "type": "email"
+    },
+    "requestedDate": {
+      "type": "date"
+    },
+    "selectedTimeSlot": {
+      "type": "string"
+    },
+    "requestDetails": {
+      "type": "text"
+    },
+    "uploadedImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "workflowStatus": {
+      "type": "enumeration",
+      "default": "New",
+      "enum": [
+        "New",
+        "Contacted",
+        "Closed"
+      ]
+    }
+  }
+}

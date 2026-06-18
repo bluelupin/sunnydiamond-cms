@@ -1,0 +1,26 @@
+{
+  "kind": "collectionType",
+  "collectionName": "product_forms",
+  "info": {
+    "singularName": "product-form",
+    "pluralName": "product-forms",
+    "displayName": "Builder: Product Forms"
+  },
+  "options": { "draftAndPublish": true },
+  "attributes": {
+    "formName": { "type": "string", "required": true },
+    "formTag": { "type": "uid", "targetField": "formName", "required": true },
+    "submitButtonText": { "type": "string", "default": "SUBMIT" },
+    "allowImageUpload": { "type": "boolean", "default": false, "description": "Toggles the attachment field for Personalisation" },
+    "availableTimeSlots": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.time-slot"
+    },
+    "dynamicFields": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.form-field"
+    }
+  }
+}

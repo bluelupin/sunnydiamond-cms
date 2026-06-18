@@ -1,0 +1,58 @@
+{
+  "kind": "collectionType",
+  "collectionName": "generic_submissions",
+  "info": {
+    "singularName": "generic-submission",
+    "pluralName": "generic-submissions",
+    "displayName": "Submissions: Generic"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "formTag": {
+      "type": "string",
+      "required": true
+    },
+    "fullName": {
+      "type": "string",
+      "required": true
+    },
+    "email": {
+      "type": "email"
+    },
+    "phone": {
+      "type": "string",
+      "required": true
+    },
+    "preferredShowroom": {
+      "type": "enumeration",
+      "enum": [
+        "Calicut",
+        "Kochi",
+        "Thrissur",
+        "Coimbatore",
+        "Trivandrum"
+      ]
+    },
+    "preferredDate": {
+      "type": "date"
+    },
+    "selectedTimeSlot": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "text"
+    },
+    "workflowStatus": {
+      "type": "enumeration",
+      "default": "New",
+      "enum": [
+        "New",
+        "Contacted",
+        "Closed"
+      ]
+    }
+  }
+}

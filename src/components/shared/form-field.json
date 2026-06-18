@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_shared_form_fields",
+  "info": {
+    "displayName": "Form Field",
+    "description": "Dynamic inputs for the frontend to render"
+  },
+  "attributes": {
+    "label": { "type": "string", "required": true },
+    "fieldType": {
+      "type": "enumeration",
+      "enum": ["text", "email", "phone", "date", "dropdown", "textarea"],
+      "default": "text"
+    },
+    "placeholder": { "type": "string" },
+    "isRequired": { "type": "boolean", "default": false },
+    "dropdownOptions": { 
+      "type": "string", 
+      "description": "Comma separated options if fieldType is dropdown" 
+    }
+  }
+}

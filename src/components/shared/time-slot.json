@@ -1,0 +1,7 @@
+{
+  "collectionName": "components_shared_time_slots",
+  "info": { "displayName": "Time Slot" },
+  "attributes": {
+    "timeString": { "type": "string", "required": true, "description": "e.g. 10:00 AM - 11:00 AM" }
+  }
+}

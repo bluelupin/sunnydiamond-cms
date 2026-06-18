@@ -717,6 +717,81 @@ export interface ApiFaqFaq extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiGenericFormGenericForm extends Struct.CollectionTypeSchema {
+  collectionName: 'generic_forms';
+  info: {
+    displayName: 'Builder: Generic Forms';
+    pluralName: 'generic-forms';
+    singularName: 'generic-form';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    availableTimeSlots: Schema.Attribute.Component<'shared.time-slot', true>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    dynamicFields: Schema.Attribute.Component<'shared.form-field', true>;
+    formName: Schema.Attribute.String & Schema.Attribute.Required;
+    formTag: Schema.Attribute.UID<'formName'> & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::generic-form.generic-form'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    submitButtonText: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'SUBMIT'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiGenericSubmissionGenericSubmission
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'generic_submissions';
+  info: {
+    displayName: 'Submissions: Generic';
+    pluralName: 'generic-submissions';
+    singularName: 'generic-submission';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    email: Schema.Attribute.Email;
+    formTag: Schema.Attribute.String & Schema.Attribute.Required;
+    fullName: Schema.Attribute.String & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::generic-submission.generic-submission'
+    > &
+      Schema.Attribute.Private;
+    notes: Schema.Attribute.Text;
+    phone: Schema.Attribute.String & Schema.Attribute.Required;
+    preferredDate: Schema.Attribute.Date;
+    preferredShowroom: Schema.Attribute.Enumeration<
+      ['Calicut', 'Kochi', 'Thrissur', 'Coimbatore', 'Trivandrum']
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    selectedTimeSlot: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    workflowStatus: Schema.Attribute.Enumeration<
+      ['New', 'Contacted', 'Closed']
+    > &
+      Schema.Attribute.DefaultTo<'New'>;
+  };
+}
+
 export interface ApiGlobalConfigGlobalConfig extends Struct.SingleTypeSchema {
   collectionName: 'global_configs';
   info: {
@@ -962,6 +1037,83 @@ export interface ApiOccasionOccasion extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+  };
+}
+
+export interface ApiProductFormProductForm extends Struct.CollectionTypeSchema {
+  collectionName: 'product_forms';
+  info: {
+    displayName: 'Builder: Product Forms';
+    pluralName: 'product-forms';
+    singularName: 'product-form';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    allowImageUpload: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
+    availableTimeSlots: Schema.Attribute.Component<'shared.time-slot', true>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    dynamicFields: Schema.Attribute.Component<'shared.form-field', true>;
+    formName: Schema.Attribute.String & Schema.Attribute.Required;
+    formTag: Schema.Attribute.UID<'formName'> & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::product-form.product-form'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    submitButtonText: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'SUBMIT'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiProductSubmissionProductSubmission
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'product_submissions';
+  info: {
+    displayName: 'Submissions: Product';
+    pluralName: 'product-submissions';
+    singularName: 'product-submission';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    customerEmail: Schema.Attribute.Email;
+    customerName: Schema.Attribute.String & Schema.Attribute.Required;
+    customerPhone: Schema.Attribute.String & Schema.Attribute.Required;
+    formTag: Schema.Attribute.String & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::product-submission.product-submission'
+    > &
+      Schema.Attribute.Private;
+    productId: Schema.Attribute.String;
+    productName: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    requestDetails: Schema.Attribute.Text;
+    requestedDate: Schema.Attribute.Date;
+    selectedTimeSlot: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    uploadedImage: Schema.Attribute.Media<'images'>;
+    workflowStatus: Schema.Attribute.Enumeration<
+      ['New', 'Contacted', 'Closed']
+    > &
+      Schema.Attribute.DefaultTo<'New'>;
   };
 }
 
@@ -1596,12 +1748,16 @@ declare module '@strapi/strapi' {
       'api::contact-bespoke-page.contact-bespoke-page': ApiContactBespokePageContactBespokePage;
       'api::editorial-collection.editorial-collection': ApiEditorialCollectionEditorialCollection;
       'api::faq.faq': ApiFaqFaq;
+      'api::generic-form.generic-form': ApiGenericFormGenericForm;
+      'api::generic-submission.generic-submission': ApiGenericSubmissionGenericSubmission;
       'api::global-config.global-config': ApiGlobalConfigGlobalConfig;
       'api::homepage.homepage': ApiHomepageHomepage;
       'api::learn-about-diamonds-page.learn-about-diamonds-page': ApiLearnAboutDiamondsPageLearnAboutDiamondsPage;
       'api::legal-page.legal-page': ApiLegalPageLegalPage;
       'api::news-article.news-article': ApiNewsArticleNewsArticle;
       'api::occasion.occasion': ApiOccasionOccasion;
+      'api::product-form.product-form': ApiProductFormProductForm;
+      'api::product-submission.product-submission': ApiProductSubmissionProductSubmission;
       'api::service-page.service-page': ApiServicePageServicePage;
       'api::showroom.showroom': ApiShowroomShowroom;
       'api::support-page.support-page': ApiSupportPageSupportPage;
