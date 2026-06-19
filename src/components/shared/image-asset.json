@@ -7,11 +7,17 @@
   "attributes": {
     "desktopImage": {
       "type": "media",
-      "multiple": false
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
     },
     "mobileImage": {
       "type": "media",
-      "multiple": false
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
     },
     "altText": {
       "type": "string"
