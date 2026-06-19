@@ -520,9 +520,11 @@ export interface SharedPromoCard extends Struct.ComponentSchema {
   attributes: {
     cta: Schema.Attribute.Component<'shared.cta', false>;
     description: Schema.Attribute.Text;
+    eyebrowText: Schema.Attribute.String;
     image: Schema.Attribute.Component<'shared.image-asset', false>;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    steps: Schema.Attribute.Component<'shared.process-step', true>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }

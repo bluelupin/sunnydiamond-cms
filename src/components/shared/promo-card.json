@@ -5,6 +5,9 @@
     "description": "Editorial promotional card"
   },
   "attributes": {
+    "eyebrowText": {
+      "type": "string"
+    },
     "title": {
       "type": "string",
       "required": true
@@ -14,13 +17,18 @@
     },
     "image": {
       "type": "component",
-      "repeatable": false,
-      "component": "shared.image-asset"
+      "component": "shared.image-asset",
+      "repeatable": false
     },
     "cta": {
       "type": "component",
-      "repeatable": false,
-      "component": "shared.cta"
+      "component": "shared.cta",
+      "repeatable": false
+    },
+    "steps": {
+      "type": "component",
+      "component": "shared.process-step",
+      "repeatable": true
     },
     "sortOrder": {
       "type": "integer",
