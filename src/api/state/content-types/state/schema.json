@@ -1,0 +1,17 @@
+{
+  "kind": "collectionType",
+  "collectionName": "states",
+  "info": {
+    "singularName": "state",
+    "pluralName": "states",
+    "displayName": "Indian States"
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "stateList": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.indian-state"
+    }
+  }
+}

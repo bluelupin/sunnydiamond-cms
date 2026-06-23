@@ -810,6 +810,10 @@ export interface ApiGlobalConfigGlobalConfig extends Struct.SingleTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    brandIdentity: Schema.Attribute.Component<
+      'shared.brand-tagline-section',
+      false
+    >;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1071,6 +1075,7 @@ export interface ApiProductFormProductForm extends Struct.CollectionTypeSchema {
     dynamicFields: Schema.Attribute.Component<'shared.form-field', true>;
     formName: Schema.Attribute.String & Schema.Attribute.Required;
     formTag: Schema.Attribute.UID<'formName'> & Schema.Attribute.Required;
+    isMultiStep: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -1078,8 +1083,41 @@ export interface ApiProductFormProductForm extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
+    stateOptions: Schema.Attribute.Relation<'manyToMany', 'api::state.state'>;
+    stepOneButtonText: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'ADD ADDRESS'>;
     submitButtonText: Schema.Attribute.String &
       Schema.Attribute.DefaultTo<'SUBMIT'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiProductLandingPageProductLandingPage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'product_landing_pages';
+  info: {
+    displayName: 'Product Landing Page';
+    pluralName: 'product-landing-pages';
+    singularName: 'product-landing-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    hero: Schema.Attribute.Component<'shared.hero-section', false>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::product-landing-page.product-landing-page'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    trustBadges: Schema.Attribute.Component<'shared.process-step', true>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1098,6 +1136,9 @@ export interface ApiProductSubmissionProductSubmission
     draftAndPublish: false;
   };
   attributes: {
+    addressLine1: Schema.Attribute.String;
+    addressLine2: Schema.Attribute.String;
+    city: Schema.Attribute.String;
     consentAccepted: Schema.Attribute.Boolean &
       Schema.Attribute.DefaultTo<false>;
     createdAt: Schema.Attribute.DateTime;
@@ -1114,6 +1155,7 @@ export interface ApiProductSubmissionProductSubmission
       'api::product-submission.product-submission'
     > &
       Schema.Attribute.Private;
+    pincode: Schema.Attribute.String;
     productId: Schema.Attribute.String;
     productName: Schema.Attribute.String & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
@@ -1121,6 +1163,7 @@ export interface ApiProductSubmissionProductSubmission
     requestedDate: Schema.Attribute.Date;
     selectedTimeSlot: Schema.Attribute.String;
     sourcePage: Schema.Attribute.String;
+    state: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1129,7 +1172,7 @@ export interface ApiProductSubmissionProductSubmission
     utmMedium: Schema.Attribute.String;
     utmSource: Schema.Attribute.String;
     workflowStatus: Schema.Attribute.Enumeration<
-      ['New', 'Contacted', 'Closed']
+      ['New', 'Contacted', 'Scheduled', 'Visited', 'Closed']
     > &
       Schema.Attribute.DefaultTo<'New'>;
   };
@@ -1206,6 +1249,31 @@ export interface ApiShowroomShowroom extends Struct.CollectionTypeSchema {
     slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     state: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiStateState extends Struct.CollectionTypeSchema {
+  collectionName: 'states';
+  info: {
+    displayName: 'Indian States';
+    pluralName: 'states';
+    singularName: 'state';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::state.state'> &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    stateList: Schema.Attribute.Component<'shared.indian-state', true>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1775,9 +1843,11 @@ declare module '@strapi/strapi' {
       'api::news-article.news-article': ApiNewsArticleNewsArticle;
       'api::occasion.occasion': ApiOccasionOccasion;
       'api::product-form.product-form': ApiProductFormProductForm;
+      'api::product-landing-page.product-landing-page': ApiProductLandingPageProductLandingPage;
       'api::product-submission.product-submission': ApiProductSubmissionProductSubmission;
       'api::service-page.service-page': ApiServicePageServicePage;
       'api::showroom.showroom': ApiShowroomShowroom;
+      'api::state.state': ApiStateState;
       'api::support-page.support-page': ApiSupportPageSupportPage;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
