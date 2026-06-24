@@ -1,16 +1,23 @@
 import type { Core } from '@strapi/strapi';
 
 const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Plugin => {
+  const uploadMaxFileSize = env.int('UPLOAD_MAX_FILE_SIZE', 25 * 1024 * 1024);
   const plugins: Core.Config.Plugin = {
     'form-export': {
       enabled: true,
       resolve: './src/plugins/form-export',
+    },
+    upload: {
+      config: {
+        sizeLimit: uploadMaxFileSize,
+      },
     },
   };
 
   if (env('UPLOAD_PROVIDER') === 'aws-s3') {
     plugins.upload = {
       config: {
+        sizeLimit: uploadMaxFileSize,
         provider: 'aws-s3',
         providerOptions: {
           baseUrl: env('CDN_URL'),

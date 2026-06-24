@@ -6,7 +6,7 @@
     "pluralName": "size-guides",
     "displayName": "Size Guides"
   },
-  "options": { "draftAndPublish": false },
+  "options": { "draftAndPublish": true },
   "attributes": {
     "name": {
       "type": "string",
