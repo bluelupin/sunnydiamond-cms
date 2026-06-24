@@ -1,0 +1,58 @@
+{
+  "kind": "singleType",
+  "collectionName": "product_display_page",
+  "info": {
+    "singularName": "product-display-page",
+    "pluralName": "product-display-pages",
+    "displayName": "Product Display Page"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "findYourSize": {
+      "type": "component",
+      "component": "shared.modal-cta",
+      "repeatable": false
+    },
+    "stripTitle": {
+      "type": "string",
+      "default": "With Sunny, you get"
+    },
+    "stripItems": {
+      "type": "component",
+      "component": "shared.process-step",
+      "repeatable": true
+    },
+    "stripTnc": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": false
+    },
+    "hereForYouCard": {
+      "type": "component",
+      "component": "shared.info-card",
+      "repeatable": false
+    },
+    "personaliseCard": {
+      "type": "component",
+      "component": "shared.info-card",
+      "repeatable": false
+    },
+    "pairItWith": {
+      "type": "component",
+      "component": "shared.collection-showcase-section",
+      "repeatable": false
+    },
+    "moreForYouTitle": {
+      "type": "string",
+      "default": "More for You"
+    },
+    "visitUsSection": {
+      "type": "component",
+      "component": "shared.showroom-section",
+      "repeatable": false
+    }
+  }
+}

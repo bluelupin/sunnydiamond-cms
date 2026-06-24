@@ -1055,6 +1055,51 @@ export interface ApiOccasionOccasion extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiProductDisplayPageProductDisplayPage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'product_display_page';
+  info: {
+    displayName: 'Product Display Page';
+    pluralName: 'product-display-pages';
+    singularName: 'product-display-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    findYourSize: Schema.Attribute.Component<'shared.modal-cta', false>;
+    hereForYouCard: Schema.Attribute.Component<'shared.info-card', false>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::product-display-page.product-display-page'
+    > &
+      Schema.Attribute.Private;
+    moreForYouTitle: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'More for You'>;
+    pairItWith: Schema.Attribute.Component<
+      'shared.collection-showcase-section',
+      false
+    >;
+    personaliseCard: Schema.Attribute.Component<'shared.info-card', false>;
+    publishedAt: Schema.Attribute.DateTime;
+    stripItems: Schema.Attribute.Component<'shared.process-step', true>;
+    stripTitle: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'With Sunny, you get'>;
+    stripTnc: Schema.Attribute.Component<'shared.cta', false>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    visitUsSection: Schema.Attribute.Component<
+      'shared.showroom-section',
+      false
+    >;
+  };
+}
+
 export interface ApiProductFormProductForm extends Struct.CollectionTypeSchema {
   collectionName: 'product_forms';
   info: {
@@ -1249,6 +1294,42 @@ export interface ApiShowroomShowroom extends Struct.CollectionTypeSchema {
     slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     state: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiSizeGuideSizeGuide extends Struct.CollectionTypeSchema {
+  collectionName: 'size_guides';
+  info: {
+    displayName: 'Size Guides';
+    pluralName: 'size-guides';
+    singularName: 'size-guide';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    chartRows: Schema.Attribute.Component<'shared.size-row', true>;
+    circumferenceHeaderImage: Schema.Attribute.Media<'images'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    diameterHeaderImage: Schema.Attribute.Media<'images'>;
+    drawerSubtitle: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Measure Dimensions in millimeters'>;
+    drawerTitle: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Ring Size Diamond'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::size-guide.size-guide'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    tutorialVideo: Schema.Attribute.Media<'videos'> & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1842,11 +1923,13 @@ declare module '@strapi/strapi' {
       'api::legal-page.legal-page': ApiLegalPageLegalPage;
       'api::news-article.news-article': ApiNewsArticleNewsArticle;
       'api::occasion.occasion': ApiOccasionOccasion;
+      'api::product-display-page.product-display-page': ApiProductDisplayPageProductDisplayPage;
       'api::product-form.product-form': ApiProductFormProductForm;
       'api::product-landing-page.product-landing-page': ApiProductLandingPageProductLandingPage;
       'api::product-submission.product-submission': ApiProductSubmissionProductSubmission;
       'api::service-page.service-page': ApiServicePageServicePage;
       'api::showroom.showroom': ApiShowroomShowroom;
+      'api::size-guide.size-guide': ApiSizeGuideSizeGuide;
       'api::state.state': ApiStateState;
       'api::support-page.support-page': ApiSupportPageSupportPage;
       'plugin::content-releases.release': PluginContentReleasesRelease;

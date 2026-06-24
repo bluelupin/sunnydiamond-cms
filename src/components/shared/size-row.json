@@ -1,0 +1,14 @@
+{
+  "kind": "component",
+  "collectionName": "components_shared_size_rows",
+  "info": {
+    "displayName": "Size Row",
+    "icon": "align-justify"
+  },
+  "options": {},
+  "attributes": {
+    "circumference": { "type": "string" },
+    "diameter": { "type": "string" },
+    "sizeLabel": { "type": "string" }
+  }
+}

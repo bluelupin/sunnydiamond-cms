@@ -13,8 +13,8 @@
     },
     "image": {
       "type": "component",
-      "repeatable": false,
-      "component": "shared.image-asset"
+      "component": "shared.image-asset",
+      "repeatable": false
     },
     "showrooms": {
       "type": "relation",
@@ -23,8 +23,13 @@
     },
     "cta": {
       "type": "component",
-      "repeatable": false,
-      "component": "shared.cta"
+      "component": "shared.cta",
+      "repeatable": false
+    },
+    "formCta": {
+      "type": "component",
+      "component": "shared.modal-cta",
+      "repeatable": false
     },
     "sortOrder": {
       "type": "integer",

@@ -1,0 +1,26 @@
+{
+  "collectionName": "components_shared_info_cards",
+  "info": {
+    "displayName": "Info Card",
+    "description": "Title, subtitle, optional image and form trigger buttons"
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "subtitle": {
+      "type": "string"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "buttons": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.modal-cta"
+    }
+  }
+}

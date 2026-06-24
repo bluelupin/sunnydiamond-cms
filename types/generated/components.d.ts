@@ -374,6 +374,20 @@ export interface SharedIndianState extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedInfoCard extends Struct.ComponentSchema {
+  collectionName: 'components_shared_info_cards';
+  info: {
+    description: 'Title, subtitle, optional image and form trigger buttons';
+    displayName: 'Info Card';
+  };
+  attributes: {
+    buttons: Schema.Attribute.Component<'shared.modal-cta', true>;
+    image: Schema.Attribute.Media<'images'>;
+    subtitle: Schema.Attribute.String;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface SharedLearnMoreSection extends Struct.ComponentSchema {
   collectionName: 'components_shared_learn_more_section_roots';
   info: {
@@ -445,6 +459,20 @@ export interface SharedLinkItem extends Struct.ComponentSchema {
     > &
       Schema.Attribute.DefaultTo<'internal'>;
     url: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedModalCta extends Struct.ComponentSchema {
+  collectionName: 'components_shared_form_ctas';
+  info: {
+    description: 'Button or link that triggers a form modal';
+    displayName: 'Modal CTA';
+  };
+  attributes: {
+    label: Schema.Attribute.String & Schema.Attribute.Required;
+    modalTag: Schema.Attribute.String & Schema.Attribute.Required;
+    style: Schema.Attribute.Enumeration<['primary', 'link']> &
+      Schema.Attribute.DefaultTo<'primary'>;
   };
 }
 
@@ -568,11 +596,25 @@ export interface SharedShowroomSection extends Struct.ComponentSchema {
   attributes: {
     cta: Schema.Attribute.Component<'shared.cta', false>;
     description: Schema.Attribute.Text;
+    formCta: Schema.Attribute.Component<'shared.modal-cta', false>;
     image: Schema.Attribute.Component<'shared.image-asset', false>;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     sectionTitle: Schema.Attribute.String;
     showrooms: Schema.Attribute.Relation<'oneToMany', 'api::showroom.showroom'>;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+  };
+}
+
+export interface SharedSizeRow extends Struct.ComponentSchema {
+  collectionName: 'components_shared_size_rows';
+  info: {
+    displayName: 'Size Row';
+    icon: 'align-justify';
+  };
+  attributes: {
+    circumference: Schema.Attribute.String;
+    diameter: Schema.Attribute.String;
+    sizeLabel: Schema.Attribute.String;
   };
 }
 
@@ -721,11 +763,13 @@ declare module '@strapi/strapi' {
       'shared.hero-section': SharedHeroSection;
       'shared.image-asset': SharedImageAsset;
       'shared.indian-state': SharedIndianState;
+      'shared.info-card': SharedInfoCard;
       'shared.learn-more-section': SharedLearnMoreSection;
       'shared.learn-more-tab': SharedLearnMoreTab;
       'shared.legacy-image-block': SharedLegacyImageBlock;
       'shared.legacy-section': SharedLegacySection;
       'shared.link-item': SharedLinkItem;
+      'shared.modal-cta': SharedModalCta;
       'shared.mosaic-tile': SharedMosaicTile;
       'shared.occasion-section': SharedOccasionSection;
       'shared.page-intro': SharedPageIntro;
@@ -734,6 +778,7 @@ declare module '@strapi/strapi' {
       'shared.promo-card': SharedPromoCard;
       'shared.seo': SharedSeo;
       'shared.showroom-section': SharedShowroomSection;
+      'shared.size-row': SharedSizeRow;
       'shared.team-member': SharedTeamMember;
       'shared.team-section': SharedTeamSection;
       'shared.time-slot': SharedTimeSlot;

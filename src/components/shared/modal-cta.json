@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_shared_form_ctas",
+  "info": {
+    "displayName": "Modal CTA",
+    "description": "Button or link that triggers a form modal"
+  },
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true
+    },
+    "modalTag": {
+      "type": "string",
+      "required": true
+    },
+    "style": {
+      "type": "enumeration",
+      "default": "primary",
+      "enum": [
+        "primary",
+        "link"
+      ]
+    }
+  }
+}
