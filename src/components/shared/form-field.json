@@ -5,17 +5,38 @@
     "description": "Dynamic inputs for the frontend to render"
   },
   "attributes": {
-    "label": { "type": "string", "required": true },
+    "label": {
+      "type": "string",
+      "required": true
+    },
     "fieldType": {
       "type": "enumeration",
-      "enum": ["text", "email", "phone", "date", "dropdown", "textarea"],
-      "default": "text"
+      "default": "text",
+      "enum": [
+        "text",
+        "email",
+        "phone",
+        "date",
+        "dropdown",
+        "textarea"
+      ]
     },
-    "placeholder": { "type": "string" },
-    "isRequired": { "type": "boolean", "default": false },
-    "dropdownOptions": { 
-      "type": "string", 
-      "description": "Comma separated options if fieldType is dropdown" 
+    "placeholder": {
+      "type": "string"
+    },
+    "isRequired": {
+      "type": "boolean",
+      "default": false
+    },
+    "dropdownOptions": {
+      "type": "string"
+    },
+    "formStep": {
+      "type": "integer",
+      "default": 1
+    },
+    "relatedCollection":{
+      "type": "string"
     }
   }
 }

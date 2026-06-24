@@ -10,6 +10,7 @@
     "draftAndPublish": true
   },
   "attributes": {
+    "brandIdentity": {"type": "component", "repeatable": false, "component": "shared.brand-tagline-section"},
     "headerNavigationLinks": { "type": "component", "repeatable": true, "component": "shared.link-item" },
     "footerLinkGroups": { "type": "component", "repeatable": true, "component": "shared.footer-link-group" },
     "footerTickerItems": { "type": "component", "repeatable": true, "component": "shared.footer-ticker-item" },

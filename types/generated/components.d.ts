@@ -298,9 +298,11 @@ export interface SharedFormField extends Struct.ComponentSchema {
       ['text', 'email', 'phone', 'date', 'dropdown', 'textarea']
     > &
       Schema.Attribute.DefaultTo<'text'>;
+    formStep: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<1>;
     isRequired: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     label: Schema.Attribute.String & Schema.Attribute.Required;
     placeholder: Schema.Attribute.String;
+    relatedCollection: Schema.Attribute.String;
   };
 }
 
@@ -357,6 +359,18 @@ export interface SharedImageAsset extends Struct.ComponentSchema {
     caption: Schema.Attribute.String;
     desktopImage: Schema.Attribute.Media<'images'>;
     mobileImage: Schema.Attribute.Media<'images'>;
+  };
+}
+
+export interface SharedIndianState extends Struct.ComponentSchema {
+  collectionName: 'components_shared_indian_states';
+  info: {
+    displayName: 'Indian State';
+    icon: 'map-marker';
+  };
+  attributes: {
+    code: Schema.Attribute.String;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
 
@@ -706,6 +720,7 @@ declare module '@strapi/strapi' {
       'shared.grade-stop': SharedGradeStop;
       'shared.hero-section': SharedHeroSection;
       'shared.image-asset': SharedImageAsset;
+      'shared.indian-state': SharedIndianState;
       'shared.learn-more-section': SharedLearnMoreSection;
       'shared.learn-more-tab': SharedLearnMoreTab;
       'shared.legacy-image-block': SharedLegacyImageBlock;
