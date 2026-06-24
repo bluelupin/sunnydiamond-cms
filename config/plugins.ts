@@ -1,12 +1,15 @@
 import type { Core } from '@strapi/strapi';
 
 const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Plugin => {
-  if (env('UPLOAD_PROVIDER') !== 'aws-s3') {
-    return {};
-  }
+  const plugins: Core.Config.Plugin = {
+    'form-export': {
+      enabled: true,
+      resolve: './src/plugins/form-export',
+    },
+  };
 
-  return {
-    upload: {
+  if (env('UPLOAD_PROVIDER') === 'aws-s3') {
+    plugins.upload = {
       config: {
         provider: 'aws-s3',
         providerOptions: {
@@ -31,8 +34,10 @@ const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Plugin =>
           delete: {},
         },
       },
-    },
-  };
+    };
+  }
+
+  return plugins;
 };
 
 export default config;
