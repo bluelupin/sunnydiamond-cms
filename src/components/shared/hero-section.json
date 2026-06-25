@@ -11,6 +11,11 @@
     "title": {
       "type": "string"
     },
+    "bgImage": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
     "subtitle": {
       "type": "text"
     },

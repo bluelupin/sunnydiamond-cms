@@ -15,6 +15,11 @@
     "description": {
       "type": "text"
     },
+    "video": {
+      "type": "component",
+      "component": "shared.video-asset",
+      "repeatable": false
+    },
     "image": {
       "type": "component",
       "component": "shared.image-asset",

@@ -1308,7 +1308,7 @@ export interface ApiSizeGuideSizeGuide extends Struct.CollectionTypeSchema {
     singularName: 'size-guide';
   };
   options: {
-    draftAndPublish: false;
+    draftAndPublish: true;
   };
   attributes: {
     chartRows: Schema.Attribute.Component<'shared.size-row', true>;

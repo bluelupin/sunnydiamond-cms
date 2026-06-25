@@ -219,6 +219,7 @@ export interface SharedEditorialSection extends Struct.ComponentSchema {
     image: Schema.Attribute.Component<'shared.image-asset', false>;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     sectionTitle: Schema.Attribute.String;
+    video: Schema.Attribute.Component<'shared.video-asset', false>;
   };
 }
 
@@ -337,6 +338,7 @@ export interface SharedHeroSection extends Struct.ComponentSchema {
     displayName: 'Hero Section';
   };
   attributes: {
+    bgImage: Schema.Attribute.Component<'shared.image-asset', false>;
     eyebrow: Schema.Attribute.String;
     heroVideo: Schema.Attribute.Component<'shared.video-asset', false>;
     image: Schema.Attribute.Component<'shared.image-asset', false>;
@@ -568,6 +570,7 @@ export interface SharedPromoCard extends Struct.ComponentSchema {
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     steps: Schema.Attribute.Component<'shared.process-step', true>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
+    video: Schema.Attribute.Component<'shared.video-asset', false>;
   };
 }
 

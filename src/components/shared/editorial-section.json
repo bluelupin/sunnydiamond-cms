@@ -11,15 +11,20 @@
     "description": {
       "type": "text"
     },
+    "video": {
+      "type": "component",
+      "component": "shared.video-asset",
+      "repeatable": false
+    },
     "image": {
       "type": "component",
-      "repeatable": false,
-      "component": "shared.image-asset"
+      "component": "shared.image-asset",
+      "repeatable": false
     },
     "cta": {
       "type": "component",
-      "repeatable": false,
-      "component": "shared.cta"
+      "component": "shared.cta",
+      "repeatable": false
     },
     "isActive": {
       "type": "boolean",
