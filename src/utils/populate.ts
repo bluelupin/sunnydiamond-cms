@@ -10,6 +10,13 @@ export const imageAssetPopulate = {
   },
 };
 
+export const videoAssetPopulate = {
+  fields: ['altText'],
+  populate: {
+    heroVideo: true,
+  },
+};
+
 export const ctaPopulate = {
   fields: ['label', 'url', 'targetType', 'openInNewTab'],
 };
@@ -17,7 +24,9 @@ export const ctaPopulate = {
 export const heroPopulate = {
   fields: ['eyebrow', 'title', 'subtitle', 'isActive'],
   populate: {
+    bgImage: imageAssetPopulate,
     image: imageAssetPopulate,
+    heroVideo: videoAssetPopulate,
     primaryCta: ctaPopulate,
     secondaryCta: ctaPopulate,
   },

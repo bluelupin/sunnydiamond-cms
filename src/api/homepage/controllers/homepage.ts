@@ -7,6 +7,7 @@ import {
   occasionPopulate,
   seoPopulate,
   showroomPopulate,
+  videoAssetPopulate,
 } from '../../../utils/populate';
 
 const HOMEPAGE_UID = 'api::homepage.homepage';
@@ -26,6 +27,7 @@ const promoCardPopulate = {
   fields: ['title', 'description', 'sortOrder', 'isActive'],
   populate: {
     image: imageAssetPopulate,
+    video: videoAssetPopulate,
     cta: ctaPopulate,
   },
 };
@@ -34,6 +36,7 @@ const editorialSectionPopulate = {
   fields: ['sectionTitle', 'description', 'isActive'],
   populate: {
     image: imageAssetPopulate,
+    video: videoAssetPopulate,
     cta: ctaPopulate,
   },
 };
