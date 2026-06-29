@@ -539,7 +539,7 @@ export interface SharedPageIntro extends Struct.ComponentSchema {
   attributes: {
     body: Schema.Attribute.RichText & Schema.Attribute.Required;
     decorativeImage: Schema.Attribute.Component<'shared.image-asset', false>;
-    fourCsTags: Schema.Attribute.Component<'shared.trust-badge', false>;
+    fourCsTags: Schema.Attribute.Component<'shared.trust-badge', true>;
     heading: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }

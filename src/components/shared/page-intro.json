@@ -22,7 +22,7 @@
     "fourCsTags": {
       "type": "component",
       "component": "shared.trust-badge",
-      "repeatable": false
+      "repeatable": true
     }
   }
 }
