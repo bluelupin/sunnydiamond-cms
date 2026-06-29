@@ -36,7 +36,7 @@
       "component": "shared.learn-more-section",
       "repeatable": false
     },
-    "ctaBanner": {
+    "discoverSection": {
       "type": "component",
       "component": "shared.cta-banner",
       "repeatable": false

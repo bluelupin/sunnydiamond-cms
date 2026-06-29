@@ -16,8 +16,13 @@
     },
     "decorativeImage": {
       "type": "component",
-      "repeatable": false,
-      "component": "shared.image-asset"
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "fourCsTags": {
+      "type": "component",
+      "component": "shared.trust-badge",
+      "repeatable": false
     }
   }
 }

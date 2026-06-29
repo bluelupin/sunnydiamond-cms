@@ -12,6 +12,11 @@
     },
     "gradeLongLabel": {
       "type": "string"
+    },
+    "gradeImage": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
     }
   }
 }

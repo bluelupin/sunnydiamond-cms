@@ -926,7 +926,7 @@ export interface ApiLearnAboutDiamondsPageLearnAboutDiamondsPage
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    ctaBanner: Schema.Attribute.Component<'shared.cta-banner', false>;
+    discoverSection: Schema.Attribute.Component<'shared.cta-banner', false>;
     faqSection: Schema.Attribute.Component<'shared.faq-section', false>;
     fourCsIntro: Schema.Attribute.Component<'shared.page-intro', false>;
     fourCsSection: Schema.Attribute.Component<'shared.four-cs-section', false>;

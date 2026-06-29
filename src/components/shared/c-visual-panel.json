@@ -15,6 +15,9 @@
       "type": "component",
       "component": "shared.grade-stop",
       "repeatable": true
+    },
+    "subTitle": {
+      "type": "text"
     }
   }
 }

@@ -16,13 +16,13 @@
       "component": "shared.image-asset",
       "repeatable": false
     },
-    "subtitle": {
-      "type": "text"
-    },
     "image": {
       "type": "component",
       "component": "shared.image-asset",
       "repeatable": false
+    },
+    "subtitle": {
+      "type": "text"
     },
     "heroVideo": {
       "type": "component",

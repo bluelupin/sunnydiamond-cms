@@ -8,25 +8,43 @@
   "attributes": {
     "tabLabel": {
       "type": "enumeration",
+      "default": "SHAPE",
       "enum": [
         "SHAPE",
         "FANCY_COLOUR",
         "DIAMOND_ANATOMY",
         "DIAMOND_CARE"
-      ],
-      "default": "SHAPE"
+      ]
+    },
+    "layoutType": {
+      "type": "enumeration",
+      "enum": [
+        "Carousel",
+        "Image Feature List",
+        "Feature List"
+      ]
     },
     "tabDescription": {
       "type": "text",
       "required": true
     },
-    "carouselImages": {
+    "carouselImage": {
       "type": "component",
-      "repeatable": true,
-      "component": "shared.image-asset"
+      "component": "shared.carousel-image",
+      "repeatable": true
     },
-    "bottomCaption": {
-      "type": "string"
+    "featureImage": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "featureSubtitle": {
+      "type": "text"
+    },
+    "featureItems": {
+      "type": "component",
+      "component": "shared.trust-badge-item",
+      "repeatable": true
     }
   }
 }

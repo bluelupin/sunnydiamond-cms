@@ -48,7 +48,19 @@ export interface SharedCVisualPanel extends Struct.ComponentSchema {
   };
   attributes: {
     gradeStops: Schema.Attribute.Component<'shared.grade-stop', true>;
+    subTitle: Schema.Attribute.Text;
     visualImage: Schema.Attribute.Component<'shared.image-asset', false>;
+  };
+}
+
+export interface SharedCarouselImage extends Struct.ComponentSchema {
+  collectionName: 'components_shared_carousel_images';
+  info: {
+    displayName: 'Carousel Image';
+  };
+  attributes: {
+    ctaButton: Schema.Attribute.Component<'shared.cta', false>;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
   };
 }
 
@@ -91,7 +103,9 @@ export interface SharedCertificateSection extends Struct.ComponentSchema {
     displayName: 'Certificate Section';
   };
   attributes: {
+    bgImage: Schema.Attribute.Component<'shared.image-asset', false>;
     certificationLabs: Schema.Attribute.Component<'shared.cert-lab-card', true>;
+    cutoutImage: Schema.Attribute.Component<'shared.image-asset', false>;
     sectionDescription: Schema.Attribute.RichText;
     sectionHeading: Schema.Attribute.String & Schema.Attribute.Required;
   };
@@ -203,6 +217,7 @@ export interface SharedCtaBanner extends Struct.ComponentSchema {
     ctaButtonLabel: Schema.Attribute.String & Schema.Attribute.Required;
     ctaButtonUrl: Schema.Attribute.String & Schema.Attribute.Required;
     heading: Schema.Attribute.String & Schema.Attribute.Required;
+    steps: Schema.Attribute.Component<'shared.process-step', true>;
     subheading: Schema.Attribute.String;
   };
 }
@@ -327,6 +342,7 @@ export interface SharedGradeStop extends Struct.ComponentSchema {
   };
   attributes: {
     gradeCode: Schema.Attribute.String;
+    gradeImage: Schema.Attribute.Component<'shared.image-asset', false>;
     gradeLongLabel: Schema.Attribute.String;
   };
 }
@@ -409,8 +425,13 @@ export interface SharedLearnMoreTab extends Struct.ComponentSchema {
     displayName: 'Learn More Tab';
   };
   attributes: {
-    bottomCaption: Schema.Attribute.String;
-    carouselImages: Schema.Attribute.Component<'shared.image-asset', true>;
+    carouselImage: Schema.Attribute.Component<'shared.carousel-image', true>;
+    featureImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    featureItems: Schema.Attribute.Component<'shared.trust-badge-item', true>;
+    featureSubtitle: Schema.Attribute.Text;
+    layoutType: Schema.Attribute.Enumeration<
+      ['Carousel', 'Image Feature List', 'Feature List']
+    >;
     tabDescription: Schema.Attribute.Text & Schema.Attribute.Required;
     tabLabel: Schema.Attribute.Enumeration<
       ['SHAPE', 'FANCY_COLOUR', 'DIAMOND_ANATOMY', 'DIAMOND_CARE']
@@ -518,6 +539,7 @@ export interface SharedPageIntro extends Struct.ComponentSchema {
   attributes: {
     body: Schema.Attribute.RichText & Schema.Attribute.Required;
     decorativeImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    fourCsTags: Schema.Attribute.Component<'shared.trust-badge', false>;
     heading: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
@@ -745,6 +767,7 @@ declare module '@strapi/strapi' {
       'shared.brilliance-section': SharedBrillianceSection;
       'shared.c-info-panel': SharedCInfoPanel;
       'shared.c-visual-panel': SharedCVisualPanel;
+      'shared.carousel-image': SharedCarouselImage;
       'shared.category-card': SharedCategoryCard;
       'shared.cert-lab-card': SharedCertLabCard;
       'shared.certificate-section': SharedCertificateSection;

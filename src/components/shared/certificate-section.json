@@ -15,8 +15,18 @@
     },
     "certificationLabs": {
       "type": "component",
-      "repeatable": true,
-      "component": "shared.cert-lab-card"
+      "component": "shared.cert-lab-card",
+      "repeatable": true
+    },
+    "bgImage": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "cutoutImage": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
     }
   }
 }
