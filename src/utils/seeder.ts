@@ -48,7 +48,23 @@ export async function seedCms(strapi: Core.Strapi) {
     const countExistingRows = (uid: string) => strapi.db.query(uid as any).count({});
     const seedStore = strapi.store({ type: 'plugin', name: 'sunny-cms-seeder' });
     const shouldUpsertChangedSeeds = process.env.CMS_SEED_UPSERT === 'true';
+    const seedOnly = process.env.CMS_SEED_ONLY
+      ?.split(',')
+      .map((value) => value.trim())
+      .filter(Boolean);
+    const shouldSeed = (uid: string, label: string) => {
+      if (!seedOnly || seedOnly.length === 0) {
+        return true;
+      }
+
+      return seedOnly.includes(uid) || seedOnly.includes(label);
+    };
+
     const seedSingleType = async (uid: string, label: string, data: Record<string, unknown>) => {
+      if (!shouldSeed(uid, label)) {
+        return;
+      }
+
       const count = await countExistingRows(uid);
       const hashKey = `${uid}:hash`;
       const nextHash = seedHash(data);
@@ -96,6 +112,10 @@ export async function seedCms(strapi: Core.Strapi) {
       uniqueField: string,
       records: Record<string, unknown>[]
     ) => {
+      if (!shouldSeed(uid, label)) {
+        return;
+      }
+
       for (const record of records) {
         const uniqueValue = record[uniqueField];
         if (!uniqueValue) {
@@ -723,11 +743,46 @@ export async function seedCms(strapi: Core.Strapi) {
     await seedSingleType('api::about-page.about-page', 'About Page', aboutPageData);
 
     // 8. Seed Learn About Diamonds Page Single Type (api::learn-about-diamonds-page.learn-about-diamonds-page)
+    const getUploadFileId = async (documentId: string, fallbackId: number) => {
+      const byDocumentId = await strapi.db.query('plugin::upload.file' as any).findOne({
+        where: { documentId },
+      } as any);
+
+      if (byDocumentId?.id) {
+        return byDocumentId.id;
+      }
+
+      const byId = await strapi.db.query('plugin::upload.file' as any).findOne({
+        where: { id: fallbackId },
+      } as any);
+
+      return byId?.id;
+    };
+
+    const imageAsset = (desktopImage?: number, mobileImage = desktopImage, altText?: string | null) => ({
+      altText: altText ?? null,
+      caption: null,
+      ...(desktopImage ? { desktopImage } : {}),
+      ...(mobileImage ? { mobileImage } : {}),
+    });
+
+    const diamondVideoId = await getUploadFileId('b1av8y20z01y7fn3mgs5t4sn', 186);
+    const clarityImageId = await getUploadFileId('mqsky1606f05u28anvu3ahq6', 147);
+    const giaLogoId = await getUploadFileId('w2umrugyogedweyu7o1plf5p', 148);
+    const agsLogoDesktopId = await getUploadFileId('pup8ubxjra59hmirg32dafto', 149);
+    const agsLogoMobileId = await getUploadFileId('voel54s4gsvh4z8wio16z0wf', 150);
+    const hrdLogoId = await getUploadFileId('luv8qfrogtl19j9rx59vc2ak', 151);
+    const tkpLogoId = await getUploadFileId('oyn9ndb6l0ojc9xqos9nmjyg', 152);
+
     const learnAboutDiamondsPageData = {
         hero: {
           eyebrow: 'The 4Cs and Beyond',
           title: 'Diamond Expertise',
           subtitle: 'Master the 4Cs of diamond quality and learn how Sunny Diamonds certifies every stone.',
+          heroVideo: {
+            altText: 'Diamond video',
+            ...(diamondVideoId ? { heroVideo: diamondVideoId } : {}),
+          },
           isActive: true,
         },
         fourCsIntro: {
@@ -737,6 +792,7 @@ export async function seedCms(strapi: Core.Strapi) {
         fourCsSection: {
           cVisualPanel: [
             {
+              visualImage: imageAsset(clarityImageId, clarityImageId, null),
               gradeStops: [
                 { gradeCode: 'I3', gradeLongLabel: 'Included' },
                 { gradeCode: 'I2', gradeLongLabel: 'Included' },
@@ -818,10 +874,26 @@ export async function seedCms(strapi: Core.Strapi) {
           sectionHeading: 'Certified Brilliance',
           sectionDescription: 'Certification gives you confidence about what you are investing in. Independent grading verifies cut, colour, clarity and carat, and each Sunny Diamond carries an independent lab report matched to your piece for lifetime traceability.',
           certificationLabs: [
-            { labName: 'GIA', labDescription: 'The Gemological Institute of America' },
-            { labName: 'AGS', labDescription: 'American Gem Society' },
-            { labName: 'HRD', labDescription: 'The HRD Antwerp Diamond Lab' },
-            { labName: 'IGI', labDescription: 'The International Gemological Institute' },
+            {
+              labName: 'GIA',
+              labDescription: 'The Gemological Institute of America',
+              labLogo: imageAsset(giaLogoId),
+            },
+            {
+              labName: 'AGS',
+              labDescription: 'American Gem Society',
+              labLogo: imageAsset(agsLogoDesktopId, agsLogoMobileId),
+            },
+            {
+              labName: 'HRD',
+              labDescription: 'The HRD Antwerp Diamond Lab',
+              labLogo: imageAsset(hrdLogoId),
+            },
+            {
+              labName: 'TKP',
+              labDescription: 'The Kimberly Process',
+              labLogo: imageAsset(tkpLogoId),
+            },
           ],
         },
         learnMoreSection: {
@@ -830,23 +902,27 @@ export async function seedCms(strapi: Core.Strapi) {
             {
               tabLabel: 'SHAPE' as 'SHAPE',
               tabDescription: 'Shape gives a diamond its identity. Explore the four classic forms that define our collection and the language jewellers use to read them.',
-              bottomCaption: 'Each cushion-shape diamond is laser-cut',
+              featureSubtitle: 'Each cushion-shape diamond is laser-cut',
+              carouselImage: [],
             },
             {
               tabLabel: 'FANCY_COLOUR' as 'FANCY_COLOUR',
               tabDescription: 'Fancy colour diamonds are valued for natural hue, tone and saturation beyond the classic D to Z scale.',
+              carouselImage: [],
             },
             {
               tabLabel: 'DIAMOND_ANATOMY' as 'DIAMOND_ANATOMY',
               tabDescription: 'A diamond is read through table, crown, girdle, pavilion and culet, each affecting light return and brilliance.',
+              carouselImage: [],
             },
             {
               tabLabel: 'DIAMOND_CARE' as 'DIAMOND_CARE',
               tabDescription: 'Clean with mild soap and warm water, store separately to avoid scratches, and visit our atelier annually for inspection and polish.',
+              carouselImage: [],
             },
           ],
         },
-        ctaBanner: {
+        discoverSection: {
           heading: 'Discover What Speaks to You',
           subheading: 'Find your diamond, crafted around the moment you will wear it — to suit your occasion and preferences.',
           ctaButtonLabel: 'BOOK A CONSULTATION',
