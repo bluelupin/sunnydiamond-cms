@@ -56,7 +56,14 @@ const populate = {
     populate: {
       tabs: {
         populate: {
-          carouselImages: imageAssetPopulate,
+          carouselImage: {
+            populate: {
+              image: imageAssetPopulate,
+              ctaButton: true,
+            },
+          },
+          featureImage: imageAssetPopulate,
+          featureItems: true,
         },
       },
     },
