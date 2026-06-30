@@ -8,10 +8,12 @@
   },
   "options": { "draftAndPublish": false },
   "attributes": {
-    "stateList": {
-      "type": "component",
-      "repeatable": true,
-      "component": "shared.indian-state"
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "code": {
+      "type": "string"
     }
   }
 }

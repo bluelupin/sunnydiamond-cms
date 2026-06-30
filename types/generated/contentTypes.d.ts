@@ -742,6 +742,10 @@ export interface ApiGenericFormGenericForm extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
+    showrooms: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::showroom.showroom'
+    >;
     submitButtonText: Schema.Attribute.String &
       Schema.Attribute.DefaultTo<'SUBMIT'>;
     updatedAt: Schema.Attribute.DateTime;
@@ -1347,14 +1351,15 @@ export interface ApiStateState extends Struct.CollectionTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
+    code: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::state.state'> &
       Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
-    stateList: Schema.Attribute.Component<'shared.indian-state', true>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

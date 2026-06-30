@@ -16,7 +16,12 @@
       "component": "shared.video-asset",
       "repeatable": false
     },
-    "image": {
+    "bgImage": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "cutoutImage": {
       "type": "component",
       "component": "shared.image-asset",
       "repeatable": false
