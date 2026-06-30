@@ -68,9 +68,10 @@ const populate = {
       },
     },
   },
-  ctaBanner: {
+  discoverSection: {
     populate: {
       backgroundImage: imageAssetPopulate,
+      steps: true,
     },
   },
   faqSection: {
