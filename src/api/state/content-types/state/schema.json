@@ -13,11 +13,6 @@
     },
     "code": {
       "type": "string"
-    },
-    "stateList": {
-      "type": "component",
-      "repeatable": true,
-      "component": "shared.indian-state"
     }
   }
 }
