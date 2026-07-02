@@ -93,6 +93,23 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       if (upload.size && upload.size > MAX_UPLOAD_BYTES) return ctx.badRequest('uploadedImage must be 5MB or smaller.');
     }
 
+    let stateRef = undefined;
+    const stateVal = stringOrUndefined(input.stateName) ?? stringOrUndefined(input.state);
+    if (stateVal) {
+      const stateObj = await strapi.documents('api::state.state').findFirst({
+        filters: {
+          $or: [
+            { name: stateVal },
+            { code: stateVal },
+            { documentId: stateVal }
+          ]
+        }
+      } as any);
+      if (stateObj) {
+        stateRef = stateObj.documentId;
+      }
+    }
+
     const entity = await strapi.documents(PRODUCT_SUBMISSION_UID as any).create({
       data: {
         formTag,
@@ -108,7 +125,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
         addressLine2: stringOrUndefined(input.addressLine2),
         pincode: stringOrUndefined(input.pincode),
         city: stringOrUndefined(input.city),
-        state: stringOrUndefined(input.state),
+        state: stateRef,
         sourcePage: stringOrUndefined(input.sourcePage),
         utmSource: stringOrUndefined(input.utmSource),
         utmMedium: stringOrUndefined(input.utmMedium),

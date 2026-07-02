@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_shared_dropdown_options",
+  "info": {
+    "displayName": "Dropdown Option",
+    "description": "A single select option for dropdown fields"
+  },
+  "attributes": {
+    "optionValue": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

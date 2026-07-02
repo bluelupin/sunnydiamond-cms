@@ -203,7 +203,13 @@ export async function seedCms(strapi: Core.Strapi) {
       { timeString: '04:00 PM - 05:00 PM' },
     ];
 
-    const showroomOptions = 'Calicut,Kochi,Thrissur,Coimbatore,Trivandrum';
+    const showroomOptions = [
+      { optionValue: 'Calicut' },
+      { optionValue: 'Kochi' },
+      { optionValue: 'Thrissur' },
+      { optionValue: 'Coimbatore' },
+      { optionValue: 'Trivandrum' },
+    ];
 
     await seedCollectionByField('api::generic-form.generic-form', 'Generic Form', 'formTag', [
       {
@@ -241,7 +247,13 @@ export async function seedCms(strapi: Core.Strapi) {
           { label: 'Email', fieldType: 'email' as 'email', placeholder: 'Enter' },
           { label: 'Preferred Showroom', fieldType: 'dropdown' as 'dropdown', placeholder: 'Select showroom', dropdownOptions: showroomOptions },
           { label: 'Preferred Date', fieldType: 'date' as 'date' },
-          { label: 'Purpose of Visit', fieldType: 'dropdown' as 'dropdown', placeholder: '-select-', dropdownOptions: 'Engagement Ring,Wedding Jewellery,Gifting,Personal Collection,Just Browsing' },
+          { label: 'Purpose of Visit', fieldType: 'dropdown' as 'dropdown', placeholder: '-select-', dropdownOptions: [
+            { optionValue: 'Engagement Ring' },
+            { optionValue: 'Wedding Jewellery' },
+            { optionValue: 'Gifting' },
+            { optionValue: 'Personal Collection' },
+            { optionValue: 'Just Browsing' }
+          ] },
           { label: 'Notes', fieldType: 'textarea' as 'textarea', placeholder: 'Eg: I am looking for an engagement ring' },
         ],
       },

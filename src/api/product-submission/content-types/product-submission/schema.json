@@ -21,7 +21,11 @@
     "addressLine2": { "type": "string" },
     "pincode": { "type": "string" },
     "city": { "type": "string" },
-    "state": { "type": "string" },
+    "state": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::state.state"
+    },
     "sourcePage": { "type": "string" },
     "utmSource": { "type": "string" },
     "utmMedium": { "type": "string" },
