@@ -645,6 +645,17 @@ export interface SharedSizeRow extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedTag extends Struct.ComponentSchema {
+  collectionName: 'components_shared_tags';
+  info: {
+    displayName: 'Tag';
+    icon: 'tag';
+  };
+  attributes: {
+    label: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface SharedTeamMember extends Struct.ComponentSchema {
   collectionName: 'components_shared_team_members';
   info: {
@@ -807,6 +818,7 @@ declare module '@strapi/strapi' {
       'shared.seo': SharedSeo;
       'shared.showroom-section': SharedShowroomSection;
       'shared.size-row': SharedSizeRow;
+      'shared.tag': SharedTag;
       'shared.team-member': SharedTeamMember;
       'shared.team-section': SharedTeamSection;
       'shared.time-slot': SharedTimeSlot;

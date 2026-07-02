@@ -11,7 +11,11 @@
     "authorName": { "type": "string" },
     "publishedDate": { "type": "date" },
     "featuredImage": { "type": "component", "repeatable": false, "component": "shared.image-asset" },
-    "tags": { "type": "json" },
+    "tags": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.tag"
+    },
     "isFeatured": { "type": "boolean", "default": false },
     "seo": { "type": "component", "repeatable": false, "component": "shared.seo" }
   }
