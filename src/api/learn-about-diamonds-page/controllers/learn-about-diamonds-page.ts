@@ -5,6 +5,7 @@
 import { factories } from '@strapi/strapi';
 
 const imageAssetPopulate = {
+  fields: ['altText'],
   populate: {
     desktopImage: true,
     mobileImage: true,
@@ -26,7 +27,18 @@ const heroPopulate = {
 
 const populate = {
   hero: heroPopulate,
-  fourCsIntro: true,
+  fourCsIntro: {
+    fields: ['heading', 'body'],
+    populate: {
+      decorativeImage: imageAssetPopulate,
+      fourCsTags: {
+        fields: ['label', 'sortOrder', 'isActive'],
+        populate: {
+          icon: true,
+        },
+      },
+    },
+  },
   fourCsSection: {
     populate: {
       cVisualPanel: {
