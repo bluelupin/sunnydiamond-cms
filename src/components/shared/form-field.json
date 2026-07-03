@@ -29,14 +29,13 @@
       "default": false
     },
     "dropdownOptions": {
-      "type": "string"
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.dropdown-option"
     },
     "formStep": {
       "type": "integer",
       "default": 1
-    },
-    "relatedCollection":{
-      "type": "string"
     }
   }
 }

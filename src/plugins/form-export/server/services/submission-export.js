@@ -25,6 +25,7 @@ const EXPORTS = {
       'createdAt',
       'updatedAt',
     ],
+    populate: ['preferredShowroom'],
   },
   product: {
     uid: 'api::product-submission.product-submission',
@@ -57,7 +58,7 @@ const EXPORTS = {
       'createdAt',
       'updatedAt',
     ],
-    populate: ['uploadedImage'],
+    populate: ['uploadedImage', 'state'],
   },
 };
 
@@ -83,6 +84,12 @@ const escapeCsvValue = (value) => {
 const getCellValue = (record, field) => {
   if (field === 'uploadedImageUrl') {
     return record.uploadedImage?.url || '';
+  }
+  if (field === 'preferredShowroom') {
+    return record.preferredShowroom?.name || '';
+  }
+  if (field === 'state') {
+    return record.state?.name || '';
   }
 
   return record[field];

@@ -101,13 +101,30 @@ export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ 
     );
     if (missingField) return ctx.badRequest(`${missingField.label} is required.`);
 
+    let showroomRef = undefined;
+    const preferredShowroomVal = stringOrUndefined(input.showroom) ?? stringOrUndefined(input.preferredShowroom);
+    if (preferredShowroomVal) {
+      const showroom = await strapi.documents('api::showroom.showroom').findFirst({
+        filters: {
+          $or: [
+            { name: preferredShowroomVal },
+            { slug: preferredShowroomVal },
+            { documentId: preferredShowroomVal }
+          ]
+        }
+      } as any);
+      if (showroom) {
+        showroomRef = showroom.documentId;
+      }
+    }
+
     const entity = await strapi.documents(GENERIC_SUBMISSION_UID as any).create({
       data: {
         formTag,
         fullName,
         phone,
         email,
-        preferredShowroom: stringOrUndefined(input.preferredShowroom),
+        preferredShowroom: showroomRef,
         preferredDate,
         selectedTimeSlot: stringOrUndefined(input.selectedTimeSlot),
         notes: stringOrUndefined(input.notes),

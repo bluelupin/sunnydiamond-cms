@@ -222,6 +222,17 @@ export interface SharedCtaBanner extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedDropdownOption extends Struct.ComponentSchema {
+  collectionName: 'components_shared_dropdown_options';
+  info: {
+    description: 'A single select option for dropdown fields';
+    displayName: 'Dropdown Option';
+  };
+  attributes: {
+    optionValue: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface SharedEditorialSection extends Struct.ComponentSchema {
   collectionName: 'components_shared_editorial_sections';
   info: {
@@ -311,7 +322,7 @@ export interface SharedFormField extends Struct.ComponentSchema {
     displayName: 'Form Field';
   };
   attributes: {
-    dropdownOptions: Schema.Attribute.String;
+    dropdownOptions: Schema.Attribute.Component<'shared.dropdown-option', true>;
     fieldType: Schema.Attribute.Enumeration<
       ['text', 'email', 'phone', 'date', 'dropdown', 'textarea']
     > &
@@ -320,7 +331,6 @@ export interface SharedFormField extends Struct.ComponentSchema {
     isRequired: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     label: Schema.Attribute.String & Schema.Attribute.Required;
     placeholder: Schema.Attribute.String;
-    relatedCollection: Schema.Attribute.String;
   };
 }
 
@@ -790,6 +800,7 @@ declare module '@strapi/strapi' {
       'shared.craft-section': SharedCraftSection;
       'shared.cta': SharedCta;
       'shared.cta-banner': SharedCtaBanner;
+      'shared.dropdown-option': SharedDropdownOption;
       'shared.editorial-section': SharedEditorialSection;
       'shared.faq-item': SharedFaqItem;
       'shared.faq-section': SharedFaqSection;

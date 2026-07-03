@@ -26,14 +26,9 @@
       "type": "string"
     },
     "preferredShowroom": {
-      "type": "enumeration",
-      "enum": [
-        "Calicut",
-        "Kochi",
-        "Thrissur",
-        "Coimbatore",
-        "Trivandrum"
-      ]
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::showroom.showroom"
     },
     "preferredDate": {
       "type": "date"

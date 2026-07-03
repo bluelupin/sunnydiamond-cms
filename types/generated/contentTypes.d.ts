@@ -784,8 +784,9 @@ export interface ApiGenericSubmissionGenericSubmission
     notes: Schema.Attribute.Text;
     phone: Schema.Attribute.String;
     preferredDate: Schema.Attribute.Date;
-    preferredShowroom: Schema.Attribute.Enumeration<
-      ['Calicut', 'Kochi', 'Thrissur', 'Coimbatore', 'Trivandrum']
+    preferredShowroom: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::showroom.showroom'
     >;
     publishedAt: Schema.Attribute.DateTime;
     selectedTimeSlot: Schema.Attribute.String;
@@ -1212,7 +1213,7 @@ export interface ApiProductSubmissionProductSubmission
     requestedDate: Schema.Attribute.Date;
     selectedTimeSlot: Schema.Attribute.String;
     sourcePage: Schema.Attribute.String;
-    state: Schema.Attribute.String;
+    state: Schema.Attribute.Relation<'oneToOne', 'api::state.state'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
