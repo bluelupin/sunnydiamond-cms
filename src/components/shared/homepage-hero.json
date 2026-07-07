@@ -1,0 +1,35 @@
+{
+  "collectionName": "components_shared_homepage_heroes",
+  "info": {
+    "displayName": "Homepage Hero",
+    "description": "Hero section with video, image background, eyebrow, main title, and cta button"
+  },
+  "options": {},
+  "attributes": {
+    "videoBackground": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.video-asset"
+    },
+    "imageBackground": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset"
+    },
+    "eyebrow": {
+      "type": "string"
+    },
+    "mainTitle": {
+      "type": "string"
+    },
+    "ctaButton": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
+    },
+    "showField": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

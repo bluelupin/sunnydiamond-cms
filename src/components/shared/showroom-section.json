@@ -38,6 +38,10 @@
     "isActive": {
       "type": "boolean",
       "default": true
+    },
+    "showField": {
+      "type": "boolean",
+      "default": true
     }
   }
 }

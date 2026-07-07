@@ -394,26 +394,23 @@ export async function seedCms(strapi: Core.Strapi) {
       const occasions = [
         {
           title: 'Festival',
-          slug: 'festival',
           description: 'Timeless pieces for festival occasions.',
           sortOrder: 1,
-          isActive: true,
+          showField: true,
           publishedAt: new Date(),
         },
         {
           title: 'Cocktail',
-          slug: 'cocktail',
           description: 'Premium collections for cocktail parties.',
           sortOrder: 2,
-          isActive: true,
+          showField: true,
           publishedAt: new Date(),
         },
         {
           title: 'Wedding',
-          slug: 'wedding',
           description: 'Exquisite settings for your special day.',
           sortOrder: 3,
-          isActive: true,
+          showField: true,
           publishedAt: new Date(),
         },
       ];

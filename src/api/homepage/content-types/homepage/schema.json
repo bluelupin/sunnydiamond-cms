@@ -18,7 +18,7 @@
     },
     "hero": {
       "type": "component",
-      "component": "shared.hero-section",
+      "component": "shared.homepage-hero",
       "repeatable": false
     },
     "trustBadges": {
@@ -26,17 +26,22 @@
       "component": "shared.trust-badge",
       "repeatable": true
     },
-    "categoryNavigation": {
+    "craftingBrillianceSection": {
+      "type": "component",
+      "component": "shared.crafting-brilliance-section",
+      "repeatable": false
+    },
+    "categoryCards": {
       "type": "component",
       "component": "shared.category-card",
       "repeatable": true
     },
     "diamondSourcingSection": {
       "type": "component",
-      "component": "shared.editorial-section",
+      "component": "shared.diamond-sourcing-section",
       "repeatable": false
     },
-    "featuredCollectionSection": {
+    "featuredCollection": {
       "type": "component",
       "component": "shared.collection-showcase-section",
       "repeatable": false
@@ -46,32 +51,37 @@
       "component": "shared.occasion-section",
       "repeatable": false
     },
-    "featuredProductsSection": {
+    "featuredProducts": {
       "type": "component",
-      "component": "shared.editorial-section",
+      "component": "shared.featured-products-section",
       "repeatable": false
     },
     "giftingBanner": {
       "type": "component",
-      "component": "shared.hero-section",
+      "component": "shared.gifting-banner",
       "repeatable": false
     },
-    "sunnyPromiseSection": {
+    "sunnyPromise": {
       "type": "component",
-      "component": "shared.editorial-section",
+      "component": "shared.sunny-promise-section",
       "repeatable": false
     },
-    "bespokeForYouCards": {
+    "bespokeForYou": {
       "type": "component",
-      "component": "shared.promo-card",
-      "repeatable": true
+      "component": "shared.bespoke-for-you-section",
+      "repeatable": false
+    },
+    "diamondsForEveryone": {
+      "type": "component",
+      "component": "shared.diamonds-for-everyone-section",
+      "repeatable": false
     },
     "craftsmanshipSection": {
       "type": "component",
       "component": "shared.process-section",
       "repeatable": false
     },
-    "showroomSection": {
+    "showroom": {
       "type": "component",
       "component": "shared.showroom-section",
       "repeatable": false

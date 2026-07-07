@@ -8,29 +8,12 @@
     "sectionTitle": {
       "type": "string"
     },
-    "description": {
-      "type": "text"
-    },
-    "image": {
-      "type": "component",
-      "repeatable": false,
-      "component": "shared.image-asset"
-    },
     "occasions": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::occasion.occasion"
     },
-    "cta": {
-      "type": "component",
-      "repeatable": false,
-      "component": "shared.cta"
-    },
-    "sortOrder": {
-      "type": "integer",
-      "default": 0
-    },
-    "isActive": {
+    "showField": {
       "type": "boolean",
       "default": true
     }

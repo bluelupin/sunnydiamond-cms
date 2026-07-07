@@ -859,10 +859,14 @@ export interface ApiHomepageHomepage extends Struct.SingleTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
-    bespokeForYouCards: Schema.Attribute.Component<'shared.promo-card', true>;
-    categoryNavigation: Schema.Attribute.Component<
-      'shared.category-card',
-      true
+    bespokeForYou: Schema.Attribute.Component<
+      'shared.bespoke-for-you-section',
+      false
+    >;
+    categoryCards: Schema.Attribute.Component<'shared.category-card', true>;
+    craftingBrillianceSection: Schema.Attribute.Component<
+      'shared.crafting-brilliance-section',
+      false
     >;
     craftsmanshipSection: Schema.Attribute.Component<
       'shared.process-section',
@@ -871,20 +875,24 @@ export interface ApiHomepageHomepage extends Struct.SingleTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    diamondSourcingSection: Schema.Attribute.Component<
-      'shared.editorial-section',
+    diamondsForEveryone: Schema.Attribute.Component<
+      'shared.diamonds-for-everyone-section',
       false
     >;
-    featuredCollectionSection: Schema.Attribute.Component<
+    diamondSourcingSection: Schema.Attribute.Component<
+      'shared.diamond-sourcing-section',
+      false
+    >;
+    featuredCollection: Schema.Attribute.Component<
       'shared.collection-showcase-section',
       false
     >;
-    featuredProductsSection: Schema.Attribute.Component<
-      'shared.editorial-section',
+    featuredProducts: Schema.Attribute.Component<
+      'shared.featured-products-section',
       false
     >;
-    giftingBanner: Schema.Attribute.Component<'shared.hero-section', false>;
-    hero: Schema.Attribute.Component<'shared.hero-section', false>;
+    giftingBanner: Schema.Attribute.Component<'shared.gifting-banner', false>;
+    hero: Schema.Attribute.Component<'shared.homepage-hero', false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -897,12 +905,9 @@ export interface ApiHomepageHomepage extends Struct.SingleTypeSchema {
     >;
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<'shared.seo', false>;
-    showroomSection: Schema.Attribute.Component<
-      'shared.showroom-section',
-      false
-    >;
-    sunnyPromiseSection: Schema.Attribute.Component<
-      'shared.editorial-section',
+    showroom: Schema.Attribute.Component<'shared.showroom-section', false>;
+    sunnyPromise: Schema.Attribute.Component<
+      'shared.sunny-promise-section',
       false
     >;
     trustBadges: Schema.Attribute.Component<'shared.trust-badge', true>;
@@ -1038,11 +1043,9 @@ export interface ApiOccasionOccasion extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    cta: Schema.Attribute.Component<'shared.cta', false>;
     description: Schema.Attribute.RichText;
-    editorialSections: Schema.Attribute.Component<'shared.promo-card', true>;
-    hero: Schema.Attribute.Component<'shared.hero-section', false>;
     image: Schema.Attribute.Component<'shared.image-asset', false>;
-    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -1051,7 +1054,7 @@ export interface ApiOccasionOccasion extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<'shared.seo', false>;
-    slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;

@@ -1,0 +1,30 @@
+{
+  "collectionName": "components_shared_bespoke_for_you_sections",
+  "info": {
+    "displayName": "Bespoke For You Section",
+    "description": "Bespoke For You Section with Title, Description, Primary CTA, and Secondary CTA"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "primaryCta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
+    },
+    "secondaryCta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
+    },
+    "showField": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

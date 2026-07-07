@@ -40,12 +40,13 @@ export const seoPopulate = {
 };
 
 export const occasionPopulate = {
-  fields: ['title', 'slug', 'description', 'sortOrder', 'isActive'],
+  fields: ['title', 'description', 'sortOrder', 'showField'],
   populate: {
     image: imageAssetPopulate,
-    hero: heroPopulate,
+    cta: ctaPopulate,
   },
 };
+
 
 export const showroomPopulate = {
   fields: ['name', 'slug', 'address', 'city', 'state', 'phone', 'email', 'mapUrl', 'openingHours', 'sortOrder', 'isActive'],

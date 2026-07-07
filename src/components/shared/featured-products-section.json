@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_shared_featured_products_sections",
+  "info": {
+    "displayName": "Featured Products Section",
+    "description": "Featured Products Section with Title, Subtitle, and CTA"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "subtitle": {
+      "type": "string"
+    },
+    "cta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
+    },
+    "showField": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

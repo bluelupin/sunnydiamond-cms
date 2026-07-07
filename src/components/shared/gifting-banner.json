@@ -1,20 +1,12 @@
 {
-  "collectionName": "components_shared_category_cards",
+  "collectionName": "components_shared_gifting_banners",
   "info": {
-    "displayName": "Category Card",
-    "description": "Homepage category navigation card"
+    "displayName": "Gifting Banner",
+    "description": "Gifting banner with background, cutout image, title, description, and primary/secondary CTAs"
   },
+  "options": {},
   "attributes": {
-    "title": {
-      "type": "string",
-      "required": true
-    },
-    "image": {
-      "type": "component",
-      "repeatable": false,
-      "component": "shared.image-asset"
-    },
-    "hoverImage": {
+    "backgroundImage": {
       "type": "component",
       "repeatable": false,
       "component": "shared.image-asset"
@@ -24,18 +16,21 @@
       "repeatable": false,
       "component": "shared.image-asset"
     },
-    "cta": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "primaryCta": {
       "type": "component",
       "repeatable": false,
       "component": "shared.cta"
     },
-    "sortOrder": {
-      "type": "integer",
-      "default": 0
-    },
-    "isActive": {
-      "type": "boolean",
-      "default": true
+    "secondaryCta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
     },
     "showField": {
       "type": "boolean",

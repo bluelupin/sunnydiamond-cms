@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_shared_diamonds_steps",
+  "info": {
+    "displayName": "Diamonds Step",
+    "description": "Helper component for repeatable step list in Diamonds 4 Everyone"
+  },
+  "options": {},
+  "attributes": {
+    "image": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset"
+    },
+    "label": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    }
+  }
+}

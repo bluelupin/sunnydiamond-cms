@@ -1,5 +1,20 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
+export interface SharedBespokeForYouSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_bespoke_for_you_sections';
+  info: {
+    description: 'Bespoke For You Section with Title, Description, Primary CTA, and Secondary CTA';
+    displayName: 'Bespoke For You Section';
+  };
+  attributes: {
+    description: Schema.Attribute.Text;
+    primaryCta: Schema.Attribute.Component<'shared.cta', false>;
+    secondaryCta: Schema.Attribute.Component<'shared.cta', false>;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String;
+  };
+}
+
 export interface SharedBrandTaglineSection extends Struct.ComponentSchema {
   collectionName: 'components_shared_brand_tagline_sections';
   info: {
@@ -76,6 +91,7 @@ export interface SharedCategoryCard extends Struct.ComponentSchema {
     hoverImage: Schema.Attribute.Component<'shared.image-asset', false>;
     image: Schema.Attribute.Component<'shared.image-asset', false>;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
   };
@@ -128,8 +144,8 @@ export interface SharedCollectionShowcaseSection
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     magentoCollectionRef: Schema.Attribute.String;
     primaryImage: Schema.Attribute.Component<'shared.image-asset', false>;
-    secondaryImage: Schema.Attribute.Component<'shared.image-asset', false>;
     sectionTitle: Schema.Attribute.String;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
   };
 }
@@ -189,6 +205,22 @@ export interface SharedCraftSection extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedCraftingBrillianceSection
+  extends Struct.ComponentSchema {
+  collectionName: 'components_shared_crafting_brilliances';
+  info: {
+    description: 'Crafting Brilliance Section with background, cutout image, title, and CTA';
+    displayName: 'Crafting Brilliance Section';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    cutoutImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String;
+  };
+}
+
 export interface SharedCta extends Struct.ComponentSchema {
   collectionName: 'components_shared_ctas';
   info: {
@@ -219,6 +251,51 @@ export interface SharedCtaBanner extends Struct.ComponentSchema {
     heading: Schema.Attribute.String & Schema.Attribute.Required;
     steps: Schema.Attribute.Component<'shared.process-step', true>;
     subheading: Schema.Attribute.String;
+  };
+}
+
+export interface SharedDiamondSourcingSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_diamond_sourcings';
+  info: {
+    description: 'Diamond Sourcing Section with GIF/Image, title, cutout, and background';
+    displayName: 'Diamond Sourcing Section';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    cutoutImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    gifOrImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String;
+  };
+}
+
+export interface SharedDiamondsForEveryoneSection
+  extends Struct.ComponentSchema {
+  collectionName: 'components_shared_diamonds_for_everyones';
+  info: {
+    description: 'Diamonds for Everyone Section with eyebrow, title, subtitle, repeatable steps, and CTA';
+    displayName: 'Diamonds for Everyone Section';
+  };
+  attributes: {
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    eyebrow: Schema.Attribute.String;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    steps: Schema.Attribute.Component<'shared.diamonds-step', true>;
+    subtitle: Schema.Attribute.String;
+    title: Schema.Attribute.String;
+  };
+}
+
+export interface SharedDiamondsStep extends Struct.ComponentSchema {
+  collectionName: 'components_shared_diamonds_steps';
+  info: {
+    description: 'Helper component for repeatable step list in Diamonds 4 Everyone';
+    displayName: 'Diamonds Step';
+  };
+  attributes: {
+    description: Schema.Attribute.Text;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
+    label: Schema.Attribute.String;
   };
 }
 
@@ -288,6 +365,20 @@ export interface SharedFeatureSlide extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedFeaturedProductsSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_featured_products_sections';
+  info: {
+    description: 'Featured Products Section with Title, Subtitle, and CTA';
+    displayName: 'Featured Products Section';
+  };
+  attributes: {
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    subtitle: Schema.Attribute.String;
+    title: Schema.Attribute.String;
+  };
+}
+
 export interface SharedFooterLinkGroup extends Struct.ComponentSchema {
   collectionName: 'components_shared_footer_link_groups';
   info: {
@@ -346,6 +437,23 @@ export interface SharedFourCsSection extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedGiftingBanner extends Struct.ComponentSchema {
+  collectionName: 'components_shared_gifting_banners';
+  info: {
+    description: 'Gifting banner with background, cutout image, title, description, and primary/secondary CTAs';
+    displayName: 'Gifting Banner';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    cutoutImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    description: Schema.Attribute.Text;
+    primaryCta: Schema.Attribute.Component<'shared.cta', false>;
+    secondaryCta: Schema.Attribute.Component<'shared.cta', false>;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String;
+  };
+}
+
 export interface SharedGradeStop extends Struct.ComponentSchema {
   collectionName: 'components_shared_grade_stop_nodes';
   info: {
@@ -375,6 +483,22 @@ export interface SharedHeroSection extends Struct.ComponentSchema {
     secondaryCta: Schema.Attribute.Component<'shared.cta', false>;
     subtitle: Schema.Attribute.Text;
     title: Schema.Attribute.String;
+  };
+}
+
+export interface SharedHomepageHero extends Struct.ComponentSchema {
+  collectionName: 'components_shared_homepage_heroes';
+  info: {
+    description: 'Hero section with video, image background, eyebrow, main title, and cta button';
+    displayName: 'Homepage Hero';
+  };
+  attributes: {
+    ctaButton: Schema.Attribute.Component<'shared.cta', false>;
+    eyebrow: Schema.Attribute.String;
+    imageBackground: Schema.Attribute.Component<'shared.image-asset', false>;
+    mainTitle: Schema.Attribute.String;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    videoBackground: Schema.Attribute.Component<'shared.video-asset', false>;
   };
 }
 
@@ -532,13 +656,9 @@ export interface SharedOccasionSection extends Struct.ComponentSchema {
     displayName: 'Occasion Section';
   };
   attributes: {
-    cta: Schema.Attribute.Component<'shared.cta', false>;
-    description: Schema.Attribute.Text;
-    image: Schema.Attribute.Component<'shared.image-asset', false>;
-    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     occasions: Schema.Attribute.Relation<'oneToMany', 'api::occasion.occasion'>;
     sectionTitle: Schema.Attribute.String;
-    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
   };
 }
 
@@ -568,6 +688,7 @@ export interface SharedProcessSection extends Struct.ComponentSchema {
     image: Schema.Attribute.Component<'shared.image-asset', false>;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     sectionTitle: Schema.Attribute.String;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     steps: Schema.Attribute.Component<'shared.process-step', true>;
   };
@@ -620,6 +741,7 @@ export interface SharedSeo extends Struct.ComponentSchema {
     metaKeywords: Schema.Attribute.String;
     metaTitle: Schema.Attribute.String;
     ogImage: Schema.Attribute.Media;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     structuredData: Schema.Attribute.JSON;
   };
 }
@@ -637,6 +759,7 @@ export interface SharedShowroomSection extends Struct.ComponentSchema {
     image: Schema.Attribute.Component<'shared.image-asset', false>;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     sectionTitle: Schema.Attribute.String;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     showrooms: Schema.Attribute.Relation<'oneToMany', 'api::showroom.showroom'>;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
   };
@@ -652,6 +775,21 @@ export interface SharedSizeRow extends Struct.ComponentSchema {
     circumference: Schema.Attribute.String;
     diameter: Schema.Attribute.String;
     sizeLabel: Schema.Attribute.String;
+  };
+}
+
+export interface SharedSunnyPromiseSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_sunny_promise_sections';
+  info: {
+    description: 'Sunny Promise Section with Title, Video, Description, and CTA';
+    displayName: 'Sunny Promise Section';
+  };
+  attributes: {
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    description: Schema.Attribute.Text;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String;
+    video: Schema.Attribute.Component<'shared.video-asset', false>;
   };
 }
 
@@ -744,6 +882,7 @@ export interface SharedTrustBadge extends Struct.ComponentSchema {
     icon: Schema.Attribute.Media;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     label: Schema.Attribute.String & Schema.Attribute.Required;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
   };
 }
@@ -786,6 +925,7 @@ export interface SharedVideoAsset extends Struct.ComponentSchema {
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
+      'shared.bespoke-for-you-section': SharedBespokeForYouSection;
       'shared.brand-tagline-section': SharedBrandTaglineSection;
       'shared.brilliance-section': SharedBrillianceSection;
       'shared.c-info-panel': SharedCInfoPanel;
@@ -798,19 +938,26 @@ declare module '@strapi/strapi' {
       'shared.content-section': SharedContentSection;
       'shared.craft-mosaic-section': SharedCraftMosaicSection;
       'shared.craft-section': SharedCraftSection;
+      'shared.crafting-brilliance-section': SharedCraftingBrillianceSection;
       'shared.cta': SharedCta;
       'shared.cta-banner': SharedCtaBanner;
+      'shared.diamond-sourcing-section': SharedDiamondSourcingSection;
+      'shared.diamonds-for-everyone-section': SharedDiamondsForEveryoneSection;
+      'shared.diamonds-step': SharedDiamondsStep;
       'shared.dropdown-option': SharedDropdownOption;
       'shared.editorial-section': SharedEditorialSection;
       'shared.faq-item': SharedFaqItem;
       'shared.faq-section': SharedFaqSection;
       'shared.feature-slide': SharedFeatureSlide;
+      'shared.featured-products-section': SharedFeaturedProductsSection;
       'shared.footer-link-group': SharedFooterLinkGroup;
       'shared.footer-ticker-item': SharedFooterTickerItem;
       'shared.form-field': SharedFormField;
       'shared.four-cs-section': SharedFourCsSection;
+      'shared.gifting-banner': SharedGiftingBanner;
       'shared.grade-stop': SharedGradeStop;
       'shared.hero-section': SharedHeroSection;
+      'shared.homepage-hero': SharedHomepageHero;
       'shared.image-asset': SharedImageAsset;
       'shared.indian-state': SharedIndianState;
       'shared.info-card': SharedInfoCard;
@@ -829,6 +976,7 @@ declare module '@strapi/strapi' {
       'shared.seo': SharedSeo;
       'shared.showroom-section': SharedShowroomSection;
       'shared.size-row': SharedSizeRow;
+      'shared.sunny-promise-section': SharedSunnyPromiseSection;
       'shared.tag': SharedTag;
       'shared.team-member': SharedTeamMember;
       'shared.team-section': SharedTeamSection;

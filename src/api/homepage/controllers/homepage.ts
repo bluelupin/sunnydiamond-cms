@@ -1,7 +1,6 @@
 import { factories } from '@strapi/strapi';
 import {
   ctaPopulate,
-  heroPopulate,
   imageAssetPopulate,
   mediaPopulate,
   occasionPopulate,
@@ -23,21 +22,58 @@ const categoryCardPopulate = {
   },
 };
 
-const promoCardPopulate = {
-  fields: ['title', 'description', 'sortOrder', 'isActive'],
+const craftingBrillianceSectionPopulate = {
   populate: {
-    image: imageAssetPopulate,
+    backgroundImage: imageAssetPopulate,
+    cutoutImage: imageAssetPopulate,
+    cta: ctaPopulate,
+  },
+};
+
+const diamondSourcingSectionPopulate = {
+  populate: {
+    gifOrImage: imageAssetPopulate,
+    cutoutImage: imageAssetPopulate,
+    backgroundImage: imageAssetPopulate,
+  },
+};
+
+const featuredProductsSectionPopulate = {
+  populate: {
+    cta: ctaPopulate,
+  },
+};
+
+const giftingBannerPopulate = {
+  populate: {
+    backgroundImage: imageAssetPopulate,
+    cutoutImage: imageAssetPopulate,
+    primaryCta: ctaPopulate,
+    secondaryCta: ctaPopulate,
+  },
+};
+
+const sunnyPromisePopulate = {
+  populate: {
     video: videoAssetPopulate,
     cta: ctaPopulate,
   },
 };
 
-const editorialSectionPopulate = {
-  fields: ['sectionTitle', 'description', 'isActive'],
+const bespokeForYouPopulate = {
   populate: {
-    bgImage: imageAssetPopulate,
-    cutoutImage: imageAssetPopulate,
-    video: videoAssetPopulate,
+    primaryCta: ctaPopulate,
+    secondaryCta: ctaPopulate,
+  },
+};
+
+const diamondsForEveryonePopulate = {
+  populate: {
+    steps: {
+      populate: {
+        image: imageAssetPopulate,
+      },
+    },
     cta: ctaPopulate,
   },
 };
@@ -51,11 +87,9 @@ const processStepPopulate = {
 };
 
 const occasionSectionPopulate = {
-  fields: ['sectionTitle', 'description', 'sortOrder', 'isActive'],
+  fields: ['sectionTitle'],
   populate: {
-    image: imageAssetPopulate,
     occasions: occasionPopulate,
-    cta: ctaPopulate,
   },
 };
 
@@ -84,19 +118,9 @@ const occasionRelationFallbackPopulate = {
       mobileImage: true,
     },
   },
-  hero: {
-    populate: {
-      image: {
-        populate: {
-          desktopImage: true,
-          mobileImage: true,
-        },
-      },
-      primaryCta: true,
-      secondaryCta: true,
-    },
-  },
+  cta: true,
 };
+
 
 const showroomRelationFallbackPopulate = {
   image: {
@@ -111,12 +135,10 @@ const collectionShowcaseSectionPopulate = {
   fields: ['sectionTitle', 'description', 'magentoCollectionRef', 'sortOrder', 'isActive'],
   populate: {
     primaryImage: imageAssetPopulate,
-    secondaryImage: imageAssetPopulate,
     collection: {
       fields: ['title', 'slug', 'description', 'sortOrder', 'isActive'],
       populate: {
         featuredImage: imageAssetPopulate,
-        productSection: editorialSectionPopulate,
         seo: seoPopulate,
       },
     },
@@ -147,7 +169,13 @@ const globalHeaderPopulate = {
 };
 
 const homepageShellPopulate = {
-  hero: heroPopulate,
+  hero: {
+    populate: {
+      videoBackground: videoAssetPopulate,
+      imageBackground: imageAssetPopulate,
+      ctaButton: ctaPopulate,
+    },
+  },
   seo: seoPopulate,
 };
 
@@ -158,33 +186,37 @@ const homepageSectionsPopulate = {
       icon: mediaPopulate,
     },
   },
-  categoryNavigation: categoryCardPopulate,
-  diamondSourcingSection: editorialSectionPopulate,
-  featuredCollectionSection: collectionShowcaseSectionPopulate,
-  giftingBanner: heroPopulate,
-  featuredProductsSection: editorialSectionPopulate,
+  craftingBrillianceSection: craftingBrillianceSectionPopulate,
+  categoryCards: categoryCardPopulate,
+  diamondSourcingSection: diamondSourcingSectionPopulate,
+  featuredCollection: collectionShowcaseSectionPopulate,
   occasionSection: occasionSectionPopulate,
+  featuredProducts: featuredProductsSectionPopulate,
+  giftingBanner: giftingBannerPopulate,
+  sunnyPromise: sunnyPromisePopulate,
+  bespokeForYou: bespokeForYouPopulate,
+  diamondsForEveryone: diamondsForEveryonePopulate,
   craftsmanshipSection: processSectionPopulate,
-  sunnyPromiseSection: editorialSectionPopulate,
-  bespokeForYouCards: promoCardPopulate,
-  showroomSection: showroomSectionPopulate,
+  showroom: showroomSectionPopulate,
 };
 
 const homepageShoppingBlocksPopulate = {
   trustBadges: homepageSectionsPopulate.trustBadges,
-  categoryNavigation: homepageSectionsPopulate.categoryNavigation,
-  featuredCollectionSection: homepageSectionsPopulate.featuredCollectionSection,
-  featuredProductsSection: homepageSectionsPopulate.featuredProductsSection,
+  categoryCards: homepageSectionsPopulate.categoryCards,
+  featuredCollection: homepageSectionsPopulate.featuredCollection,
+  featuredProducts: homepageSectionsPopulate.featuredProducts,
   giftingBanner: homepageSectionsPopulate.giftingBanner,
 };
 
 const homepageEditorialBlocksPopulate = {
+  craftingBrillianceSection: homepageSectionsPopulate.craftingBrillianceSection,
   diamondSourcingSection: homepageSectionsPopulate.diamondSourcingSection,
   occasionSection: homepageSectionsPopulate.occasionSection,
+  sunnyPromise: homepageSectionsPopulate.sunnyPromise,
+  bespokeForYou: homepageSectionsPopulate.bespokeForYou,
+  diamondsForEveryone: homepageSectionsPopulate.diamondsForEveryone,
   craftsmanshipSection: homepageSectionsPopulate.craftsmanshipSection,
-  sunnyPromiseSection: homepageSectionsPopulate.sunnyPromiseSection,
-  bespokeForYouCards: homepageSectionsPopulate.bespokeForYouCards,
-  showroomSection: homepageSectionsPopulate.showroomSection,
+  showroom: homepageSectionsPopulate.showroom,
 };
 
 const findPublishedSingle = async (
@@ -199,9 +231,6 @@ const findPublishedSingle = async (
   } as any);
 };
 
-// Strapi 5 does not fully hydrate collection relations nested inside fixed
-// components on this homepage single type. Keep this as one bounded query per
-// relation-backed section, not per item.
 const attachOccasionsAndShowrooms = async (
   strapiInstance: typeof strapi,
   homepage: any,
@@ -210,7 +239,7 @@ const attachOccasionsAndShowrooms = async (
   if (!homepage) return homepage;
 
   const needsOccasions = Boolean(homepage.occasionSection);
-  const needsShowrooms = Boolean(homepage.showroomSection);
+  const needsShowrooms = Boolean(homepage.showroom);
 
   if (!needsOccasions && !needsShowrooms) return homepage;
 
@@ -218,7 +247,7 @@ const attachOccasionsAndShowrooms = async (
     needsOccasions
       ? strapiInstance.db.query('api::occasion.occasion').findMany({
           where: {
-            isActive: true,
+            showField: true,
             publishedAt: { $notNull: true },
           },
           orderBy: { sortOrder: 'asc' },
@@ -258,7 +287,7 @@ const attachOccasionsAndShowrooms = async (
     homepage.occasionSection.occasions = sanitizedOccasions ?? [];
   }
   if (needsShowrooms) {
-    homepage.showroomSection.showrooms = sanitizedShowrooms ?? [];
+    homepage.showroom.showrooms = sanitizedShowrooms ?? [];
   }
 
   return homepage;
