@@ -47,7 +47,6 @@ export async function seedCms(strapi: Core.Strapi) {
   try {
     const countExistingRows = (uid: string) => strapi.db.query(uid as any).count({});
     const seedStore = strapi.store({ type: 'plugin', name: 'sunny-cms-seeder' });
-    const shouldUpsertChangedSeeds = process.env.CMS_SEED_UPSERT === 'true';
     const seedOnly = process.env.CMS_SEED_ONLY
       ?.split(',')
       .map((value) => value.trim())
@@ -83,28 +82,7 @@ export async function seedCms(strapi: Core.Strapi) {
         return;
       }
 
-      if (!shouldUpsertChangedSeeds) {
-        strapi.log.info(`${label} already exists and seed changed. Set CMS_SEED_UPSERT=true to upsert.`);
-        return;
-      }
-
-      const existing = await strapi.db.query(uid as any).findOne({
-        orderBy: [{ publishedAt: 'desc' }, { updatedAt: 'desc' }],
-      } as any);
-
-      if (!existing?.documentId) {
-        strapi.log.warn(`${label} exists but no documentId was found. Skipping upsert.`);
-        return;
-      }
-
-      strapi.log.info(`Upserting ${label} from changed seed content...`);
-      await strapi.documents(uid as any).update({
-        documentId: existing.documentId,
-        data,
-        status: 'published',
-      } as any);
-      await seedStore.set({ key: hashKey, value: nextHash });
-      strapi.log.info(`${label} successfully upserted.`);
+      strapi.log.info(`${label} already exists and seed changed. Skipping to preserve CMS content.`);
     };
     const seedCollectionByField = async (
       uid: string,
@@ -143,18 +121,7 @@ export async function seedCms(strapi: Core.Strapi) {
           continue;
         }
 
-        if (!shouldUpsertChangedSeeds) {
-          strapi.log.info(`${label} ${uniqueValue} already exists and seed changed. Set CMS_SEED_UPSERT=true to upsert.`);
-          continue;
-        }
-
-        await strapi.documents(uid as any).update({
-          documentId: existing.documentId,
-          data: record,
-          status: 'published',
-        } as any);
-        await seedStore.set({ key: hashKey, value: nextHash });
-        strapi.log.info(`Upserted ${label}: ${uniqueValue}.`);
+        strapi.log.info(`${label} ${uniqueValue} already exists and seed changed. Skipping to preserve CMS content.`);
       }
     };
     const ensurePublicReadPermissions = async () => {
