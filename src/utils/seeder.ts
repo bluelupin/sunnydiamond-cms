@@ -576,55 +576,52 @@ export async function seedCms(strapi: Core.Strapi) {
     const homepageData = {
         hero: {
           eyebrow: '20 Years of Legacy',
-          title: 'Fine jewellery designed with a tradition of excellence',
-          subtitle: 'Crafting rarity into timeless brilliance',
-          primaryCta: { label: 'Shop Now', url: '/products', targetType: 'internal' as 'internal', openInNewTab: false },
-          isActive: true,
+          mainTitle: 'Fine jewellery designed with a tradition of excellence',
+          ctaButton: { label: 'Shop Now', url: '/products', targetType: 'internal' as 'internal', openInNewTab: false },
+          showField: true,
         },
         trustBadges: [
-          { label: 'BIS Halmark for Jewellery', sortOrder: 1, isActive: true },
-          { label: 'Cash on Delivery', sortOrder: 2, isActive: true },
-          { label: 'Internally Flawless Diamonds', sortOrder: 3, isActive: true },
-          { label: '100% Moneyback Guarantee', sortOrder: 4, isActive: true },
+          { label: 'BIS Halmark for Jewellery', sortOrder: 1, isActive: true, showField: true },
+          { label: 'Cash on Delivery', sortOrder: 2, isActive: true, showField: true },
+          { label: 'Internally Flawless Diamonds', sortOrder: 3, isActive: true, showField: true },
+          { label: '100% Moneyback Guarantee', sortOrder: 4, isActive: true, showField: true },
         ],
-        categoryNavigation: [
-          { title: 'RINGS', sortOrder: 1, isActive: true, cta: { label: 'Explore Rings', url: '/products?category=Rings', targetType: 'internal' as 'internal' } },
-          { title: 'EARRINGS', sortOrder: 2, isActive: true, cta: { label: 'Explore Earrings', url: '/products?category=Earrings', targetType: 'internal' as 'internal' } },
-          { title: 'BRACELETS', sortOrder: 3, isActive: true, cta: { label: 'Explore Bracelets', url: '/products?category=Bracelets', targetType: 'internal' as 'internal' } },
-          { title: 'NECKLACE', sortOrder: 4, isActive: true, cta: { label: 'Explore Necklaces', url: '/products?category=Necklaces', targetType: 'internal' as 'internal' } },
+        categoryCards: [
+          { title: 'RINGS', sortOrder: 1, isActive: true, showField: true, cta: { label: 'Explore Rings', url: '/products?category=Rings', targetType: 'internal' as 'internal' } },
+          { title: 'EARRINGS', sortOrder: 2, isActive: true, showField: true, cta: { label: 'Explore Earrings', url: '/products?category=Earrings', targetType: 'internal' as 'internal' } },
+          { title: 'BRACELETS', sortOrder: 3, isActive: true, showField: true, cta: { label: 'Explore Bracelets', url: '/products?category=Bracelets', targetType: 'internal' as 'internal' } },
+          { title: 'NECKLACE', sortOrder: 4, isActive: true, showField: true, cta: { label: 'Explore Necklaces', url: '/products?category=Necklaces', targetType: 'internal' as 'internal' } },
         ],
         diamondSourcingSection: {
-          sectionTitle: 'Internally flawless diamonds, sourced from Belgium',
-          description: 'Step into a world of ultimate purity. Every single stone is meticulously handpicked and imported directly from Antwerp, Belgium, the diamond capital of the world.',
-          isActive: true,
+          title: 'Internally flawless diamonds, sourced from Belgium',
+          showField: true,
         },
-        featuredCollectionSection: {
+        featuredCollection: {
           sectionTitle: 'Alankara Collection',
           description: 'A stellar showcase of signature flawless rings, pendants, and tennis bracelets reflecting traditional mastery.',
           magentoCollectionRef: 'alankara-collection',
           cta: { label: 'Explore Collection', url: '/products', targetType: 'internal' as 'internal' },
           isActive: true,
+          showField: true,
         },
         giftingBanner: {
-          eyebrow: 'Gifting Special',
           title: 'Gifting For Your Valentine',
-          subtitle: 'Traditional mastery bringing every diamond to radiant, eternal life.',
+          description: 'Traditional mastery bringing every diamond to radiant, eternal life.',
           primaryCta: { label: 'Shop Now', url: '/products', targetType: 'internal' as 'internal' },
           secondaryCta: { label: 'Send a Gift Card Instead', url: '/contact', targetType: 'internal' as 'internal' },
-          isActive: true,
+          showField: true,
         },
-        featuredProductsSection: {
-          sectionTitle: 'Your Diamond Awaits',
-          description: 'Traditional mastery bringing every diamond to radiant, eternal life. Highlighted by our signature Celestial Solitaire Ring, Lumiere Pendant Necklace, and Cascade Drop Earrings.',
-          isActive: true,
+        featuredProducts: {
+          title: 'Your Diamond Awaits',
+          subtitle: 'Traditional mastery bringing every diamond to radiant, eternal life. Highlighted by our signature Celestial Solitaire Ring, Lumiere Pendant Necklace, and Cascade Drop Earrings.',
+          showField: true,
         },
         occasionSection: {
           sectionTitle: 'Timeless Pieces for Every Occasion',
-          description: 'Explore the highly curated jewelry selections suited perfectly for your Festival, Cocktail, or Wedding collections.',
           occasions: {
             connect: seededOccasions.map((occasion) => occasion.documentId).filter(Boolean),
           },
-          isActive: true,
+          showField: true,
         },
         craftsmanshipSection: {
           sectionTitle: 'From Vision to Masterpiece',
@@ -636,36 +633,35 @@ export async function seedCms(strapi: Core.Strapi) {
             { title: 'Deliver', description: 'Secure complimentary shipping directly to your doorstep with guaranteed certification.', sortOrder: 4, isActive: true },
           ],
           isActive: true,
+          showField: true,
         },
-        sunnyPromiseSection: {
-          sectionTitle: 'THE SUNNY PROMISE',
+        sunnyPromise: {
+          title: 'THE SUNNY PROMISE',
           description: 'Guided by heritage and perfected by pride every setting a masterpiece of expert precision.',
           cta: { label: 'View Our Story', url: '/about', targetType: 'internal' as 'internal' },
-          isActive: true,
+          showField: true,
         },
-        bespokeForYouCards: [
-          {
-            title: 'BESPOKE JEWELLERY',
-            description: 'Designs thoughtfully crafted to bring your vision to life',
-            cta: { label: 'Explore Bespoke', url: '/contact', targetType: 'internal' as 'internal' },
-            sortOrder: 1,
-            isActive: true,
-          },
-          {
-            title: 'DIAMONDS FOR EVERYONE',
-            description: 'Save monthly towards your timeless diamond',
-            cta: { label: 'Monthly Plans', url: '/diamonds-for-everyone', targetType: 'internal' as 'internal' },
-            sortOrder: 2,
-            isActive: true,
-          },
-        ],
-        showroomSection: {
+        bespokeForYou: {
+          title: 'BESPOKE JEWELLERY',
+          description: 'Designs thoughtfully crafted to bring your vision to life',
+          primaryCta: { label: 'Explore Bespoke', url: '/contact', targetType: 'internal' as 'internal' },
+          secondaryCta: { label: 'Monthly Plans', url: '/diamonds-for-everyone', targetType: 'internal' as 'internal' },
+          showField: true,
+        },
+        diamondsForEveryone: {
+          title: 'DIAMONDS FOR EVERYONE',
+          subtitle: 'Save monthly towards your timeless diamond',
+          cta: { label: 'Monthly Plans', url: '/diamonds-for-everyone', targetType: 'internal' as 'internal' },
+          showField: true,
+        },
+        showroom: {
           sectionTitle: 'Visit Our Showrooms',
           description: 'Step into our atelier to discover the Belgian-sourced mastery behind every stone. Located across Kochi, Calicut, Thrissur, Trivandrum, and Coimbatore.',
           showrooms: {
             connect: seededShowrooms.map((showroom) => showroom.documentId).filter(Boolean),
           },
           isActive: true,
+          showField: true,
         },
         seo: {
           metaTitle: 'Sunny Diamonds | Home of Internally Flawless Diamonds',
