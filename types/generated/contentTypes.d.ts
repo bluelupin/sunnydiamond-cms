@@ -616,7 +616,7 @@ export interface ApiContactBespokePageContactBespokePage
   extends Struct.SingleTypeSchema {
   collectionName: 'contact_bespoke_pages';
   info: {
-    displayName: 'Contact Bespoke Page';
+    displayName: 'Bespoke Page';
     pluralName: 'contact-bespoke-pages';
     singularName: 'contact-bespoke-page';
   };
@@ -624,26 +624,37 @@ export interface ApiContactBespokePageContactBespokePage
     draftAndPublish: true;
   };
   attributes: {
-    bespokeSteps: Schema.Attribute.Component<'shared.process-step', true>;
-    contactEmail: Schema.Attribute.Email;
-    contactPhone: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    hero: Schema.Attribute.Component<'shared.hero-section', false>;
-    introCopy: Schema.Attribute.RichText;
+    featuredStoriesSection: Schema.Attribute.Component<
+      'shared.featured-stories-section',
+      false
+    >;
+    getInTouchSection: Schema.Attribute.Component<
+      'shared.bespoke-get-in-touch-section',
+      false
+    >;
+    hero: Schema.Attribute.Component<'shared.bespoke-hero', false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::contact-bespoke-page.contact-bespoke-page'
     > &
       Schema.Attribute.Private;
-    promoCards: Schema.Attribute.Component<'shared.promo-card', true>;
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<'shared.seo', false>;
+    serviceHighlights: Schema.Attribute.Component<
+      'shared.bespoke-service-highlight',
+      true
+    >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    visionSection: Schema.Attribute.Component<
+      'shared.bespoke-vision-section',
+      false
+    >;
   };
 }
 
