@@ -1,0 +1,45 @@
+{
+  "kind": "collectionType",
+  "collectionName": "design_stories",
+  "info": {
+    "singularName": "design-story",
+    "pluralName": "design-stories",
+    "displayName": "Design Story",
+    "description": "Behind This Design story pages"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "heroImage": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "story": {
+      "type": "richtext"
+    },
+    "inspirationImages": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "finalImages": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "cta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
+    }
+  }
+}

@@ -465,8 +465,10 @@ export interface SharedFeaturedStoriesSection extends Struct.ComponentSchema {
   };
   attributes: {
     backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
-    cards: Schema.Attribute.Component<'shared.featured-story-card', true> &
-      Schema.Attribute.Required;
+    cards: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::featured-story.featured-story'
+    >;
     cta: Schema.Attribute.Component<'shared.cta', false>;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     title: Schema.Attribute.String & Schema.Attribute.Required;

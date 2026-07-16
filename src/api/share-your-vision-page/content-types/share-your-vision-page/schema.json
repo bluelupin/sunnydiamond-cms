@@ -1,0 +1,35 @@
+{
+  "kind": "singleType",
+  "collectionName": "share_your_vision_pages",
+  "info": {
+    "singularName": "share-your-vision-page",
+    "pluralName": "share-your-vision-pages",
+    "displayName": "Share Your Vision Page",
+    "description": "Editable content for the Share Your Vision contact form page"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "heroImage": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "cta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
+    }
+  }
+}

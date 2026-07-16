@@ -8,7 +8,11 @@
   "attributes": {
     "backgroundImage": { "type": "component", "repeatable": false, "component": "shared.image-asset" },
     "title": { "type": "string", "required": true },
-    "cards": { "type": "component", "repeatable": true, "component": "shared.featured-story-card", "required": true },
+    "cards": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::featured-story.featured-story"
+    },
     "cta": { "type": "component", "repeatable": false, "component": "shared.cta" },
     "showField": { "type": "boolean", "default": true }
   }
