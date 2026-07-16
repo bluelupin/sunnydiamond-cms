@@ -4,16 +4,15 @@
   "info": {
     "singularName": "contact-bespoke-page",
     "pluralName": "contact-bespoke-pages",
-    "displayName": "Contact Bespoke Page"
+    "displayName": "Bespoke Page"
   },
   "options": { "draftAndPublish": true },
   "attributes": {
-    "hero": { "type": "component", "repeatable": false, "component": "shared.hero-section" },
-    "introCopy": { "type": "richtext" },
-    "contactEmail": { "type": "email" },
-    "contactPhone": { "type": "string" },
-    "bespokeSteps": { "type": "component", "repeatable": true, "component": "shared.process-step" },
-    "promoCards": { "type": "component", "repeatable": true, "component": "shared.promo-card" },
+    "hero": { "type": "component", "repeatable": false, "component": "shared.bespoke-hero" },
+    "visionSection": { "type": "component", "repeatable": false, "component": "shared.bespoke-vision-section" },
+    "featuredStoriesSection": { "type": "component", "repeatable": false, "component": "shared.featured-stories-section" },
+    "serviceHighlights": { "type": "component", "repeatable": true, "component": "shared.bespoke-service-highlight" },
+    "getInTouchSection": { "type": "component", "repeatable": false, "component": "shared.bespoke-get-in-touch-section" },
     "seo": { "type": "component", "repeatable": false, "component": "shared.seo" }
   }
 }

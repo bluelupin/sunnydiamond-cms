@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_shared_featured_story_cards",
+  "info": {
+    "displayName": "Featured Story Card",
+    "description": "Image card in the Featured Stories section"
+  },
+  "options": {},
+  "attributes": {
+    "image": { "type": "component", "repeatable": false, "component": "shared.image-asset", "required": true },
+    "title": { "type": "string" },
+    "cta": { "type": "component", "repeatable": false, "component": "shared.cta" },
+    "sortOrder": { "type": "integer", "default": 0 },
+    "isActive": { "type": "boolean", "default": true }
+  }
+}
