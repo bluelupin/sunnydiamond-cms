@@ -62,6 +62,7 @@ const sunnyPromisePopulate = {
 
 const bespokeForYouPopulate = {
   populate: {
+    backgroundImage: imageAssetPopulate,
     primaryCta: ctaPopulate,
     secondaryCta: ctaPopulate,
   },

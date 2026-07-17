@@ -7,6 +7,7 @@ export interface SharedBespokeForYouSection extends Struct.ComponentSchema {
     displayName: 'Bespoke For You Section';
   };
   attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
     description: Schema.Attribute.Text;
     primaryCta: Schema.Attribute.Component<'shared.cta', false>;
     secondaryCta: Schema.Attribute.Component<'shared.cta', false>;

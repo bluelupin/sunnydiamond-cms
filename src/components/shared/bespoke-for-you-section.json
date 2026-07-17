@@ -6,6 +6,11 @@
   },
   "options": {},
   "attributes": {
+    "backgroundImage": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset"
+    },
     "title": {
       "type": "string"
     },
