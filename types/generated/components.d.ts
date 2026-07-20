@@ -7,11 +7,90 @@ export interface SharedBespokeForYouSection extends Struct.ComponentSchema {
     displayName: 'Bespoke For You Section';
   };
   attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
     description: Schema.Attribute.Text;
     primaryCta: Schema.Attribute.Component<'shared.cta', false>;
     secondaryCta: Schema.Attribute.Component<'shared.cta', false>;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     title: Schema.Attribute.String;
+  };
+}
+
+export interface SharedBespokeGetInTouchSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_bespoke_get_in_touch_sections';
+  info: {
+    description: 'Bottom consultation call-to-action banner';
+    displayName: 'Bespoke Get In Touch Section';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false> &
+      Schema.Attribute.Required;
+    cta: Schema.Attribute.Component<'shared.cta', false> &
+      Schema.Attribute.Required;
+    description: Schema.Attribute.Text;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedBespokeHero extends Struct.ComponentSchema {
+  collectionName: 'components_shared_bespoke_heroes';
+  info: {
+    description: 'Bespoke Jewellery page hero';
+    displayName: 'Bespoke Hero';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false> &
+      Schema.Attribute.Required;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedBespokeServiceHighlight extends Struct.ComponentSchema {
+  collectionName: 'components_shared_bespoke_service_highlights';
+  info: {
+    description: 'Icon and label shown below Featured Stories';
+    displayName: 'Bespoke Service Highlight';
+  };
+  attributes: {
+    icon: Schema.Attribute.Media<'images'>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    label: Schema.Attribute.String & Schema.Attribute.Required;
+    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+  };
+}
+
+export interface SharedBespokeVisionCard extends Struct.ComponentSchema {
+  collectionName: 'components_shared_bespoke_vision_cards';
+  info: {
+    description: 'Image or video story card in the vision carousel';
+    displayName: 'Bespoke Vision Card';
+  };
+  attributes: {
+    description: Schema.Attribute.Text;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    stepLabel: Schema.Attribute.String & Schema.Attribute.Required;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    video: Schema.Attribute.Component<'shared.video-asset', false>;
+  };
+}
+
+export interface SharedBespokeVisionSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_bespoke_vision_sections';
+  info: {
+    description: 'Designed around your story introduction and vision cards';
+    displayName: 'Bespoke Vision Section';
+  };
+  attributes: {
+    cards: Schema.Attribute.Component<'shared.bespoke-vision-card', true> &
+      Schema.Attribute.Required;
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    description: Schema.Attribute.Text;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
 
@@ -375,6 +454,40 @@ export interface SharedFeaturedProductsSection extends Struct.ComponentSchema {
     cta: Schema.Attribute.Component<'shared.cta', false>;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     subtitle: Schema.Attribute.String;
+    title: Schema.Attribute.String;
+  };
+}
+
+export interface SharedFeaturedStoriesSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_featured_stories_sections';
+  info: {
+    description: 'Editorial story cards over a background image';
+    displayName: 'Featured Stories Section';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    cards: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::featured-story.featured-story'
+    >;
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedFeaturedStoryCard extends Struct.ComponentSchema {
+  collectionName: 'components_shared_featured_story_cards';
+  info: {
+    description: 'Image card in the Featured Stories section';
+    displayName: 'Featured Story Card';
+  };
+  attributes: {
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    image: Schema.Attribute.Component<'shared.image-asset', false> &
+      Schema.Attribute.Required;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     title: Schema.Attribute.String;
   };
 }
@@ -926,6 +1039,11 @@ declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
       'shared.bespoke-for-you-section': SharedBespokeForYouSection;
+      'shared.bespoke-get-in-touch-section': SharedBespokeGetInTouchSection;
+      'shared.bespoke-hero': SharedBespokeHero;
+      'shared.bespoke-service-highlight': SharedBespokeServiceHighlight;
+      'shared.bespoke-vision-card': SharedBespokeVisionCard;
+      'shared.bespoke-vision-section': SharedBespokeVisionSection;
       'shared.brand-tagline-section': SharedBrandTaglineSection;
       'shared.brilliance-section': SharedBrillianceSection;
       'shared.c-info-panel': SharedCInfoPanel;
@@ -950,6 +1068,8 @@ declare module '@strapi/strapi' {
       'shared.faq-section': SharedFaqSection;
       'shared.feature-slide': SharedFeatureSlide;
       'shared.featured-products-section': SharedFeaturedProductsSection;
+      'shared.featured-stories-section': SharedFeaturedStoriesSection;
+      'shared.featured-story-card': SharedFeaturedStoryCard;
       'shared.footer-link-group': SharedFooterLinkGroup;
       'shared.footer-ticker-item': SharedFooterTickerItem;
       'shared.form-field': SharedFormField;

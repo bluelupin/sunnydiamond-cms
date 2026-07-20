@@ -616,7 +616,7 @@ export interface ApiContactBespokePageContactBespokePage
   extends Struct.SingleTypeSchema {
   collectionName: 'contact_bespoke_pages';
   info: {
-    displayName: 'Contact Bespoke Page';
+    displayName: 'Bespoke Page';
     pluralName: 'contact-bespoke-pages';
     singularName: 'contact-bespoke-page';
   };
@@ -624,23 +624,67 @@ export interface ApiContactBespokePageContactBespokePage
     draftAndPublish: true;
   };
   attributes: {
-    bespokeSteps: Schema.Attribute.Component<'shared.process-step', true>;
-    contactEmail: Schema.Attribute.Email;
-    contactPhone: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    hero: Schema.Attribute.Component<'shared.hero-section', false>;
-    introCopy: Schema.Attribute.RichText;
+    featuredStoriesSection: Schema.Attribute.Component<
+      'shared.featured-stories-section',
+      false
+    >;
+    getInTouchSection: Schema.Attribute.Component<
+      'shared.bespoke-get-in-touch-section',
+      false
+    >;
+    hero: Schema.Attribute.Component<'shared.bespoke-hero', false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::contact-bespoke-page.contact-bespoke-page'
     > &
       Schema.Attribute.Private;
-    promoCards: Schema.Attribute.Component<'shared.promo-card', true>;
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<'shared.seo', false>;
+    serviceHighlights: Schema.Attribute.Component<
+      'shared.bespoke-service-highlight',
+      true
+    >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    visionSection: Schema.Attribute.Component<
+      'shared.bespoke-vision-section',
+      false
+    >;
+  };
+}
+
+export interface ApiDesignStoryDesignStory extends Struct.CollectionTypeSchema {
+  collectionName: 'design_stories';
+  info: {
+    description: 'Behind This Design story pages';
+    displayName: 'Design Story';
+    pluralName: 'design-stories';
+    singularName: 'design-story';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    finalImages: Schema.Attribute.Media<'images', true>;
+    heroImage: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
+    inspirationImages: Schema.Attribute.Media<'images', true>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::design-story.design-story'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    story: Schema.Attribute.RichText;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -710,6 +754,71 @@ export interface ApiFaqFaq extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
     question: Schema.Attribute.String & Schema.Attribute.Required;
+    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiFeaturedStoryFeaturedStory
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'featured_stories';
+  info: {
+    description: 'Story detail pages referenced by Featured Stories sections';
+    displayName: 'Featured Story';
+    pluralName: 'featured-stories';
+    singularName: 'featured-story';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    coverImage: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    description: Schema.Attribute.RichText;
+    gallery: Schema.Attribute.Media<'images', true>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::featured-story.featured-story'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiGalleryGallery extends Struct.CollectionTypeSchema {
+  collectionName: 'galleries';
+  info: {
+    description: 'Reusable image galleries';
+    displayName: 'Gallery';
+    pluralName: 'galleries';
+    singularName: 'gallery';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    images: Schema.Attribute.Media<'images', true> & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::gallery.gallery'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -1261,6 +1370,39 @@ export interface ApiServicePageServicePage extends Struct.CollectionTypeSchema {
     slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     steps: Schema.Attribute.Component<'shared.process-step', true>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiShareYourVisionPageShareYourVisionPage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'share_your_vision_pages';
+  info: {
+    description: 'Editable content for the Share Your Vision contact form page';
+    displayName: 'Share Your Vision Page';
+    pluralName: 'share-your-vision-pages';
+    singularName: 'share-your-vision-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    description: Schema.Attribute.Text;
+    heroImage: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::share-your-vision-page.share-your-vision-page'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
     title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -1922,8 +2064,11 @@ declare module '@strapi/strapi' {
       'api::career-opening.career-opening': ApiCareerOpeningCareerOpening;
       'api::category-landing.category-landing': ApiCategoryLandingCategoryLanding;
       'api::contact-bespoke-page.contact-bespoke-page': ApiContactBespokePageContactBespokePage;
+      'api::design-story.design-story': ApiDesignStoryDesignStory;
       'api::editorial-collection.editorial-collection': ApiEditorialCollectionEditorialCollection;
       'api::faq.faq': ApiFaqFaq;
+      'api::featured-story.featured-story': ApiFeaturedStoryFeaturedStory;
+      'api::gallery.gallery': ApiGalleryGallery;
       'api::generic-form.generic-form': ApiGenericFormGenericForm;
       'api::generic-submission.generic-submission': ApiGenericSubmissionGenericSubmission;
       'api::global-config.global-config': ApiGlobalConfigGlobalConfig;
@@ -1937,6 +2082,7 @@ declare module '@strapi/strapi' {
       'api::product-landing-page.product-landing-page': ApiProductLandingPageProductLandingPage;
       'api::product-submission.product-submission': ApiProductSubmissionProductSubmission;
       'api::service-page.service-page': ApiServicePageServicePage;
+      'api::share-your-vision-page.share-your-vision-page': ApiShareYourVisionPageShareYourVisionPage;
       'api::showroom.showroom': ApiShowroomShowroom;
       'api::size-guide.size-guide': ApiSizeGuideSizeGuide;
       'api::state.state': ApiStateState;

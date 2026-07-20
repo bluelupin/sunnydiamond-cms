@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_shared_bespoke_vision_sections",
+  "info": {
+    "displayName": "Bespoke Vision Section",
+    "description": "Designed around your story introduction and vision cards"
+  },
+  "options": {},
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "description": { "type": "text" },
+    "cards": { "type": "component", "repeatable": true, "component": "shared.bespoke-vision-card", "required": true },
+    "cta": { "type": "component", "repeatable": false, "component": "shared.cta" },
+    "showField": { "type": "boolean", "default": true }
+  }
+}
