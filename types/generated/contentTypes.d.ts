@@ -642,6 +642,10 @@ export interface ApiContactBespokePageContactBespokePage
       'api::contact-bespoke-page.contact-bespoke-page'
     > &
       Schema.Attribute.Private;
+    pastCreations: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::gallery.gallery'
+    >;
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<'shared.seo', false>;
     serviceHighlights: Schema.Attribute.Component<
@@ -819,7 +823,9 @@ export interface ApiGalleryGallery extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID<'title'>;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    title: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

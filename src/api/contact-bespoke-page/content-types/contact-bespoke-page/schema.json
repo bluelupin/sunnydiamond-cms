@@ -11,6 +11,11 @@
     "hero": { "type": "component", "repeatable": false, "component": "shared.bespoke-hero" },
     "visionSection": { "type": "component", "repeatable": false, "component": "shared.bespoke-vision-section" },
     "featuredStoriesSection": { "type": "component", "repeatable": false, "component": "shared.featured-stories-section" },
+    "pastCreations": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::gallery.gallery"
+    },
     "serviceHighlights": { "type": "component", "repeatable": true, "component": "shared.bespoke-service-highlight" },
     "getInTouchSection": { "type": "component", "repeatable": false, "component": "shared.bespoke-get-in-touch-section" },
     "seo": { "type": "component", "repeatable": false, "component": "shared.seo" }

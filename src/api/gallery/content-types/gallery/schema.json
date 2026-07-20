@@ -11,6 +11,13 @@
     "draftAndPublish": true
   },
   "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title"
+    },
     "images": {
       "type": "media",
       "multiple": true,
