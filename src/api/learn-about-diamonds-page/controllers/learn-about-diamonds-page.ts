@@ -32,7 +32,7 @@ const populate = {
     populate: {
       decorativeImage: imageAssetPopulate,
       fourCsTags: {
-        fields: ['label', 'sortOrder', 'isActive'],
+        fields: ['label', 'sortOrder', 'showField'],
         populate: {
           icon: true,
         },
