@@ -555,16 +555,16 @@ export async function seedCms(strapi: Core.Strapi) {
           showField: true,
         },
         trustBadges: [
-          { label: 'BIS Halmark for Jewellery', sortOrder: 1, isActive: true, showField: true },
-          { label: 'Cash on Delivery', sortOrder: 2, isActive: true, showField: true },
-          { label: 'Internally Flawless Diamonds', sortOrder: 3, isActive: true, showField: true },
-          { label: '100% Moneyback Guarantee', sortOrder: 4, isActive: true, showField: true },
+          { label: 'BIS Halmark for Jewellery', sortOrder: 1, showField: true },
+          { label: 'Cash on Delivery', sortOrder: 2, showField: true },
+          { label: 'Internally Flawless Diamonds', sortOrder: 3, showField: true },
+          { label: '100% Moneyback Guarantee', sortOrder: 4, showField: true },
         ],
         categoryCards: [
-          { title: 'RINGS', sortOrder: 1, isActive: true, showField: true, cta: { label: 'Explore Rings', url: '/products?category=Rings', targetType: 'internal' as 'internal' } },
-          { title: 'EARRINGS', sortOrder: 2, isActive: true, showField: true, cta: { label: 'Explore Earrings', url: '/products?category=Earrings', targetType: 'internal' as 'internal' } },
-          { title: 'BRACELETS', sortOrder: 3, isActive: true, showField: true, cta: { label: 'Explore Bracelets', url: '/products?category=Bracelets', targetType: 'internal' as 'internal' } },
-          { title: 'NECKLACE', sortOrder: 4, isActive: true, showField: true, cta: { label: 'Explore Necklaces', url: '/products?category=Necklaces', targetType: 'internal' as 'internal' } },
+          { title: 'RINGS', sortOrder: 1, showField: true, cta: { label: 'Explore Rings', url: '/products?category=Rings', targetType: 'internal' as 'internal' } },
+          { title: 'EARRINGS', sortOrder: 2, showField: true, cta: { label: 'Explore Earrings', url: '/products?category=Earrings', targetType: 'internal' as 'internal' } },
+          { title: 'BRACELETS', sortOrder: 3, showField: true, cta: { label: 'Explore Bracelets', url: '/products?category=Bracelets', targetType: 'internal' as 'internal' } },
+          { title: 'NECKLACE', sortOrder: 4, showField: true, cta: { label: 'Explore Necklaces', url: '/products?category=Necklaces', targetType: 'internal' as 'internal' } },
         ],
         diamondSourcingSection: {
           title: 'Internally flawless diamonds, sourced from Belgium',
@@ -575,7 +575,6 @@ export async function seedCms(strapi: Core.Strapi) {
           description: 'A stellar showcase of signature flawless rings, pendants, and tennis bracelets reflecting traditional mastery.',
           magentoCollectionRef: 'alankara-collection',
           cta: { label: 'Explore Collection', url: '/products', targetType: 'internal' as 'internal' },
-          isActive: true,
           showField: true,
         },
         giftingBanner: {
@@ -606,7 +605,6 @@ export async function seedCms(strapi: Core.Strapi) {
             { title: 'Craft', description: 'Master artisans set each stone to capture ultimate light in our dedicated atelier.', sortOrder: 3, isActive: true },
             { title: 'Deliver', description: 'Secure complimentary shipping directly to your doorstep with guaranteed certification.', sortOrder: 4, isActive: true },
           ],
-          isActive: true,
           showField: true,
         },
         sunnyPromise: {
@@ -634,7 +632,6 @@ export async function seedCms(strapi: Core.Strapi) {
           showrooms: {
             connect: seededShowrooms.map((showroom) => showroom.documentId).filter(Boolean),
           },
-          isActive: true,
           showField: true,
         },
         seo: {

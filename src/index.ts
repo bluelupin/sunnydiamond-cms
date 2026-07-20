@@ -1,6 +1,6 @@
 import type { Core } from '@strapi/strapi';
 import { seedCms } from './utils/seeder';
-import { repairHomepageSections } from './utils/repair-homepage-sections';
+// import { repairHomepageSections } from './utils/repair-homepage-sections';
 import { registerFrontendRevalidation } from './utils/frontend-revalidation';
 import { migrateHomepage } from './utils/migrate-homepage';
 

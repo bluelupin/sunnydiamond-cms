@@ -62,7 +62,17 @@ const populate = {
               mobileImage: true,
             },
           },
-          gradeStops: true,
+          gradeStops: {
+            fields:['gradeCode', 'gradeLongLabel'],
+            populate:{
+              gradeImage:{
+                populate:{
+                desktopImage: true,
+                mobileImage: true,
+                }
+              }
+            }
+          },
         },
       },
       cInfoPanel: true,
