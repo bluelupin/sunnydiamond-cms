@@ -17,17 +17,22 @@
     },
     "steps": {
       "type": "component",
-      "repeatable": true,
-      "component": "shared.diamonds-step"
+      "component": "shared.diamonds-step",
+      "repeatable": true
     },
     "cta": {
       "type": "component",
-      "repeatable": false,
-      "component": "shared.cta"
+      "component": "shared.cta",
+      "repeatable": false
     },
     "showField": {
       "type": "boolean",
       "default": true
+    },
+    "backgroundImage": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
     }
   }
 }

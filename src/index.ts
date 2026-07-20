@@ -22,7 +22,9 @@ export default {
    */
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {
     registerFrontendRevalidation(strapi);
-    await seedCms(strapi);
+    if (process.env.CMS_SEED_ENABLED === 'true') {
+      await seedCms(strapi);
+    }
     if (process.env.MIGRATE_HOMEPAGE && process.env.MIGRATE_HOMEPAGE === 'true') {
       await migrateHomepage(strapi);
     }

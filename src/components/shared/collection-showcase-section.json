@@ -13,8 +13,8 @@
     },
     "primaryImage": {
       "type": "component",
-      "repeatable": false,
-      "component": "shared.image-asset"
+      "component": "shared.image-asset",
+      "repeatable": false
     },
     "collection": {
       "type": "relation",
@@ -26,16 +26,12 @@
     },
     "cta": {
       "type": "component",
-      "repeatable": false,
-      "component": "shared.cta"
+      "component": "shared.cta",
+      "repeatable": false
     },
     "sortOrder": {
       "type": "integer",
       "default": 0
-    },
-    "isActive": {
-      "type": "boolean",
-      "default": true
     },
     "showField": {
       "type": "boolean",

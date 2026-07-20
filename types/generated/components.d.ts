@@ -169,7 +169,6 @@ export interface SharedCategoryCard extends Struct.ComponentSchema {
     cutoutImage: Schema.Attribute.Component<'shared.image-asset', false>;
     hoverImage: Schema.Attribute.Component<'shared.image-asset', false>;
     image: Schema.Attribute.Component<'shared.image-asset', false>;
-    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
@@ -220,7 +219,6 @@ export interface SharedCollectionShowcaseSection
     >;
     cta: Schema.Attribute.Component<'shared.cta', false>;
     description: Schema.Attribute.Text;
-    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     magentoCollectionRef: Schema.Attribute.String;
     primaryImage: Schema.Attribute.Component<'shared.image-asset', false>;
     sectionTitle: Schema.Attribute.String;
@@ -356,6 +354,7 @@ export interface SharedDiamondsForEveryoneSection
     displayName: 'Diamonds for Everyone Section';
   };
   attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
     cta: Schema.Attribute.Component<'shared.cta', false>;
     eyebrow: Schema.Attribute.String;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
@@ -373,7 +372,6 @@ export interface SharedDiamondsStep extends Struct.ComponentSchema {
   };
   attributes: {
     description: Schema.Attribute.Text;
-    image: Schema.Attribute.Component<'shared.image-asset', false>;
     label: Schema.Attribute.String;
   };
 }
@@ -796,10 +794,10 @@ export interface SharedProcessSection extends Struct.ComponentSchema {
     displayName: 'Process Section';
   };
   attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
     cta: Schema.Attribute.Component<'shared.cta', false>;
     description: Schema.Attribute.Text;
     image: Schema.Attribute.Component<'shared.image-asset', false>;
-    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     sectionTitle: Schema.Attribute.String;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
@@ -870,7 +868,6 @@ export interface SharedShowroomSection extends Struct.ComponentSchema {
     description: Schema.Attribute.Text;
     formCta: Schema.Attribute.Component<'shared.modal-cta', false>;
     image: Schema.Attribute.Component<'shared.image-asset', false>;
-    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     sectionTitle: Schema.Attribute.String;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     showrooms: Schema.Attribute.Relation<'oneToMany', 'api::showroom.showroom'>;
@@ -900,6 +897,8 @@ export interface SharedSunnyPromiseSection extends Struct.ComponentSchema {
   attributes: {
     cta: Schema.Attribute.Component<'shared.cta', false>;
     description: Schema.Attribute.Text;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
+    isVideo: Schema.Attribute.Boolean;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     title: Schema.Attribute.String;
     video: Schema.Attribute.Component<'shared.video-asset', false>;
@@ -993,7 +992,6 @@ export interface SharedTrustBadge extends Struct.ComponentSchema {
   };
   attributes: {
     icon: Schema.Attribute.Media;
-    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     label: Schema.Attribute.String & Schema.Attribute.Required;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;

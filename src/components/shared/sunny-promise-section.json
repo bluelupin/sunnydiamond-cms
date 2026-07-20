@@ -11,20 +11,28 @@
     },
     "video": {
       "type": "component",
-      "repeatable": false,
-      "component": "shared.video-asset"
+      "component": "shared.video-asset",
+      "repeatable": false
     },
     "description": {
       "type": "text"
     },
     "cta": {
       "type": "component",
-      "repeatable": false,
-      "component": "shared.cta"
+      "component": "shared.cta",
+      "repeatable": false
     },
     "showField": {
       "type": "boolean",
       "default": true
+    },
+    "image": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "isVideo": {
+      "type": "boolean"
     }
   }
 }

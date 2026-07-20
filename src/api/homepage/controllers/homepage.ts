@@ -13,7 +13,7 @@ const HOMEPAGE_UID = 'api::homepage.homepage';
 const GLOBAL_CONFIG_UID = 'api::global-config.global-config';
 
 const categoryCardPopulate = {
-  fields: ['title', 'sortOrder', 'isActive'],
+  fields: ['title', 'sortOrder','showField'],
   populate: {
     image: imageAssetPopulate,
     hoverImage: imageAssetPopulate,
@@ -56,6 +56,7 @@ const giftingBannerPopulate = {
 const sunnyPromisePopulate = {
   populate: {
     video: videoAssetPopulate,
+    image:imageAssetPopulate,
     cta: ctaPopulate,
   },
 };
@@ -70,11 +71,7 @@ const bespokeForYouPopulate = {
 
 const diamondsForEveryonePopulate = {
   populate: {
-    steps: {
-      populate: {
-        image: imageAssetPopulate,
-      },
-    },
+    backgroundImage: imageAssetPopulate,
     cta: ctaPopulate,
   },
 };
@@ -95,16 +92,17 @@ const occasionSectionPopulate = {
 };
 
 const processSectionPopulate = {
-  fields: ['sectionTitle', 'description', 'sortOrder', 'isActive'],
+  fields: ['sectionTitle', 'description', 'sortOrder', 'showField'],
   populate: {
     image: imageAssetPopulate,
     steps: processStepPopulate,
     cta: ctaPopulate,
+    backgroundImage: imageAssetPopulate,
   },
 };
 
 const showroomSectionPopulate = {
-  fields: ['sectionTitle', 'description', 'sortOrder', 'isActive'],
+  fields: ['sectionTitle', 'description', 'sortOrder', 'showField'],
   populate: {
     image: imageAssetPopulate,
     showrooms: showroomPopulate,
@@ -133,7 +131,7 @@ const showroomRelationFallbackPopulate = {
 };
 
 const collectionShowcaseSectionPopulate = {
-  fields: ['sectionTitle', 'description', 'magentoCollectionRef', 'sortOrder', 'isActive'],
+  fields: ['sectionTitle', 'description', 'magentoCollectionRef', 'sortOrder', 'showField'],
   populate: {
     primaryImage: imageAssetPopulate,
     collection: {
@@ -182,7 +180,7 @@ const homepageShellPopulate = {
 
 const homepageSectionsPopulate = {
   trustBadges: {
-    fields: ['label', 'sortOrder', 'isActive'],
+    fields: ['label', 'sortOrder', 'showField'],
     populate: {
       icon: mediaPopulate,
     },

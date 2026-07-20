@@ -13,26 +13,27 @@
     },
     "image": {
       "type": "component",
-      "repeatable": false,
-      "component": "shared.image-asset"
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "backgroundImage": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
     },
     "steps": {
       "type": "component",
-      "repeatable": true,
-      "component": "shared.process-step"
+      "component": "shared.process-step",
+      "repeatable": true
     },
     "cta": {
       "type": "component",
-      "repeatable": false,
-      "component": "shared.cta"
+      "component": "shared.cta",
+      "repeatable": false
     },
     "sortOrder": {
       "type": "integer",
       "default": 0
-    },
-    "isActive": {
-      "type": "boolean",
-      "default": true
     },
     "showField": {
       "type": "boolean",

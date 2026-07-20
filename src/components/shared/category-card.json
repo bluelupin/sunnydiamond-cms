@@ -11,31 +11,27 @@
     },
     "image": {
       "type": "component",
-      "repeatable": false,
-      "component": "shared.image-asset"
+      "component": "shared.image-asset",
+      "repeatable": false
     },
     "hoverImage": {
       "type": "component",
-      "repeatable": false,
-      "component": "shared.image-asset"
+      "component": "shared.image-asset",
+      "repeatable": false
     },
     "cutoutImage": {
       "type": "component",
-      "repeatable": false,
-      "component": "shared.image-asset"
+      "component": "shared.image-asset",
+      "repeatable": false
     },
     "cta": {
       "type": "component",
-      "repeatable": false,
-      "component": "shared.cta"
+      "component": "shared.cta",
+      "repeatable": false
     },
     "sortOrder": {
       "type": "integer",
       "default": 0
-    },
-    "isActive": {
-      "type": "boolean",
-      "default": true
     },
     "showField": {
       "type": "boolean",
