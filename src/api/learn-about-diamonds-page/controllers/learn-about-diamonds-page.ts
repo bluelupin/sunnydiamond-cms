@@ -26,6 +26,19 @@ const heroPopulate = {
 };
 
 const populate = {
+  seo: {
+    fields: [
+      'metaTitle',
+      'metaDescription',
+      'canonicalUrl',
+      'metaKeywords',
+      'structuredData',
+      'showField',
+    ],
+    populate: {
+      ogImage: true,
+    },
+  },
   hero: heroPopulate,
   fourCsIntro: {
     fields: ['heading', 'body'],
