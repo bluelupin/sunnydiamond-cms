@@ -402,16 +402,26 @@ async function findActualRelationTable(strapi: Core.Strapi, tableName: string, f
   const hasStandard = await strapi.db.connection.schema.hasTable(standardName);
   if (hasStandard) return standardName;
 
-  // Handles PostgreSQL max identifier length truncation and hashing
+  // Handles max identifier length truncation and hashing across DB clients.
   if (standardName.length > 60) {
-    const res = await strapi.db.connection.raw(
-      "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';"
-    );
-    const tableNames = res.rows.map((row: any) => row.table_name);
-    const prefix = tableName.substring(0, 30);
-    const suffix = `_${fieldName}_lnk`;
-    const matched = tableNames.find((t: string) => t.startsWith(prefix) && t.endsWith(suffix));
-    if (matched) return matched;
+    const client = strapi.db.connection.client.config.client;
+    const tableQuery = client === 'pg' || client === 'postgres'
+      ? "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';"
+      : 'SELECT table_name FROM information_schema.tables WHERE table_schema = DATABASE();';
+
+    try {
+      const res = await strapi.db.connection.raw(tableQuery);
+      const rows = Array.isArray(res) ? res[0] : res?.rows;
+      const tableNames = (Array.isArray(rows) ? rows : [])
+        .map((row: any) => row.table_name || row.TABLE_NAME || row.name)
+        .filter(Boolean);
+      const prefix = tableName.substring(0, 30);
+      const suffix = `_${fieldName}_lnk`;
+      const matched = tableNames.find((t: string) => t.startsWith(prefix) && t.endsWith(suffix));
+      if (matched) return matched;
+    } catch (error) {
+      strapi.log.warn(`Could not inspect relation tables for ${standardName}.`, error);
+    }
   }
   return null;
 }
