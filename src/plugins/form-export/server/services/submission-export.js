@@ -60,6 +60,22 @@ const EXPORTS = {
     ],
     populate: ['uploadedImage', 'state'],
   },
+  bespoke: {
+    uid: 'api::bespoke-submission.bespoke-submission',
+    filename: 'sunny-bespoke-submissions.csv',
+    fields: [
+      'id',
+      'documentId',
+      'fullName',
+      'phone',
+      'email',
+      'designVision',
+      'referenceImageUrl',
+      'createdAt',
+      'updatedAt',
+    ],
+    populate: ['referenceImage'],
+  },
 };
 
 const escapeCsvValue = (value) => {
@@ -84,6 +100,9 @@ const escapeCsvValue = (value) => {
 const getCellValue = (record, field) => {
   if (field === 'uploadedImageUrl') {
     return record.uploadedImage?.url || '';
+  }
+  if (field === 'referenceImageUrl') {
+    return record.referenceImage?.url || '';
   }
   if (field === 'preferredShowroom') {
     return record.preferredShowroom?.name || '';

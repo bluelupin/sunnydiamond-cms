@@ -21,6 +21,7 @@ export default factories.createCoreController(
           pastCreations: { populate: { images: true } },
           serviceHighlights: { populate: '*' },
           getInTouchSection: { populate: '*' },
+          customDesignForm: true,
           seo: { populate: '*' },
         },
       } as any;

@@ -1,0 +1,26 @@
+{
+  "collectionName": "components_shared_bespoke_custom_design_forms",
+  "info": {
+    "displayName": "Bespoke Custom Design Form",
+    "description": "Content and labels for the bespoke custom-design modal"
+  },
+  "options": {},
+  "attributes": {
+    "showField": { "type": "boolean", "default": true },
+    "title": { "type": "string", "default": "Start your Custom Creation", "required": true },
+    "fullNameLabel": { "type": "string", "default": "Full Name", "required": true },
+    "phoneLabel": { "type": "string", "default": "Phone No.", "required": true },
+    "emailLabel": { "type": "string", "default": "Email ID", "required": true },
+    "visionLabel": { "type": "string", "default": "Describe your vision", "required": true },
+    "referenceImagePrompt": {
+      "type": "string",
+      "default": "Do you have any reference image? (Optional)"
+    },
+    "referenceImageButtonText": { "type": "string", "default": "ATTACH IMAGE" },
+    "helperText": {
+      "type": "string",
+      "default": "Our representative will get in touch with you soon"
+    },
+    "submitButtonText": { "type": "string", "default": "CONFIRM VISIT", "required": true }
+  }
+}

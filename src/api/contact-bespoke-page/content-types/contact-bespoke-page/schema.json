@@ -18,6 +18,7 @@
     },
     "serviceHighlights": { "type": "component", "repeatable": true, "component": "shared.bespoke-service-highlight" },
     "getInTouchSection": { "type": "component", "repeatable": false, "component": "shared.bespoke-get-in-touch-section" },
+    "customDesignForm": { "type": "component", "repeatable": false, "component": "shared.bespoke-custom-design-form" },
     "seo": { "type": "component", "repeatable": false, "component": "shared.seo" }
   }
 }

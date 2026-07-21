@@ -15,6 +15,11 @@ const exports = [
     title: 'Product submissions',
     description: 'Product enquiry and personalisation forms.',
   },
+  {
+    type: 'bespoke',
+    title: 'Bespoke submissions',
+    description: 'Custom-design enquiries and their reference images.',
+  },
 ];
 
 const getFilename = (response: any, fallback: string) => {

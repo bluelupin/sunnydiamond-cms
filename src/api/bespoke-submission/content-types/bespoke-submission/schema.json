@@ -1,0 +1,21 @@
+{
+  "kind": "collectionType",
+  "collectionName": "bespoke_submissions",
+  "info": {
+    "singularName": "bespoke-submission",
+    "pluralName": "bespoke-submissions",
+    "displayName": "Submissions: Bespoke Custom Design"
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "fullName": { "type": "string", "required": true },
+    "phone": { "type": "string", "required": true },
+    "email": { "type": "email", "required": true },
+    "designVision": { "type": "text", "required": true },
+    "referenceImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    }
+  }
+}

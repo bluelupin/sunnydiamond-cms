@@ -1,5 +1,40 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
+export interface SharedBespokeCustomDesignForm extends Struct.ComponentSchema {
+  collectionName: 'components_shared_bespoke_custom_design_forms';
+  info: {
+    description: 'Content and labels for the bespoke custom-design modal';
+    displayName: 'Bespoke Custom Design Form';
+  };
+  attributes: {
+    emailLabel: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Email ID'>;
+    fullNameLabel: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Full Name'>;
+    helperText: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Our representative will get in touch with you soon'>;
+    phoneLabel: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Phone No.'>;
+    referenceImageButtonText: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'ATTACH IMAGE'>;
+    referenceImagePrompt: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Do you have any reference image? (Optional)'>;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    submitButtonText: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'CONFIRM VISIT'>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Start your Custom Creation'>;
+    visionLabel: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Describe your vision'>;
+  };
+}
+
 export interface SharedBespokeForYouSection extends Struct.ComponentSchema {
   collectionName: 'components_shared_bespoke_for_you_sections';
   info: {
@@ -1036,6 +1071,7 @@ export interface SharedVideoAsset extends Struct.ComponentSchema {
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
+      'shared.bespoke-custom-design-form': SharedBespokeCustomDesignForm;
       'shared.bespoke-for-you-section': SharedBespokeForYouSection;
       'shared.bespoke-get-in-touch-section': SharedBespokeGetInTouchSection;
       'shared.bespoke-hero': SharedBespokeHero;

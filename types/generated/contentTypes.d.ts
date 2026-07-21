@@ -492,6 +492,39 @@ export interface ApiAboutPageAboutPage extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiBespokeSubmissionBespokeSubmission
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'bespoke_submissions';
+  info: {
+    displayName: 'Submissions: Bespoke Custom Design';
+    pluralName: 'bespoke-submissions';
+    singularName: 'bespoke-submission';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    designVision: Schema.Attribute.Text & Schema.Attribute.Required;
+    email: Schema.Attribute.Email & Schema.Attribute.Required;
+    fullName: Schema.Attribute.String & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::bespoke-submission.bespoke-submission'
+    > &
+      Schema.Attribute.Private;
+    phone: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    referenceImage: Schema.Attribute.Media<'images'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiBlogPostBlogPost extends Struct.CollectionTypeSchema {
   collectionName: 'blog_posts';
   info: {
@@ -627,6 +660,10 @@ export interface ApiContactBespokePageContactBespokePage
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    customDesignForm: Schema.Attribute.Component<
+      'shared.bespoke-custom-design-form',
+      false
+    >;
     featuredStoriesSection: Schema.Attribute.Component<
       'shared.featured-stories-section',
       false
@@ -2067,6 +2104,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::about-page.about-page': ApiAboutPageAboutPage;
+      'api::bespoke-submission.bespoke-submission': ApiBespokeSubmissionBespokeSubmission;
       'api::blog-post.blog-post': ApiBlogPostBlogPost;
       'api::career-opening.career-opening': ApiCareerOpeningCareerOpening;
       'api::category-landing.category-landing': ApiCategoryLandingCategoryLanding;
