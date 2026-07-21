@@ -2,10 +2,8 @@ import { factories } from '@strapi/strapi';
 
 export default factories.createCoreController(
   'api::contact-bespoke-page.contact-bespoke-page' as any,
-  () => ({
+  ({ strapi }) => ({
     async find(ctx) {
-      // `populate=*` only resolves one level. Explicitly populate gallery images so
-      // the Past Creations view can render directly from the Bespoke Page response.
       ctx.query = {
         ...ctx.query,
         populate: {
@@ -18,7 +16,13 @@ export default factories.createCoreController(
               cta: true,
             },
           },
-          pastCreations: { populate: { images: true } },
+          pastCreations: {
+            populate: {
+              coverImage: true,
+              gallery: true,
+              cta: true,
+            },
+          },
           serviceHighlights: { populate: '*' },
           getInTouchSection: { populate: '*' },
           customDesignForm: true,
@@ -26,7 +30,24 @@ export default factories.createCoreController(
         },
       } as any;
 
-      return await super.find(ctx);
+      const response = await super.find(ctx);
+      const allFeaturedStories = await strapi
+        .documents('api::featured-story.featured-story')
+        .findMany({
+          status: 'published',
+          sort: { createdAt: 'desc' },
+          populate: {
+            coverImage: true,
+            gallery: true,
+            cta: true,
+          },
+        } as any);
+
+      if (response?.data) {
+        (response.data as any).pastCreations = allFeaturedStories;
+      }
+
+      return response;
     },
   })
 );

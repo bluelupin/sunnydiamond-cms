@@ -14,7 +14,7 @@
     "pastCreations": {
       "type": "relation",
       "relation": "manyToMany",
-      "target": "api::gallery.gallery"
+      "target": "api::featured-story.featured-story"
     },
     "serviceHighlights": { "type": "component", "repeatable": true, "component": "shared.bespoke-service-highlight" },
     "getInTouchSection": { "type": "component", "repeatable": false, "component": "shared.bespoke-get-in-touch-section" },

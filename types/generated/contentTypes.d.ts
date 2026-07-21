@@ -681,7 +681,7 @@ export interface ApiContactBespokePageContactBespokePage
       Schema.Attribute.Private;
     pastCreations: Schema.Attribute.Relation<
       'manyToMany',
-      'api::gallery.gallery'
+      'api::featured-story.featured-story'
     >;
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<'shared.seo', false>;
