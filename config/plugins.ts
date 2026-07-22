@@ -29,8 +29,10 @@ const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Plugin =>
             },
             region: env('AWS_REGION'),
             params: {
-              ACL: env('AWS_ACL', 'public-read'),
-              signedUrlExpires: env.int('AWS_SIGNED_URL_EXPIRES', 15 * 60),
+              // Bucket has ACLs disabled (owner-enforced); reads go through CloudFront OAC.
+              // ACL must be explicitly undefined — omitting the key makes the provider
+              // default it to 'public-read', which the bucket rejects.
+              ACL: undefined,
               Bucket: env('AWS_BUCKET'),
             },
           },
