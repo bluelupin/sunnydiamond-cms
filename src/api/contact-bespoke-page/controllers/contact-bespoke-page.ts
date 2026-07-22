@@ -7,24 +7,69 @@ export default factories.createCoreController(
       ctx.query = {
         ...ctx.query,
         populate: {
-          hero: { populate: '*' },
-          visionSection: { populate: '*' },
+          hero: { populate: {
+            backgroundImage:{
+              populate: {
+                desktopImage:true,
+                mobileImage:true
+              },
+            }
+          } },
+          visionSection: { populate:{
+            cards:{
+              populate:{
+                image:{
+                  populate:{
+                    desktopImage:true,
+                    mobileImage:true
+                  }
+                },
+                video:{
+                  populate:{
+                  heroVideo:true
+                  }
+                }
+              }
+            }
+          } },
           featuredStoriesSection: {
             populate: {
-              backgroundImage: { populate: '*' },
-              cards: { populate: '*' },
+              backgroundImage: { 
+                populate: {
+                desktopImage:true,
+                mobileImage:true
+              } 
+            },
+            cards:{
+              populate:{
+                coverImage:{
+                  populate:
+                    '*'
+                }
+              }
+            },
               cta: true,
             },
           },
           pastCreations: {
             populate: {
-              coverImage: true,
-              gallery: true,
+                coverImage:{
+                  populate:'*'
+                },
+              gallery: { populate: '*' },
               cta: true,
             },
           },
           serviceHighlights: { populate: '*' },
-          getInTouchSection: { populate: '*' },
+          getInTouchSection: { 
+            populate:{
+              backgroundImage: { populate: {
+                desktopImage:true,
+                mobileImage:true
+              } },
+
+            }
+          },
           customDesignForm: true,
           seo: { populate: '*' },
         },
@@ -37,9 +82,9 @@ export default factories.createCoreController(
           status: 'published',
           sort: { createdAt: 'desc' },
           populate: {
-            coverImage: true,
-            gallery: true,
-            cta: true,
+            coverImage: { populate: '*' },
+            gallery: { populate: '*' },
+            cta: { populate: '*' },
           },
         } as any);
 

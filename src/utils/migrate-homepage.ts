@@ -167,27 +167,16 @@ function mapDiamondSourcing(section: any): any {
 
 function mapFeaturedCollection(section: any): any {
   if (!section) return null;
+  const eyebrow = getVal(section, 'eyebrow');
   const sectionTitle = getVal(section, 'sectionTitle');
-  const description = getVal(section, 'description');
-  const magentoCollectionRef = getVal(section, 'magentoCollectionRef');
-  const sortOrder = getVal(section, 'sortOrder');
-  const isActive = getVal(section, 'isActive');
-  const primaryImage = getVal(section, 'primaryImage');
-  const cta = getVal(section, 'cta');
-  const collection = getVal(section, 'collection');
+  const collection = getVal(section, 'collections') || getVal(section, 'collection');
 
   const collectionDocId = Array.isArray(collection) && collection.length > 0 ? collection[0] : collection;
 
   return {
-    sectionTitle: sectionTitle || '',
-    description: description || '',
-    magentoCollectionRef: magentoCollectionRef || '',
-    sortOrder: typeof sortOrder === 'number' ? sortOrder : 0,
-    isActive: typeof isActive === 'boolean' ? isActive : true,
-    showField: typeof isActive === 'boolean' ? isActive : true,
-    primaryImage: mapImageAsset(primaryImage),
-    cta: mapCta(cta),
-    collection: collectionDocId ? { connect: [collectionDocId] } : null,
+    eyebrow: eyebrow || '',
+    title: sectionTitle || '',
+    collections: collectionDocId ? { connect: [collectionDocId] } : null,
   };
 }
 
@@ -586,7 +575,9 @@ export async function migrateHomepage(strapi: Core.Strapi) {
     }
     if (oldData.categoryNavigation) data.categoryCards = mapCategoryCards(oldData.categoryNavigation);
     if (oldData.diamondSourcingSection) data.diamondSourcingSection = mapDiamondSourcing(oldData.diamondSourcingSection);
-    if (oldData.featuredCollectionSection) data.featuredCollection = mapFeaturedCollection(oldData.featuredCollectionSection);
+    if (oldData.featuredCollectionSection) {
+      data.featuredCollection = mapFeaturedCollection(oldData.featuredCollectionSection);
+    }
     if (oldData.occasionSection) data.occasionSection = mapOccasionSection(oldData.occasionSection);
     if (oldData.featuredProductsSection) data.featuredProducts = mapFeaturedProducts(oldData.featuredProductsSection);
     if (oldData.giftingBanner) data.giftingBanner = mapGiftingBanner(oldData.giftingBanner);

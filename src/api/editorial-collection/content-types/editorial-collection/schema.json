@@ -4,15 +4,15 @@
   "info": { "singularName": "editorial-collection", "pluralName": "editorial-collections", "displayName": "Editorial Collection" },
   "options": { "draftAndPublish": true },
   "attributes": {
+    "collectionName": { "type": "string", "required": true },
     "title": { "type": "string", "required": true },
-    "slug": { "type": "uid", "targetField": "title", "required": true },
+    "slug": { "type": "uid", "targetField": "collectionName", "required": true },
     "description": { "type": "richtext" },
-    "hero": { "type": "component", "repeatable": false, "component": "shared.hero-section" },
-    "featuredImage": { "type": "component", "repeatable": false, "component": "shared.image-asset" },
-    "productSection": { "type": "component", "repeatable": false, "component": "shared.editorial-section" },
-    "contentSections": { "type": "component", "repeatable": true, "component": "shared.promo-card" },
+    "backgroundImage": { "type": "component", "repeatable": false, "component": "shared.image-asset" },
+    "cta": { "type": "component", "repeatable": false, "component": "shared.cta" },
+    "featuredProductSku": { "type": "string" },
+    "productSkus": { "type": "component", "repeatable": true, "component": "shared.product-sku" },
     "sortOrder": { "type": "integer", "default": 0 },
-    "isActive": { "type": "boolean", "default": true },
-    "seo": { "type": "component", "repeatable": false, "component": "shared.seo" }
+    "isActive": { "type": "boolean", "default": true }
   }
 }

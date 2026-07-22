@@ -244,21 +244,16 @@ export interface SharedCollectionShowcaseSection
   extends Struct.ComponentSchema {
   collectionName: 'components_shared_collection_showcase_sections';
   info: {
-    description: 'Editorial collection showcase with CMS images and commerce references';
+    description: 'Homepage heading and editorial collection reference';
     displayName: 'Collection Showcase Section';
   };
   attributes: {
-    collection: Schema.Attribute.Relation<
-      'oneToOne',
+    collections: Schema.Attribute.Relation<
+      'oneToMany',
       'api::editorial-collection.editorial-collection'
     >;
-    cta: Schema.Attribute.Component<'shared.cta', false>;
-    description: Schema.Attribute.Text;
-    magentoCollectionRef: Schema.Attribute.String;
-    primaryImage: Schema.Attribute.Component<'shared.image-asset', false>;
-    sectionTitle: Schema.Attribute.String;
-    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
-    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    eyebrow: Schema.Attribute.String;
+    title: Schema.Attribute.String;
   };
 }
 
@@ -856,6 +851,17 @@ export interface SharedProcessStep extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedProductSku extends Struct.ComponentSchema {
+  collectionName: 'components_shared_product_skus';
+  info: {
+    description: 'Commerce product reference used by editorial collections';
+    displayName: 'Product SKU';
+  };
+  attributes: {
+    sku: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface SharedPromoCard extends Struct.ComponentSchema {
   collectionName: 'components_shared_promo_cards';
   info: {
@@ -1126,6 +1132,7 @@ declare module '@strapi/strapi' {
       'shared.page-intro': SharedPageIntro;
       'shared.process-section': SharedProcessSection;
       'shared.process-step': SharedProcessStep;
+      'shared.product-sku': SharedProductSku;
       'shared.promo-card': SharedPromoCard;
       'shared.seo': SharedSeo;
       'shared.showroom-section': SharedShowroomSection;

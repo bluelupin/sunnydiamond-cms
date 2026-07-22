@@ -744,13 +744,14 @@ export interface ApiEditorialCollectionEditorialCollection
     draftAndPublish: true;
   };
   attributes: {
-    contentSections: Schema.Attribute.Component<'shared.promo-card', true>;
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    collectionName: Schema.Attribute.String & Schema.Attribute.Required;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    cta: Schema.Attribute.Component<'shared.cta', false>;
     description: Schema.Attribute.RichText;
-    featuredImage: Schema.Attribute.Component<'shared.image-asset', false>;
-    hero: Schema.Attribute.Component<'shared.hero-section', false>;
+    featuredProductSku: Schema.Attribute.String;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -758,13 +759,9 @@ export interface ApiEditorialCollectionEditorialCollection
       'api::editorial-collection.editorial-collection'
     > &
       Schema.Attribute.Private;
-    productSection: Schema.Attribute.Component<
-      'shared.editorial-section',
-      false
-    >;
+    productSkus: Schema.Attribute.Component<'shared.product-sku', true>;
     publishedAt: Schema.Attribute.DateTime;
-    seo: Schema.Attribute.Component<'shared.seo', false>;
-    slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
+    slug: Schema.Attribute.UID<'collectionName'> & Schema.Attribute.Required;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
@@ -1198,6 +1195,7 @@ export interface ApiOccasionOccasion extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     cta: Schema.Attribute.Component<'shared.cta', false>;
     description: Schema.Attribute.RichText;
+    filterSlug: Schema.Attribute.String;
     image: Schema.Attribute.Component<'shared.image-asset', false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -1247,6 +1245,7 @@ export interface ApiProductDisplayPageProductDisplayPage
     >;
     personaliseCard: Schema.Attribute.Component<'shared.info-card', false>;
     publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
     stripItems: Schema.Attribute.Component<'shared.process-step', true>;
     stripTitle: Schema.Attribute.String &
       Schema.Attribute.DefaultTo<'With Sunny, you get'>;
@@ -1323,6 +1322,7 @@ export interface ApiProductLandingPageProductLandingPage
     > &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
     trustBadges: Schema.Attribute.Component<'shared.process-step', true>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &

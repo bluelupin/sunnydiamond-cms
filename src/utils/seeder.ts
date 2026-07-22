@@ -421,11 +421,6 @@ export async function seedCms(strapi: Core.Strapi) {
           publishedAt: new Date(),
         },
       ];
-
-      for (const collection of collections) {
-        const createdCollection = await strapi.documents('api::editorial-collection.editorial-collection').create({ data: collection });
-        seededCollections.push(createdCollection);
-      }
       strapi.log.info('Editorial Collections successfully seeded.');
     } else {
       strapi.log.info('Editorial Collections already exist. Skipping.');

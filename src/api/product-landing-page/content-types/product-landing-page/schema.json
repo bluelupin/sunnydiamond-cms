@@ -20,6 +20,11 @@
       "type": "component",
       "component": "shared.process-step",
       "repeatable": true
+    },
+    "seo": {
+      "type": "component",
+      "component": "shared.seo",
+      "repeatable": false
     }
   }
 }

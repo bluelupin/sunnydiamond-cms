@@ -131,17 +131,26 @@ const showroomRelationFallbackPopulate = {
 };
 
 const collectionShowcaseSectionPopulate = {
-  fields: ['sectionTitle', 'description', 'magentoCollectionRef', 'sortOrder', 'showField'],
+  fields: ['eyebrow', 'title'],
   populate: {
-    primaryImage: imageAssetPopulate,
-    collection: {
-      fields: ['title', 'slug', 'description', 'sortOrder', 'isActive'],
+    collections: {
+      fields: [
+        'collectionName',
+        'title',
+        'slug',
+        'description',
+        'featuredProductSku',
+        'sortOrder',
+        'isActive',
+      ],
       populate: {
-        featuredImage: imageAssetPopulate,
-        seo: seoPopulate,
+        backgroundImage: imageAssetPopulate,
+        cta: ctaPopulate,
+        productSkus: {
+          fields: ['sku'],
+        },
       },
     },
-    cta: ctaPopulate,
   },
 };
 
