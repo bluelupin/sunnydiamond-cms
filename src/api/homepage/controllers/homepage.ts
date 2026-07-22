@@ -348,9 +348,7 @@ export default factories.createCoreController(HOMEPAGE_UID as any, ({ strapi }) 
       return this.transformResponse(null);
     }
 
-    const sanitizedHomepage = await this.sanitizeOutput(homepage, ctx);
-
-    return this.transformResponse(sanitizedHomepage);
+    return this.transformResponse(homepage);
   },
 
   async editorialBlocks(ctx) {

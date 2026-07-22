@@ -1245,7 +1245,6 @@ export interface ApiProductDisplayPageProductDisplayPage
     >;
     personaliseCard: Schema.Attribute.Component<'shared.info-card', false>;
     publishedAt: Schema.Attribute.DateTime;
-    seo: Schema.Attribute.Component<'shared.seo', false>;
     stripItems: Schema.Attribute.Component<'shared.process-step', true>;
     stripTitle: Schema.Attribute.String &
       Schema.Attribute.DefaultTo<'With Sunny, you get'>;

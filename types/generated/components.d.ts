@@ -249,7 +249,7 @@ export interface SharedCollectionShowcaseSection
   };
   attributes: {
     collections: Schema.Attribute.Relation<
-      'oneToMany',
+      'manyToMany',
       'api::editorial-collection.editorial-collection'
     >;
     eyebrow: Schema.Attribute.String;

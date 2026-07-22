@@ -67,6 +67,7 @@ export default factories.createCoreController(
                 desktopImage:true,
                 mobileImage:true
               } },
+              cta:true
 
             }
           },
