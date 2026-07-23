@@ -45,6 +45,9 @@ export default factories.createCoreController(
                 coverImage:{
                   populate:
                     '*'
+                },
+                gallery: {
+                  populate: '*'
                 }
               }
             },
