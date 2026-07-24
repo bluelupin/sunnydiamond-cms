@@ -205,9 +205,6 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
         state: stateRef,
         preferredShowroom: preferredShowroomRef,
         sourcePage: stringOrUndefined(input.sourcePage),
-        utmSource: stringOrUndefined(input.utmSource),
-        utmMedium: stringOrUndefined(input.utmMedium),
-        utmCampaign: stringOrUndefined(input.utmCampaign),
         consentAccepted: booleanValue(input.consentAccepted),
       },
     } as any);
@@ -256,9 +253,9 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
           'formTag',
           'productName',
           'productId',
-          "customerName",
-          "customerPhone",
-          "customerEmail",
+          'customerName',
+          'customerPhone',
+          'customerEmail',
           'requestedDate',
           'selectedTimeSlot',
           'workflowStatus',
@@ -266,12 +263,13 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
           'addressLine2',
           'pincode',
           'city',
-          'state',
-          'showroomName',
           'createdAt',
           'updatedAt',
         ],
         populate: {
+          state: {
+            fields: ['documentId', 'name', 'code'],
+          },
           preferredShowroom: {
             fields: ['documentId', 'name', 'slug', 'city', 'state'],
           },

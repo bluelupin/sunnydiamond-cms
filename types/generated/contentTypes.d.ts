@@ -943,9 +943,6 @@ export interface ApiGenericSubmissionGenericSubmission
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    utmCampaign: Schema.Attribute.String;
-    utmMedium: Schema.Attribute.String;
-    utmSource: Schema.Attribute.String;
     workflowStatus: Schema.Attribute.Enumeration<
       ['New', 'Contacted', 'Closed']
     > &
@@ -1382,9 +1379,6 @@ export interface ApiProductSubmissionProductSubmission
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     uploadedImage: Schema.Attribute.Media<'images'>;
-    utmCampaign: Schema.Attribute.String;
-    utmMedium: Schema.Attribute.String;
-    utmSource: Schema.Attribute.String;
     workflowStatus: Schema.Attribute.Enumeration<
       ['New', 'Contacted', 'Scheduled', 'Visited', 'Closed']
     > &

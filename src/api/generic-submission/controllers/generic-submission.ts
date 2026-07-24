@@ -129,9 +129,6 @@ export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ 
         selectedTimeSlot: stringOrUndefined(input.selectedTimeSlot),
         notes: stringOrUndefined(input.notes),
         sourcePage: stringOrUndefined(input.sourcePage),
-        utmSource: stringOrUndefined(input.utmSource),
-        utmMedium: stringOrUndefined(input.utmMedium),
-        utmCampaign: stringOrUndefined(input.utmCampaign),
         consentAccepted: booleanValue(input.consentAccepted),
       },
     } as any);
