@@ -98,7 +98,15 @@ const populate = {
             },
           },
           featureImage: imageAssetPopulate,
-          featureItems: true,
+          featureGroups: {
+            populate: {
+              featureItems: {
+                populate: {
+                  icon: imageAssetPopulate,
+                },
+              },
+            },
+          },
         },
       },
     },

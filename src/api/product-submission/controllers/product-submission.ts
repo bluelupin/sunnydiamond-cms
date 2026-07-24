@@ -1,9 +1,20 @@
 import { factories } from '@strapi/strapi';
 import { checkFormSubmissionRateLimit } from '../../../utils/form-submission-rate-limit';
+import {
+  bearerToken,
+  MagentoCustomerUnauthorizedError,
+  resolveMagentoCustomer,
+} from '../../../utils/magento-customer';
 
 const PRODUCT_SUBMISSION_UID = 'api::product-submission.product-submission';
 const PRODUCT_FORM_UID = 'api::product-form.product-form';
 const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
+const APPOINTMENT_FORM_TAGS = [
+'product-video-call',
+'product-personalisation',
+'try-at-home-form',
+'product-store-visit'
+];
 
 const stringOrUndefined = (value: unknown) => {
   if (typeof value !== 'string') return undefined;
@@ -76,12 +87,77 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     if (customerEmail === null) return ctx.badRequest('customerEmail must be a valid email address.');
     if (requestedDate === null) return ctx.badRequest('requestedDate must use YYYY-MM-DD format.');
 
+    let magentoCustomerId: number | undefined;
+    const token = bearerToken(ctx.request.headers.authorization);
+    if (token) {
+      try {
+        magentoCustomerId = (await resolveMagentoCustomer(token)).id;
+      } catch (error) {
+        if (error instanceof MagentoCustomerUnauthorizedError) {
+          return ctx.unauthorized(error.message);
+        }
+
+        strapi.log.error(
+          `Magento customer resolution failed during product submission: ${
+            error instanceof Error ? error.message : 'Unknown error'
+          }`
+        );
+        return ctx.throw(503, 'Customer authentication is temporarily unavailable.');
+      }
+    }
+
     const form = await strapi.documents(PRODUCT_FORM_UID as any).findFirst({
       status: 'published',
       filters: { formTag },
+      populate: {
+        showroomOptions: {
+          fields: ['documentId', 'name', 'slug'],
+        },
+      },
     } as any);
 
     if (!form) return ctx.badRequest('Unknown formTag.');
+
+    let preferredShowroomRef: string | undefined;
+    const preferredShowroomValue =
+      stringOrUndefined(input.preferredShowroom) ??
+      stringOrUndefined(input.showroomDocumentId) ??
+      stringOrUndefined(input.storeVisiting);
+
+    if (preferredShowroomValue) {
+      const preferredShowroom = await strapi.documents('api::showroom.showroom').findFirst({
+        status: 'published',
+        filters: {
+          $or: [
+            { documentId: preferredShowroomValue },
+            { slug: preferredShowroomValue },
+            { name: preferredShowroomValue },
+          ],
+        },
+      } as any);
+
+      if (!preferredShowroom) {
+        return ctx.badRequest('preferredShowroom must reference a published showroom.');
+      }
+
+      const configuredShowrooms = Array.isArray(form.showroomOptions)
+        ? form.showroomOptions
+        : [];
+      if (
+        configuredShowrooms.length > 0 &&
+        !configuredShowrooms.some(
+          (showroom: any) => showroom.documentId === preferredShowroom.documentId
+        )
+      ) {
+        return ctx.badRequest('preferredShowroom is not available for this form.');
+      }
+
+      preferredShowroomRef = preferredShowroom.documentId;
+    }
+
+    if (formTag === 'product-store-visit' && !preferredShowroomRef) {
+      return ctx.badRequest('preferredShowroom is required for product-store-visit.');
+    }
 
     if (ctx.request.files && Object.keys(ctx.request.files).length > 0 && !upload) {
       return ctx.badRequest('Only uploadedImage file uploads are supported.');
@@ -118,6 +194,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
         customerName,
         customerPhone,
         customerEmail,
+        magentoCustomerId,
         requestedDate,
         selectedTimeSlot: stringOrUndefined(input.selectedTimeSlot),
         requestDetails: stringOrUndefined(input.requestDetails),
@@ -126,6 +203,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
         pincode: stringOrUndefined(input.pincode),
         city: stringOrUndefined(input.city),
         state: stateRef,
+        preferredShowroom: preferredShowroomRef,
         sourcePage: stringOrUndefined(input.sourcePage),
         utmSource: stringOrUndefined(input.utmSource),
         utmMedium: stringOrUndefined(input.utmMedium),
@@ -152,6 +230,68 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
         formTag: entity.formTag,
       },
       meta: {},
+    };
+  },
+
+  async customerAppointments(ctx) {
+    const magentoCustomerId = ctx.state.magentoCustomer.id;
+    const requestedPage = Number(ctx.query.page);
+    const requestedPageSize = Number(ctx.query.pageSize);
+    const page = Number.isInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
+    const pageSize =
+      Number.isInteger(requestedPageSize) && requestedPageSize > 0
+        ? Math.min(requestedPageSize, 100)
+        : 20;
+    const filters = {
+      magentoCustomerId,
+      formTag: { $in: APPOINTMENT_FORM_TAGS },
+    };
+
+    const documentService = strapi.documents(PRODUCT_SUBMISSION_UID as any);
+    const [appointments, total] = await Promise.all([
+      documentService.findMany({
+        filters,
+        fields: [
+          'documentId',
+          'formTag',
+          'productName',
+          'productId',
+          "customerName",
+          "customerPhone",
+          "customerEmail",
+          'requestedDate',
+          'selectedTimeSlot',
+          'workflowStatus',
+          'addressLine1',
+          'addressLine2',
+          'pincode',
+          'city',
+          'state',
+          'showroomName',
+          'createdAt',
+          'updatedAt',
+        ],
+        populate: {
+          preferredShowroom: {
+            fields: ['documentId', 'name', 'slug', 'city', 'state'],
+          },
+        },
+        sort: ['createdAt:desc'],
+        pagination: { page, pageSize },
+      } as any),
+      documentService.count({ filters } as any),
+    ]);
+
+    return {
+      data: appointments,
+      meta: {
+        pagination: {
+          page,
+          pageSize,
+          pageCount: Math.ceil(total / pageSize),
+          total,
+        },
+      },
     };
   },
 }));

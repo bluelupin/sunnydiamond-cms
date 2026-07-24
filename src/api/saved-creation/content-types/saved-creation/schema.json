@@ -1,0 +1,32 @@
+{
+  "kind": "collectionType",
+  "collectionName": "saved_creations",
+  "info": {
+    "singularName": "saved-creation",
+    "pluralName": "saved-creations",
+    "displayName": "Saved Creations"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "magentoCustomerId": {
+      "type": "integer",
+      "required": true,
+      "private": true
+    },
+    "creation": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::featured-story.featured-story",
+      "required": true
+    },
+    "saveKey": {
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "private": true,
+      "maxLength": 64
+    }
+  }
+}

@@ -47,6 +47,7 @@ const EXPORTS = {
       'pincode',
       'city',
       'state',
+      'preferredShowroom',
       'sourcePage',
       'utmSource',
       'utmMedium',
@@ -58,7 +59,7 @@ const EXPORTS = {
       'createdAt',
       'updatedAt',
     ],
-    populate: ['uploadedImage', 'state'],
+    populate: ['uploadedImage', 'state', 'preferredShowroom'],
   },
   bespoke: {
     uid: 'api::bespoke-submission.bespoke-submission',

@@ -683,6 +683,18 @@ export interface SharedInfoCard extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedLearnMoreFeatureGroup extends Struct.ComponentSchema {
+  collectionName: 'components_shared_learn_more_feature_groups';
+  info: {
+    description: 'Grouped feature subtitle and trust badge items';
+    displayName: 'Learn More Feature Group';
+  };
+  attributes: {
+    featureItems: Schema.Attribute.Component<'shared.trust-badge-item', true>;
+    featureSubtitle: Schema.Attribute.Text;
+  };
+}
+
 export interface SharedLearnMoreSection extends Struct.ComponentSchema {
   collectionName: 'components_shared_learn_more_section_roots';
   info: {
@@ -703,9 +715,11 @@ export interface SharedLearnMoreTab extends Struct.ComponentSchema {
   };
   attributes: {
     carouselImage: Schema.Attribute.Component<'shared.carousel-image', true>;
+    featureGroups: Schema.Attribute.Component<
+      'shared.learn-more-feature-group',
+      true
+    >;
     featureImage: Schema.Attribute.Component<'shared.image-asset', false>;
-    featureItems: Schema.Attribute.Component<'shared.trust-badge-item', true>;
-    featureSubtitle: Schema.Attribute.Text;
     layoutType: Schema.Attribute.Enumeration<
       ['Carousel', 'Image Feature List', 'Feature List']
     >;
@@ -1121,6 +1135,7 @@ declare module '@strapi/strapi' {
       'shared.image-asset': SharedImageAsset;
       'shared.indian-state': SharedIndianState;
       'shared.info-card': SharedInfoCard;
+      'shared.learn-more-feature-group': SharedLearnMoreFeatureGroup;
       'shared.learn-more-section': SharedLearnMoreSection;
       'shared.learn-more-tab': SharedLearnMoreTab;
       'shared.legacy-image-block': SharedLegacyImageBlock;

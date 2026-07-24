@@ -6,14 +6,36 @@
     "pluralName": "product-forms",
     "displayName": "Builder: Product Forms"
   },
-  "options": { "draftAndPublish": true },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
   "attributes": {
-    "formName": { "type": "string", "required": true },
-    "formTag": { "type": "uid", "targetField": "formName", "required": true },
-    "submitButtonText": { "type": "string", "default": "SUBMIT" },
-    "isMultiStep": { "type": "boolean", "default": false },
-    "stepOneButtonText": { "type": "string", "default": "ADD ADDRESS" },
-    "allowImageUpload": { "type": "boolean", "default": false },
+    "formName": {
+      "type": "string",
+      "required": true
+    },
+    "formTag": {
+      "type": "uid",
+      "targetField": "formName",
+      "required": true
+    },
+    "submitButtonText": {
+      "type": "string",
+      "default": "SUBMIT"
+    },
+    "isMultiStep": {
+      "type": "boolean",
+      "default": false
+    },
+    "stepOneButtonText": {
+      "type": "string",
+      "default": "ADD ADDRESS"
+    },
+    "allowImageUpload": {
+      "type": "boolean",
+      "default": false
+    },
     "stateOptions": {
       "type": "relation",
       "relation": "manyToMany",
@@ -21,13 +43,18 @@
     },
     "availableTimeSlots": {
       "type": "component",
-      "repeatable": true,
-      "component": "shared.time-slot"
+      "component": "shared.time-slot",
+      "repeatable": true
     },
     "dynamicFields": {
       "type": "component",
-      "repeatable": true,
-      "component": "shared.form-field"
+      "component": "shared.form-field",
+      "repeatable": true
+    },
+    "showroomOptions": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::showroom.showroom"
     }
   }
 }

@@ -1287,6 +1287,10 @@ export interface ApiProductFormProductForm extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
+    showroomOptions: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::showroom.showroom'
+    >;
     stateOptions: Schema.Attribute.Relation<'manyToMany', 'api::state.state'>;
     stepOneButtonText: Schema.Attribute.String &
       Schema.Attribute.DefaultTo<'ADD ADDRESS'>;
@@ -1360,7 +1364,12 @@ export interface ApiProductSubmissionProductSubmission
       'api::product-submission.product-submission'
     > &
       Schema.Attribute.Private;
+    magentoCustomerId: Schema.Attribute.Integer & Schema.Attribute.Private;
     pincode: Schema.Attribute.String;
+    preferredShowroom: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::showroom.showroom'
+    >;
     productId: Schema.Attribute.String;
     productName: Schema.Attribute.String & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
@@ -1380,6 +1389,49 @@ export interface ApiProductSubmissionProductSubmission
       ['New', 'Contacted', 'Scheduled', 'Visited', 'Closed']
     > &
       Schema.Attribute.DefaultTo<'New'>;
+  };
+}
+
+export interface ApiSavedCreationSavedCreation
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'saved_creations';
+  info: {
+    displayName: 'Saved Creations';
+    pluralName: 'saved-creations';
+    singularName: 'saved-creation';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    creation: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::featured-story.featured-story'
+    > &
+      Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::saved-creation.saved-creation'
+    > &
+      Schema.Attribute.Private;
+    magentoCustomerId: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    saveKey: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Private &
+      Schema.Attribute.Unique &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 64;
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
   };
 }
 
@@ -2125,6 +2177,7 @@ declare module '@strapi/strapi' {
       'api::product-form.product-form': ApiProductFormProductForm;
       'api::product-landing-page.product-landing-page': ApiProductLandingPageProductLandingPage;
       'api::product-submission.product-submission': ApiProductSubmissionProductSubmission;
+      'api::saved-creation.saved-creation': ApiSavedCreationSavedCreation;
       'api::service-page.service-page': ApiServicePageServicePage;
       'api::share-your-vision-page.share-your-vision-page': ApiShareYourVisionPageShareYourVisionPage;
       'api::showroom.showroom': ApiShowroomShowroom;

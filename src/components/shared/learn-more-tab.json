@@ -38,12 +38,9 @@
       "component": "shared.image-asset",
       "repeatable": false
     },
-    "featureSubtitle": {
-      "type": "text"
-    },
-    "featureItems": {
+    "featureGroups": {
       "type": "component",
-      "component": "shared.trust-badge-item",
+      "component": "shared.learn-more-feature-group",
       "repeatable": true
     }
   }
