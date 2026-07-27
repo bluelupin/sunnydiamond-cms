@@ -6,35 +6,63 @@
     "pluralName": "size-guides",
     "displayName": "Size Guides"
   },
-  "options": { "draftAndPublish": true },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
   "attributes": {
     "name": {
       "type": "string",
-      "required": true
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "drawerTitle": {
       "type": "string",
-      "default": "Ring Size Diamond"
+      "default": "Ring Size Diamond",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "drawerSubtitle": {
       "type": "string",
-      "default": "Measure Dimensions in millimeters"
+      "default": "Measure Dimensions in millimeters",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "tutorialVideo": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["videos"],
+      "allowedTypes": [
+        "videos"
+      ],
       "required": true
     },
     "circumferenceHeaderImage": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "diameterHeaderImage": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "chartRows": {
       "type": "component",

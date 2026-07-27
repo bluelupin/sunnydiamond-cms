@@ -9,50 +9,99 @@
   "options": {
     "draftAndPublish": true
   },
-  "pluginOptions": {},
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
   "attributes": {
     "findYourSize": {
       "type": "component",
       "component": "shared.modal-cta",
-      "repeatable": false
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "stripTitle": {
       "type": "string",
-      "default": "With Sunny, you get"
+      "default": "With Sunny, you get",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "stripItems": {
       "type": "component",
       "component": "shared.process-step",
-      "repeatable": true
+      "repeatable": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "stripTnc": {
       "type": "component",
       "component": "shared.cta",
-      "repeatable": false
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "hereForYouCard": {
       "type": "component",
       "component": "shared.info-card",
-      "repeatable": false
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "personaliseCard": {
       "type": "component",
       "component": "shared.info-card",
-      "repeatable": false
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "pairItWith": {
       "type": "component",
       "component": "shared.collection-showcase-section",
-      "repeatable": false
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "moreForYouTitle": {
       "type": "string",
-      "default": "More for You"
+      "default": "More for You",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "visitUsSection": {
       "type": "component",
       "component": "shared.showroom-section",
-      "repeatable": false
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     }
   }
 }

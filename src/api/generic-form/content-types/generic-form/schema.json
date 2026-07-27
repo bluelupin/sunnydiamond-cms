@@ -6,11 +6,38 @@
     "pluralName": "generic-forms",
     "displayName": "Builder: Generic Forms"
   },
-  "options": { "draftAndPublish": true },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
   "attributes": {
-    "formName": { "type": "string", "required": true },
-    "formTag": { "type": "uid", "targetField": "formName", "required": true },
-    "submitButtonText": { "type": "string", "default": "SUBMIT" },
+    "formName": {
+      "type": "string",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "formTag": {
+      "type": "uid",
+      "targetField": "formName",
+      "required": true
+    },
+    "submitButtonText": {
+      "type": "string",
+      "default": "SUBMIT",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
     "availableTimeSlots": {
       "type": "component",
       "repeatable": true,
@@ -19,7 +46,12 @@
     "dynamicFields": {
       "type": "component",
       "repeatable": true,
-      "component": "shared.form-field"
+      "component": "shared.form-field",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "showrooms": {
       "type": "relation",

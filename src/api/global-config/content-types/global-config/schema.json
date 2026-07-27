@@ -9,14 +9,83 @@
   "options": {
     "draftAndPublish": true
   },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
   "attributes": {
-    "brandIdentity": {"type": "component", "repeatable": false, "component": "shared.brand-tagline-section"},
-    "headerNavigationLinks": { "type": "component", "repeatable": true, "component": "shared.link-item" },
-    "footerLinkGroups": { "type": "component", "repeatable": true, "component": "shared.footer-link-group" },
-    "footerTickerItems": { "type": "component", "repeatable": true, "component": "shared.footer-ticker-item" },
-    "socialLinks": { "type": "component", "repeatable": true, "component": "shared.link-item" },
-    "paymentMethodLogos": { "type": "media", "multiple": true },
-    "footerCopyright": { "type": "string" },
-    "defaultSeo": { "type": "component", "repeatable": false, "component": "shared.seo" }
+    "brandIdentity": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.brand-tagline-section",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "headerNavigationLinks": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.link-item",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "footerLinkGroups": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.footer-link-group",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "footerTickerItems": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.footer-ticker-item",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "socialLinks": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.link-item",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "paymentMethodLogos": {
+      "type": "media",
+      "multiple": true
+    },
+    "footerCopyright": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "defaultSeo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    }
   }
 }

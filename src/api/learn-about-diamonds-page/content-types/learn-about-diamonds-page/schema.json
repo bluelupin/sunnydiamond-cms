@@ -9,47 +9,91 @@
   "options": {
     "draftAndPublish": true
   },
-  "pluginOptions": {},
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
   "attributes": {
     "seo": {
       "type": "component",
       "component": "shared.seo",
-      "repeatable": false
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "hero": {
       "type": "component",
       "component": "shared.hero-section",
-      "repeatable": false
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "fourCsIntro": {
       "type": "component",
       "component": "shared.page-intro",
-      "repeatable": false
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "fourCsSection": {
       "type": "component",
       "component": "shared.four-cs-section",
-      "repeatable": false
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "certificateSection": {
       "type": "component",
       "component": "shared.certificate-section",
-      "repeatable": false
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "learnMoreSection": {
       "type": "component",
       "component": "shared.learn-more-section",
-      "repeatable": false
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "discoverSection": {
       "type": "component",
       "component": "shared.cta-banner",
-      "repeatable": false
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "faqSection": {
       "type": "component",
       "component": "shared.faq-section",
-      "repeatable": false
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     }
   }
 }

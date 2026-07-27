@@ -9,11 +9,20 @@
   "options": {
     "draftAndPublish": true
   },
-  "pluginOptions": {},
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
   "attributes": {
     "formName": {
       "type": "string",
-      "required": true
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "formTag": {
       "type": "uid",
@@ -22,7 +31,12 @@
     },
     "submitButtonText": {
       "type": "string",
-      "default": "SUBMIT"
+      "default": "SUBMIT",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "isMultiStep": {
       "type": "boolean",
@@ -30,7 +44,12 @@
     },
     "stepOneButtonText": {
       "type": "string",
-      "default": "ADD ADDRESS"
+      "default": "ADD ADDRESS",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "allowImageUpload": {
       "type": "boolean",
@@ -49,7 +68,12 @@
     "dynamicFields": {
       "type": "component",
       "component": "shared.form-field",
-      "repeatable": true
+      "repeatable": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "showroomOptions": {
       "type": "relation",

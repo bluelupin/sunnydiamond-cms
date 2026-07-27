@@ -6,19 +6,89 @@
     "pluralName": "contact-bespoke-pages",
     "displayName": "Bespoke Page"
   },
-  "options": { "draftAndPublish": true },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
   "attributes": {
-    "hero": { "type": "component", "repeatable": false, "component": "shared.bespoke-hero" },
-    "visionSection": { "type": "component", "repeatable": false, "component": "shared.bespoke-vision-section" },
-    "featuredStoriesSection": { "type": "component", "repeatable": false, "component": "shared.featured-stories-section" },
+    "hero": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.bespoke-hero",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "visionSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.bespoke-vision-section",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "featuredStoriesSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.featured-stories-section",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
     "pastCreations": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::featured-story.featured-story"
     },
-    "serviceHighlights": { "type": "component", "repeatable": true, "component": "shared.bespoke-service-highlight" },
-    "getInTouchSection": { "type": "component", "repeatable": false, "component": "shared.bespoke-get-in-touch-section" },
-    "customDesignForm": { "type": "component", "repeatable": false, "component": "shared.bespoke-custom-design-form" },
-    "seo": { "type": "component", "repeatable": false, "component": "shared.seo" }
+    "serviceHighlights": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.bespoke-service-highlight",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "getInTouchSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.bespoke-get-in-touch-section",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "customDesignForm": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.bespoke-custom-design-form",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    }
   }
 }

@@ -10,6 +10,11 @@
   "options": {
     "draftAndPublish": true
   },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
   "attributes": {
     "heroImage": {
       "type": "media",
@@ -20,7 +25,12 @@
       ]
     },
     "story": {
-      "type": "richtext"
+      "type": "richtext",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "inspirationImages": {
       "type": "media",
@@ -39,7 +49,12 @@
     "cta": {
       "type": "component",
       "repeatable": false,
-      "component": "shared.cta"
+      "component": "shared.cta",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     }
   }
 }
