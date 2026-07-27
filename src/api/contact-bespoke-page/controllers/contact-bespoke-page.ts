@@ -1,9 +1,11 @@
 import { factories } from '@strapi/strapi';
+import { requestLocale } from '../../../utils/request-locale';
 
 export default factories.createCoreController(
   'api::contact-bespoke-page.contact-bespoke-page' as any,
   ({ strapi }) => ({
     async find(ctx) {
+      const locale = requestLocale(ctx);
       ctx.query = {
         ...ctx.query,
         populate: {
@@ -84,6 +86,7 @@ export default factories.createCoreController(
         .documents('api::featured-story.featured-story')
         .findMany({
           status: 'published',
+          locale,
           sort: { createdAt: 'desc' },
           populate: {
             coverImage: { populate: '*' },

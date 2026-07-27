@@ -3,6 +3,7 @@
  */
 
 import { factories } from '@strapi/strapi';
+import { requestLocale } from '../../../utils/request-locale';
 
 const imageAssetPopulate = {
   fields: ['altText'],
@@ -128,6 +129,7 @@ export default factories.createCoreController('api::learn-about-diamonds-page.le
   async find(ctx) {
     const entity = await strapi.documents('api::learn-about-diamonds-page.learn-about-diamonds-page' as any).findFirst({
       status: 'published',
+      locale: requestLocale(ctx),
       populate,
     } as any);
 

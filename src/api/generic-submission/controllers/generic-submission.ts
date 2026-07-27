@@ -1,5 +1,6 @@
 import { factories } from '@strapi/strapi';
 import { checkFormSubmissionRateLimit } from '../../../utils/form-submission-rate-limit';
+import { requestLocale } from '../../../utils/request-locale';
 
 const GENERIC_SUBMISSION_UID = 'api::generic-submission.generic-submission';
 const GENERIC_FORM_UID = 'api::generic-form.generic-form';
@@ -68,6 +69,7 @@ export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ 
     }
 
     const input = requestData(ctx);
+    const locale = requestLocale(ctx, input);
     const formTag = stringOrUndefined(input.formTag);
     const fullName = stringOrUndefined(input.fullName);
     const phone = phoneOrUndefined(input.phone);
@@ -88,6 +90,7 @@ export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ 
 
     const form = await strapi.documents(GENERIC_FORM_UID as any).findFirst({
       status: 'published',
+      locale,
       filters: { formTag },
       populate: {
         dynamicFields: true,
@@ -105,6 +108,8 @@ export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ 
     const preferredShowroomVal = stringOrUndefined(input.showroom) ?? stringOrUndefined(input.preferredShowroom);
     if (preferredShowroomVal) {
       const showroom = await strapi.documents('api::showroom.showroom').findFirst({
+        status: 'published',
+        locale,
         filters: {
           $or: [
             { name: preferredShowroomVal },

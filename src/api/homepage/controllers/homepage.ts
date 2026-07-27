@@ -8,6 +8,7 @@ import {
   showroomPopulate,
   videoAssetPopulate,
 } from '../../../utils/populate';
+import { requestLocale } from '../../../utils/request-locale';
 
 const HOMEPAGE_UID = 'api::homepage.homepage';
 const GLOBAL_CONFIG_UID = 'api::global-config.global-config';
@@ -230,10 +231,12 @@ const homepageEditorialBlocksPopulate = {
 const findPublishedSingle = async (
   strapiInstance: typeof strapi,
   uid: string,
-  populate: Record<string, unknown>
+  populate: Record<string, unknown>,
+  locale?: string
 ) => {
   return strapiInstance.documents(uid as any).findFirst({
     status: 'published',
+    locale,
     sort: { updatedAt: 'desc' },
     populate,
   } as any);
@@ -242,7 +245,8 @@ const findPublishedSingle = async (
 const attachOccasionsAndShowrooms = async (
   strapiInstance: typeof strapi,
   homepage: any,
-  ctx: any
+  ctx: any,
+  locale?: string
 ) => {
   if (!homepage) return homepage;
 
@@ -253,22 +257,20 @@ const attachOccasionsAndShowrooms = async (
 
   const [occasions, showrooms] = await Promise.all([
     needsOccasions
-      ? strapiInstance.db.query('api::occasion.occasion').findMany({
-          where: {
-            showField: true,
-            publishedAt: { $notNull: true },
-          },
-          orderBy: { sortOrder: 'asc' },
+      ? strapiInstance.documents('api::occasion.occasion').findMany({
+          status: 'published',
+          locale,
+          filters: { showField: true },
+          sort: ['sortOrder:asc'],
           populate: occasionRelationFallbackPopulate,
         } as any)
       : Promise.resolve([]),
     needsShowrooms
-      ? strapiInstance.db.query('api::showroom.showroom').findMany({
-          where: {
-            isActive: true,
-            publishedAt: { $notNull: true },
-          },
-          orderBy: { sortOrder: 'asc' },
+      ? strapiInstance.documents('api::showroom.showroom').findMany({
+          status: 'published',
+          locale,
+          filters: { isActive: true },
+          sort: ['sortOrder:asc'],
           populate: showroomRelationFallbackPopulate,
         } as any)
       : Promise.resolve([]),
@@ -303,9 +305,10 @@ const attachOccasionsAndShowrooms = async (
 
 export default factories.createCoreController(HOMEPAGE_UID as any, ({ strapi }) => ({
   async shell(ctx) {
+    const locale = requestLocale(ctx);
     const [globalConfig, homepage] = await Promise.all([
-      findPublishedSingle(strapi, GLOBAL_CONFIG_UID, globalHeaderPopulate),
-      findPublishedSingle(strapi, HOMEPAGE_UID, homepageShellPopulate),
+      findPublishedSingle(strapi, GLOBAL_CONFIG_UID, globalHeaderPopulate, locale),
+      findPublishedSingle(strapi, HOMEPAGE_UID, homepageShellPopulate, locale),
     ]);
 
     const globalContentType = strapi.contentType(GLOBAL_CONFIG_UID);
@@ -331,19 +334,35 @@ export default factories.createCoreController(HOMEPAGE_UID as any, ({ strapi }) 
   },
 
   async sections(ctx) {
-    const homepage = await findPublishedSingle(strapi, HOMEPAGE_UID, homepageSectionsPopulate);
+    const locale = requestLocale(ctx);
+    const homepage = await findPublishedSingle(
+      strapi,
+      HOMEPAGE_UID,
+      homepageSectionsPopulate,
+      locale
+    );
     if (!homepage) {
       return this.transformResponse(null);
     }
 
     const sanitizedHomepage = await this.sanitizeOutput(homepage, ctx);
-    const enrichedHomepage = await attachOccasionsAndShowrooms(strapi, sanitizedHomepage, ctx);
+    const enrichedHomepage = await attachOccasionsAndShowrooms(
+      strapi,
+      sanitizedHomepage,
+      ctx,
+      locale
+    );
 
     return this.transformResponse(enrichedHomepage);
   },
 
   async shoppingBlocks(ctx) {
-    const homepage = await findPublishedSingle(strapi, HOMEPAGE_UID, homepageShoppingBlocksPopulate);
+    const homepage = await findPublishedSingle(
+      strapi,
+      HOMEPAGE_UID,
+      homepageShoppingBlocksPopulate,
+      requestLocale(ctx)
+    );
     if (!homepage) {
       return this.transformResponse(null);
     }
@@ -352,13 +371,24 @@ export default factories.createCoreController(HOMEPAGE_UID as any, ({ strapi }) 
   },
 
   async editorialBlocks(ctx) {
-    const homepage = await findPublishedSingle(strapi, HOMEPAGE_UID, homepageEditorialBlocksPopulate);
+    const locale = requestLocale(ctx);
+    const homepage = await findPublishedSingle(
+      strapi,
+      HOMEPAGE_UID,
+      homepageEditorialBlocksPopulate,
+      locale
+    );
     if (!homepage) {
       return this.transformResponse(null);
     }
 
     const sanitizedHomepage = await this.sanitizeOutput(homepage, ctx);
-    const enrichedHomepage = await attachOccasionsAndShowrooms(strapi, sanitizedHomepage, ctx);
+    const enrichedHomepage = await attachOccasionsAndShowrooms(
+      strapi,
+      sanitizedHomepage,
+      ctx,
+      locale
+    );
 
     return this.transformResponse(enrichedHomepage);
   },

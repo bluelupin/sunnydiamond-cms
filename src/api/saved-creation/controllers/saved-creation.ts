@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 import { factories } from '@strapi/strapi';
+import { requestLocale } from '../../../utils/request-locale';
 
 const SAVED_CREATION_UID = 'api::saved-creation.saved-creation';
 const FEATURED_STORY_UID = 'api::featured-story.featured-story';
@@ -37,9 +38,36 @@ const publicSavedCreation = (savedCreation: any) => ({
   creation: savedCreation.creation,
 });
 
+const localizedSavedCreation = async (
+  strapiInstance: typeof strapi,
+  savedCreation: any,
+  locale?: string
+) => {
+  const creationDocumentId = savedCreation.creation?.documentId;
+  if (!locale || !creationDocumentId) return publicSavedCreation(savedCreation);
+
+  const creation = await strapiInstance.documents(FEATURED_STORY_UID as any).findOne({
+    documentId: creationDocumentId,
+    status: 'published',
+    locale,
+    populate: {
+      coverImage: true,
+      gallery: true,
+      cta: true,
+    },
+  } as any);
+
+  return publicSavedCreation({
+    ...savedCreation,
+    creation: creation ?? savedCreation.creation,
+  });
+};
+
 export default factories.createCoreController(SAVED_CREATION_UID as any, ({ strapi }) => ({
   async createForCustomer(ctx) {
-    const creationDocumentId = documentIdOrUndefined(requestData(ctx).creationDocumentId);
+    const input = requestData(ctx);
+    const locale = requestLocale(ctx, input);
+    const creationDocumentId = documentIdOrUndefined(input.creationDocumentId);
     if (!creationDocumentId) {
       return ctx.badRequest('creationDocumentId is required.');
     }
@@ -47,6 +75,7 @@ export default factories.createCoreController(SAVED_CREATION_UID as any, ({ stra
     const creation = await strapi.documents(FEATURED_STORY_UID as any).findOne({
       documentId: creationDocumentId,
       status: 'published',
+      locale,
       fields: ['documentId'],
     } as any);
     if (!creation) {
@@ -62,7 +91,7 @@ export default factories.createCoreController(SAVED_CREATION_UID as any, ({ stra
 
     if (existing) {
       return {
-        data: publicSavedCreation(existing),
+        data: await localizedSavedCreation(strapi, existing, locale),
         meta: { alreadySaved: true },
       };
     }
@@ -79,7 +108,7 @@ export default factories.createCoreController(SAVED_CREATION_UID as any, ({ stra
 
       ctx.status = 201;
       return {
-        data: publicSavedCreation(savedCreation),
+        data: await localizedSavedCreation(strapi, savedCreation, locale),
         meta: { alreadySaved: false },
       };
     } catch (error) {
@@ -91,7 +120,7 @@ export default factories.createCoreController(SAVED_CREATION_UID as any, ({ stra
 
         if (savedCreation) {
           return {
-            data: publicSavedCreation(savedCreation),
+            data: await localizedSavedCreation(strapi, savedCreation, locale),
             meta: { alreadySaved: true },
           };
         }
@@ -102,6 +131,7 @@ export default factories.createCoreController(SAVED_CREATION_UID as any, ({ stra
   },
 
   async listForCustomer(ctx) {
+    const locale = requestLocale(ctx);
     const magentoCustomerId = ctx.state.magentoCustomer.id;
     const requestedPage = Number(ctx.query.page);
     const requestedPageSize = Number(ctx.query.pageSize);
@@ -123,8 +153,14 @@ export default factories.createCoreController(SAVED_CREATION_UID as any, ({ stra
       documentService.count({ filters } as any),
     ]);
 
+    const localizedSavedCreations = await Promise.all(
+      savedCreations.map((savedCreation: any) =>
+        localizedSavedCreation(strapi, savedCreation, locale)
+      )
+    );
+
     return {
-      data: savedCreations.map(publicSavedCreation),
+      data: localizedSavedCreations,
       meta: {
         pagination: {
           page,

@@ -1,5 +1,6 @@
 import { factories } from '@strapi/strapi';
 import { checkFormSubmissionRateLimit } from '../../../utils/form-submission-rate-limit';
+import { requestLocale } from '../../../utils/request-locale';
 
 const BESPOKE_SUBMISSION_UID = 'api::bespoke-submission.bespoke-submission';
 const BESPOKE_PAGE_UID = 'api::contact-bespoke-page.contact-bespoke-page';
@@ -31,6 +32,7 @@ const firstFile = (files: any) => {
 export default factories.createCoreController(BESPOKE_SUBMISSION_UID as any, ({ strapi }) => ({
   async submit(ctx) {
     const input = requestData(ctx);
+    const locale = requestLocale(ctx, input);
     const fullName = stringOrUndefined(input.fullName);
     const phone = stringOrUndefined(input.phone);
     const email = stringOrUndefined(input.email)?.toLowerCase();
@@ -54,6 +56,7 @@ export default factories.createCoreController(BESPOKE_SUBMISSION_UID as any, ({ 
 
     const page = await strapi.documents(BESPOKE_PAGE_UID as any).findFirst({
       status: 'published',
+      locale,
       populate: { customDesignForm: true },
     } as any);
     if (!page?.customDesignForm?.showField) {

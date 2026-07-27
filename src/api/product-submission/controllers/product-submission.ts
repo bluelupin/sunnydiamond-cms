@@ -5,6 +5,7 @@ import {
   MagentoCustomerUnauthorizedError,
   resolveMagentoCustomer,
 } from '../../../utils/magento-customer';
+import { requestLocale } from '../../../utils/request-locale';
 
 const PRODUCT_SUBMISSION_UID = 'api::product-submission.product-submission';
 const PRODUCT_FORM_UID = 'api::product-form.product-form';
@@ -66,6 +67,7 @@ const fileMime = (file: any) => file?.mimetype ?? file?.type;
 export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ strapi }) => ({
   async submit(ctx) {
     const input = requestData(ctx);
+    const locale = requestLocale(ctx, input);
     const upload = firstFile(ctx.request.files);
     const formTag = stringOrUndefined(input.formTag);
     const productName = stringOrUndefined(input.productName);
@@ -108,6 +110,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
 
     const form = await strapi.documents(PRODUCT_FORM_UID as any).findFirst({
       status: 'published',
+      locale,
       filters: { formTag },
       populate: {
         showroomOptions: {
@@ -127,6 +130,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     if (preferredShowroomValue) {
       const preferredShowroom = await strapi.documents('api::showroom.showroom').findFirst({
         status: 'published',
+        locale,
         filters: {
           $or: [
             { documentId: preferredShowroomValue },
@@ -231,6 +235,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
   },
 
   async customerAppointments(ctx) {
+    const locale = requestLocale(ctx);
     const magentoCustomerId = ctx.state.magentoCustomer.id;
     const requestedPage = Number(ctx.query.page);
     const requestedPageSize = Number(ctx.query.pageSize);
@@ -280,8 +285,27 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       documentService.count({ filters } as any),
     ]);
 
+    const localizedAppointments = await Promise.all(
+      appointments.map(async (appointment: any) => {
+        const showroomDocumentId = appointment.preferredShowroom?.documentId;
+        if (!showroomDocumentId || !locale) return appointment;
+
+        const preferredShowroom = await strapi.documents('api::showroom.showroom').findOne({
+          documentId: showroomDocumentId,
+          status: 'published',
+          locale,
+          fields: ['documentId', 'name', 'slug', 'city', 'state'],
+        } as any);
+
+        return {
+          ...appointment,
+          preferredShowroom: preferredShowroom ?? appointment.preferredShowroom,
+        };
+      })
+    );
+
     return {
-      data: appointments,
+      data: localizedAppointments,
       meta: {
         pagination: {
           page,

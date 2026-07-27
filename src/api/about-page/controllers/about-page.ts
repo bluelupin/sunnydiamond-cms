@@ -1,4 +1,5 @@
 import { factories } from '@strapi/strapi';
+import { requestLocale } from '../../../utils/request-locale';
 
 const imageAssetPopulate = {
   populate: {
@@ -94,6 +95,7 @@ export default factories.createCoreController('api::about-page.about-page' as an
   async find(ctx) {
     const entity = await strapi.documents('api::about-page.about-page' as any).findFirst({
       status: 'published',
+      locale: requestLocale(ctx),
       populate,
     } as any);
 
