@@ -74,6 +74,7 @@ const diamondsForEveryonePopulate = {
   populate: {
     backgroundImage: imageAssetPopulate,
     cta: ctaPopulate,
+    steps:true
   },
 };
 
