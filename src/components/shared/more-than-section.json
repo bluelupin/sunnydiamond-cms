@@ -1,0 +1,29 @@
+{
+  "collectionName": "components_shared_more_than_sections",
+  "info": {
+    "displayName": "More than Section"
+  },
+  "options": {},
+  "attributes": {
+    "featuredTitle": {
+      "type": "string"
+    },
+    "featuredBody": {
+      "type": "text"
+    },
+    "featuredDescription": {
+      "type": "string"
+    },
+    "featuredImage1": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "featuredImage2": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    }
+  },
+  "config": {}
+}

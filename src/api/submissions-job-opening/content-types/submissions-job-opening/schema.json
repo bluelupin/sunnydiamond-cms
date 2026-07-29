@@ -1,10 +1,10 @@
 {
   "kind": "collectionType",
-  "collectionName": "career_openings",
+  "collectionName": "submissions_job_openings",
   "info": {
-    "singularName": "career-opening",
-    "pluralName": "career-openings",
-    "displayName": "Job Opening"
+    "singularName": "submissions-job-opening",
+    "pluralName": "submissions-job-openings",
+    "displayName": "Submissions: Job Opening"
   },
   "options": {
     "draftAndPublish": true
@@ -15,28 +15,21 @@
     }
   },
   "attributes": {
-    "slug": {
-      "type": "uid",
-      "targetField": "title",
-      "required": true
-    },
-    "title": {
-      "type": "string",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      },
-      "required": true
-    },
     "jobID": {
       "type": "string",
       "pluginOptions": {
         "i18n": {
           "localized": true
         }
-      },
-      "required": true
+      }
+    },
+    "jobTitle": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "experience": {
       "type": "string",
@@ -54,6 +47,56 @@
         }
       }
     },
+    "personalDetails": {
+      "type": "component",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "component": "shared.job-personal-details",
+      "repeatable": false
+    },
+    "educationDetails": {
+      "type": "component",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "component": "shared.job-education-details",
+      "repeatable": false
+    },
+    "workExperience": {
+      "type": "component",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "component": "shared.job-work-experience",
+      "repeatable": false
+    },
+    "skillsAndLanguages": {
+      "type": "component",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "component": "shared.job-skills",
+      "repeatable": false
+    },
+    "addInfo": {
+      "type": "component",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "component": "shared.job-additional-info",
+      "repeatable": false
+    },
     "department": {
       "type": "string",
       "pluginOptions": {
@@ -61,60 +104,6 @@
           "localized": true
         }
       }
-    },
-    "employmentType": {
-      "type": "enumeration",
-      "default": "full_time",
-      "enum": [
-        "full_time",
-        "part_time",
-        "contract",
-        "internship"
-      ]
-    },
-    "summary": {
-      "type": "text",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
-    },
-    "description": {
-      "type": "richtext",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
-    },
-    "applyCta": {
-      "type": "component",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      },
-      "component": "shared.cta",
-      "repeatable": false
-    },
-    "sortOrder": {
-      "type": "integer",
-      "default": 0
-    },
-    "isActive": {
-      "type": "boolean",
-      "default": true
-    },
-    "seo": {
-      "type": "component",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      },
-      "component": "shared.seo",
-      "repeatable": false
     }
   }
 }

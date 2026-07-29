@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_shared_job_personal_details",
+  "info": {
+    "displayName": "Job Personal Details"
+  },
+  "options": {},
+  "attributes": {
+    "Name": {
+      "type": "string"
+    },
+    "PhoneNo": {
+      "type": "biginteger"
+    },
+    "EmailId": {
+      "type": "email"
+    },
+    "DOB": {
+      "type": "date"
+    },
+    "Gender": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

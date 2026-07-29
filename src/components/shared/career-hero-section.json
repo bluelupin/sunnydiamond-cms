@@ -1,0 +1,24 @@
+{
+  "collectionName": "components_shared_career_hero_sections",
+  "info": {
+    "displayName": "Career Hero Section"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "backgroundImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
+    },
+    "CtaLable": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

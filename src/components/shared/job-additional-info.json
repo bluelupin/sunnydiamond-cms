@@ -1,0 +1,17 @@
+{
+  "collectionName": "components_shared_job_additional_infos",
+  "info": {
+    "displayName": "job Additional Info"
+  },
+  "options": {},
+  "attributes": {
+    "relation": {
+      "type": "boolean",
+      "default": false
+    },
+    "EmpName": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

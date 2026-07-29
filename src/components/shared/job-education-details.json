@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_shared_job_education_details",
+  "info": {
+    "displayName": "Job Education Details"
+  },
+  "options": {},
+  "attributes": {
+    "Degree": {
+      "type": "string"
+    },
+    "AreaOfStudy": {
+      "type": "string"
+    },
+    "Year": {
+      "type": "biginteger"
+    }
+  },
+  "config": {}
+}
