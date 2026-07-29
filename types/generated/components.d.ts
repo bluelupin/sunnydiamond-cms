@@ -129,6 +129,28 @@ export interface SharedBespokeVisionSection extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedBlogPageFilter extends Struct.ComponentSchema {
+  collectionName: 'components_shared_blog_page_filters';
+  info: {
+    displayName: 'Blog page filter';
+  };
+  attributes: {
+    label: Schema.Attribute.String;
+    value: Schema.Attribute.String;
+  };
+}
+
+export interface SharedBlogPageHero extends Struct.ComponentSchema {
+  collectionName: 'components_shared_blog_page_heroes';
+  info: {
+    displayName: 'Blog Landing Page Hero Section';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Media<'images'>;
+    title: Schema.Attribute.String;
+  };
+}
+
 export interface SharedBrandTaglineSection extends Struct.ComponentSchema {
   collectionName: 'components_shared_brand_tagline_sections';
   info: {
@@ -1098,6 +1120,8 @@ declare module '@strapi/strapi' {
       'shared.bespoke-service-highlight': SharedBespokeServiceHighlight;
       'shared.bespoke-vision-card': SharedBespokeVisionCard;
       'shared.bespoke-vision-section': SharedBespokeVisionSection;
+      'shared.blog-page-filter': SharedBlogPageFilter;
+      'shared.blog-page-hero': SharedBlogPageHero;
       'shared.brand-tagline-section': SharedBrandTaglineSection;
       'shared.brilliance-section': SharedBrillianceSection;
       'shared.c-info-panel': SharedCInfoPanel;

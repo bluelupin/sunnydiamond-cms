@@ -76,7 +76,7 @@
         }
       }
     },
-    "HeroImage": {
+    "heroImage": {
       "type": "component",
       "pluginOptions": {
         "i18n": {

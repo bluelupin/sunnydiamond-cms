@@ -579,6 +579,103 @@ export interface ApiBespokeSubmissionBespokeSubmission
   };
 }
 
+export interface ApiBlogCategoryBlogCategory
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'blog_categories';
+  info: {
+    displayName: 'Blog category';
+    pluralName: 'blog-categories';
+    singularName: 'blog-category';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    blog_posts: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::blog-post.blog-post'
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::blog-category.blog-category'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID<'title'> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiBlogLandingPageBlogLandingPage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'blog_landing_pages';
+  info: {
+    displayName: 'Blogs Landing Page';
+    pluralName: 'blog-landing-pages';
+    singularName: 'blog-landing-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    blog_categories: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::blog-category.blog-category'
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    heroSection: Schema.Attribute.Component<'shared.blog-page-hero', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::blog-landing-page.blog-landing-page'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiBlogPostBlogPost extends Struct.CollectionTypeSchema {
   collectionName: 'blog_posts';
   info: {
@@ -601,7 +698,17 @@ export interface ApiBlogPostBlogPost extends Struct.CollectionTypeSchema {
           localized: true;
         };
       }>;
+    blog_category: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::blog-category.blog-category'
+    >;
     body: Schema.Attribute.RichText &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    coverImage: Schema.Attribute.Component<'shared.image-asset', false> &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -610,13 +717,19 @@ export interface ApiBlogPostBlogPost extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    duration: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     excerpt: Schema.Attribute.Text &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
         };
       }>;
-    featuredImage: Schema.Attribute.Component<'shared.image-asset', false> &
+    heroImage: Schema.Attribute.Component<'shared.image-asset', false> &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -2987,6 +3100,8 @@ declare module '@strapi/strapi' {
       'admin::user': AdminUser;
       'api::about-page.about-page': ApiAboutPageAboutPage;
       'api::bespoke-submission.bespoke-submission': ApiBespokeSubmissionBespokeSubmission;
+      'api::blog-category.blog-category': ApiBlogCategoryBlogCategory;
+      'api::blog-landing-page.blog-landing-page': ApiBlogLandingPageBlogLandingPage;
       'api::blog-post.blog-post': ApiBlogPostBlogPost;
       'api::career-opening.career-opening': ApiCareerOpeningCareerOpening;
       'api::category-landing.category-landing': ApiCategoryLandingCategoryLanding;

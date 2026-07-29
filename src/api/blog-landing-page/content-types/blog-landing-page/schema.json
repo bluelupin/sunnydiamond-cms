@@ -1,10 +1,10 @@
 {
   "kind": "singleType",
-  "collectionName": "blog_pages",
+  "collectionName": "blog_landing_pages",
   "info": {
-    "singularName": "blog-page",
-    "pluralName": "blog-pages",
-    "displayName": "Blog Landing page"
+    "singularName": "blog-landing-page",
+    "pluralName": "blog-landing-pages",
+    "displayName": "Blogs Landing Page"
   },
   "options": {
     "draftAndPublish": true

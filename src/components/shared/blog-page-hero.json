@@ -1,19 +1,18 @@
 {
   "collectionName": "components_shared_blog_page_heroes",
   "info": {
-    "displayName": "Blog page hero"
+    "displayName": "Blog Landing Page Hero Section"
   },
   "options": {},
   "attributes": {
-    "Title": {
+    "title": {
       "type": "string"
     },
-    "BackgroundImage": {
+    "backgroundImage": {
       "type": "media",
       "multiple": false,
       "allowedTypes": [
-        "images",
-        "files"
+        "images"
       ]
     }
   },

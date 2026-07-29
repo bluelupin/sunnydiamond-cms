@@ -40,7 +40,7 @@ const REVALIDATION_MAPPINGS: Record<string, RevalidationMapping> = {
   },
   'api::learn-about-diamonds-page.learn-about-diamonds-page': {
     tags: ['cms:learn-about-diamonds-page'],
-    paths: ['/learn-about-diamonds'],
+    paths: ['/education'],
   },
   'api::product-landing-page.product-landing-page': {
     tags: ['cms:product-landing-page'],
