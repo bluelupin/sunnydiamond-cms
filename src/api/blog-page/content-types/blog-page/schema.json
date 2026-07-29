@@ -4,7 +4,7 @@
   "info": {
     "singularName": "blog-page",
     "pluralName": "blog-pages",
-    "displayName": "Blog page"
+    "displayName": "Blog Landing page"
   },
   "options": {
     "draftAndPublish": true
@@ -25,15 +25,10 @@
       "component": "shared.blog-page-hero",
       "repeatable": false
     },
-    "category": {
-      "type": "component",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      },
-      "component": "shared.blog-page-filter",
-      "repeatable": true
+    "blog_categories": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::blog-category.blog-category"
     },
     "seo": {
       "type": "component",

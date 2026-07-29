@@ -5,10 +5,10 @@
   },
   "options": {},
   "attributes": {
-    "heroTitle": {
+    "Title": {
       "type": "string"
     },
-    "heroBackgroundImage": {
+    "BackgroundImage": {
       "type": "media",
       "multiple": false,
       "allowedTypes": [
