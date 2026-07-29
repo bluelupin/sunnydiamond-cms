@@ -1,0 +1,46 @@
+{
+  "collectionName": "components_shared_contact_options",
+  "info": {
+    "displayName": "Contact Option",
+    "description": "A call, email, or link action displayed in a contact section"
+  },
+  "options": {},
+  "attributes": {
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "phone",
+        "email",
+        "link"
+      ],
+      "required": true
+    },
+    "heading": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "availability": {
+      "type": "text"
+    },
+    "value": {
+      "type": "string",
+      "required": true
+    },
+    "buttonLabel": {
+      "type": "string",
+      "required": true
+    },
+    "sortOrder": {
+      "type": "integer",
+      "default": 0,
+      "min": 0
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

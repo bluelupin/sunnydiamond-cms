@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_shared_policy_page_headers",
+  "info": {
+    "displayName": "Policy Page Header",
+    "description": "Heading and search configuration for the policy and certifications page"
+  },
+  "options": {},
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "required": true,
+      "default": "Policy & Certifications"
+    },
+    "searchPlaceholder": {
+      "type": "string",
+      "default": "Search keywords"
+    },
+    "emptySearchMessage": {
+      "type": "string",
+      "default": "No matching policies found."
+    }
+  }
+}

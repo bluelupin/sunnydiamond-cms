@@ -2053,6 +2053,74 @@ export interface ApiOccasionOccasion extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiPolicyCertificationsPagePolicyCertificationsPage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'policy_certifications_pages';
+  info: {
+    description: 'Section-wise content for the searchable policy and certifications page';
+    displayName: 'Policy & Certifications Page';
+    pluralName: 'policy-certifications-pages';
+    singularName: 'policy-certifications-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    contactSection: Schema.Attribute.Component<
+      'shared.contact-support-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    headerSection: Schema.Attribute.Component<
+      'shared.policy-page-header',
+      false
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::policy-certifications-page.policy-certifications-page'
+    >;
+    policyCategories: Schema.Attribute.Component<
+      'shared.policy-category',
+      true
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiProductDisplayPageProductDisplayPage
   extends Struct.SingleTypeSchema {
   collectionName: 'product_display_page';
@@ -3368,6 +3436,7 @@ declare module '@strapi/strapi' {
       'api::legal-page.legal-page': ApiLegalPageLegalPage;
       'api::news-article.news-article': ApiNewsArticleNewsArticle;
       'api::occasion.occasion': ApiOccasionOccasion;
+      'api::policy-certifications-page.policy-certifications-page': ApiPolicyCertificationsPagePolicyCertificationsPage;
       'api::product-display-page.product-display-page': ApiProductDisplayPageProductDisplayPage;
       'api::product-form.product-form': ApiProductFormProductForm;
       'api::product-landing-page.product-landing-page': ApiProductLandingPageProductLandingPage;

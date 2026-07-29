@@ -311,6 +311,46 @@ export interface SharedCollectionShowcaseSection
   };
 }
 
+export interface SharedContactOption extends Struct.ComponentSchema {
+  collectionName: 'components_shared_contact_options';
+  info: {
+    description: 'A call, email, or link action displayed in a contact section';
+    displayName: 'Contact Option';
+  };
+  attributes: {
+    availability: Schema.Attribute.Text;
+    buttonLabel: Schema.Attribute.String & Schema.Attribute.Required;
+    description: Schema.Attribute.Text;
+    heading: Schema.Attribute.String & Schema.Attribute.Required;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    sortOrder: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<0>;
+    type: Schema.Attribute.Enumeration<['phone', 'email', 'link']> &
+      Schema.Attribute.Required;
+    value: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedContactSupportSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_contact_support_sections';
+  info: {
+    description: 'Contact strip displayed below the policy content';
+    displayName: 'Contact Support Section';
+  };
+  attributes: {
+    contactOptions: Schema.Attribute.Component<'shared.contact-option', true> &
+      Schema.Attribute.Required;
+    heading: Schema.Attribute.String;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+  };
+}
+
 export interface SharedContentSection extends Struct.ComponentSchema {
   collectionName: 'components_shared_content_sections';
   info: {
@@ -1048,6 +1088,93 @@ export interface SharedPageIntro extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedPolicyAccordionItem extends Struct.ComponentSchema {
+  collectionName: 'components_shared_policy_accordion_items';
+  info: {
+    description: 'A collapsible question and answer within a policy';
+    displayName: 'Policy Accordion Item';
+  };
+  attributes: {
+    answer: Schema.Attribute.RichText & Schema.Attribute.Required;
+    isOpenByDefault: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
+    question: Schema.Attribute.String & Schema.Attribute.Required;
+    sortOrder: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<0>;
+  };
+}
+
+export interface SharedPolicyCategory extends Struct.ComponentSchema {
+  collectionName: 'components_shared_policy_categories';
+  info: {
+    description: 'A sidebar group containing an ordered set of policies';
+    displayName: 'Policy Category';
+  };
+  attributes: {
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    policies: Schema.Attribute.Component<'shared.policy-entry', true> &
+      Schema.Attribute.Required;
+    slug: Schema.Attribute.String & Schema.Attribute.Required;
+    sortOrder: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<0>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedPolicyEntry extends Struct.ComponentSchema {
+  collectionName: 'components_shared_policy_entries';
+  info: {
+    description: 'A searchable policy containing ordered accordion items';
+    displayName: 'Policy Entry';
+  };
+  attributes: {
+    accordionItems: Schema.Attribute.Component<
+      'shared.policy-accordion-item',
+      true
+    >;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    slug: Schema.Attribute.String & Schema.Attribute.Required;
+    sortOrder: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<0>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedPolicyPageHeader extends Struct.ComponentSchema {
+  collectionName: 'components_shared_policy_page_headers';
+  info: {
+    description: 'Heading and search configuration for the policy and certifications page';
+    displayName: 'Policy Page Header';
+  };
+  attributes: {
+    emptySearchMessage: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'No matching policies found.'>;
+    heading: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Policy & Certifications'>;
+    searchPlaceholder: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Search keywords'>;
+  };
+}
+
 export interface SharedProcessSection extends Struct.ComponentSchema {
   collectionName: 'components_shared_process_sections';
   info: {
@@ -1339,6 +1466,8 @@ declare module '@strapi/strapi' {
       'shared.cert-lab-card': SharedCertLabCard;
       'shared.certificate-section': SharedCertificateSection;
       'shared.collection-showcase-section': SharedCollectionShowcaseSection;
+      'shared.contact-option': SharedContactOption;
+      'shared.contact-support-section': SharedContactSupportSection;
       'shared.content-section': SharedContentSection;
       'shared.craft-mosaic-section': SharedCraftMosaicSection;
       'shared.craft-section': SharedCraftSection;
@@ -1390,6 +1519,10 @@ declare module '@strapi/strapi' {
       'shared.occasion-section': SharedOccasionSection;
       'shared.openings-career-section': SharedOpeningsCareerSection;
       'shared.page-intro': SharedPageIntro;
+      'shared.policy-accordion-item': SharedPolicyAccordionItem;
+      'shared.policy-category': SharedPolicyCategory;
+      'shared.policy-entry': SharedPolicyEntry;
+      'shared.policy-page-header': SharedPolicyPageHeader;
       'shared.process-section': SharedProcessSection;
       'shared.process-step': SharedProcessStep;
       'shared.product-sku': SharedProductSku;
