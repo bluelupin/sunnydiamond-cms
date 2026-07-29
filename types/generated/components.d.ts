@@ -204,6 +204,18 @@ export interface SharedCVisualPanel extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedCareerHeroSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_career_hero_sections';
+  info: {
+    displayName: 'Career Hero Section';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Media<'images' | 'files'>;
+    CtaLable: Schema.Attribute.String;
+    title: Schema.Attribute.String;
+  };
+}
+
 export interface SharedCarouselImage extends Struct.ComponentSchema {
   collectionName: 'components_shared_carousel_images';
   info: {
@@ -229,6 +241,16 @@ export interface SharedCategoryCard extends Struct.ComponentSchema {
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedCategoryItems extends Struct.ComponentSchema {
+  collectionName: 'components_shared_category_items';
+  info: {
+    displayName: 'Category Items';
+  };
+  attributes: {
+    ItemName: Schema.Attribute.String;
   };
 }
 
@@ -542,6 +564,29 @@ export interface SharedFeaturedStoryCard extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedFeaturesCareerSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_features_career_sections';
+  info: {
+    displayName: 'Features Career Section';
+  };
+  attributes: {
+    FeatureDescription: Schema.Attribute.Text;
+    featureImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    FeatureTitle: Schema.Attribute.String;
+  };
+}
+
+export interface SharedFilterCategory extends Struct.ComponentSchema {
+  collectionName: 'components_shared_filter_categories';
+  info: {
+    displayName: 'Filter Category';
+  };
+  attributes: {
+    FeaturedTitle: Schema.Attribute.String;
+    Items: Schema.Attribute.Component<'shared.category-items', true>;
+  };
+}
+
 export interface SharedFooterLinkGroup extends Struct.ComponentSchema {
   collectionName: 'components_shared_footer_link_groups';
   info: {
@@ -705,6 +750,82 @@ export interface SharedInfoCard extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedInvestingCareerSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_investing_career_sections';
+  info: {
+    displayName: 'Investing Career Section';
+  };
+  attributes: {
+    InvestingFeatures: Schema.Attribute.Component<
+      'shared.features-career-section',
+      true
+    >;
+    InvestingTitle: Schema.Attribute.String;
+  };
+}
+
+export interface SharedJobAdditionalInfo extends Struct.ComponentSchema {
+  collectionName: 'components_shared_job_additional_infos';
+  info: {
+    displayName: 'job Additional Info';
+  };
+  attributes: {
+    EmpName: Schema.Attribute.String;
+    relation: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+  };
+}
+
+export interface SharedJobEducationDetails extends Struct.ComponentSchema {
+  collectionName: 'components_shared_job_education_details';
+  info: {
+    displayName: 'Job Education Details';
+  };
+  attributes: {
+    AreaOfStudy: Schema.Attribute.String;
+    Degree: Schema.Attribute.String;
+    Year: Schema.Attribute.BigInteger;
+  };
+}
+
+export interface SharedJobPersonalDetails extends Struct.ComponentSchema {
+  collectionName: 'components_shared_job_personal_details';
+  info: {
+    displayName: 'Job Personal Details';
+  };
+  attributes: {
+    DOB: Schema.Attribute.Date;
+    EmailId: Schema.Attribute.Email;
+    Gender: Schema.Attribute.String;
+    Name: Schema.Attribute.String;
+    PhoneNo: Schema.Attribute.BigInteger;
+  };
+}
+
+export interface SharedJobSkills extends Struct.ComponentSchema {
+  collectionName: 'components_shared_job_skills';
+  info: {
+    displayName: 'Job Skills';
+  };
+  attributes: {
+    Skills: Schema.Attribute.Component<'shared.skill-items', true>;
+  };
+}
+
+export interface SharedJobWorkExperience extends Struct.ComponentSchema {
+  collectionName: 'components_shared_job_work_experiences';
+  info: {
+    displayName: 'Job Work Experience';
+  };
+  attributes: {
+    CurrCompName: Schema.Attribute.String;
+    CurrCtc: Schema.Attribute.BigInteger;
+    CurrJobTitle: Schema.Attribute.String;
+    ExpecCtc: Schema.Attribute.BigInteger;
+    NoticePerd: Schema.Attribute.Integer;
+    RelvWorkExp: Schema.Attribute.String;
+  };
+}
+
 export interface SharedLearnMoreFeatureGroup extends Struct.ComponentSchema {
   collectionName: 'components_shared_learn_more_feature_groups';
   info: {
@@ -798,6 +919,30 @@ export interface SharedLinkItem extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedListingFilterSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_listing_filter_sections';
+  info: {
+    displayName: 'Listing Filter Section';
+  };
+  attributes: {
+    Department: Schema.Attribute.Component<'shared.filter-category', false>;
+    Experience: Schema.Attribute.Component<'shared.filter-category', false>;
+    fiterTitle: Schema.Attribute.String;
+    Location: Schema.Attribute.Component<'shared.filter-category', false>;
+  };
+}
+
+export interface SharedListingHeroSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_listing_hero_sections';
+  info: {
+    displayName: 'Listing Hero Section';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', true>;
+    title: Schema.Attribute.String;
+  };
+}
+
 export interface SharedModalCta extends Struct.ComponentSchema {
   collectionName: 'components_shared_form_ctas';
   info: {
@@ -809,6 +954,20 @@ export interface SharedModalCta extends Struct.ComponentSchema {
     modalTag: Schema.Attribute.String & Schema.Attribute.Required;
     style: Schema.Attribute.Enumeration<['primary', 'link']> &
       Schema.Attribute.DefaultTo<'primary'>;
+  };
+}
+
+export interface SharedMoreThanSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_more_than_sections';
+  info: {
+    displayName: 'More than Section';
+  };
+  attributes: {
+    featuredBody: Schema.Attribute.Text;
+    featuredDescription: Schema.Attribute.String;
+    featuredImage1: Schema.Attribute.Component<'shared.image-asset', false>;
+    featuredImage2: Schema.Attribute.Component<'shared.image-asset', false>;
+    featuredTitle: Schema.Attribute.String;
   };
 }
 
@@ -836,6 +995,22 @@ export interface SharedOccasionSection extends Struct.ComponentSchema {
     occasions: Schema.Attribute.Relation<'oneToMany', 'api::occasion.occasion'>;
     sectionTitle: Schema.Attribute.String;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+  };
+}
+
+export interface SharedOpeningsCareerSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_openings_career_sections';
+  info: {
+    displayName: 'Openings Career Section';
+  };
+  attributes: {
+    career_openings: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::career-opening.career-opening'
+    >;
+    CtaLable: Schema.Attribute.String;
+    OpeningDescription: Schema.Attribute.String;
+    OpeningTitle: Schema.Attribute.String;
   };
 }
 
@@ -962,6 +1137,16 @@ export interface SharedSizeRow extends Struct.ComponentSchema {
     circumference: Schema.Attribute.String;
     diameter: Schema.Attribute.String;
     sizeLabel: Schema.Attribute.String;
+  };
+}
+
+export interface SharedSkillItems extends Struct.ComponentSchema {
+  collectionName: 'components_shared_skill_items';
+  info: {
+    displayName: 'Skill items';
+  };
+  attributes: {
+    SkillName: Schema.Attribute.String;
   };
 }
 
@@ -1126,8 +1311,10 @@ declare module '@strapi/strapi' {
       'shared.brilliance-section': SharedBrillianceSection;
       'shared.c-info-panel': SharedCInfoPanel;
       'shared.c-visual-panel': SharedCVisualPanel;
+      'shared.career-hero-section': SharedCareerHeroSection;
       'shared.carousel-image': SharedCarouselImage;
       'shared.category-card': SharedCategoryCard;
+      'shared.category-items': SharedCategoryItems;
       'shared.cert-lab-card': SharedCertLabCard;
       'shared.certificate-section': SharedCertificateSection;
       'shared.collection-showcase-section': SharedCollectionShowcaseSection;
@@ -1148,6 +1335,8 @@ declare module '@strapi/strapi' {
       'shared.featured-products-section': SharedFeaturedProductsSection;
       'shared.featured-stories-section': SharedFeaturedStoriesSection;
       'shared.featured-story-card': SharedFeaturedStoryCard;
+      'shared.features-career-section': SharedFeaturesCareerSection;
+      'shared.filter-category': SharedFilterCategory;
       'shared.footer-link-group': SharedFooterLinkGroup;
       'shared.footer-ticker-item': SharedFooterTickerItem;
       'shared.form-field': SharedFormField;
@@ -1159,15 +1348,25 @@ declare module '@strapi/strapi' {
       'shared.image-asset': SharedImageAsset;
       'shared.indian-state': SharedIndianState;
       'shared.info-card': SharedInfoCard;
+      'shared.investing-career-section': SharedInvestingCareerSection;
+      'shared.job-additional-info': SharedJobAdditionalInfo;
+      'shared.job-education-details': SharedJobEducationDetails;
+      'shared.job-personal-details': SharedJobPersonalDetails;
+      'shared.job-skills': SharedJobSkills;
+      'shared.job-work-experience': SharedJobWorkExperience;
       'shared.learn-more-feature-group': SharedLearnMoreFeatureGroup;
       'shared.learn-more-section': SharedLearnMoreSection;
       'shared.learn-more-tab': SharedLearnMoreTab;
       'shared.legacy-image-block': SharedLegacyImageBlock;
       'shared.legacy-section': SharedLegacySection;
       'shared.link-item': SharedLinkItem;
+      'shared.listing-filter-section': SharedListingFilterSection;
+      'shared.listing-hero-section': SharedListingHeroSection;
       'shared.modal-cta': SharedModalCta;
+      'shared.more-than-section': SharedMoreThanSection;
       'shared.mosaic-tile': SharedMosaicTile;
       'shared.occasion-section': SharedOccasionSection;
+      'shared.openings-career-section': SharedOpeningsCareerSection;
       'shared.page-intro': SharedPageIntro;
       'shared.process-section': SharedProcessSection;
       'shared.process-step': SharedProcessStep;
@@ -1176,6 +1375,7 @@ declare module '@strapi/strapi' {
       'shared.seo': SharedSeo;
       'shared.showroom-section': SharedShowroomSection;
       'shared.size-row': SharedSizeRow;
+      'shared.skill-items': SharedSkillItems;
       'shared.sunny-promise-section': SharedSunnyPromiseSection;
       'shared.tag': SharedTag;
       'shared.team-member': SharedTeamMember;
