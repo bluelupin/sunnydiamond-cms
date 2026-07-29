@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_shared_listing_filter_sections",
+  "info": {
+    "displayName": "Listing Filter Section"
+  },
+  "options": {},
+  "attributes": {
+    "fiterTitle": {
+      "type": "string"
+    },
+    "Location": {
+      "type": "component",
+      "component": "shared.filter-category",
+      "repeatable": false
+    },
+    "Department": {
+      "type": "component",
+      "component": "shared.filter-category",
+      "repeatable": false
+    },
+    "Experience": {
+      "type": "component",
+      "component": "shared.filter-category",
+      "repeatable": false
+    }
+  },
+  "config": {}
+}
