@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_shared_job_work_experiences",
+  "info": {
+    "displayName": "Job Work Experience"
+  },
+  "options": {},
+  "attributes": {
+    "RelvWorkExp": {
+      "type": "string"
+    },
+    "CurrCompName": {
+      "type": "string"
+    },
+    "CurrJobTitle": {
+      "type": "string"
+    },
+    "CurrCtc": {
+      "type": "biginteger"
+    },
+    "ExpecCtc": {
+      "type": "biginteger"
+    },
+    "NoticePerd": {
+      "type": "integer"
+    }
+  },
+  "config": {}
+}

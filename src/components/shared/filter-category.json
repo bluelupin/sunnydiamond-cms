@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_shared_filter_categories",
+  "info": {
+    "displayName": "Filter Category"
+  },
+  "options": {},
+  "attributes": {
+    "FeaturedTitle": {
+      "type": "string"
+    },
+    "Items": {
+      "type": "component",
+      "component": "shared.category-items",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

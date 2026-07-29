@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_shared_features_career_sections",
+  "info": {
+    "displayName": "Features Career Section"
+  },
+  "options": {},
+  "attributes": {
+    "FeatureTitle": {
+      "type": "string"
+    },
+    "FeatureDescription": {
+      "type": "text"
+    },
+    "featureImage": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    }
+  },
+  "config": {}
+}

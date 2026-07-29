@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_shared_job_skills",
+  "info": {
+    "displayName": "Job Skills"
+  },
+  "options": {},
+  "attributes": {
+    "Skills": {
+      "type": "component",
+      "component": "shared.skill-items",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

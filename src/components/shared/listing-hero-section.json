@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_shared_listing_hero_sections",
+  "info": {
+    "displayName": "Listing Hero Section"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "backgroundImage": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

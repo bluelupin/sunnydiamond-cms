@@ -1,0 +1,47 @@
+{
+  "kind": "singleType",
+  "collectionName": "career_listing_pages",
+  "info": {
+    "singularName": "career-listing-page",
+    "pluralName": "career-listing-pages",
+    "displayName": "Career Listing Page"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "heroSection": {
+      "type": "component",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "component": "shared.listing-hero-section",
+      "repeatable": false
+    },
+    "featuredTitle": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "filterSection": {
+      "type": "component",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "component": "shared.listing-filter-section",
+      "repeatable": false
+    }
+  }
+}
