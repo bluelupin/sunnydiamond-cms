@@ -3,6 +3,7 @@
  */
 
 import { factories } from '@strapi/strapi';
+import { blogLandingPopulate } from '../../../utils/blog-populate';
 
 const UID = 'api::blog-landing-page.blog-landing-page';
 
@@ -11,19 +12,7 @@ export default factories.createCoreController(UID as any, () => ({
     if (ctx.query.populate === '*') {
       ctx.query = {
         ...ctx.query,
-        populate: {
-          heroSection: {
-            populate: {
-              backgroundImage: true,
-            },
-          },
-          blog_categories: true,
-          seo: {
-            populate: {
-              ogImage: true,
-            },
-          },
-        },
+        populate: blogLandingPopulate,
       } as any;
     }
 

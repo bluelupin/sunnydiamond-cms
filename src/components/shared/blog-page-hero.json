@@ -9,11 +9,9 @@
       "type": "string"
     },
     "backgroundImage": {
-      "type": "media",
-      "multiple": false,
-      "allowedTypes": [
-        "images"
-      ]
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
     }
   },
   "config": {}

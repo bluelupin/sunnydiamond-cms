@@ -25,10 +25,20 @@
       "component": "shared.blog-page-hero",
       "repeatable": false
     },
-    "blog_categories": {
+    "blogCategory": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::blog-category.blog-category"
+    },
+    "featuredBlogSection": {
+      "type": "component",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "component": "shared.featured-blog-section",
+      "repeatable": false
     },
     "seo": {
       "type": "component",

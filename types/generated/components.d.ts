@@ -1,5 +1,15 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
+export interface CareerCareerDiscoverSection extends Struct.ComponentSchema {
+  collectionName: 'components_career_career_discover_sections';
+  info: {
+    displayName: 'Career Discover Section';
+  };
+  attributes: {
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface SharedBespokeCustomDesignForm extends Struct.ComponentSchema {
   collectionName: 'components_shared_bespoke_custom_design_forms';
   info: {
@@ -146,7 +156,7 @@ export interface SharedBlogPageHero extends Struct.ComponentSchema {
     displayName: 'Blog Landing Page Hero Section';
   };
   attributes: {
-    backgroundImage: Schema.Attribute.Media<'images'>;
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
     title: Schema.Attribute.String;
   };
 }
@@ -210,7 +220,7 @@ export interface SharedCareerHeroSection extends Struct.ComponentSchema {
     displayName: 'Career Hero Section';
   };
   attributes: {
-    backgroundImage: Schema.Attribute.Media<'images' | 'files'>;
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
     CtaLable: Schema.Attribute.String;
     title: Schema.Attribute.String;
   };
@@ -513,6 +523,16 @@ export interface SharedFeatureSlide extends Struct.ComponentSchema {
     body: Schema.Attribute.Text & Schema.Attribute.Required;
     heading: Schema.Attribute.String & Schema.Attribute.Required;
     image: Schema.Attribute.Component<'shared.image-asset', false>;
+  };
+}
+
+export interface SharedFeaturedBlogSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_featured_blog_sections';
+  info: {
+    displayName: 'featuredBlogSection';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
   };
 }
 
@@ -1298,6 +1318,7 @@ export interface SharedVideoAsset extends Struct.ComponentSchema {
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
+      'career.career-discover-section': CareerCareerDiscoverSection;
       'shared.bespoke-custom-design-form': SharedBespokeCustomDesignForm;
       'shared.bespoke-for-you-section': SharedBespokeForYouSection;
       'shared.bespoke-get-in-touch-section': SharedBespokeGetInTouchSection;
@@ -1332,6 +1353,7 @@ declare module '@strapi/strapi' {
       'shared.faq-item': SharedFaqItem;
       'shared.faq-section': SharedFaqSection;
       'shared.feature-slide': SharedFeatureSlide;
+      'shared.featured-blog-section': SharedFeaturedBlogSection;
       'shared.featured-products-section': SharedFeaturedProductsSection;
       'shared.featured-stories-section': SharedFeaturedStoriesSection;
       'shared.featured-story-card': SharedFeaturedStoryCard;

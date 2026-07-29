@@ -24,14 +24,14 @@
       },
       "required": true
     },
-    "slug": {
-      "type": "uid",
+    "Value": {
+      "type": "string",
       "pluginOptions": {
         "i18n": {
           "localized": true
         }
       },
-      "targetField": "title"
+      "required": true
     },
     "blog_posts": {
       "type": "relation",

@@ -45,22 +45,6 @@
       "component": "shared.investing-career-section",
       "repeatable": false
     },
-    "discoverDescription": {
-      "type": "text",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
-    },
-    "discoverCtaLable": {
-      "type": "string",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
-    },
     "FAQs": {
       "type": "component",
       "pluginOptions": {
@@ -69,6 +53,16 @@
         }
       },
       "component": "shared.faq-section",
+      "repeatable": false
+    },
+    "discoverSection": {
+      "type": "component",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "component": "career.career-discover-section",
       "repeatable": false
     }
   }

@@ -1,0 +1,14 @@
+{
+  "collectionName": "components_career_career_discover_sections",
+  "info": {
+    "displayName": "Career Discover Section"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "config": {}
+}

@@ -10,6 +10,13 @@ export const imageAssetPopulate = {
   },
 };
 
+export const fullImageAssetPopulate = {
+  populate: {
+    desktopImage: true,
+    mobileImage: true,
+  },
+};
+
 export const videoAssetPopulate = {
   fields: ['altText'],
   populate: {
@@ -36,6 +43,12 @@ export const seoPopulate = {
   fields: ['metaTitle', 'metaDescription', 'canonicalUrl'],
   populate: {
     ogImage: mediaPopulate,
+  },
+};
+
+export const fullSeoPopulate = {
+  populate: {
+    ogImage: true,
   },
 };
 

@@ -262,6 +262,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
           'customerPhone',
           'customerEmail',
           'requestedDate',
+          'requestDetails',
           'selectedTimeSlot',
           'workflowStatus',
           'addressLine1',

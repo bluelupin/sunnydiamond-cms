@@ -1,16 +1,10 @@
 {
-  "collectionName": "components_shared_career_hero_sections",
+  "collectionName": "components_shared_featured_blog_sections",
   "info": {
-    "displayName": "Career Hero Section"
+    "displayName": "featuredBlogSection"
   },
   "options": {},
   "attributes": {
-    "title": {
-      "type": "string"
-    },
-    "CtaLable": {
-      "type": "string"
-    },
     "backgroundImage": {
       "type": "component",
       "component": "shared.image-asset",

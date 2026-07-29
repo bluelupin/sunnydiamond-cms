@@ -609,12 +609,6 @@ export interface ApiBlogCategoryBlogCategory
       'api::blog-category.blog-category'
     >;
     publishedAt: Schema.Attribute.DateTime;
-    slug: Schema.Attribute.UID<'title'> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
     title: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.SetPluginOptions<{
@@ -625,6 +619,13 @@ export interface ApiBlogCategoryBlogCategory
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    Value: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
   };
 }
 
@@ -645,13 +646,22 @@ export interface ApiBlogLandingPageBlogLandingPage
     };
   };
   attributes: {
-    blog_categories: Schema.Attribute.Relation<
+    blogCategory: Schema.Attribute.Relation<
       'oneToMany',
       'api::blog-category.blog-category'
     >;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    featuredBlogSection: Schema.Attribute.Component<
+      'shared.featured-blog-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     heroSection: Schema.Attribute.Component<'shared.blog-page-hero', false> &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
@@ -717,12 +727,6 @@ export interface ApiBlogPostBlogPost extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    duration: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
     excerpt: Schema.Attribute.Text &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
@@ -1714,13 +1718,10 @@ export interface ApiJobLandingPageJobLandingPage
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    discoverCtaLable: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    discoverDescription: Schema.Attribute.Text &
+    discoverSection: Schema.Attribute.Component<
+      'career.career-discover-section',
+      false
+    > &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;

@@ -60,14 +60,6 @@
     "publishedDate": {
       "type": "date"
     },
-    "duration": {
-      "type": "string",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
-    },
     "excerpt": {
       "type": "text",
       "pluginOptions": {
