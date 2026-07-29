@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_shared_blog_page_heroes",
+  "info": {
+    "displayName": "Blog page hero"
+  },
+  "options": {},
+  "attributes": {
+    "heroTitle": {
+      "type": "string"
+    },
+    "heroBackgroundImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
+    }
+  },
+  "config": {}
+}
