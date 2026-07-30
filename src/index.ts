@@ -4,6 +4,7 @@ import { seedCms } from './utils/seeder';
 import { registerFrontendRevalidation } from './utils/frontend-revalidation';
 import { migrateHomepage } from './utils/migrate-homepage';
 import { migrateGradeStopImages } from './utils/migrate-grade-stop-images';
+import { seedBlogPosts } from './utils/blog-seeder';
 
 export default {
   /**
@@ -32,6 +33,8 @@ export default {
     if (process.env.MIGRATE_GRADE_STOP_IMAGES === 'true') {
       await migrateGradeStopImages(strapi);
     }
+      if (process.env.BLOG_SEED_ENABLED === 'true') {
+      await seedBlogPosts(strapi);
+    }
   },
 };
-

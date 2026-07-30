@@ -1,0 +1,85 @@
+{
+  "kind": "singleType",
+  "collectionName": "job_landing_pages",
+  "info": {
+    "singularName": "job-landing-page",
+    "pluralName": "job-landing-pages",
+    "displayName": "Career Landing Page"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "heroSection": {
+      "type": "component",
+      "component": "shared.career-hero-section",
+      "repeatable": false
+    },
+    "openingsSection": {
+      "type": "component",
+      "component": "shared.openings-career-section",
+      "repeatable": false
+    },
+    "moreThanSection": {
+      "type": "component",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "component": "shared.more-than-section",
+      "repeatable": false
+    },
+    "investingSection": {
+      "type": "component",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "component": "shared.investing-career-section",
+      "repeatable": false
+    },
+    "discoverDescription": {
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "discoverCtaLable": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "FAQs": {
+      "type": "component",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "component": "shared.faq-section",
+      "repeatable": false
+    },
+    "seo": {
+      "type": "component",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "component": "shared.seo",
+      "repeatable": false
+    }
+  }
+}
