@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_shared_policy_accordion_items",
+  "info": {
+    "displayName": "Policy Accordion Item",
+    "description": "A collapsible question and answer within a policy"
+  },
+  "options": {},
+  "attributes": {
+    "question": {
+      "type": "string",
+      "required": true
+    },
+    "answer": {
+      "type": "richtext",
+      "required": true
+    },
+    "isOpenByDefault": {
+      "type": "boolean",
+      "default": false
+    },
+    "sortOrder": {
+      "type": "integer",
+      "default": 0,
+      "min": 0
+    }
+  }
+}

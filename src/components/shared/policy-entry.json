@@ -1,0 +1,33 @@
+{
+  "collectionName": "components_shared_policy_entries",
+  "info": {
+    "displayName": "Policy Entry",
+    "description": "A searchable policy containing ordered accordion items"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "string",
+      "required": true,
+      "regex": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "accordionItems": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.policy-accordion-item"
+    },
+    "sortOrder": {
+      "type": "integer",
+      "default": 0,
+      "min": 0
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}
