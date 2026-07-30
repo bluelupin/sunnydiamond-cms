@@ -9,6 +9,11 @@
       "type": "component",
       "component": "shared.skill-items",
       "repeatable": true
+    },
+    "Languages": {
+      "type": "component",
+      "component": "shared.skill-items",
+      "repeatable": true
     }
   },
   "config": {}

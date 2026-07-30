@@ -15,7 +15,7 @@
     },
     "gradeImage": {
       "type": "component",
-      "component": "shared.image-asset",
+      "component": "shared.grade-stop-image-asset",
       "repeatable": false
     }
   }

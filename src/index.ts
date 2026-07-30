@@ -3,6 +3,7 @@ import { seedCms } from './utils/seeder';
 // import { repairHomepageSections } from './utils/repair-homepage-sections';
 import { registerFrontendRevalidation } from './utils/frontend-revalidation';
 import { migrateHomepage } from './utils/migrate-homepage';
+import { migrateGradeStopImages } from './utils/migrate-grade-stop-images';
 
 export default {
   /**
@@ -27,6 +28,9 @@ export default {
     }
     if (process.env.MIGRATE_HOMEPAGE && process.env.MIGRATE_HOMEPAGE === 'true') {
       await migrateHomepage(strapi);
+    }
+    if (process.env.MIGRATE_GRADE_STOP_IMAGES === 'true') {
+      await migrateGradeStopImages(strapi);
     }
   },
 };

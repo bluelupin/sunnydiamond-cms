@@ -6,13 +6,16 @@
   "options": {},
   "attributes": {
     "Name": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "PhoneNo": {
-      "type": "biginteger"
+      "type": "string",
+      "required": true
     },
     "EmailId": {
-      "type": "email"
+      "type": "email",
+      "required": true
     },
     "DOB": {
       "type": "date"

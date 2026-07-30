@@ -64,12 +64,12 @@
     },
     "employmentType": {
       "type": "enumeration",
-      "default": "full_time",
+      "default": "Full Time",
       "enum": [
-        "full_time",
-        "part_time",
-        "contract",
-        "internship"
+        "Full Time",
+        "Part Time",
+        "Contract",
+        "Internship"
       ]
     },
     "summary": {

@@ -732,8 +732,25 @@ export interface SharedGradeStop extends Struct.ComponentSchema {
   };
   attributes: {
     gradeCode: Schema.Attribute.String;
-    gradeImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    gradeImage: Schema.Attribute.Component<
+      'shared.grade-stop-image-asset',
+      false
+    >;
     gradeLongLabel: Schema.Attribute.String;
+  };
+}
+
+export interface SharedGradeStopImageAsset extends Struct.ComponentSchema {
+  collectionName: 'components_shared_grade_stop_image_assets';
+  info: {
+    description: 'Responsive image asset for grade stops';
+    displayName: 'Grade Stop Image Asset';
+  };
+  attributes: {
+    altText: Schema.Attribute.String;
+    caption: Schema.Attribute.String;
+    desktopImage: Schema.Attribute.Media<'images', true>;
+    mobileImage: Schema.Attribute.Media<'images', true>;
   };
 }
 
@@ -832,6 +849,7 @@ export interface SharedJobAdditionalInfo extends Struct.ComponentSchema {
     displayName: 'job Additional Info';
   };
   attributes: {
+    EmpJobTitle: Schema.Attribute.String;
     EmpName: Schema.Attribute.String;
     relation: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
   };
@@ -856,10 +874,10 @@ export interface SharedJobPersonalDetails extends Struct.ComponentSchema {
   };
   attributes: {
     DOB: Schema.Attribute.Date;
-    EmailId: Schema.Attribute.Email;
+    EmailId: Schema.Attribute.Email & Schema.Attribute.Required;
     Gender: Schema.Attribute.String;
-    Name: Schema.Attribute.String;
-    PhoneNo: Schema.Attribute.BigInteger;
+    Name: Schema.Attribute.String & Schema.Attribute.Required;
+    PhoneNo: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
 
@@ -869,6 +887,7 @@ export interface SharedJobSkills extends Struct.ComponentSchema {
     displayName: 'Job Skills';
   };
   attributes: {
+    Languages: Schema.Attribute.Component<'shared.skill-items', true>;
     Skills: Schema.Attribute.Component<'shared.skill-items', true>;
   };
 }
@@ -1252,7 +1271,7 @@ export interface SharedSeo extends Struct.ComponentSchema {
     metaDescription: Schema.Attribute.Text;
     metaKeywords: Schema.Attribute.String;
     metaTitle: Schema.Attribute.String;
-    ogImage: Schema.Attribute.Media;
+    ogImage: Schema.Attribute.Media<'images'>;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     structuredData: Schema.Attribute.JSON;
   };
@@ -1496,6 +1515,7 @@ declare module '@strapi/strapi' {
       'shared.four-cs-section': SharedFourCsSection;
       'shared.gifting-banner': SharedGiftingBanner;
       'shared.grade-stop': SharedGradeStop;
+      'shared.grade-stop-image-asset': SharedGradeStopImageAsset;
       'shared.hero-section': SharedHeroSection;
       'shared.homepage-hero': SharedHomepageHero;
       'shared.image-asset': SharedImageAsset;

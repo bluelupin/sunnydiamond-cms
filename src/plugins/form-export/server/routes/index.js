@@ -12,6 +12,14 @@ module.exports = {
           policies: [],
         },
       },
+      {
+        method: 'GET',
+        path: '/job-applications',
+        handler: 'export.jobApplications',
+        config: {
+          policies: [],
+        },
+      },
     ],
   },
 };

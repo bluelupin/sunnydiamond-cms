@@ -7,103 +7,73 @@
     "displayName": "Submissions: Job Opening"
   },
   "options": {
-    "draftAndPublish": true
-  },
-  "pluginOptions": {
-    "i18n": {
-      "localized": true
-    }
+    "draftAndPublish": false
   },
   "attributes": {
     "jobID": {
       "type": "string",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
+      "required": true
     },
     "jobTitle": {
       "type": "string",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
+      "required": true
     },
     "experience": {
-      "type": "string",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
+      "type": "string"
     },
     "location": {
-      "type": "string",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
+      "type": "string"
     },
     "personalDetails": {
       "type": "component",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      },
       "component": "shared.job-personal-details",
       "repeatable": false
     },
     "educationDetails": {
       "type": "component",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      },
       "component": "shared.job-education-details",
       "repeatable": false
     },
     "workExperience": {
       "type": "component",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      },
       "component": "shared.job-work-experience",
       "repeatable": false
     },
     "skillsAndLanguages": {
       "type": "component",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      },
       "component": "shared.job-skills",
       "repeatable": false
     },
     "addInfo": {
       "type": "component",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      },
       "component": "shared.job-additional-info",
       "repeatable": false
     },
     "department": {
-      "type": "string",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
+      "type": "string"
+    },
+    "resume": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "files",
+        "images"
+      ]
+    },
+    "workflowStatus": {
+      "type": "enumeration",
+      "enum": [
+        "new",
+        "reviewing",
+        "shortlisted",
+        "rejected",
+        "hired"
+      ],
+      "default": "new",
+      "required": true
+    },
+    "internalNotes": {
+      "type": "text"
     }
   }
 }

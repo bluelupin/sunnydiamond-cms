@@ -2732,95 +2732,48 @@ export interface ApiSubmissionsJobOpeningSubmissionsJobOpening
     singularName: 'submissions-job-opening';
   };
   options: {
-    draftAndPublish: true;
-  };
-  pluginOptions: {
-    i18n: {
-      localized: true;
-    };
+    draftAndPublish: false;
   };
   attributes: {
-    addInfo: Schema.Attribute.Component<'shared.job-additional-info', false> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
+    addInfo: Schema.Attribute.Component<'shared.job-additional-info', false>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    department: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
+    department: Schema.Attribute.String;
     educationDetails: Schema.Attribute.Component<
       'shared.job-education-details',
       false
-    > &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    experience: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    jobID: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    jobTitle: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    locale: Schema.Attribute.String;
+    >;
+    experience: Schema.Attribute.String;
+    internalNotes: Schema.Attribute.Text;
+    jobID: Schema.Attribute.String & Schema.Attribute.Required;
+    jobTitle: Schema.Attribute.String & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::submissions-job-opening.submissions-job-opening'
-    >;
-    location: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
+    > &
+      Schema.Attribute.Private;
+    location: Schema.Attribute.String;
     personalDetails: Schema.Attribute.Component<
       'shared.job-personal-details',
       false
-    > &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
+    >;
     publishedAt: Schema.Attribute.DateTime;
-    skillsAndLanguages: Schema.Attribute.Component<'shared.job-skills', false> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
+    resume: Schema.Attribute.Media<'files' | 'images'>;
+    skillsAndLanguages: Schema.Attribute.Component<'shared.job-skills', false>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     workExperience: Schema.Attribute.Component<
       'shared.job-work-experience',
       false
+    >;
+    workflowStatus: Schema.Attribute.Enumeration<
+      ['new', 'reviewing', 'shortlisted', 'rejected', 'hired']
     > &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'new'>;
   };
 }
 
