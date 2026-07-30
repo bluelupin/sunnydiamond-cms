@@ -3,6 +3,7 @@ import { seedCms } from './utils/seeder';
 // import { repairHomepageSections } from './utils/repair-homepage-sections';
 import { registerFrontendRevalidation } from './utils/frontend-revalidation';
 import { migrateHomepage } from './utils/migrate-homepage';
+import { seedBlogPosts } from './utils/blog-seeder';
 
 export default {
   /**
@@ -28,6 +29,7 @@ export default {
     if (process.env.MIGRATE_HOMEPAGE && process.env.MIGRATE_HOMEPAGE === 'true') {
       await migrateHomepage(strapi);
     }
+      strapi.log.info('Blog migration flag is true. Initializing blog seeder...');
+      await seedBlogPosts(strapi);
   },
 };
-
