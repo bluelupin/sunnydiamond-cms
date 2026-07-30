@@ -1,5 +1,5 @@
 /**
- * job-landing-page controller
+ * career-landing-page controller
  */
 
 import { factories } from '@strapi/strapi';
@@ -46,10 +46,16 @@ const populate = {
       faqItems: true,
     },
   },
+  discoverSection: {
+    populate: {
+      backgroundImage: fullImageAssetPopulate,
+      cta: true,
+    },
+  },
 };
 
 export default factories.createCoreController(
-  'api::job-landing-page.job-landing-page',
+  'api::career-landing-page.career-landing-page',
   () => ({
     async find(ctx) {
       if (ctx.query.populate === '*') {

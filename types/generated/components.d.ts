@@ -6,6 +6,8 @@ export interface CareerCareerDiscoverSection extends Struct.ComponentSchema {
     displayName: 'Career Discover Section';
   };
   attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    cta: Schema.Attribute.Component<'shared.cta', false>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }

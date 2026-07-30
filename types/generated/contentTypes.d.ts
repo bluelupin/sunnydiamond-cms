@@ -596,10 +596,6 @@ export interface ApiBlogCategoryBlogCategory
     };
   };
   attributes: {
-    blog_posts: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::blog-post.blog-post'
-    >;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -767,6 +763,79 @@ export interface ApiBlogPostBlogPost extends Struct.CollectionTypeSchema {
           localized: true;
         };
       }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiCareerLandingPageCareerLandingPage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'job_landing_pages';
+  info: {
+    displayName: 'Career Landing Page';
+    pluralName: 'career-landing-pages';
+    singularName: 'career-landing-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    discoverSection: Schema.Attribute.Component<
+      'career.career-discover-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    FAQs: Schema.Attribute.Component<'shared.faq-section', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    heroSection: Schema.Attribute.Component<
+      'shared.career-hero-section',
+      false
+    >;
+    investingSection: Schema.Attribute.Component<
+      'shared.investing-career-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::career-landing-page.career-landing-page'
+    >;
+    moreThanSection: Schema.Attribute.Component<
+      'shared.more-than-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    openingsSection: Schema.Attribute.Component<
+      'shared.openings-career-section',
+      false
+    >;
+    publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1692,79 +1761,6 @@ export interface ApiHomepageHomepage extends Struct.SingleTypeSchema {
           localized: true;
         };
       }>;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
-export interface ApiJobLandingPageJobLandingPage
-  extends Struct.SingleTypeSchema {
-  collectionName: 'job_landing_pages';
-  info: {
-    displayName: 'Career Landing Page';
-    pluralName: 'job-landing-pages';
-    singularName: 'job-landing-page';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  pluginOptions: {
-    i18n: {
-      localized: true;
-    };
-  };
-  attributes: {
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    discoverSection: Schema.Attribute.Component<
-      'career.career-discover-section',
-      false
-    > &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    FAQs: Schema.Attribute.Component<'shared.faq-section', false> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    heroSection: Schema.Attribute.Component<
-      'shared.career-hero-section',
-      false
-    >;
-    investingSection: Schema.Attribute.Component<
-      'shared.investing-career-section',
-      false
-    > &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    locale: Schema.Attribute.String;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::job-landing-page.job-landing-page'
-    >;
-    moreThanSection: Schema.Attribute.Component<
-      'shared.more-than-section',
-      false
-    > &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    openingsSection: Schema.Attribute.Component<
-      'shared.openings-career-section',
-      false
-    >;
-    publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -3350,6 +3346,7 @@ declare module '@strapi/strapi' {
       'api::blog-category.blog-category': ApiBlogCategoryBlogCategory;
       'api::blog-landing-page.blog-landing-page': ApiBlogLandingPageBlogLandingPage;
       'api::blog-post.blog-post': ApiBlogPostBlogPost;
+      'api::career-landing-page.career-landing-page': ApiCareerLandingPageCareerLandingPage;
       'api::career-listing-page.career-listing-page': ApiCareerListingPageCareerListingPage;
       'api::career-opening.career-opening': ApiCareerOpeningCareerOpening;
       'api::category-landing.category-landing': ApiCategoryLandingCategoryLanding;
@@ -3363,7 +3360,6 @@ declare module '@strapi/strapi' {
       'api::generic-submission.generic-submission': ApiGenericSubmissionGenericSubmission;
       'api::global-config.global-config': ApiGlobalConfigGlobalConfig;
       'api::homepage.homepage': ApiHomepageHomepage;
-      'api::job-landing-page.job-landing-page': ApiJobLandingPageJobLandingPage;
       'api::learn-about-diamonds-page.learn-about-diamonds-page': ApiLearnAboutDiamondsPageLearnAboutDiamondsPage;
       'api::legal-page.legal-page': ApiLegalPageLegalPage;
       'api::news-article.news-article': ApiNewsArticleNewsArticle;

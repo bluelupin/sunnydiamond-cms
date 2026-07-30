@@ -51,6 +51,14 @@ const REVALIDATION_MAPPINGS: Record<string, RevalidationMapping> = {
     paths: ['/blogs'],
     slugPaths: ['/blogs/:slug'],
   },
+  'api::blog-landing-page.blog-landing-page': {
+    tags: ['cms:blog-landing-page'],
+    paths: ['/blogs'],
+  },
+  'api::blog-category.blog-category': {
+    tags: ['cms:blog-category', 'cms:blog-post'],
+    paths: ['/blogs'],
+  },
   'api::news-article.news-article': {
     tags: ['cms:news-article'],
     paths: ['/news'],
@@ -86,6 +94,14 @@ const REVALIDATION_MAPPINGS: Record<string, RevalidationMapping> = {
     tags: ['cms:career-opening'],
     paths: ['/careers'],
     slugPaths: ['/careers/:slug'],
+  },
+  'api::career-landing-page.career-landing-page': {
+    tags: ['cms:career-landing-page'],
+    paths: ['/careers'],
+  },
+  'api::career-listing-page.career-listing-page': {
+    tags: ['cms:career-listing-page', 'cms:career-opening'],
+    paths: ['/careers'],
   },
   'api::editorial-collection.editorial-collection': {
     tags: ['cms:editorial-collection'],

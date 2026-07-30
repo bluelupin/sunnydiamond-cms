@@ -32,12 +32,6 @@
         }
       },
       "required": true
-    },
-    "blog_posts": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::blog-post.blog-post",
-      "mappedBy": "blog_category"
     }
   }
 }

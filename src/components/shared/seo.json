@@ -13,7 +13,10 @@
     },
     "ogImage": {
       "type": "media",
-      "multiple": false
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
     },
     "canonicalUrl": {
       "type": "string"

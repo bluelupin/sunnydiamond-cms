@@ -2,8 +2,8 @@
   "kind": "singleType",
   "collectionName": "job_landing_pages",
   "info": {
-    "singularName": "job-landing-page",
-    "pluralName": "job-landing-pages",
+    "singularName": "career-landing-page",
+    "pluralName": "career-landing-pages",
     "displayName": "Career Landing Page"
   },
   "options": {

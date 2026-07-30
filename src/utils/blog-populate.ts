@@ -18,12 +18,6 @@ export const blogLandingPopulate = {
       backgroundImage: fullImageAssetPopulate,
     },
   },
-  blog_categories: {
-    populate: {
-      blog_posts: {
-        populate: blogPostMediaPopulate,
-      },
-    },
-  },
+  blog_categories: true,
   seo: fullSeoPopulate,
 };
