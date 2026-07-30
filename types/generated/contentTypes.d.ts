@@ -2577,7 +2577,7 @@ export interface ApiShowroomShowroom extends Struct.CollectionTypeSchema {
     };
   };
   attributes: {
-    address: Schema.Attribute.Text &
+    address: Schema.Attribute.RichText &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -2605,7 +2605,13 @@ export interface ApiShowroomShowroom extends Struct.CollectionTypeSchema {
       'oneToMany',
       'api::showroom.showroom'
     >;
-    mapUrl: Schema.Attribute.String;
+    mapEmbed: Schema.Attribute.RichText &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    mapUrl: Schema.Attribute.String & Schema.Attribute.Required;
     name: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.SetPluginOptions<{
@@ -2720,6 +2726,89 @@ export interface ApiStateState extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+  };
+}
+
+export interface ApiStoreLocatorPageStoreLocatorPage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'store_locator_pages';
+  info: {
+    description: 'Page content and showroom records for the store locator';
+    displayName: 'Store Locator Page';
+    pluralName: 'store-locator-pages';
+    singularName: 'store-locator-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    getDirectionsLabel: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Schema.Attribute.DefaultTo<'Get Directions'>;
+    hero: Schema.Attribute.Component<'shared.hero-section', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::store-locator-page.store-locator-page'
+    >;
+    locationFilters: Schema.Attribute.Component<
+      'shared.store-location-filter',
+      true
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    noResultsMessage: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Schema.Attribute.DefaultTo<'No stores found for this location.'>;
+    publishedAt: Schema.Attribute.DateTime;
+    searchPlaceholder: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Schema.Attribute.DefaultTo<'Enter a location or pincode'>;
+    seo: Schema.Attribute.Component<'shared.seo', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    showrooms: Schema.Attribute.Relation<'oneToMany', 'api::showroom.showroom'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    useCurrentLocationLabel: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Schema.Attribute.DefaultTo<'Use Current Location'>;
   };
 }
 
@@ -3443,6 +3532,7 @@ declare module '@strapi/strapi' {
       'api::showroom.showroom': ApiShowroomShowroom;
       'api::size-guide.size-guide': ApiSizeGuideSizeGuide;
       'api::state.state': ApiStateState;
+      'api::store-locator-page.store-locator-page': ApiStoreLocatorPageStoreLocatorPage;
       'api::submissions-job-opening.submissions-job-opening': ApiSubmissionsJobOpeningSubmissionsJobOpening;
       'api::support-page.support-page': ApiSupportPageSupportPage;
       'plugin::content-releases.release': PluginContentReleasesRelease;

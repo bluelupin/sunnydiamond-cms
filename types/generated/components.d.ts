@@ -1299,6 +1299,21 @@ export interface SharedSkillItems extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedStoreLocationFilter extends Struct.ComponentSchema {
+  collectionName: 'components_shared_store_location_filters';
+  info: {
+    description: 'A selectable state or city displayed below the store search';
+    displayName: 'Store Location Filter';
+  };
+  attributes: {
+    icon: Schema.Attribute.Component<'shared.image-asset', false>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    label: Schema.Attribute.String & Schema.Attribute.Required;
+    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    value: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface SharedSunnyPromiseSection extends Struct.ComponentSchema {
   collectionName: 'components_shared_sunny_promise_sections';
   info: {
@@ -1533,6 +1548,7 @@ declare module '@strapi/strapi' {
       'shared.showroom-section': SharedShowroomSection;
       'shared.size-row': SharedSizeRow;
       'shared.skill-items': SharedSkillItems;
+      'shared.store-location-filter': SharedStoreLocationFilter;
       'shared.sunny-promise-section': SharedSunnyPromiseSection;
       'shared.tag': SharedTag;
       'shared.team-member': SharedTeamMember;
