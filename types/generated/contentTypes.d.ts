@@ -937,9 +937,9 @@ export interface ApiCareerOpeningCareerOpening
         };
       }>;
     employmentType: Schema.Attribute.Enumeration<
-      ['full_time', 'part_time', 'contract', 'internship']
+      ['Full Time', 'Part Time', 'Contract', 'Internship']
     > &
-      Schema.Attribute.DefaultTo<'full_time'>;
+      Schema.Attribute.DefaultTo<'Full Time'>;
     experience: Schema.Attribute.String &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
