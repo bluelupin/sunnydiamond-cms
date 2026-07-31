@@ -32,7 +32,7 @@ const REVALIDATION_MAPPINGS: Record<string, RevalidationMapping> = {
   },
   'api::about-page.about-page': {
     tags: ['cms:about-page'],
-    paths: ['/about'],
+    paths: ['/world-of-sunny'],
   },
   'api::contact-bespoke-page.contact-bespoke-page': {
     tags: ['cms:contact-bespoke-page'],
