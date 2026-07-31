@@ -95,39 +95,22 @@ export interface GiftingGiftCardSection extends Struct.ComponentSchema {
   attributes: {
     backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
     cta: Schema.Attribute.Component<'shared.cta', false>;
+    cutOutImage: Schema.Attribute.Component<'shared.image-asset', false>;
     description: Schema.Attribute.Text;
     eyebrow: Schema.Attribute.String;
-    productImage: Schema.Attribute.Component<'shared.image-asset', false>;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
-  };
-}
-
-export interface GiftingGiftFinderField extends Struct.ComponentSchema {
-  collectionName: 'components_gifting_gift_finder_fields';
-  info: {
-    description: 'A configurable question in the guided gift finder';
-    displayName: 'Gift Finder Field';
-  };
-  attributes: {
-    isRequired: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
-    key: Schema.Attribute.String & Schema.Attribute.Required;
-    label: Schema.Attribute.String & Schema.Attribute.Required;
-    options: Schema.Attribute.Component<'shared.dropdown-option', true>;
-    placeholder: Schema.Attribute.String;
-    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
   };
 }
 
 export interface GiftingGiftFinderSection extends Struct.ComponentSchema {
   collectionName: 'components_gifting_gift_finder_sections';
   info: {
-    description: 'Guided questionnaire for discovering an ideal gift';
+    description: 'Editorial content for the frontend-owned gift finder';
     displayName: 'Ideal Gift Finder Section';
   };
   attributes: {
     description: Schema.Attribute.Text;
-    fields: Schema.Attribute.Component<'gifting.gift-finder-field', true>;
     image: Schema.Attribute.Component<'shared.image-asset', false>;
     resultsUrl: Schema.Attribute.String;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
@@ -165,31 +148,14 @@ export interface GiftingIntroSection extends Struct.ComponentSchema {
   };
 }
 
-export interface GiftingOccasionCard extends Struct.ComponentSchema {
-  collectionName: 'components_gifting_occasion_cards';
-  info: {
-    description: 'Editorial tile for a gifting occasion';
-    displayName: 'Gifting Occasion Card';
-  };
-  attributes: {
-    cta: Schema.Attribute.Component<'shared.cta', false>;
-    description: Schema.Attribute.Text;
-    image: Schema.Attribute.Component<'shared.image-asset', false>;
-    size: Schema.Attribute.Enumeration<['small', 'large']> &
-      Schema.Attribute.DefaultTo<'small'>;
-    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
-    title: Schema.Attribute.String & Schema.Attribute.Required;
-  };
-}
-
 export interface GiftingOccasionGridSection extends Struct.ComponentSchema {
   collectionName: 'components_gifting_occasion_grid_sections';
   info: {
-    description: 'Mosaic of gifting occasion cards';
+    description: 'Mosaic sourced from Occasion collection records';
     displayName: 'Gifting Occasion Grid Section';
   };
   attributes: {
-    cards: Schema.Attribute.Component<'gifting.occasion-card', true>;
+    occasions: Schema.Attribute.Relation<'oneToMany', 'api::occasion.occasion'>;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
   };
 }
@@ -197,30 +163,13 @@ export interface GiftingOccasionGridSection extends Struct.ComponentSchema {
 export interface GiftingPerfectGiftSection extends Struct.ComponentSchema {
   collectionName: 'components_gifting_perfect_gift_sections';
   info: {
-    description: 'Heading and product carousel for featured gifts';
+    description: 'Editorial heading above the frontend-owned product carousel';
     displayName: 'Your Perfect Gift Section';
   };
   attributes: {
     description: Schema.Attribute.Text;
-    products: Schema.Attribute.Component<'gifting.product-card', true>;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
-  };
-}
-
-export interface GiftingProductCard extends Struct.ComponentSchema {
-  collectionName: 'components_gifting_product_cards';
-  info: {
-    description: 'Product reference displayed in a gifting carousel';
-    displayName: 'Gifting Product Card';
-  };
-  attributes: {
-    cta: Schema.Attribute.Component<'shared.cta', false>;
-    image: Schema.Attribute.Component<'shared.image-asset', false>;
-    name: Schema.Attribute.String & Schema.Attribute.Required;
-    priceLabel: Schema.Attribute.String;
-    sku: Schema.Attribute.String;
-    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
   };
 }
 
@@ -1715,14 +1664,11 @@ declare module '@strapi/strapi' {
       'diamonds-for-everyone.plan-intro-section': DiamondsForEveryonePlanIntroSection;
       'gifting.finishing-touch-section': GiftingFinishingTouchSection;
       'gifting.gift-card-section': GiftingGiftCardSection;
-      'gifting.gift-finder-field': GiftingGiftFinderField;
       'gifting.gift-finder-section': GiftingGiftFinderSection;
       'gifting.hero-section': GiftingHeroSection;
       'gifting.intro-section': GiftingIntroSection;
-      'gifting.occasion-card': GiftingOccasionCard;
       'gifting.occasion-grid-section': GiftingOccasionGridSection;
       'gifting.perfect-gift-section': GiftingPerfectGiftSection;
-      'gifting.product-card': GiftingProductCard;
       'gifting.service-card': GiftingServiceCard;
       'shared.bespoke-custom-design-form': SharedBespokeCustomDesignForm;
       'shared.bespoke-for-you-section': SharedBespokeForYouSection;
