@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_dfe_plan_intro_sections",
+  "info": {
+    "displayName": "11+1 Plan Intro Section",
+    "description": "Introductory copy explaining the investment plan"
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "backgroundImage": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "showField": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

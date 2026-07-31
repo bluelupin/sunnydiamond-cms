@@ -1,0 +1,35 @@
+{
+  "collectionName": "components_dfe_investment_planner_sections",
+  "info": {
+    "displayName": "Plan Your Investment Section",
+    "description": "Investment plan content with foreground and background imagery"
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "image": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "backgroundImage": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "cta": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": false
+    },
+    "showField": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

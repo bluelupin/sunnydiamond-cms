@@ -12,6 +12,66 @@ export interface CareerCareerDiscoverSection extends Struct.ComponentSchema {
   };
 }
 
+export interface DiamondsForEveryoneEditorialBannerSection
+  extends Struct.ComponentSchema {
+  collectionName: 'components_dfe_editorial_banner_sections';
+  info: {
+    description: 'Full-width visual break between investment-plan sections';
+    displayName: 'Diamonds Editorial Banner';
+  };
+  attributes: {
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+  };
+}
+
+export interface DiamondsForEveryoneHeroSection extends Struct.ComponentSchema {
+  collectionName: 'components_dfe_hero_sections';
+  info: {
+    description: 'Full-width hero for the Diamonds for Everyone page';
+    displayName: 'Diamonds for Everyone Hero';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    eyebrow: Schema.Attribute.String;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface DiamondsForEveryoneInvestmentPlannerSection
+  extends Struct.ComponentSchema {
+  collectionName: 'components_dfe_investment_planner_sections';
+  info: {
+    description: 'Investment plan content with foreground and background imagery';
+    displayName: 'Plan Your Investment Section';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    description: Schema.Attribute.Text;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface DiamondsForEveryonePlanIntroSection
+  extends Struct.ComponentSchema {
+  collectionName: 'components_dfe_plan_intro_sections';
+  info: {
+    description: 'Introductory copy explaining the investment plan';
+    displayName: '11+1 Plan Intro Section';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    description: Schema.Attribute.Text;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface SharedBespokeCustomDesignForm extends Struct.ComponentSchema {
   collectionName: 'components_shared_bespoke_custom_design_forms';
   info: {
@@ -1482,6 +1542,10 @@ declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
       'career.career-discover-section': CareerCareerDiscoverSection;
+      'diamonds-for-everyone.editorial-banner-section': DiamondsForEveryoneEditorialBannerSection;
+      'diamonds-for-everyone.hero-section': DiamondsForEveryoneHeroSection;
+      'diamonds-for-everyone.investment-planner-section': DiamondsForEveryoneInvestmentPlannerSection;
+      'diamonds-for-everyone.plan-intro-section': DiamondsForEveryonePlanIntroSection;
       'shared.bespoke-custom-design-form': SharedBespokeCustomDesignForm;
       'shared.bespoke-for-you-section': SharedBespokeForYouSection;
       'shared.bespoke-get-in-touch-section': SharedBespokeGetInTouchSection;

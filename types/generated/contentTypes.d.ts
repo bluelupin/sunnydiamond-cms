@@ -1214,6 +1214,96 @@ export interface ApiDesignStoryDesignStory extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiDiamondsForEveryonePageDiamondsForEveryonePage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'diamonds_for_everyone_pages';
+  info: {
+    description: 'Section-wise content for the Diamonds for Everyone landing page';
+    displayName: 'Diamonds for Everyone Page';
+    pluralName: 'diamonds-for-everyone-pages';
+    singularName: 'diamonds-for-everyone-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    benefitsSection: Schema.Attribute.Component<
+      'shared.diamonds-for-everyone-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    editorialBannerSection: Schema.Attribute.Component<
+      'diamonds-for-everyone.editorial-banner-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    faqSection: Schema.Attribute.Component<'shared.faq-section', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    heroSection: Schema.Attribute.Component<
+      'diamonds-for-everyone.hero-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    investmentPlannerSection: Schema.Attribute.Component<
+      'diamonds-for-everyone.investment-planner-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::diamonds-for-everyone-page.diamonds-for-everyone-page'
+    >;
+    planIntroSection: Schema.Attribute.Component<
+      'diamonds-for-everyone.plan-intro-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiEditorialCollectionEditorialCollection
   extends Struct.CollectionTypeSchema {
   collectionName: 'editorial_collections';
@@ -3462,6 +3552,7 @@ declare module '@strapi/strapi' {
       'api::category-landing.category-landing': ApiCategoryLandingCategoryLanding;
       'api::contact-bespoke-page.contact-bespoke-page': ApiContactBespokePageContactBespokePage;
       'api::design-story.design-story': ApiDesignStoryDesignStory;
+      'api::diamonds-for-everyone-page.diamonds-for-everyone-page': ApiDiamondsForEveryonePageDiamondsForEveryonePage;
       'api::editorial-collection.editorial-collection': ApiEditorialCollectionEditorialCollection;
       'api::faq.faq': ApiFaqFaq;
       'api::featured-story.featured-story': ApiFeaturedStoryFeaturedStory;

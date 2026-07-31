@@ -1,0 +1,90 @@
+{
+  "kind": "singleType",
+  "collectionName": "diamonds_for_everyone_pages",
+  "info": {
+    "singularName": "diamonds-for-everyone-page",
+    "pluralName": "diamonds-for-everyone-pages",
+    "displayName": "Diamonds for Everyone Page",
+    "description": "Section-wise content for the Diamonds for Everyone landing page"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "heroSection": {
+      "type": "component",
+      "component": "diamonds-for-everyone.hero-section",
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "planIntroSection": {
+      "type": "component",
+      "component": "diamonds-for-everyone.plan-intro-section",
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "investmentPlannerSection": {
+      "type": "component",
+      "component": "diamonds-for-everyone.investment-planner-section",
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "editorialBannerSection": {
+      "type": "component",
+      "component": "diamonds-for-everyone.editorial-banner-section",
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "benefitsSection": {
+      "type": "component",
+      "component": "shared.diamonds-for-everyone-section",
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "faqSection": {
+      "type": "component",
+      "component": "shared.faq-section",
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "seo": {
+      "type": "component",
+      "component": "shared.seo",
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    }
+  }
+}

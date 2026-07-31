@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_dfe_editorial_banner_sections",
+  "info": {
+    "displayName": "Diamonds Editorial Banner",
+    "description": "Full-width visual break between investment-plan sections"
+  },
+  "attributes": {
+    "image": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "cta": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": false
+    },
+    "showField": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}
