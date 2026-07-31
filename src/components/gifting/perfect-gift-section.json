@@ -1,0 +1,10 @@
+{
+  "collectionName": "components_gifting_perfect_gift_sections",
+  "info": { "displayName": "Your Perfect Gift Section", "description": "Heading and product carousel for featured gifts" },
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "description": { "type": "text" },
+    "products": { "type": "component", "component": "gifting.product-card", "repeatable": true },
+    "showField": { "type": "boolean", "default": true }
+  }
+}

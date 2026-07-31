@@ -1,0 +1,9 @@
+{
+  "collectionName": "components_gifting_intro_sections",
+  "info": { "displayName": "Gifting Intro Section", "description": "Centered introductory copy below the hero" },
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "description": { "type": "text" },
+    "showField": { "type": "boolean", "default": true }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "collectionName": "components_gifting_product_cards",
+  "info": { "displayName": "Gifting Product Card", "description": "Product reference displayed in a gifting carousel" },
+  "attributes": {
+    "name": { "type": "string", "required": true },
+    "sku": { "type": "string" },
+    "priceLabel": { "type": "string" },
+    "image": { "type": "component", "component": "shared.image-asset", "repeatable": false },
+    "cta": { "type": "component", "component": "shared.cta", "repeatable": false },
+    "sortOrder": { "type": "integer", "default": 0 }
+  }
+}

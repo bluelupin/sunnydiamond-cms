@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_gifting_gift_finder_sections",
+  "info": { "displayName": "Ideal Gift Finder Section", "description": "Guided questionnaire for discovering an ideal gift" },
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "description": { "type": "text" },
+    "image": { "type": "component", "component": "shared.image-asset", "repeatable": false },
+    "fields": { "type": "component", "component": "gifting.gift-finder-field", "repeatable": true },
+    "submitLabel": { "type": "string", "default": "Discover" },
+    "resultsUrl": { "type": "string" },
+    "showField": { "type": "boolean", "default": true }
+  }
+}

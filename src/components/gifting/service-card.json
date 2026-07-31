@@ -1,0 +1,11 @@
+{
+  "collectionName": "components_gifting_service_cards",
+  "info": { "displayName": "Finishing Touch Card", "description": "Service card such as ring sizing, gift wrap, or personalization" },
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "description": { "type": "text" },
+    "image": { "type": "component", "component": "shared.image-asset", "repeatable": false },
+    "cta": { "type": "component", "component": "shared.cta", "repeatable": false },
+    "sortOrder": { "type": "integer", "default": 0 }
+  }
+}

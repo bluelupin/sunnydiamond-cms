@@ -1623,6 +1623,110 @@ export interface ApiGenericSubmissionGenericSubmission
   };
 }
 
+export interface ApiGiftingPageGiftingPage extends Struct.SingleTypeSchema {
+  collectionName: 'gifting_pages';
+  info: {
+    description: 'Section-wise content for the gifting landing page';
+    displayName: 'Gifting Page';
+    pluralName: 'gifting-pages';
+    singularName: 'gifting-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    finishingTouchSection: Schema.Attribute.Component<
+      'gifting.finishing-touch-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    giftCardSection: Schema.Attribute.Component<
+      'gifting.gift-card-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    giftFinderSection: Schema.Attribute.Component<
+      'gifting.gift-finder-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    heroSection: Schema.Attribute.Component<'gifting.hero-section', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    introSection: Schema.Attribute.Component<'gifting.intro-section', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::gifting-page.gifting-page'
+    >;
+    occasionGridSection: Schema.Attribute.Component<
+      'gifting.occasion-grid-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    perfectGiftSection: Schema.Attribute.Component<
+      'gifting.perfect-gift-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    trustBadgesSection: Schema.Attribute.Component<
+      'shared.trust-badges-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiGlobalConfigGlobalConfig extends Struct.SingleTypeSchema {
   collectionName: 'global_configs';
   info: {
@@ -3559,6 +3663,7 @@ declare module '@strapi/strapi' {
       'api::gallery.gallery': ApiGalleryGallery;
       'api::generic-form.generic-form': ApiGenericFormGenericForm;
       'api::generic-submission.generic-submission': ApiGenericSubmissionGenericSubmission;
+      'api::gifting-page.gifting-page': ApiGiftingPageGiftingPage;
       'api::global-config.global-config': ApiGlobalConfigGlobalConfig;
       'api::homepage.homepage': ApiHomepageHomepage;
       'api::learn-about-diamonds-page.learn-about-diamonds-page': ApiLearnAboutDiamondsPageLearnAboutDiamondsPage;

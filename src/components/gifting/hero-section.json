@@ -1,0 +1,10 @@
+{
+  "collectionName": "components_gifting_hero_sections",
+  "info": { "displayName": "Gifting Hero Section", "description": "Full-width gifting page hero" },
+  "attributes": {
+    "eyebrow": { "type": "string" },
+    "title": { "type": "string", "required": true },
+    "backgroundImage": { "type": "component", "component": "shared.image-asset", "repeatable": false },
+    "showField": { "type": "boolean", "default": true }
+  }
+}

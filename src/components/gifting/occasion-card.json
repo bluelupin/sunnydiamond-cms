@@ -1,0 +1,11 @@
+{
+  "collectionName": "components_gifting_occasion_cards",
+  "info": { "displayName": "Gifting Occasion Card", "description": "Editorial tile for a gifting occasion" },
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "image": { "type": "component", "component": "shared.image-asset", "repeatable": false },
+    "cta": { "type": "component", "component": "shared.cta", "repeatable": false },
+    "size": { "type": "enumeration", "enum": ["small", "large"], "default": "small" },
+    "sortOrder": { "type": "integer", "default": 0 }
+  }
+}

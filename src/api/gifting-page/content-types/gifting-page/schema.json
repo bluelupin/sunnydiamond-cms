@@ -1,0 +1,23 @@
+{
+  "kind": "singleType",
+  "collectionName": "gifting_pages",
+  "info": {
+    "singularName": "gifting-page",
+    "pluralName": "gifting-pages",
+    "displayName": "Gifting Page",
+    "description": "Section-wise content for the gifting landing page"
+  },
+  "options": { "draftAndPublish": true },
+  "pluginOptions": { "i18n": { "localized": true } },
+  "attributes": {
+    "heroSection": { "type": "component", "component": "gifting.hero-section", "repeatable": false, "pluginOptions": { "i18n": { "localized": true } } },
+    "introSection": { "type": "component", "component": "gifting.intro-section", "repeatable": false, "pluginOptions": { "i18n": { "localized": true } } },
+    "occasionGridSection": { "type": "component", "component": "gifting.occasion-grid-section", "repeatable": false, "pluginOptions": { "i18n": { "localized": true } } },
+    "perfectGiftSection": { "type": "component", "component": "gifting.perfect-gift-section", "repeatable": false, "pluginOptions": { "i18n": { "localized": true } } },
+    "giftFinderSection": { "type": "component", "component": "gifting.gift-finder-section", "repeatable": false, "pluginOptions": { "i18n": { "localized": true } } },
+    "giftCardSection": { "type": "component", "component": "gifting.gift-card-section", "repeatable": false, "pluginOptions": { "i18n": { "localized": true } } },
+    "finishingTouchSection": { "type": "component", "component": "gifting.finishing-touch-section", "repeatable": false, "pluginOptions": { "i18n": { "localized": true } } },
+    "trustBadgesSection": { "type": "component", "component": "shared.trust-badges-section", "repeatable": false, "pluginOptions": { "i18n": { "localized": true } } },
+    "seo": { "type": "component", "component": "shared.seo", "repeatable": false, "pluginOptions": { "i18n": { "localized": true } } }
+  }
+}
