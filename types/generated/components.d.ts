@@ -158,6 +158,7 @@ export interface GiftingIntroSection extends Struct.ComponentSchema {
     displayName: 'Gifting Intro Section';
   };
   attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
     description: Schema.Attribute.Text;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
@@ -172,6 +173,7 @@ export interface GiftingOccasionCard extends Struct.ComponentSchema {
   };
   attributes: {
     cta: Schema.Attribute.Component<'shared.cta', false>;
+    description: Schema.Attribute.Text;
     image: Schema.Attribute.Component<'shared.image-asset', false>;
     size: Schema.Attribute.Enumeration<['small', 'large']> &
       Schema.Attribute.DefaultTo<'small'>;

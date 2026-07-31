@@ -8,7 +8,7 @@ export default factories.createCoreController(
         ...ctx.query,
         populate: {
           heroSection: { populate: { backgroundImage: { populate: '*' } } },
-          introSection: true,
+          introSection: { populate: { backgroundImage: { populate: '*' } } },
           occasionGridSection: { populate: { cards: { populate: { image: { populate: '*' }, cta: true } } } },
           perfectGiftSection: { populate: { products: { populate: { image: { populate: '*' }, cta: true } } } },
           giftFinderSection: { populate: { image: { populate: '*' }, fields: { populate: { options: true } } } },

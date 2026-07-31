@@ -4,6 +4,7 @@
   "attributes": {
     "title": { "type": "string", "required": true },
     "description": { "type": "text" },
+    "backgroundImage": { "type": "component", "component": "shared.image-asset", "repeatable": false },
     "showField": { "type": "boolean", "default": true }
   }
 }
