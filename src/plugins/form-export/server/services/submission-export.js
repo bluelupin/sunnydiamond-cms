@@ -185,6 +185,13 @@ const absoluteUrl = (url, baseUrl) => {
 };
 
 const getCellValue = (record, field, baseUrl) => {
+  if (
+    field === 'experience' &&
+    typeof record.experience === 'string' &&
+    /^\d+\s*-\s*\d+$/.test(record.experience.trim())
+  ) {
+    return `="${record.experience.trim()}"`;
+  }
   if (field === 'uploadedImageUrl') {
     return record.uploadedImage?.url || '';
   }
