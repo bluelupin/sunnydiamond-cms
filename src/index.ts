@@ -7,6 +7,7 @@ import { migrateGradeStopImages } from './utils/migrate-grade-stop-images';
 import { seedBlogPosts } from './utils/blog-seeder';
 import { seedBlogCategories } from './utils/seed-blog-categories';
 import { migrateCareerOpeningCkeditor } from './utils/migrate-career-opening-ckeditor';
+// import { cleanStaleAdminPermissions } from './utils/clean-stale-admin-permissions';
 
 export default {
   /**
@@ -25,6 +26,7 @@ export default {
    * run jobs, or perform some special logic.
    */
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {
+    // await cleanStaleAdminPermissions(strapi);
     registerFrontendRevalidation(strapi);
     if (process.env.CMS_SEED_ENABLED === 'true') {
       await seedCms(strapi);
