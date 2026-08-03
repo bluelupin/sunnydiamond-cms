@@ -3060,10 +3060,11 @@ export interface ApiSubmissionsJobOpeningSubmissionsJobOpening
   };
 }
 
-export interface ApiSupportPageSupportPage extends Struct.CollectionTypeSchema {
+export interface ApiSupportPageSupportPage extends Struct.SingleTypeSchema {
   collectionName: 'support_pages';
   info: {
-    displayName: 'Support Page';
+    description: 'Section-wise content for the Help & Support page';
+    displayName: 'Help & Support Page';
     pluralName: 'support-pages';
     singularName: 'support-page';
   };
@@ -3076,16 +3077,11 @@ export interface ApiSupportPageSupportPage extends Struct.CollectionTypeSchema {
     };
   };
   attributes: {
-    body: Schema.Attribute.RichText &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    contentSections: Schema.Attribute.Component<
-      'shared.content-section',
-      true
+    contactSection: Schema.Attribute.Component<
+      'shared.contact-support-section',
+      false
     > &
+      Schema.Attribute.Required &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -3094,14 +3090,8 @@ export interface ApiSupportPageSupportPage extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    hero: Schema.Attribute.Component<'shared.hero-section', false> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
-    links: Schema.Attribute.Component<'shared.link-item', true> &
+    faqSection: Schema.Attribute.Component<'shared.faq-section', false> &
+      Schema.Attribute.Required &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -3114,15 +3104,6 @@ export interface ApiSupportPageSupportPage extends Struct.CollectionTypeSchema {
     >;
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<'shared.seo', false> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
-    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
-    title: Schema.Attribute.String &
-      Schema.Attribute.Required &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;

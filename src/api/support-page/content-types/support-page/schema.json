@@ -1,10 +1,11 @@
 {
-  "kind": "collectionType",
+  "kind": "singleType",
   "collectionName": "support_pages",
   "info": {
     "singularName": "support-page",
     "pluralName": "support-pages",
-    "displayName": "Support Page"
+    "displayName": "Help & Support Page",
+    "description": "Section-wise content for the Help & Support page"
   },
   "options": {
     "draftAndPublish": true
@@ -15,8 +16,10 @@
     }
   },
   "attributes": {
-    "title": {
-      "type": "string",
+    "contactSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.contact-support-section",
       "required": true,
       "pluginOptions": {
         "i18n": {
@@ -24,56 +27,16 @@
         }
       }
     },
-    "slug": {
-      "type": "uid",
-      "targetField": "title",
-      "required": true
-    },
-    "hero": {
+    "faqSection": {
       "type": "component",
       "repeatable": false,
-      "component": "shared.hero-section",
+      "component": "shared.faq-section",
+      "required": true,
       "pluginOptions": {
         "i18n": {
           "localized": true
         }
       }
-    },
-    "body": {
-      "type": "richtext",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
-    },
-    "contentSections": {
-      "type": "component",
-      "repeatable": true,
-      "component": "shared.content-section",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
-    },
-    "links": {
-      "type": "component",
-      "repeatable": true,
-      "component": "shared.link-item",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
-    },
-    "sortOrder": {
-      "type": "integer",
-      "default": 0
-    },
-    "isActive": {
-      "type": "boolean",
-      "default": true
     },
     "seo": {
       "type": "component",
