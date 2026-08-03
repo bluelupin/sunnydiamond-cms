@@ -956,6 +956,7 @@ export interface SharedHeroSection extends Struct.ComponentSchema {
     displayName: 'Hero Section';
   };
   attributes: {
+    backgroundVideo: Schema.Attribute.Component<'shared.video-asset', false>;
     bgImage: Schema.Attribute.Component<'shared.image-asset', false>;
     eyebrow: Schema.Attribute.String;
     heroVideo: Schema.Attribute.Component<'shared.video-asset', false>;
