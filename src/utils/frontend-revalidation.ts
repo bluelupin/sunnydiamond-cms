@@ -32,7 +32,7 @@ const REVALIDATION_MAPPINGS: Record<string, RevalidationMapping> = {
   },
   'api::about-page.about-page': {
     tags: ['cms:about-page'],
-    paths: ['/about'],
+    paths: ['/world-of-sunny'],
   },
   'api::contact-bespoke-page.contact-bespoke-page': {
     tags: ['cms:contact-bespoke-page'],
@@ -40,7 +40,7 @@ const REVALIDATION_MAPPINGS: Record<string, RevalidationMapping> = {
   },
   'api::learn-about-diamonds-page.learn-about-diamonds-page': {
     tags: ['cms:learn-about-diamonds-page'],
-    paths: ['/education'],
+    paths: ['/learn-about-diamonds'],
   },
   'api::product-landing-page.product-landing-page': {
     tags: ['cms:product-landing-page'],
