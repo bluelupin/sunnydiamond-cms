@@ -1047,7 +1047,9 @@ export interface SharedJobAdditionalInfo extends Struct.ComponentSchema {
   attributes: {
     EmpJobTitle: Schema.Attribute.String;
     EmpName: Schema.Attribute.String;
-    relation: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    relation: Schema.Attribute.Boolean &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<false>;
   };
 }
 
@@ -1057,9 +1059,9 @@ export interface SharedJobEducationDetails extends Struct.ComponentSchema {
     displayName: 'Job Education Details';
   };
   attributes: {
-    AreaOfStudy: Schema.Attribute.String;
-    Degree: Schema.Attribute.String;
-    Year: Schema.Attribute.BigInteger;
+    AreaOfStudy: Schema.Attribute.String & Schema.Attribute.Required;
+    Degree: Schema.Attribute.String & Schema.Attribute.Required;
+    Year: Schema.Attribute.BigInteger & Schema.Attribute.Required;
   };
 }
 
@@ -1069,9 +1071,9 @@ export interface SharedJobPersonalDetails extends Struct.ComponentSchema {
     displayName: 'Job Personal Details';
   };
   attributes: {
-    DOB: Schema.Attribute.Date;
+    DOB: Schema.Attribute.Date & Schema.Attribute.Required;
     EmailId: Schema.Attribute.Email & Schema.Attribute.Required;
-    Gender: Schema.Attribute.String;
+    Gender: Schema.Attribute.String & Schema.Attribute.Required;
     Name: Schema.Attribute.String & Schema.Attribute.Required;
     PhoneNo: Schema.Attribute.String & Schema.Attribute.Required;
   };
@@ -1097,9 +1099,9 @@ export interface SharedJobWorkExperience extends Struct.ComponentSchema {
     CurrCompName: Schema.Attribute.String;
     CurrCtc: Schema.Attribute.BigInteger;
     CurrJobTitle: Schema.Attribute.String;
-    ExpecCtc: Schema.Attribute.BigInteger;
+    ExpecCtc: Schema.Attribute.BigInteger & Schema.Attribute.Required;
     NoticePerd: Schema.Attribute.Integer;
-    RelvWorkExp: Schema.Attribute.String;
+    RelvWorkExp: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
 

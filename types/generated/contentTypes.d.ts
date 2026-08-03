@@ -3105,7 +3105,8 @@ export interface ApiSubmissionsJobOpeningSubmissionsJobOpening
     draftAndPublish: false;
   };
   attributes: {
-    addInfo: Schema.Attribute.Component<'shared.job-additional-info', false>;
+    addInfo: Schema.Attribute.Component<'shared.job-additional-info', false> &
+      Schema.Attribute.Required;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -3113,7 +3114,8 @@ export interface ApiSubmissionsJobOpeningSubmissionsJobOpening
     educationDetails: Schema.Attribute.Component<
       'shared.job-education-details',
       false
-    >;
+    > &
+      Schema.Attribute.Required;
     experience: Schema.Attribute.String;
     internalNotes: Schema.Attribute.Text;
     jobID: Schema.Attribute.String & Schema.Attribute.Required;
@@ -3128,7 +3130,8 @@ export interface ApiSubmissionsJobOpeningSubmissionsJobOpening
     personalDetails: Schema.Attribute.Component<
       'shared.job-personal-details',
       false
-    >;
+    > &
+      Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
     resume: Schema.Attribute.Media<'files' | 'images'>;
     skillsAndLanguages: Schema.Attribute.Component<'shared.job-skills', false>;
@@ -3138,7 +3141,8 @@ export interface ApiSubmissionsJobOpeningSubmissionsJobOpening
     workExperience: Schema.Attribute.Component<
       'shared.job-work-experience',
       false
-    >;
+    > &
+      Schema.Attribute.Required;
     workflowStatus: Schema.Attribute.Enumeration<
       ['new', 'reviewing', 'shortlisted', 'rejected', 'hired']
     > &

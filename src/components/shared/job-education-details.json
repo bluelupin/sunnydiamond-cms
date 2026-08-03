@@ -6,13 +6,16 @@
   "options": {},
   "attributes": {
     "Degree": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "AreaOfStudy": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "Year": {
-      "type": "biginteger"
+      "type": "biginteger",
+      "required": true
     }
   },
   "config": {}
