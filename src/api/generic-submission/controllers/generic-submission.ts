@@ -51,9 +51,14 @@ const fieldValue = (input: any, label: string) => {
     name: ['fullName', 'name'],
     'full name': ['fullName', 'name'],
     phone: ['phone'],
+    'phone no.': ['phone'],
+    'phone no': ['phone'],
     email: ['email'],
+    'email id': ['email'],
     message: ['notes', 'message'],
     notes: ['notes', 'message'],
+    'reason for contacting us': ['reasonForContact', 'reason'],
+    'reason for contacting': ['reasonForContact', 'reason'],
     'preferred showroom': ['preferredShowroom', 'showroom'],
     'preferred date': ['preferredDate', 'date'],
   };
@@ -75,6 +80,7 @@ export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ 
     const phone = phoneOrUndefined(input.phone);
     const email = emailOrUndefined(input.email);
     const preferredDate = dateOrUndefined(input.preferredDate);
+    const consentAccepted = booleanValue(input.consentAccepted);
     const rateLimit = checkFormSubmissionRateLimit(['generic', ctx.ip, formTag]);
 
     if (!rateLimit.allowed) {
@@ -103,6 +109,9 @@ export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ 
       (field: any) => field.isRequired && !fieldValue(input, field.label)
     );
     if (missingField) return ctx.badRequest(`${missingField.label} is required.`);
+    if (form.requiresConsent && !consentAccepted) {
+      return ctx.badRequest('consentAccepted must be true.');
+    }
 
     let showroomRef = undefined;
     const preferredShowroomVal = stringOrUndefined(input.showroom) ?? stringOrUndefined(input.preferredShowroom);
@@ -132,9 +141,10 @@ export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ 
         preferredShowroom: showroomRef,
         preferredDate,
         selectedTimeSlot: stringOrUndefined(input.selectedTimeSlot),
-        notes: stringOrUndefined(input.notes),
+        notes: stringOrUndefined(input.notes) ?? stringOrUndefined(input.message),
+        reasonForContact: stringOrUndefined(input.reasonForContact) ?? stringOrUndefined(input.reason),
         sourcePage: stringOrUndefined(input.sourcePage),
-        consentAccepted: booleanValue(input.consentAccepted),
+        consentAccepted,
       },
     } as any);
 
