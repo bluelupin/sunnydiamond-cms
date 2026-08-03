@@ -48,6 +48,7 @@ const featuredProductsSectionPopulate = {
 const giftingBannerPopulate = {
   populate: {
     backgroundImage: imageAssetPopulate,
+    backgroundVideo: videoAssetPopulate,
     cutoutImage: imageAssetPopulate,
     primaryCta: ctaPopulate,
     secondaryCta: ctaPopulate,

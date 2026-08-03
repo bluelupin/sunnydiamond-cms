@@ -909,6 +909,7 @@ export interface SharedGiftingBanner extends Struct.ComponentSchema {
   };
   attributes: {
     backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    backgroundVideo: Schema.Attribute.Component<'shared.video-asset', false>;
     cutoutImage: Schema.Attribute.Component<'shared.image-asset', false>;
     description: Schema.Attribute.Text;
     primaryCta: Schema.Attribute.Component<'shared.cta', false>;
