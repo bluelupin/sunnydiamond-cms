@@ -10,6 +10,8 @@ const CAREER_OPENING_UID = 'api::career-opening.career-opening';
 const MAX_RESUME_BYTES = 5 * 1024 * 1024;
 const ALLOWED_RESUME_MIME_TYPES = new Set([
   'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   'application/zip',
   'application/x-zip-compressed',
   'image/jpeg',
