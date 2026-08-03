@@ -12,6 +12,10 @@ const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Plugin =>
         sizeLimit: uploadMaxFileSize,
       },
     },
+    ckeditor: {
+    enabled: true,
+    resolve: "./src/plugins/strapi-plugin-ckeditor"
+  },
   };
 
   if (env('UPLOAD_PROVIDER') === 'aws-s3') {

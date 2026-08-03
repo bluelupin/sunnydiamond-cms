@@ -1,8 +1,11 @@
 import type { Core } from '@strapi/strapi';
 import blogPosts from '../data/blog-posts.json';
 
+const MarkdownIt = require('markdown-it');
+
 const BLOG_POST_UID = 'api::blog-post.blog-post';
 const BLOG_LOCALE = 'en';
+const markdown = new MarkdownIt({ html: false, linkify: true, typographer: false });
 
 type BlogMedia = {
   id: number;
@@ -15,7 +18,10 @@ type ResolvedBlogMedia = BlogMedia & { absoluteUrl: string };
 type BlogMediaPair = {
   banner?: ResolvedBlogMedia;
   hero?: ResolvedBlogMedia;
+  body: Map<string, ResolvedBlogMedia>;
 };
+
+const BODY_IMAGE_TOKEN = /<p>\{\{BLOG_BODY_IMAGE_(\d+)\}\}<\/p>/g;
 
 const stripMarkdownImages = (body: string) =>
   body
@@ -24,7 +30,45 @@ const stripMarkdownImages = (body: string) =>
     .replace(/\n{3,}/g, '\n\n')
     .trim();
 
-const escapeMarkdownAlt = (value: string) => value.replace(/[\[\]\\]/g, '\\$&');
+const escapeHtml = (value: string) =>
+  value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+
+const imageFigure = (media: ResolvedBlogMedia, altText: string) =>
+  `<figure class="image"><img src="${escapeHtml(media.absoluteUrl)}" alt="${escapeHtml(altText)}"></figure>`;
+
+function renderBody(
+  post: (typeof blogPosts)[number],
+  bodyMedia: ResolvedBlogMedia[],
+  heroMedia?: ResolvedBlogMedia
+) {
+  const cleanBody = stripMarkdownImages(post.body);
+  const tokenCount = (post.body.match(/\{\{BLOG_BODY_IMAGE_\d+\}\}/g) || []).length;
+  const inlineMedia = tokenCount === bodyMedia.length + 1 && heroMedia
+    ? [heroMedia, ...bodyMedia]
+    : bodyMedia;
+  const usedMedia = new Set<number>();
+  let bodyHtml = markdown.render(cleanBody).trim();
+
+  bodyHtml = bodyHtml.replace(BODY_IMAGE_TOKEN, (_token, rawIndex: string) => {
+    const index = Number(rawIndex) - 1;
+    const media = inlineMedia[index];
+    if (!media) return '';
+
+    usedMedia.add(index);
+    return imageFigure(media, media.alternativeText || `${post.title} image ${index + 1}`);
+  });
+
+  const remainingImages = inlineMedia
+    .map((media, index) => ({ media, index }))
+    .filter(({ index }) => !usedMedia.has(index))
+    .map(({ media, index }) => imageFigure(media, media.alternativeText || `${post.title} image ${index + 1}`));
+
+  return [bodyHtml, ...remainingImages].filter(Boolean).join('\n');
+}
 
 function getAbsoluteMediaUrl(strapi: Core.Strapi, url: string) {
   try {
@@ -49,16 +93,21 @@ async function getBlogMedia(strapi: Core.Strapi) {
   const mediaByNumber = new Map<number, BlogMediaPair>();
 
   for (const file of files) {
-    const match = file.name.match(/^blog0*(\d+)-(hero|banner)image(?:\D|$)/i);
+    const match = file.name.match(/^blog0*(\d+)-([^.]+)\.[^.]+$/i);
     if (!match) continue;
 
     const absoluteUrl = getAbsoluteMediaUrl(strapi, file.url);
     if (!absoluteUrl) continue;
 
     const number = Number(match[1]);
-    const type = match[2].toLowerCase() as 'hero' | 'banner';
-    const pair = mediaByNumber.get(number) || {};
-    if (!pair[type]) pair[type] = { ...file, absoluteUrl };
+    const suffix = match[2].toLowerCase();
+    const pair = mediaByNumber.get(number) || { body: new Map<string, ResolvedBlogMedia>() };
+    const resolved = { ...file, absoluteUrl };
+
+    if (suffix === 'heroimage' && !pair.hero) pair.hero = resolved;
+    else if (suffix === 'bannerimage' && !pair.banner) pair.banner = resolved;
+    else if (!pair.body.has(suffix)) pair.body.set(suffix, resolved);
+
     mediaByNumber.set(number, pair);
   }
 
@@ -90,13 +139,14 @@ export async function seedBlogPosts(strapi: Core.Strapi) {
       const media = mediaByNumber.get(index + 1)!;
       const coverMedia = media.banner!;
       const heroMedia = media.hero || coverMedia;
+      const bodyMedia = [...media.body.values()].sort((left, right) =>
+        left.name.localeCompare(right.name, undefined, { numeric: true, sensitivity: 'base' })
+      );
       const coverAltText = coverMedia.alternativeText || post.title;
       const heroAltText = heroMedia.alternativeText || post.title;
-      const cleanBody = stripMarkdownImages(post.body);
-      const imageMarkdown = `![${escapeMarkdownAlt(heroAltText)}](${heroMedia.absoluteUrl})`;
       const seededPost = {
         ...post,
-        body: `${imageMarkdown}\n\n${cleanBody}`,
+        body: renderBody(post, bodyMedia, media.hero),
         heroImage: {
           desktopImage: heroMedia.id,
           mobileImage: heroMedia.id,
@@ -118,16 +168,22 @@ export async function seedBlogPosts(strapi: Core.Strapi) {
           documentId: existing.documentId,
           data: seededPost,
           locale: BLOG_LOCALE,
-          status: 'published',
+        } as any);
+        await strapi.documents(BLOG_POST_UID).publish({
+          documentId: existing.documentId,
+          locale: BLOG_LOCALE,
         } as any);
         strapi.log.info(`Updated blog: ${post.slug}`);
         continue;
       }
 
-      await strapi.documents(BLOG_POST_UID).create({
+      const created = await strapi.documents(BLOG_POST_UID).create({
         data: seededPost,
         locale: BLOG_LOCALE,
-        status: 'published',
+      } as any);
+      await strapi.documents(BLOG_POST_UID).publish({
+        documentId: created.documentId,
+        locale: BLOG_LOCALE,
       } as any);
       strapi.log.info(`Created blog: ${post.slug}`);
     } catch (error) {

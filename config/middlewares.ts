@@ -12,6 +12,8 @@ const config: Core.Config.Middlewares = [
       contentSecurityPolicy: {
         useDefaults: true,
         directives: {
+          'script-src': ['https://cdn.ckeditor.com'],
+          'connect-src': ['https://proxy-event.ckeditor.com'],
           'img-src': ["'self'", 'data:', 'blob:', 'market-assets.strapi.io', ...(cdnHost ? [cdnHost] : [])],
           'media-src': ["'self'", 'data:', 'blob:', 'market-assets.strapi.io', ...(cdnHost ? [cdnHost] : [])],
         },

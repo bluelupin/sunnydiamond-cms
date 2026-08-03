@@ -709,6 +709,14 @@ export interface ApiBlogPostBlogPost extends Struct.CollectionTypeSchema {
       'api::blog-category.blog-category'
     >;
     body: Schema.Attribute.RichText &
+      Schema.Attribute.CustomField<
+        'plugin::ckeditor.CKEditor',
+        {
+          licenseKey: 'eyJhbGciOiJFUzI1NiJ9.eyJleHAiOjE4MTczMzc1OTksImp0aSI6Ijk4MjAzYmI4LTU5ZTAtNDRjMC05NWJmLWY5NTYyYjhlNDI5ZCIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL3Byb3h5LWV2ZW50LmNrZWRpdG9yLmNvbSIsImRpc3RyaWJ1dGlvbkNoYW5uZWwiOlsiY2xvdWQiLCJkcnVwYWwiXSwiZmVhdHVyZXMiOlsiRFJVUCIsIkUyUCIsIkUyVyJdLCJyZW1vdmVGZWF0dXJlcyI6WyJQQiIsIlJGIiwiU0NIIiwiVENQIiwiVEwiLCJUQ1IiLCJJUiIsIlNVQSIsIkI2NEEiLCJMUCIsIkhFIiwiUkVEIiwiUEZPIiwiV0MiLCJGQVIiLCJCS00iLCJGUEgiLCJNUkUiLCJNRVIiXSwidmMiOiJhNjUzMDE5MCJ9.2-Iiyg6rxB-Mt7sj7ubsKck3lPSuUBJiU1b3Llj2XR7NXbx6znXaEdl2Wd_PJPY1GCzMwXK7MzXzcGAr664ajg';
+          output: 'HTML';
+          preset: 'standard';
+        }
+      > &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -931,6 +939,14 @@ export interface ApiCareerOpeningCareerOpening
         };
       }>;
     description: Schema.Attribute.RichText &
+      Schema.Attribute.CustomField<
+        'plugin::ckeditor.CKEditor',
+        {
+          licenseKey: 'eyJhbGciOiJFUzI1NiJ9.eyJleHAiOjE4MTczMzc1OTksImp0aSI6Ijk4MjAzYmI4LTU5ZTAtNDRjMC05NWJmLWY5NTYyYjhlNDI5ZCIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL3Byb3h5LWV2ZW50LmNrZWRpdG9yLmNvbSIsImRpc3RyaWJ1dGlvbkNoYW5uZWwiOlsiY2xvdWQiLCJkcnVwYWwiXSwiZmVhdHVyZXMiOlsiRFJVUCIsIkUyUCIsIkUyVyJdLCJyZW1vdmVGZWF0dXJlcyI6WyJQQiIsIlJGIiwiU0NIIiwiVENQIiwiVEwiLCJUQ1IiLCJJUiIsIlNVQSIsIkI2NEEiLCJMUCIsIkhFIiwiUkVEIiwiUEZPIiwiV0MiLCJGQVIiLCJCS00iLCJGUEgiLCJNUkUiLCJNRVIiXSwidmMiOiJhNjUzMDE5MCJ9.2-Iiyg6rxB-Mt7sj7ubsKck3lPSuUBJiU1b3Llj2XR7NXbx6znXaEdl2Wd_PJPY1GCzMwXK7MzXzcGAr664ajg';
+          output: 'HTML';
+          preset: 'standard';
+        }
+      > &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;

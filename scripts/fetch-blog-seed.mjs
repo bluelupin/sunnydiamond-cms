@@ -47,9 +47,8 @@ const htmlToMarkdown = (html = '') =>
       .replace(/<!--[\s\S]*?-->/g, '')
       .replace(/<(script|style|noscript)\b[\s\S]*?<\/\1>/gi, '')
       .replace(/<p[^>]*>\s*(?:<a[^>]*>)?\s*<img[^>]*Banner\.(?:png|jpe?g|webp)[^>]*>\s*(?:<\/a>)?\s*<\/p>/gi, '')
-      .replace(/<img\b[^>]*src=["']([^"']+)["'][^>]*alt=["']([^"']*)["'][^>]*>/gi, '\n\n![$2]($1)\n\n')
-      .replace(/<img\b[^>]*alt=["']([^"']*)["'][^>]*src=["']([^"']+)["'][^>]*>/gi, '\n\n![$1]($2)\n\n')
-      .replace(/<img\b[^>]*src=["']([^"']+)["'][^>]*>/gi, '\n\n![]($1)\n\n')
+      .replace(/<a\b[^>]*>\s*<img\b[^>]*>\s*<\/a>/gi, '\n\n{{BLOG_BODY_IMAGE}}\n\n')
+      .replace(/<img\b[^>]*>/gi, '\n\n{{BLOG_BODY_IMAGE}}\n\n')
       .replace(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi, '[$2]($1)')
       .replace(/<h[1-6][^>]*>([\s\S]*?)<\/h[1-6]>/gi, '\n\n## $1\n\n')
       .replace(/<(strong|b)[^>]*>([\s\S]*?)<\/\1>/gi, '**$2**')
@@ -131,7 +130,10 @@ async function parsePost({ url, listingTitle }) {
   );
   const titleEnd = rawContent.search(/<\/h2>/i);
   const articleHtml = titleEnd >= 0 ? rawContent.slice(titleEnd + 5) : rawContent;
-  const body = htmlToMarkdown(articleHtml.replace(/<\/div>\s*<\/div>\s*$/i, ''));
+  let bodyImageIndex = 0;
+  const body = htmlToMarkdown(articleHtml.replace(/<\/div>\s*<\/div>\s*$/i, ''))
+    .replace(/\[\s*\{\{BLOG_BODY_IMAGE\}\}\s*\]\([^\r\n)]+\)/g, '{{BLOG_BODY_IMAGE}}')
+    .replace(/\{\{BLOG_BODY_IMAGE\}\}/g, () => `{{BLOG_BODY_IMAGE_${++bodyImageIndex}}}`);
 
   const categoriesHtml = getSection(
     html,

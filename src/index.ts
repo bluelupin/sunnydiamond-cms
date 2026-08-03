@@ -6,6 +6,7 @@ import { migrateHomepage } from './utils/migrate-homepage';
 import { migrateGradeStopImages } from './utils/migrate-grade-stop-images';
 import { seedBlogPosts } from './utils/blog-seeder';
 import { seedBlogCategories } from './utils/seed-blog-categories';
+import { migrateCareerOpeningCkeditor } from './utils/migrate-career-opening-ckeditor';
 
 export default {
   /**
@@ -39,6 +40,9 @@ export default {
     }
     if (process.env.BLOG_CATEGORY_SEED_ENABLED === 'true') {
       await seedBlogCategories(strapi);
+    }
+    if (process.env.MIGRATE_CAREER_OPENING_CKEDITOR === 'true') {
+      await migrateCareerOpeningCkeditor(strapi);
     }
   },
 };
