@@ -883,6 +883,24 @@ export interface SharedFourCsSection extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedGenericFormSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_generic_form_sections';
+  info: {
+    description: 'Page section that renders a configured generic form';
+    displayName: 'Generic Form Section';
+  };
+  attributes: {
+    form: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::generic-form.generic-form'
+    > &
+      Schema.Attribute.Required;
+    heading: Schema.Attribute.String & Schema.Attribute.Required;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    successMessage: Schema.Attribute.Text;
+  };
+}
+
 export interface SharedGiftingBanner extends Struct.ComponentSchema {
   collectionName: 'components_shared_gifting_banners';
   info: {
@@ -1716,6 +1734,7 @@ declare module '@strapi/strapi' {
       'shared.footer-ticker-item': SharedFooterTickerItem;
       'shared.form-field': SharedFormField;
       'shared.four-cs-section': SharedFourCsSection;
+      'shared.generic-form-section': SharedGenericFormSection;
       'shared.gifting-banner': SharedGiftingBanner;
       'shared.grade-stop': SharedGradeStop;
       'shared.grade-stop-image-asset': SharedGradeStopImageAsset;

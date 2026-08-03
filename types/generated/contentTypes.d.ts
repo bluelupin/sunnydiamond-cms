@@ -1167,6 +1167,84 @@ export interface ApiContactBespokePageContactBespokePage
   };
 }
 
+export interface ApiContactPageContactPage extends Struct.SingleTypeSchema {
+  collectionName: 'contact_pages';
+  info: {
+    description: 'Section-wise content for the Contact Us page';
+    displayName: 'Contact Us Page';
+    pluralName: 'contact-pages';
+    singularName: 'contact-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    contactSection: Schema.Attribute.Component<
+      'shared.contact-support-section',
+      false
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    formSection: Schema.Attribute.Component<
+      'shared.generic-form-section',
+      false
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    heroSection: Schema.Attribute.Component<'shared.hero-section', false> &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    introText: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::contact-page.contact-page'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    visitSection: Schema.Attribute.Component<'shared.showroom-section', false> &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+  };
+}
+
 export interface ApiDesignStoryDesignStory extends Struct.CollectionTypeSchema {
   collectionName: 'design_stories';
   info: {
@@ -1536,6 +1614,12 @@ export interface ApiGenericFormGenericForm extends Struct.CollectionTypeSchema {
   };
   attributes: {
     availableTimeSlots: Schema.Attribute.Component<'shared.time-slot', true>;
+    consentLabel: Schema.Attribute.RichText &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1559,6 +1643,8 @@ export interface ApiGenericFormGenericForm extends Struct.CollectionTypeSchema {
       'api::generic-form.generic-form'
     >;
     publishedAt: Schema.Attribute.DateTime;
+    requiresConsent: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
     showrooms: Schema.Attribute.Relation<
       'manyToMany',
       'api::showroom.showroom'
@@ -1611,6 +1697,7 @@ export interface ApiGenericSubmissionGenericSubmission
       'api::showroom.showroom'
     >;
     publishedAt: Schema.Attribute.DateTime;
+    reasonForContact: Schema.Attribute.String;
     selectedTimeSlot: Schema.Attribute.String;
     sourcePage: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
@@ -3636,6 +3723,7 @@ declare module '@strapi/strapi' {
       'api::career-opening.career-opening': ApiCareerOpeningCareerOpening;
       'api::category-landing.category-landing': ApiCategoryLandingCategoryLanding;
       'api::contact-bespoke-page.contact-bespoke-page': ApiContactBespokePageContactBespokePage;
+      'api::contact-page.contact-page': ApiContactPageContactPage;
       'api::design-story.design-story': ApiDesignStoryDesignStory;
       'api::diamonds-for-everyone-page.diamonds-for-everyone-page': ApiDiamondsForEveryonePageDiamondsForEveryonePage;
       'api::editorial-collection.editorial-collection': ApiEditorialCollectionEditorialCollection;
