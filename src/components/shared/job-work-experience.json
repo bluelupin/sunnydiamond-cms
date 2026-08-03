@@ -6,7 +6,8 @@
   "options": {},
   "attributes": {
     "RelvWorkExp": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "CurrCompName": {
       "type": "string"
@@ -18,7 +19,8 @@
       "type": "biginteger"
     },
     "ExpecCtc": {
-      "type": "biginteger"
+      "type": "biginteger",
+      "required": true
     },
     "NoticePerd": {
       "type": "integer"

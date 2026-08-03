@@ -38,6 +38,18 @@
         }
       }
     },
+    "requiresConsent": {
+      "type": "boolean",
+      "default": false
+    },
+    "consentLabel": {
+      "type": "richtext",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
     "availableTimeSlots": {
       "type": "component",
       "repeatable": true,

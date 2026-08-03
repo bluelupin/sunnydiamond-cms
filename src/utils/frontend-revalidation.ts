@@ -38,6 +38,10 @@ const REVALIDATION_MAPPINGS: Record<string, RevalidationMapping> = {
     tags: ['cms:contact-bespoke-page'],
     paths: ['/bespoke-jewellery', '/contact'],
   },
+  'api::contact-page.contact-page': {
+    tags: ['cms:contact-page'],
+    paths: ['/contact-us'],
+  },
   'api::learn-about-diamonds-page.learn-about-diamonds-page': {
     tags: ['cms:learn-about-diamonds-page'],
     paths: ['/learn-about-diamonds'],

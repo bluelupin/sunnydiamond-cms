@@ -27,17 +27,20 @@
     "personalDetails": {
       "type": "component",
       "component": "shared.job-personal-details",
-      "repeatable": false
+      "repeatable": false,
+      "required": true
     },
     "educationDetails": {
       "type": "component",
       "component": "shared.job-education-details",
-      "repeatable": false
+      "repeatable": false,
+      "required": true
     },
     "workExperience": {
       "type": "component",
       "component": "shared.job-work-experience",
-      "repeatable": false
+      "repeatable": false,
+      "required": true
     },
     "skillsAndLanguages": {
       "type": "component",
@@ -47,7 +50,8 @@
     "addInfo": {
       "type": "component",
       "component": "shared.job-additional-info",
-      "repeatable": false
+      "repeatable": false,
+      "required": true
     },
     "department": {
       "type": "string"

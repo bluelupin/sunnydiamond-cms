@@ -45,8 +45,21 @@ const firstFile = (files: any) => {
 };
 
 const integerOrUndefined = (value: unknown) => {
+  if (value === '' || value === null || value === undefined) return undefined;
   const parsed = Number(value);
   return Number.isInteger(parsed) ? parsed : undefined;
+};
+
+const dateOrUndefined = (value: unknown) => {
+  const date = stringOrUndefined(value);
+  if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return undefined;
+
+  const parsed = new Date(`${date}T00:00:00.000Z`);
+  if (Number.isNaN(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== date) {
+    return undefined;
+  }
+
+  return date;
 };
 
 const skillItems = (value: unknown) => {
@@ -85,6 +98,18 @@ export default factories.createCoreController(UID, ({ strapi }) => ({
     const jobID = stringOrUndefined(input.jobID);
     const name = stringOrUndefined(personalDetails.Name);
     const phone = stringOrUndefined(personalDetails.PhoneNo);
+    const dob = dateOrUndefined(personalDetails.DOB);
+    const gender = stringOrUndefined(personalDetails.Gender);
+    const educationDetails = input.educationDetails ?? {};
+    const degree = stringOrUndefined(educationDetails.Degree);
+    const areaOfStudy = stringOrUndefined(educationDetails.AreaOfStudy);
+    const completionYear = integerOrUndefined(educationDetails.Year);
+    const workExperience = input.workExperience ?? {};
+    const relevantWorkExperience = stringOrUndefined(workExperience.RelvWorkExp);
+    const currentCtc = integerOrUndefined(workExperience.CurrCtc);
+    const expectedCtc = integerOrUndefined(workExperience.ExpecCtc);
+    const noticePeriod = integerOrUndefined(workExperience.NoticePerd);
+    const addInfo = input.addInfo ?? {};
 
     if (!jobID) return ctx.badRequest('jobID is required.');
     if (!name) return ctx.badRequest('personalDetails.Name is required.');
@@ -94,12 +119,45 @@ export default factories.createCoreController(UID, ({ strapi }) => ({
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return ctx.badRequest('personalDetails.EmailId must be valid.');
     }
+    if (!dob) return ctx.badRequest('personalDetails.DOB is required and must use YYYY-MM-DD format.');
+    if (dob > new Date().toISOString().slice(0, 10)) {
+      return ctx.badRequest('personalDetails.DOB cannot be in the future.');
+    }
+    if (!gender) return ctx.badRequest('personalDetails.Gender is required.');
+    if (!degree) return ctx.badRequest('educationDetails.Degree is required.');
+    if (!areaOfStudy) return ctx.badRequest('educationDetails.AreaOfStudy is required.');
+    if (completionYear === undefined || completionYear < 1900 || completionYear > new Date().getFullYear()) {
+      return ctx.badRequest('educationDetails.Year must be a valid completion year.');
+    }
+    if (!relevantWorkExperience) {
+      return ctx.badRequest('workExperience.RelvWorkExp is required.');
+    }
+    if (workExperience.CurrCtc !== undefined && (currentCtc === undefined || currentCtc < 0)) {
+      return ctx.badRequest('workExperience.CurrCtc must be a non-negative integer value in LPA.');
+    }
+    if (expectedCtc === undefined || expectedCtc < 0) {
+      return ctx.badRequest('workExperience.ExpecCtc is required and must be a non-negative integer value in LPA.');
+    }
+    if (workExperience.NoticePerd !== undefined && (noticePeriod === undefined || noticePeriod < 0)) {
+      return ctx.badRequest('workExperience.NoticePerd must be a non-negative integer.');
+    }
+    if (typeof addInfo.relation !== 'boolean') {
+      return ctx.badRequest('addInfo.relation must be selected.');
+    }
+    const employeeName = stringOrUndefined(addInfo.EmpName);
+    const employeeJobTitle = stringOrUndefined(addInfo.EmpJobTitle);
+    if (addInfo.relation && !employeeName) {
+      return ctx.badRequest('addInfo.EmpName is required when relation is true.');
+    }
+    if (addInfo.relation && !employeeJobTitle) {
+      return ctx.badRequest('addInfo.EmpJobTitle is required when relation is true.');
+    }
     if (!resume) return ctx.badRequest('resume is required.');
 
     const mime = resume.mimetype ?? resume.type;
     if (!ALLOWED_RESUME_MIME_TYPES.has(mime)) {
       return ctx.badRequest(
-        'resume must be PDF, DOC, DOCX, ZIP, JPEG, or PNG.'
+        'resume must be PDF, ZIP, JPEG, or PNG.'
       );
     }
     if (resume.size && resume.size > MAX_RESUME_BYTES) {
@@ -114,10 +172,7 @@ export default factories.createCoreController(UID, ({ strapi }) => ({
       } as any);
     if (!careerOpening) return ctx.badRequest('Unknown jobID.');
 
-    const educationDetails = input.educationDetails ?? {};
-    const workExperience = input.workExperience ?? {};
     const skillsAndLanguages = input.skillsAndLanguages ?? {};
-    const addInfo = input.addInfo ?? {};
 
     const entity = await strapi.documents(UID).create({
       data: {
@@ -130,21 +185,21 @@ export default factories.createCoreController(UID, ({ strapi }) => ({
           Name: name,
           PhoneNo: phone,
           EmailId: email,
-          DOB: stringOrUndefined(personalDetails.DOB),
-          Gender: stringOrUndefined(personalDetails.Gender),
+          DOB: dob,
+          Gender: gender,
         },
         educationDetails: {
-          Degree: stringOrUndefined(educationDetails.Degree),
-          AreaOfStudy: stringOrUndefined(educationDetails.AreaOfStudy),
-          Year: stringOrUndefined(String(educationDetails.Year ?? '')),
+          Degree: degree,
+          AreaOfStudy: areaOfStudy,
+          Year: completionYear,
         },
         workExperience: {
-          RelvWorkExp: stringOrUndefined(workExperience.RelvWorkExp),
+          RelvWorkExp: relevantWorkExperience,
           CurrCompName: stringOrUndefined(workExperience.CurrCompName),
           CurrJobTitle: stringOrUndefined(workExperience.CurrJobTitle),
-          CurrCtc: stringOrUndefined(String(workExperience.CurrCtc ?? '')),
-          ExpecCtc: stringOrUndefined(String(workExperience.ExpecCtc ?? '')),
-          NoticePerd: integerOrUndefined(workExperience.NoticePerd),
+          CurrCtc: currentCtc,
+          ExpecCtc: expectedCtc,
+          NoticePerd: noticePeriod,
         },
         skillsAndLanguages: {
           Skills: skillItems(skillsAndLanguages.Skills),
@@ -152,8 +207,8 @@ export default factories.createCoreController(UID, ({ strapi }) => ({
         },
         addInfo: {
           relation: addInfo.relation === true,
-          EmpName: stringOrUndefined(addInfo.EmpName),
-          EmpJobTitle: stringOrUndefined(addInfo.EmpJobTitle),
+          EmpName: addInfo.relation ? employeeName : undefined,
+          EmpJobTitle: addInfo.relation ? employeeJobTitle : undefined,
         },
         workflowStatus: 'new',
       },

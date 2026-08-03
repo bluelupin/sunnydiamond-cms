@@ -883,6 +883,24 @@ export interface SharedFourCsSection extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedGenericFormSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_generic_form_sections';
+  info: {
+    description: 'Page section that renders a configured generic form';
+    displayName: 'Generic Form Section';
+  };
+  attributes: {
+    form: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::generic-form.generic-form'
+    > &
+      Schema.Attribute.Required;
+    heading: Schema.Attribute.String & Schema.Attribute.Required;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    successMessage: Schema.Attribute.Text;
+  };
+}
+
 export interface SharedGiftingBanner extends Struct.ComponentSchema {
   collectionName: 'components_shared_gifting_banners';
   info: {
@@ -891,6 +909,7 @@ export interface SharedGiftingBanner extends Struct.ComponentSchema {
   };
   attributes: {
     backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    backgroundVideo: Schema.Attribute.Component<'shared.video-asset', false>;
     cutoutImage: Schema.Attribute.Component<'shared.image-asset', false>;
     description: Schema.Attribute.Text;
     primaryCta: Schema.Attribute.Component<'shared.cta', false>;
@@ -937,6 +956,7 @@ export interface SharedHeroSection extends Struct.ComponentSchema {
     displayName: 'Hero Section';
   };
   attributes: {
+    backgroundVideo: Schema.Attribute.Component<'shared.video-asset', false>;
     bgImage: Schema.Attribute.Component<'shared.image-asset', false>;
     eyebrow: Schema.Attribute.String;
     heroVideo: Schema.Attribute.Component<'shared.video-asset', false>;
@@ -1027,7 +1047,9 @@ export interface SharedJobAdditionalInfo extends Struct.ComponentSchema {
   attributes: {
     EmpJobTitle: Schema.Attribute.String;
     EmpName: Schema.Attribute.String;
-    relation: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    relation: Schema.Attribute.Boolean &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<false>;
   };
 }
 
@@ -1037,9 +1059,9 @@ export interface SharedJobEducationDetails extends Struct.ComponentSchema {
     displayName: 'Job Education Details';
   };
   attributes: {
-    AreaOfStudy: Schema.Attribute.String;
-    Degree: Schema.Attribute.String;
-    Year: Schema.Attribute.BigInteger;
+    AreaOfStudy: Schema.Attribute.String & Schema.Attribute.Required;
+    Degree: Schema.Attribute.String & Schema.Attribute.Required;
+    Year: Schema.Attribute.BigInteger & Schema.Attribute.Required;
   };
 }
 
@@ -1049,9 +1071,9 @@ export interface SharedJobPersonalDetails extends Struct.ComponentSchema {
     displayName: 'Job Personal Details';
   };
   attributes: {
-    DOB: Schema.Attribute.Date;
+    DOB: Schema.Attribute.Date & Schema.Attribute.Required;
     EmailId: Schema.Attribute.Email & Schema.Attribute.Required;
-    Gender: Schema.Attribute.String;
+    Gender: Schema.Attribute.String & Schema.Attribute.Required;
     Name: Schema.Attribute.String & Schema.Attribute.Required;
     PhoneNo: Schema.Attribute.String & Schema.Attribute.Required;
   };
@@ -1077,9 +1099,9 @@ export interface SharedJobWorkExperience extends Struct.ComponentSchema {
     CurrCompName: Schema.Attribute.String;
     CurrCtc: Schema.Attribute.BigInteger;
     CurrJobTitle: Schema.Attribute.String;
-    ExpecCtc: Schema.Attribute.BigInteger;
+    ExpecCtc: Schema.Attribute.BigInteger & Schema.Attribute.Required;
     NoticePerd: Schema.Attribute.Integer;
-    RelvWorkExp: Schema.Attribute.String;
+    RelvWorkExp: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
 
@@ -1716,6 +1738,7 @@ declare module '@strapi/strapi' {
       'shared.footer-ticker-item': SharedFooterTickerItem;
       'shared.form-field': SharedFormField;
       'shared.four-cs-section': SharedFourCsSection;
+      'shared.generic-form-section': SharedGenericFormSection;
       'shared.gifting-banner': SharedGiftingBanner;
       'shared.grade-stop': SharedGradeStop;
       'shared.grade-stop-image-asset': SharedGradeStopImageAsset;

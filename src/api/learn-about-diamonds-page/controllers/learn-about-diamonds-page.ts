@@ -21,6 +21,11 @@ const heroPopulate = {
         heroVideo: true,
       },
     },
+    backgroundVideo: {
+      populate: {
+        heroVideo: true,
+      },
+    },
     primaryCta: true,
     secondaryCta: true,
   },

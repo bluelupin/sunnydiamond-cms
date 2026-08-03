@@ -29,6 +29,11 @@
       "component": "shared.video-asset",
       "repeatable": false
     },
+    "backgroundVideo": {
+      "type": "component",
+      "component": "shared.video-asset",
+      "repeatable": false
+    },
     "primaryCta": {
       "type": "component",
       "component": "shared.cta",

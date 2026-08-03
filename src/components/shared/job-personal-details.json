@@ -18,10 +18,12 @@
       "required": true
     },
     "DOB": {
-      "type": "date"
+      "type": "date",
+      "required": true
     },
     "Gender": {
-      "type": "string"
+      "type": "string",
+      "required": true
     }
   },
   "config": {}

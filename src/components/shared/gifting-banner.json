@@ -11,6 +11,11 @@
       "repeatable": false,
       "component": "shared.image-asset"
     },
+    "backgroundVideo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.video-asset"
+    },
     "cutoutImage": {
       "type": "component",
       "repeatable": false,

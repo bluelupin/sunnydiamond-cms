@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_shared_generic_form_sections",
+  "info": {
+    "displayName": "Generic Form Section",
+    "description": "Page section that renders a configured generic form"
+  },
+  "options": {},
+  "attributes": {
+    "heading": { "type": "string", "required": true },
+    "form": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::generic-form.generic-form",
+      "required": true
+    },
+    "successMessage": { "type": "text" },
+    "isActive": { "type": "boolean", "default": true }
+  }
+}

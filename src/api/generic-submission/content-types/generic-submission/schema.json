@@ -39,6 +39,9 @@
     "notes": {
       "type": "text"
     },
+    "reasonForContact": {
+      "type": "string"
+    },
     "sourcePage": {
       "type": "string"
     },

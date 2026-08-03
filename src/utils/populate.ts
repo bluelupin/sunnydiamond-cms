@@ -34,6 +34,7 @@ export const heroPopulate = {
     bgImage: imageAssetPopulate,
     image: imageAssetPopulate,
     heroVideo: videoAssetPopulate,
+    backgroundVideo: videoAssetPopulate,
     primaryCta: ctaPopulate,
     secondaryCta: ctaPopulate,
   },
