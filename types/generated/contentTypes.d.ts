@@ -963,6 +963,15 @@ export interface ApiCareerOpeningCareerOpening
         };
       }>;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    jobDescriptionSections: Schema.Attribute.Component<
+      'career.job-description-section',
+      true
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     jobID: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.SetPluginOptions<{

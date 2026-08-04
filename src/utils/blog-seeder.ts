@@ -42,27 +42,27 @@ const imageFigure = (media: ResolvedBlogMedia, altText: string) =>
 
 function renderBody(
   post: (typeof blogPosts)[number],
-  bodyMedia: ResolvedBlogMedia[],
-  heroMedia?: ResolvedBlogMedia
+  bodyMedia: ResolvedBlogMedia[]
 ) {
   const cleanBody = stripMarkdownImages(post.body);
   const tokenCount = (post.body.match(/\{\{BLOG_BODY_IMAGE_\d+\}\}/g) || []).length;
-  const inlineMedia = tokenCount === bodyMedia.length + 1 && heroMedia
-    ? [heroMedia, ...bodyMedia]
-    : bodyMedia;
+  const hasLeadingHeroPlaceholder = tokenCount === bodyMedia.length + 1;
   const usedMedia = new Set<number>();
   let bodyHtml = markdown.render(cleanBody).trim();
 
   bodyHtml = bodyHtml.replace(BODY_IMAGE_TOKEN, (_token, rawIndex: string) => {
-    const index = Number(rawIndex) - 1;
-    const media = inlineMedia[index];
+    const tokenIndex = Number(rawIndex) - 1;
+    const index = tokenIndex - (hasLeadingHeroPlaceholder ? 1 : 0);
+    if (index < 0) return '';
+
+    const media = bodyMedia[index];
     if (!media) return '';
 
     usedMedia.add(index);
     return imageFigure(media, media.alternativeText || `${post.title} image ${index + 1}`);
   });
 
-  const remainingImages = inlineMedia
+  const remainingImages = bodyMedia
     .map((media, index) => ({ media, index }))
     .filter(({ index }) => !usedMedia.has(index))
     .map(({ media, index }) => imageFigure(media, media.alternativeText || `${post.title} image ${index + 1}`));
@@ -139,14 +139,16 @@ export async function seedBlogPosts(strapi: Core.Strapi) {
       const media = mediaByNumber.get(index + 1)!;
       const coverMedia = media.banner!;
       const heroMedia = media.hero || coverMedia;
-      const bodyMedia = [...media.body.values()].sort((left, right) =>
-        left.name.localeCompare(right.name, undefined, { numeric: true, sensitivity: 'base' })
-      );
+      const bodyMedia = [...media.body.values()]
+        .filter(({ id }) => id !== coverMedia.id && id !== heroMedia.id)
+        .sort((left, right) =>
+          left.name.localeCompare(right.name, undefined, { numeric: true, sensitivity: 'base' })
+        );
       const coverAltText = coverMedia.alternativeText || post.title;
       const heroAltText = heroMedia.alternativeText || post.title;
       const seededPost = {
         ...post,
-        body: renderBody(post, bodyMedia, media.hero),
+        body: renderBody(post, bodyMedia),
         heroImage: {
           desktopImage: heroMedia.id,
           mobileImage: heroMedia.id,

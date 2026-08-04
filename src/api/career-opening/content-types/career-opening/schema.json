@@ -108,6 +108,16 @@
       "component": "shared.seo",
       "repeatable": false
     },
+    "jobDescriptionSections": {
+      "type": "component",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "component": "career.job-description-section",
+      "repeatable": true
+    },
     "description": {
       "type": "customField",
       "pluginOptions": {

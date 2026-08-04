@@ -12,6 +12,26 @@ export interface CareerCareerDiscoverSection extends Struct.ComponentSchema {
   };
 }
 
+export interface CareerJobDescriptionSection extends Struct.ComponentSchema {
+  collectionName: 'components_career_job_description_sections';
+  info: {
+    description: 'A titled, reorderable section of a career opening job description';
+    displayName: 'Job Description Section';
+  };
+  attributes: {
+    sectionBody: Schema.Attribute.RichText &
+      Schema.Attribute.CustomField<
+        'plugin::ckeditor.CKEditor',
+        {
+          licenseKey: 'eyJhbGciOiJFUzI1NiJ9.eyJleHAiOjE4MTczMzc1OTksImp0aSI6Ijk4MjAzYmI4LTU5ZTAtNDRjMC05NWJmLWY5NTYyYjhlNDI5ZCIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL3Byb3h5LWV2ZW50LmNrZWRpdG9yLmNvbSIsImRpc3RyaWJ1dGlvbkNoYW5uZWwiOlsiY2xvdWQiLCJkcnVwYWwiXSwiZmVhdHVyZXMiOlsiRFJVUCIsIkUyUCIsIkUyVyJdLCJyZW1vdmVGZWF0dXJlcyI6WyJQQiIsIlJGIiwiU0NIIiwiVENQIiwiVEwiLCJUQ1IiLCJJUiIsIlNVQSIsIkI2NEEiLCJMUCIsIkhFIiwiUkVEIiwiUEZPIiwiV0MiLCJGQVIiLCJCS00iLCJGUEgiLCJNUkUiLCJNRVIiXSwidmMiOiJhNjUzMDE5MCJ9.2-Iiyg6rxB-Mt7sj7ubsKck3lPSuUBJiU1b3Llj2XR7NXbx6znXaEdl2Wd_PJPY1GCzMwXK7MzXzcGAr664ajg';
+          output: 'HTML';
+          preset: 'standard';
+        }
+      >;
+    sectionTitle: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface DiamondsForEveryoneEditorialBannerSection
   extends Struct.ComponentSchema {
   collectionName: 'components_dfe_editorial_banner_sections';
@@ -1680,6 +1700,7 @@ declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
       'career.career-discover-section': CareerCareerDiscoverSection;
+      'career.job-description-section': CareerJobDescriptionSection;
       'diamonds-for-everyone.editorial-banner-section': DiamondsForEveryoneEditorialBannerSection;
       'diamonds-for-everyone.hero-section': DiamondsForEveryoneHeroSection;
       'diamonds-for-everyone.investment-planner-section': DiamondsForEveryoneInvestmentPlannerSection;
