@@ -1,5 +1,18 @@
-import { memo, useEffect } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { useCKEditorCloud } from '@ckeditor/ckeditor5-react';
+import { getFetchClient } from '@strapi/strapi/admin';
+
+let licenseKeyRequest;
+
+const getLicenseKey = () => {
+  if ( !licenseKeyRequest ) {
+    licenseKeyRequest = getFetchClient()
+      .get( '/ckeditor/config' )
+      .then( response => response.data.licenseKey );
+  }
+
+  return licenseKeyRequest;
+};
 
 const CKEditorProvider = ( {
   attribute,
@@ -8,8 +21,22 @@ const CKEditorProvider = ( {
   labelAction = null,
   required = false,
   description = null,
-  error = null,
-  intlLabel } ) => {
+    error = null,
+    intlLabel } ) => {
+  const [ licenseKey, setLicenseKey ] = useState( null );
+  const [ configError, setConfigError ] = useState( false );
+
+  useEffect( () => {
+    let mounted = true;
+
+    getLicenseKey()
+      .then( key => mounted && setLicenseKey( key ) )
+      .catch( () => mounted && setConfigError( true ) );
+
+    return () => {
+      mounted = false;
+    };
+  }, [] );
 
   // Clean up CDN scripts after unmounting the component.
   useEffect( () => {
@@ -39,7 +66,11 @@ const CKEditorProvider = ( {
     }
   } );
 
-  if ( cloud.status !== 'success' ) {
+  if ( configError ) {
+    return <div role="alert">CKEditor unavailable: CKEDITOR_LICENSE_KEY is not configured.</div>;
+  }
+
+  if ( cloud.status !== 'success' || !licenseKey ) {
     return null;
   }
 
@@ -53,6 +84,7 @@ const CKEditorProvider = ( {
       description={ description }
       error={ error }
       intlLabel={ intlLabel }
+      licenseKey={ licenseKey }
     />
   )
 }

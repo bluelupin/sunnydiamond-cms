@@ -17,6 +17,11 @@
       "multiple": false,
       "allowedTypes": ["images"]
     },
+    "video":{
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["videos"]
+    },
     "buttons": {
       "type": "component",
       "repeatable": true,

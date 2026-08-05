@@ -64,6 +64,15 @@ export const style = css`
       font-size: 1.2rem;
     }
 
+    video {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      margin: 1em 0;
+      background: #000;
+    }
+
     blockquote {
     }
 

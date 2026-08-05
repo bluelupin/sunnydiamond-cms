@@ -21,6 +21,7 @@ const {
   FontFamily,
   FontColor,
   FontBackgroundColor,
+  GeneralHtmlSupport,
   Heading,
   HorizontalLine,
   Image,
@@ -51,6 +52,7 @@ const CKEDITOR_BASE_CONFIG_FOR_PRESETS = {
       Bold,
       Italic,
       Essentials,
+      GeneralHtmlSupport,
       Heading,
       Image,
       ImageCaption,
@@ -128,6 +130,7 @@ const CKEDITOR_BASE_CONFIG_FOR_PRESETS = {
       BlockQuote,
       CodeBlock,
       Essentials,
+      GeneralHtmlSupport,
       Heading,
       Image,
       ImageCaption,
@@ -219,6 +222,7 @@ const CKEDITOR_BASE_CONFIG_FOR_PRESETS = {
       FontFamily,
       FontColor,
       FontBackgroundColor,
+      GeneralHtmlSupport,
       Heading,
       HorizontalLine,
       Image,
@@ -356,6 +360,43 @@ export default class Configurator {
     const licenseKey = this.fieldConfig.licenseKey;
 
     config.licenseKey = licenseKey;
+    config.htmlSupport = {
+      allow: [
+        {
+          name: 'video',
+          attributes: {
+            src: true,
+            controls: true,
+            preload: true,
+            playsinline: true,
+            poster: true,
+            width: true,
+            height: true
+          }
+        },
+        {
+          name: 'source',
+          attributes: {
+            src: true,
+            type: true
+          }
+        }
+      ]
+    };
+
+    if ( config.plugins.includes( MediaEmbed ) ) {
+      config.mediaEmbed = {
+        previewsInData: true,
+        extraProviders: [
+          {
+            name: 'directMp4',
+            url: /^(https?:\/\/[^\s"'<>]+\.mp4(?:[?#][^\s"'<>]*)?)$/i,
+            html: match =>
+              `<video src="${ match[ 0 ] }" controls preload="metadata" playsinline></video>`
+          }
+        ]
+      };
+    }
 
     if ( outputOption === 'Markdown' ) {
       config.plugins.push( Markdown );

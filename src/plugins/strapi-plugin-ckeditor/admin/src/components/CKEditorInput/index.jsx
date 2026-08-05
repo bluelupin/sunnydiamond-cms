@@ -27,12 +27,13 @@ const CKEditorInput = ( props ) => {
     required,
     description,
     error,
-    intlLabel } = props;
+    intlLabel,
+    licenseKey } = props;
   const { onChange, value } = useField( name );
   const [ editorInstance, setEditorInstance ] = useState(false);
   const { formatMessage } = useIntl();
   const fieldLabel = name.split( '.' ).pop();
-  const { maxLengthCharacters:maxLength, licenseKey, ...options } = attribute.options;
+  const { maxLengthCharacters:maxLength, ...options } = attribute.options;
   const configurator = new Configurator( { options, maxLength, licenseKey } );
   const editorConfig = configurator.getEditorConfig();
 
@@ -41,18 +42,27 @@ const CKEditorInput = ( props ) => {
   const handleToggleMediaLib = () => setMediaLibVisible( prev => !prev );
 
   const handleChangeAssets = assets => {
-    let imageHtmlString = '';
+    let mediaHtmlString = '';
 
     assets.map( asset => {
       if ( asset.mime.includes('image') ) {
         const url = sanitize( asset.url );
         const alt = sanitize( asset.alt );
 
-        imageHtmlString += `<img src="${ url }" alt="${ alt }" />`;
+        mediaHtmlString += `<img src="${ url }" alt="${ alt }" />`;
+      } else if ( asset.mime === 'video/mp4' ) {
+        const url = sanitize( asset.url );
+
+        mediaHtmlString += `<video src="${ url }" controls preload="metadata" playsinline></video>`;
       }
     } );
 
-    const viewFragment = editorInstance.data.processor.toView( imageHtmlString );
+    if ( !mediaHtmlString ) {
+      handleToggleMediaLib();
+      return;
+    }
+
+    const viewFragment = editorInstance.data.processor.toView( mediaHtmlString );
     const modelFragment = editorInstance.data.toModel( viewFragment );
     editorInstance.model.insertContent( modelFragment );
 
@@ -103,7 +113,8 @@ CKEditorInput.propTypes = {
   disabled: PropTypes.bool,
   error: PropTypes.string,
   labelAction: PropTypes.object,
-  required: PropTypes.bool
+  required: PropTypes.bool,
+  licenseKey: PropTypes.string.isRequired
 };
 
 export { CKEditorInput };

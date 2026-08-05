@@ -15,7 +15,7 @@ const config: Core.Config.Middlewares = [
           'script-src': ["'self'", "'unsafe-inline'", 'https://cdn.ckeditor.com'],
           'connect-src': ["'self'", 'https:', 'https://proxy-event.ckeditor.com'],
           'img-src': ["'self'", 'data:', 'blob:', 'market-assets.strapi.io', ...(cdnHost ? [cdnHost] : [])],
-          'media-src': ["'self'", 'data:', 'blob:', 'market-assets.strapi.io', ...(cdnHost ? [cdnHost] : [])],
+          'media-src': ["'self'", 'data:', 'blob:', 'https:', 'market-assets.strapi.io', ...(cdnHost ? [cdnHost] : [])],
         },
       },
     },
