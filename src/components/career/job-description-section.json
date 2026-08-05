@@ -2,7 +2,7 @@
   "collectionName": "components_career_job_description_sections",
   "info": {
     "displayName": "Job Description Section",
-    "description": "A titled, reorderable section of a career opening job description"
+    "description": "A titled section with CKEditor content"
   },
   "options": {},
   "attributes": {
@@ -10,7 +10,7 @@
       "type": "string",
       "required": true
     },
-    "sectionBody": {
+    "sectionContent": {
       "type": "customField",
       "customField": "plugin::ckeditor.CKEditor",
       "options": {

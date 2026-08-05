@@ -1,0 +1,24 @@
+{
+  "collectionName": "components_career_qualifications_and_experiences",
+  "info": {
+    "displayName": "Qualifications and Experience",
+    "description": "A titled section containing Education and Experience subsections"
+  },
+  "options": {},
+  "attributes": {
+    "sectionTitle": {
+      "type": "string",
+      "required": true
+    },
+    "education": {
+      "type": "component",
+      "component": "career.job-description-section",
+      "repeatable": false
+    },
+    "experience": {
+      "type": "component",
+      "component": "career.job-description-section",
+      "repeatable": false
+    }
+  }
+}

@@ -7,6 +7,7 @@ import { migrateGradeStopImages } from './utils/migrate-grade-stop-images';
 import { seedBlogPosts } from './utils/blog-seeder';
 import { seedBlogCategories } from './utils/seed-blog-categories';
 import { migrateCareerOpeningCkeditor } from './utils/migrate-career-opening-ckeditor';
+import { seedCareerOpenings } from './utils/career-opening-seeder';
 // import { cleanStaleAdminPermissions } from './utils/clean-stale-admin-permissions';
 
 export default {
@@ -45,6 +46,9 @@ export default {
     }
     if (process.env.MIGRATE_CAREER_OPENING_CKEDITOR === 'true') {
       await migrateCareerOpeningCkeditor(strapi);
+    }
+    if (process.env.CAREER_OPENING_SEED_ENABLED === 'true') {
+      await seedCareerOpenings(strapi);
     }
   },
 };

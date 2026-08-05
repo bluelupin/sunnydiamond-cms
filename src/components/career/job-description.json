@@ -1,0 +1,45 @@
+{
+  "collectionName": "components_career_job_descriptions",
+  "info": {
+    "displayName": "Job Description",
+    "description": "Predefined sections for a career opening"
+  },
+  "options": {},
+  "attributes": {
+    "jobSummary": {
+      "type": "component",
+      "component": "career.job-description-section",
+      "repeatable": false
+    },
+    "rolesAndResponsibilities": {
+      "type": "component",
+      "component": "career.job-description-section",
+      "repeatable": false
+    },
+    "qualificationsAndExperience": {
+      "type": "component",
+      "component": "career.qualifications-and-experience",
+      "repeatable": false
+    },
+    "skills": {
+      "type": "component",
+      "component": "career.job-description-section",
+      "repeatable": false
+    },
+    "whatWeAreLookingFor": {
+      "type": "component",
+      "component": "career.job-description-section",
+      "repeatable": false
+    },
+    "whyJoinUs": {
+      "type": "component",
+      "component": "career.job-description-section",
+      "repeatable": false
+    },
+    "additionalInfo": {
+      "type": "component",
+      "component": "career.job-description-section",
+      "repeatable": false
+    }
+  }
+}

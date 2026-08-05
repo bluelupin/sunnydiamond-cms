@@ -31,6 +31,7 @@ const CKEditorInput = ( props ) => {
   const { onChange, value } = useField( name );
   const [ editorInstance, setEditorInstance ] = useState(false);
   const { formatMessage } = useIntl();
+  const fieldLabel = name.split( '.' ).pop();
   const { maxLengthCharacters:maxLength, licenseKey, ...options } = attribute.options;
   const configurator = new Configurator( { options, maxLength, licenseKey } );
   const editorConfig = configurator.getEditorConfig();
@@ -68,7 +69,7 @@ const CKEditorInput = ( props ) => {
     >
       <Flex spacing={ 1 } alignItems="normal" style={ { 'flexDirection': 'column' } }>
         <Field.Label action={ labelAction } required={ required }>
-          { intlLabel ? formatMessage( intlLabel ) : name }
+          { intlLabel ? formatMessage( intlLabel ) : fieldLabel }
         </Field.Label>
         <GlobalStyling />
         <CKEditor

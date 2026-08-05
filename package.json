@@ -8,6 +8,7 @@
     "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
     "build": "npm run clean && strapi build",
     "generate:blog-seed": "node scripts/fetch-blog-seed.mjs",
+    "generate:career-seed": "node scripts/fetch-career-seed.mjs",
     "console": "strapi console",
     "deploy": "strapi deploy",
     "dev": "strapi develop",

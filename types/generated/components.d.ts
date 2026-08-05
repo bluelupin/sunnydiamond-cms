@@ -12,14 +12,49 @@ export interface CareerCareerDiscoverSection extends Struct.ComponentSchema {
   };
 }
 
+export interface CareerJobDescription extends Struct.ComponentSchema {
+  collectionName: 'components_career_job_descriptions';
+  info: {
+    description: 'Predefined sections for a career opening';
+    displayName: 'Job Description';
+  };
+  attributes: {
+    additionalInfo: Schema.Attribute.Component<
+      'career.job-description-section',
+      false
+    >;
+    jobSummary: Schema.Attribute.Component<
+      'career.job-description-section',
+      false
+    >;
+    qualificationsAndExperience: Schema.Attribute.Component<
+      'career.qualifications-and-experience',
+      false
+    >;
+    rolesAndResponsibilities: Schema.Attribute.Component<
+      'career.job-description-section',
+      false
+    >;
+    skills: Schema.Attribute.Component<'career.job-description-section', false>;
+    whatWeAreLookingFor: Schema.Attribute.Component<
+      'career.job-description-section',
+      false
+    >;
+    whyJoinUs: Schema.Attribute.Component<
+      'career.job-description-section',
+      false
+    >;
+  };
+}
+
 export interface CareerJobDescriptionSection extends Struct.ComponentSchema {
   collectionName: 'components_career_job_description_sections';
   info: {
-    description: 'A titled, reorderable section of a career opening job description';
+    description: 'A titled section with CKEditor content';
     displayName: 'Job Description Section';
   };
   attributes: {
-    sectionBody: Schema.Attribute.RichText &
+    sectionContent: Schema.Attribute.RichText &
       Schema.Attribute.CustomField<
         'plugin::ckeditor.CKEditor',
         {
@@ -28,6 +63,26 @@ export interface CareerJobDescriptionSection extends Struct.ComponentSchema {
           preset: 'standard';
         }
       >;
+    sectionTitle: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface CareerQualificationsAndExperience
+  extends Struct.ComponentSchema {
+  collectionName: 'components_career_qualifications_and_experiences';
+  info: {
+    description: 'A titled section containing Education and Experience subsections';
+    displayName: 'Qualifications and Experience';
+  };
+  attributes: {
+    education: Schema.Attribute.Component<
+      'career.job-description-section',
+      false
+    >;
+    experience: Schema.Attribute.Component<
+      'career.job-description-section',
+      false
+    >;
     sectionTitle: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
@@ -1700,7 +1755,9 @@ declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
       'career.career-discover-section': CareerCareerDiscoverSection;
+      'career.job-description': CareerJobDescription;
       'career.job-description-section': CareerJobDescriptionSection;
+      'career.qualifications-and-experience': CareerQualificationsAndExperience;
       'diamonds-for-everyone.editorial-banner-section': DiamondsForEveryoneEditorialBannerSection;
       'diamonds-for-everyone.hero-section': DiamondsForEveryoneHeroSection;
       'diamonds-for-everyone.investment-planner-section': DiamondsForEveryoneInvestmentPlannerSection;

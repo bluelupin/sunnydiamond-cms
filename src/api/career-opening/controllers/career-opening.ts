@@ -4,6 +4,22 @@ import { fullSeoPopulate } from '../../../utils/populate';
 const populate = {
   applyCta: true,
   seo: fullSeoPopulate,
+  jobDescription: {
+    populate: {
+      jobSummary: true,
+      rolesAndResponsibilities: true,
+      qualificationsAndExperience: {
+        populate: {
+          education: true,
+          experience: true,
+        },
+      },
+      skills: true,
+      whatWeAreLookingFor: true,
+      whyJoinUs: true,
+      additionalInfo: true,
+    },
+  },
 };
 
 export default factories.createCoreController(
