@@ -389,8 +389,8 @@ export default class Configurator {
         previewsInData: true,
         extraProviders: [
           {
-            name: 'directMp4',
-            url: /^(https?:\/\/[^\s"'<>]+\.mp4(?:[?#][^\s"'<>]*)?)$/i,
+            name: 'directVideo',
+            url: /^(https?:\/\/[^\s"'<>]+\.(?:mp4|webm)(?:[?#][^\s"'<>]*)?)$/i,
             html: match =>
               `<video src="${ match[ 0 ] }" controls preload="metadata" playsinline></video>`
           }

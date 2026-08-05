@@ -1096,7 +1096,6 @@ export interface SharedInfoCard extends Struct.ComponentSchema {
     image: Schema.Attribute.Media<'images'>;
     subtitle: Schema.Attribute.String;
     title: Schema.Attribute.String & Schema.Attribute.Required;
-    video: Schema.Attribute.Media<'videos'>;
   };
 }
 

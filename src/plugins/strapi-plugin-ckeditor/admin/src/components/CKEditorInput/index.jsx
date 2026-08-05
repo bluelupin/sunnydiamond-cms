@@ -50,7 +50,7 @@ const CKEditorInput = ( props ) => {
         const alt = sanitize( asset.alt );
 
         mediaHtmlString += `<img src="${ url }" alt="${ alt }" />`;
-      } else if ( asset.mime === 'video/mp4' ) {
+      } else if ( [ 'video/mp4', 'video/webm' ].includes( asset.mime ) ) {
         const url = sanitize( asset.url );
 
         mediaHtmlString += `<video src="${ url }" controls preload="metadata" playsinline></video>`;
