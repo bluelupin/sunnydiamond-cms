@@ -87,6 +87,16 @@
       "component": "shared.image-asset",
       "repeatable": false
     },
+    "cutoutImage": {
+      "type": "component",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
     "body": {
       "type": "customField",
       "pluginOptions": {
