@@ -24,6 +24,9 @@ export const blogLandingPopulate = {
       backgroundImage: fullImageAssetPopulate,
     },
   },
+  featuredBlog: {
+    populate: blogPostPopulate,
+  },
   blog_categories: true,
   seo: fullSeoPopulate,
 };

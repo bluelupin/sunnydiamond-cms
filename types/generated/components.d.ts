@@ -353,6 +353,7 @@ export interface SharedBespokeServiceHighlight extends Struct.ComponentSchema {
   };
   attributes: {
     icon: Schema.Attribute.Media<'images'>;
+    iconAltText: Schema.Attribute.String & Schema.Attribute.Required;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     label: Schema.Attribute.String & Schema.Attribute.Required;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;

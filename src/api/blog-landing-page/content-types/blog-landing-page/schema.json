@@ -40,6 +40,11 @@
       "component": "shared.featured-blog-section",
       "repeatable": false
     },
+    "featuredBlog": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::blog-post.blog-post"
+    },
     "seo": {
       "type": "component",
       "pluginOptions": {

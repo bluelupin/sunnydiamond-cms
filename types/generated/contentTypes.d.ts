@@ -649,6 +649,10 @@ export interface ApiBlogLandingPageBlogLandingPage
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    featuredBlog: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::blog-post.blog-post'
+    >;
     featuredBlogSection: Schema.Attribute.Component<
       'shared.featured-blog-section',
       false
@@ -748,7 +752,6 @@ export interface ApiBlogPostBlogPost extends Struct.CollectionTypeSchema {
           localized: true;
         };
       }>;
-    isFeatured: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<
       'oneToMany',

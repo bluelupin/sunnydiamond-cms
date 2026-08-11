@@ -30,10 +30,6 @@
       "component": "shared.tag",
       "repeatable": true
     },
-    "isFeatured": {
-      "type": "boolean",
-      "default": false
-    },
     "blog_category": {
       "type": "relation",
       "relation": "manyToOne",
