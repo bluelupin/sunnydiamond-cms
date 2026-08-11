@@ -2458,6 +2458,8 @@ export interface ApiProductDisplayPageProductDisplayPage
           localized: true;
         };
       }>;
+    isBenefitsStripActive: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<true>;
     locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -2851,6 +2853,7 @@ export interface ApiShareYourVisionPageShareYourVisionPage
         };
       }>;
     heroImage: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
+    isHeroActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<
       'oneToMany',

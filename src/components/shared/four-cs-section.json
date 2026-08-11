@@ -6,6 +6,10 @@
   },
   "options": {},
   "attributes": {
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
     "cVisualPanel": {
       "type": "component",
       "component": "shared.c-visual-panel",

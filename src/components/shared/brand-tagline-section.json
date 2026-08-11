@@ -6,6 +6,10 @@
   },
   "options": {},
   "attributes": {
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
     "icon": {
       "type": "component",
       "repeatable": false,

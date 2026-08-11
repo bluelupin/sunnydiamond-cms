@@ -6,6 +6,10 @@
   },
   "options": {},
   "attributes": {
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
     "pinnedImage": {
       "type": "component",
       "repeatable": false,

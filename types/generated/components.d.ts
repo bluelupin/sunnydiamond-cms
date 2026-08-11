@@ -8,6 +8,7 @@ export interface CareerCareerDiscoverSection extends Struct.ComponentSchema {
   attributes: {
     backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
     cta: Schema.Attribute.Component<'shared.cta', false>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
@@ -409,6 +410,7 @@ export interface SharedBlogPageHero extends Struct.ComponentSchema {
   };
   attributes: {
     backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     title: Schema.Attribute.String;
   };
 }
@@ -421,6 +423,7 @@ export interface SharedBrandTaglineSection extends Struct.ComponentSchema {
   };
   attributes: {
     icon: Schema.Attribute.Component<'shared.image-asset', false>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     tagline: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
@@ -433,6 +436,7 @@ export interface SharedBrillianceSection extends Struct.ComponentSchema {
   };
   attributes: {
     featureSlide: Schema.Attribute.Component<'shared.feature-slide', true>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     pinnedImage: Schema.Attribute.Component<'shared.image-asset', false>;
   };
 }
@@ -474,6 +478,7 @@ export interface SharedCareerHeroSection extends Struct.ComponentSchema {
   attributes: {
     backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
     CtaLable: Schema.Attribute.String;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     title: Schema.Attribute.String;
   };
 }
@@ -541,6 +546,7 @@ export interface SharedCertificateSection extends Struct.ComponentSchema {
     bgImage: Schema.Attribute.Component<'shared.image-asset', false>;
     certificationLabs: Schema.Attribute.Component<'shared.cert-lab-card', true>;
     cutoutImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     sectionDescription: Schema.Attribute.RichText;
     sectionHeading: Schema.Attribute.String & Schema.Attribute.Required;
   };
@@ -559,6 +565,7 @@ export interface SharedCollectionShowcaseSection
       'api::editorial-collection.editorial-collection'
     >;
     eyebrow: Schema.Attribute.String;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     title: Schema.Attribute.String;
   };
 }
@@ -631,6 +638,7 @@ export interface SharedCraftMosaicSection extends Struct.ComponentSchema {
     displayName: 'Craft Mosaic Section';
   };
   attributes: {
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     tile: Schema.Attribute.Component<'shared.mosaic-tile', true>;
   };
 }
@@ -644,6 +652,7 @@ export interface SharedCraftSection extends Struct.ComponentSchema {
   attributes: {
     backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
     heading: Schema.Attribute.String & Schema.Attribute.Required;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     overlayOpacity: Schema.Attribute.Decimal &
       Schema.Attribute.SetMinMax<
         {
@@ -702,6 +711,7 @@ export interface SharedCtaBanner extends Struct.ComponentSchema {
     ctaButtonLabel: Schema.Attribute.String & Schema.Attribute.Required;
     ctaButtonUrl: Schema.Attribute.String & Schema.Attribute.Required;
     heading: Schema.Attribute.String & Schema.Attribute.Required;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     steps: Schema.Attribute.Component<'shared.process-step', true>;
     subheading: Schema.Attribute.String;
   };
@@ -801,6 +811,7 @@ export interface SharedFaqSection extends Struct.ComponentSchema {
   };
   attributes: {
     faqItems: Schema.Attribute.Component<'shared.faq-item', true>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     sectionHeading: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
@@ -825,6 +836,7 @@ export interface SharedFeaturedBlogSection extends Struct.ComponentSchema {
   };
   attributes: {
     backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
   };
 }
 
@@ -954,6 +966,7 @@ export interface SharedFourCsSection extends Struct.ComponentSchema {
   attributes: {
     cInfoPanel: Schema.Attribute.Component<'shared.c-info-panel', true>;
     cVisualPanel: Schema.Attribute.Component<'shared.c-visual-panel', true>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
   };
 }
 
@@ -1094,6 +1107,7 @@ export interface SharedInfoCard extends Struct.ComponentSchema {
   attributes: {
     buttons: Schema.Attribute.Component<'shared.modal-cta', true>;
     image: Schema.Attribute.Media<'images'>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     subtitle: Schema.Attribute.String;
     title: Schema.Attribute.String & Schema.Attribute.Required;
   };
@@ -1110,6 +1124,7 @@ export interface SharedInvestingCareerSection extends Struct.ComponentSchema {
       true
     >;
     InvestingTitle: Schema.Attribute.String;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
   };
 }
 
@@ -1198,6 +1213,7 @@ export interface SharedLearnMoreSection extends Struct.ComponentSchema {
     displayName: 'Learn More Section';
   };
   attributes: {
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     sectionHeading: Schema.Attribute.String & Schema.Attribute.Required;
     tabs: Schema.Attribute.Component<'shared.learn-more-tab', true>;
   };
@@ -1247,6 +1263,7 @@ export interface SharedLegacySection extends Struct.ComponentSchema {
   };
   attributes: {
     heading: Schema.Attribute.String & Schema.Attribute.Required;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     legacyImageBlock: Schema.Attribute.Component<
       'shared.legacy-image-block',
       true
@@ -1281,6 +1298,7 @@ export interface SharedListingFilterSection extends Struct.ComponentSchema {
     Department: Schema.Attribute.Component<'shared.filter-category', false>;
     Experience: Schema.Attribute.Component<'shared.filter-category', false>;
     fiterTitle: Schema.Attribute.String;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     Location: Schema.Attribute.Component<'shared.filter-category', false>;
   };
 }
@@ -1292,6 +1310,7 @@ export interface SharedListingHeroSection extends Struct.ComponentSchema {
   };
   attributes: {
     backgroundImage: Schema.Attribute.Component<'shared.image-asset', true>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     title: Schema.Attribute.String;
   };
 }
@@ -1321,6 +1340,7 @@ export interface SharedMoreThanSection extends Struct.ComponentSchema {
     featuredImage1: Schema.Attribute.Component<'shared.image-asset', false>;
     featuredImage2: Schema.Attribute.Component<'shared.image-asset', false>;
     featuredTitle: Schema.Attribute.String;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
   };
 }
 
@@ -1362,6 +1382,7 @@ export interface SharedOpeningsCareerSection extends Struct.ComponentSchema {
       'api::career-opening.career-opening'
     >;
     CtaLable: Schema.Attribute.String;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     OpeningDescription: Schema.Attribute.String;
     OpeningTitle: Schema.Attribute.String;
   };
@@ -1378,6 +1399,7 @@ export interface SharedPageIntro extends Struct.ComponentSchema {
     decorativeImage: Schema.Attribute.Component<'shared.image-asset', false>;
     fourCsTags: Schema.Attribute.Component<'shared.trust-badge', true>;
     heading: Schema.Attribute.String & Schema.Attribute.Required;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
   };
 }
 
@@ -1463,6 +1485,7 @@ export interface SharedPolicyPageHeader extends Struct.ComponentSchema {
     heading: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'Policy & Certifications'>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     searchPlaceholder: Schema.Attribute.String &
       Schema.Attribute.DefaultTo<'Search keywords'>;
   };
@@ -1657,6 +1680,7 @@ export interface SharedTeamSection extends Struct.ComponentSchema {
     displayStyle: Schema.Attribute.Enumeration<['grid', 'list', 'carousel']> &
       Schema.Attribute.DefaultTo<'grid'>;
     heading: Schema.Attribute.String & Schema.Attribute.Required;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     subheading: Schema.Attribute.Text;
     teamMember: Schema.Attribute.Component<'shared.team-member', true>;
   };
@@ -1694,6 +1718,7 @@ export interface SharedTimelineSection extends Struct.ComponentSchema {
   };
   attributes: {
     backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     timelineMilestone: Schema.Attribute.Component<
       'shared.timeline-milestone',
       true
@@ -1734,6 +1759,7 @@ export interface SharedTrustBadgesSection extends Struct.ComponentSchema {
     displayName: 'Trust Badges Section';
   };
   attributes: {
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     trustBadge: Schema.Attribute.Component<'shared.trust-badge-item', true>;
   };
 }

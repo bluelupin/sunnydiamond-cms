@@ -5,6 +5,10 @@
   },
   "options": {},
   "attributes": {
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
     "fiterTitle": {
       "type": "string"
     },

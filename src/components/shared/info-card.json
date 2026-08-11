@@ -5,6 +5,10 @@
     "description": "Title, subtitle, optional image and form trigger buttons"
   },
   "attributes": {
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
     "title": {
       "type": "string",
       "required": true

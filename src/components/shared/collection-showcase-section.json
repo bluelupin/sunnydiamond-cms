@@ -5,6 +5,10 @@
     "description": "Homepage heading and editorial collection reference"
   },
   "attributes": {
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
     "eyebrow": {
       "type": "string"
     },

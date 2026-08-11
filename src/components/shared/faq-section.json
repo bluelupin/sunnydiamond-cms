@@ -6,6 +6,10 @@
   },
   "options": {},
   "attributes": {
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
     "sectionHeading": {
       "type": "string",
       "required": true
