@@ -27,6 +27,6 @@ export const blogLandingPopulate = {
   featuredBlog: {
     populate: blogPostPopulate,
   },
-  blog_categories: true,
+  blogCategory: true,
   seo: fullSeoPopulate,
 };
