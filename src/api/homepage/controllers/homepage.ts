@@ -134,7 +134,7 @@ const showroomRelationFallbackPopulate = {
 };
 
 const collectionShowcaseSectionPopulate = {
-  fields: ['eyebrow', 'title'],
+  fields: ['eyebrow', 'title', 'isActive'],
   populate: {
     collections: {
       fields: [
@@ -158,6 +158,12 @@ const collectionShowcaseSectionPopulate = {
 };
 
 const globalHeaderPopulate = {
+  brandIdentity: {
+    fields: ['tagline', 'isActive'],
+    populate: {
+      icon: imageAssetPopulate,
+    },
+  },
   headerNavigationLinks: {
     fields: ['label', 'url', 'targetType', 'sortOrder', 'isActive'],
   },

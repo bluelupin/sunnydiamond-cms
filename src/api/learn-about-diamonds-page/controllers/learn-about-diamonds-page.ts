@@ -47,7 +47,7 @@ const populate = {
   },
   hero: heroPopulate,
   fourCsIntro: {
-    fields: ['heading', 'body'],
+    fields: ['heading', 'body', 'isActive'],
     populate: {
       decorativeImage: imageAssetPopulate,
       fourCsTags: {

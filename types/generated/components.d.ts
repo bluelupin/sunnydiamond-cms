@@ -1759,7 +1759,6 @@ export interface SharedTrustBadgesSection extends Struct.ComponentSchema {
     displayName: 'Trust Badges Section';
   };
   attributes: {
-    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     trustBadge: Schema.Attribute.Component<'shared.trust-badge-item', true>;
   };
 }
