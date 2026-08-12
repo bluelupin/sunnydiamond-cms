@@ -1,5 +1,5 @@
 import type { Core } from '@strapi/strapi';
-import careerOpenings from '../data/career-openings.json';
+import careerOpenings from '../data/career-openings-structured.json';
 
 const CAREER_OPENING_UID = 'api::career-opening.career-opening';
 
@@ -13,7 +13,7 @@ export async function seedCareerOpenings(strapi: Core.Strapi) {
     const locale = opening.locale || 'en';
     const documents = strapi.documents(CAREER_OPENING_UID as any);
     const existing = await documents.findFirst({
-      filters: { slug: opening.slug },
+      filters: { jobID: opening.jobID },
       locale,
       status: 'draft',
     } as any);
