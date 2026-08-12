@@ -15,7 +15,7 @@
     "backgroundImage": {
       "type": "component",
       "component": "shared.image-asset",
-      "repeatable": true
+      "repeatable": false
     }
   },
   "config": {}
