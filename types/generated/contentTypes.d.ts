@@ -2165,65 +2165,6 @@ export interface ApiLearnAboutDiamondsPageLearnAboutDiamondsPage
   };
 }
 
-export interface ApiLegalPageLegalPage extends Struct.CollectionTypeSchema {
-  collectionName: 'legal_pages';
-  info: {
-    displayName: 'Legal Page';
-    pluralName: 'legal-pages';
-    singularName: 'legal-page';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  pluginOptions: {
-    i18n: {
-      localized: true;
-    };
-  };
-  attributes: {
-    body: Schema.Attribute.RichText &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    effectiveDate: Schema.Attribute.Date;
-    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
-    locale: Schema.Attribute.String;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::legal-page.legal-page'
-    >;
-    publishedAt: Schema.Attribute.DateTime;
-    seo: Schema.Attribute.Component<'shared.seo', false> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
-    summary: Schema.Attribute.Text &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    title: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
 export interface ApiNewsArticleNewsArticle extends Struct.CollectionTypeSchema {
   collectionName: 'news_articles';
   info: {
@@ -3718,7 +3659,6 @@ declare module '@strapi/strapi' {
       'api::global-config.global-config': ApiGlobalConfigGlobalConfig;
       'api::homepage.homepage': ApiHomepageHomepage;
       'api::learn-about-diamonds-page.learn-about-diamonds-page': ApiLearnAboutDiamondsPageLearnAboutDiamondsPage;
-      'api::legal-page.legal-page': ApiLegalPageLegalPage;
       'api::news-article.news-article': ApiNewsArticleNewsArticle;
       'api::occasion.occasion': ApiOccasionOccasion;
       'api::policy-certifications-page.policy-certifications-page': ApiPolicyCertificationsPagePolicyCertificationsPage;
