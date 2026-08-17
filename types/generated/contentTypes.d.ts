@@ -2165,78 +2165,6 @@ export interface ApiLearnAboutDiamondsPageLearnAboutDiamondsPage
   };
 }
 
-export interface ApiNewsArticleNewsArticle extends Struct.CollectionTypeSchema {
-  collectionName: 'news_articles';
-  info: {
-    displayName: 'News Article';
-    pluralName: 'news-articles';
-    singularName: 'news-article';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  pluginOptions: {
-    i18n: {
-      localized: true;
-    };
-  };
-  attributes: {
-    body: Schema.Attribute.RichText &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    excerpt: Schema.Attribute.Text &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    featuredImage: Schema.Attribute.Component<'shared.image-asset', false> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    isFeatured: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
-    locale: Schema.Attribute.String;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::news-article.news-article'
-    >;
-    publishedAt: Schema.Attribute.DateTime;
-    publishedDate: Schema.Attribute.Date;
-    seo: Schema.Attribute.Component<'shared.seo', false> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
-    sourceName: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    sourceUrl: Schema.Attribute.String;
-    title: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
 export interface ApiOccasionOccasion extends Struct.CollectionTypeSchema {
   collectionName: 'occasions';
   info: {
@@ -3659,7 +3587,6 @@ declare module '@strapi/strapi' {
       'api::global-config.global-config': ApiGlobalConfigGlobalConfig;
       'api::homepage.homepage': ApiHomepageHomepage;
       'api::learn-about-diamonds-page.learn-about-diamonds-page': ApiLearnAboutDiamondsPageLearnAboutDiamondsPage;
-      'api::news-article.news-article': ApiNewsArticleNewsArticle;
       'api::occasion.occasion': ApiOccasionOccasion;
       'api::policy-certifications-page.policy-certifications-page': ApiPolicyCertificationsPagePolicyCertificationsPage;
       'api::product-display-page.product-display-page': ApiProductDisplayPageProductDisplayPage;

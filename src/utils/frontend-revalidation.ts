@@ -63,11 +63,6 @@ const REVALIDATION_MAPPINGS: Record<string, RevalidationMapping> = {
     tags: ['cms:blog-category', 'cms:blog-post'],
     paths: ['/blogs'],
   },
-  'api::news-article.news-article': {
-    tags: ['cms:news-article'],
-    paths: ['/news'],
-    slugPaths: ['/news/:slug'],
-  },
   'api::support-page.support-page': {
     tags: ['cms:support-page'],
     paths: ['/help-and-support'],

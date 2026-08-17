@@ -41,8 +41,6 @@ const publicReadActions = [
   'api::category-landing.category-landing.findOne',
   'api::blog-post.blog-post.find',
   'api::blog-post.blog-post.findOne',
-  'api::news-article.news-article.find',
-  'api::news-article.news-article.findOne',
 ];
 
 export async function seedCms(strapi: Core.Strapi) {
