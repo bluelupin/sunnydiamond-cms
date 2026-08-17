@@ -11,7 +11,6 @@ const publicReadActions = [
   'api::about-page.about-page.find',
   'api::learn-about-diamonds-page.learn-about-diamonds-page.find',
   'api::contact-bespoke-page.contact-bespoke-page.find',
-  'api::share-your-vision-page.share-your-vision-page.find',
   'api::featured-story.featured-story.find',
   'api::featured-story.featured-story.findOne',
   'api::design-story.design-story.find',

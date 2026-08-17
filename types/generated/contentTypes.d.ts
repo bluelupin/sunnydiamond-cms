@@ -2820,59 +2820,6 @@ export interface ApiServicePageServicePage extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiShareYourVisionPageShareYourVisionPage
-  extends Struct.SingleTypeSchema {
-  collectionName: 'share_your_vision_pages';
-  info: {
-    description: 'Editable content for the Share Your Vision contact form page';
-    displayName: 'Share Your Vision Page';
-    pluralName: 'share-your-vision-pages';
-    singularName: 'share-your-vision-page';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  pluginOptions: {
-    i18n: {
-      localized: true;
-    };
-  };
-  attributes: {
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    cta: Schema.Attribute.Component<'shared.cta', false> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    description: Schema.Attribute.Text &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    heroImage: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
-    locale: Schema.Attribute.String;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::share-your-vision-page.share-your-vision-page'
-    >;
-    publishedAt: Schema.Attribute.DateTime;
-    title: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
 export interface ApiShowroomShowroom extends Struct.CollectionTypeSchema {
   collectionName: 'showrooms';
   info: {
@@ -3781,7 +3728,6 @@ declare module '@strapi/strapi' {
       'api::product-submission.product-submission': ApiProductSubmissionProductSubmission;
       'api::saved-creation.saved-creation': ApiSavedCreationSavedCreation;
       'api::service-page.service-page': ApiServicePageServicePage;
-      'api::share-your-vision-page.share-your-vision-page': ApiShareYourVisionPageShareYourVisionPage;
       'api::showroom.showroom': ApiShowroomShowroom;
       'api::size-guide.size-guide': ApiSizeGuideSizeGuide;
       'api::state.state': ApiStateState;
