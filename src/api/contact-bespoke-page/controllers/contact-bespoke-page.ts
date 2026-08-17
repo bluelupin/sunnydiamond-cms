@@ -17,23 +17,27 @@ export default factories.createCoreController(
               },
             }
           } },
-          visionSection: { populate:{
-            cards:{
-              populate:{
-                image:{
-                  populate:{
-                    desktopImage:true,
-                    mobileImage:true
-                  }
+          visionSection: {
+            fields: ['title', 'description', 'showField'],
+            populate: {
+              cards: {
+                populate: {
+                  image: {
+                    populate: {
+                      desktopImage: true,
+                      mobileImage: true,
+                    },
+                  },
+                  video: {
+                    populate: {
+                      heroVideo: true,
+                    },
+                  },
                 },
-                video:{
-                  populate:{
-                  heroVideo:true
-                  }
-                }
-              }
-            }
-          } },
+              },
+              cta: true,
+            },
+          },
           featuredStoriesSection: {
             populate: {
               backgroundImage: { 
