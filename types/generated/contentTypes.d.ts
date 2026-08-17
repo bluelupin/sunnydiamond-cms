@@ -1276,53 +1276,6 @@ export interface ApiContactPageContactPage extends Struct.SingleTypeSchema {
   };
 }
 
-export interface ApiDesignStoryDesignStory extends Struct.CollectionTypeSchema {
-  collectionName: 'design_stories';
-  info: {
-    description: 'Behind This Design story pages';
-    displayName: 'Design Story';
-    pluralName: 'design-stories';
-    singularName: 'design-story';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  pluginOptions: {
-    i18n: {
-      localized: true;
-    };
-  };
-  attributes: {
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    cta: Schema.Attribute.Component<'shared.cta', false> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    finalImages: Schema.Attribute.Media<'images', true>;
-    heroImage: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
-    inspirationImages: Schema.Attribute.Media<'images', true>;
-    locale: Schema.Attribute.String;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::design-story.design-story'
-    >;
-    publishedAt: Schema.Attribute.DateTime;
-    story: Schema.Attribute.RichText &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
 export interface ApiDiamondsForEveryonePageDiamondsForEveryonePage
   extends Struct.SingleTypeSchema {
   collectionName: 'diamonds_for_everyone_pages';
@@ -3495,7 +3448,6 @@ declare module '@strapi/strapi' {
       'api::category-landing.category-landing': ApiCategoryLandingCategoryLanding;
       'api::contact-bespoke-page.contact-bespoke-page': ApiContactBespokePageContactBespokePage;
       'api::contact-page.contact-page': ApiContactPageContactPage;
-      'api::design-story.design-story': ApiDesignStoryDesignStory;
       'api::diamonds-for-everyone-page.diamonds-for-everyone-page': ApiDiamondsForEveryonePageDiamondsForEveryonePage;
       'api::editorial-collection.editorial-collection': ApiEditorialCollectionEditorialCollection;
       'api::faq.faq': ApiFaqFaq;
