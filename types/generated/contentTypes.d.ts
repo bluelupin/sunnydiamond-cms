@@ -2609,86 +2609,6 @@ export interface ApiSavedCreationSavedCreation
   };
 }
 
-export interface ApiServicePageServicePage extends Struct.CollectionTypeSchema {
-  collectionName: 'service_pages';
-  info: {
-    displayName: 'Service Page';
-    pluralName: 'service-pages';
-    singularName: 'service-page';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  pluginOptions: {
-    i18n: {
-      localized: true;
-    };
-  };
-  attributes: {
-    body: Schema.Attribute.RichText &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    contentSections: Schema.Attribute.Component<
-      'shared.content-section',
-      true
-    > &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    hero: Schema.Attribute.Component<'shared.hero-section', false> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
-    locale: Schema.Attribute.String;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::service-page.service-page'
-    >;
-    promoCards: Schema.Attribute.Component<'shared.promo-card', true> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    publishedAt: Schema.Attribute.DateTime;
-    seo: Schema.Attribute.Component<'shared.seo', false> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
-    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
-    steps: Schema.Attribute.Component<'shared.process-step', true> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    title: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
 export interface ApiShowroomShowroom extends Struct.CollectionTypeSchema {
   collectionName: 'showrooms';
   info: {
@@ -3594,7 +3514,6 @@ declare module '@strapi/strapi' {
       'api::product-landing-page.product-landing-page': ApiProductLandingPageProductLandingPage;
       'api::product-submission.product-submission': ApiProductSubmissionProductSubmission;
       'api::saved-creation.saved-creation': ApiSavedCreationSavedCreation;
-      'api::service-page.service-page': ApiServicePageServicePage;
       'api::showroom.showroom': ApiShowroomShowroom;
       'api::size-guide.size-guide': ApiSizeGuideSizeGuide;
       'api::state.state': ApiStateState;

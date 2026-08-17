@@ -33,8 +33,6 @@ const publicReadActions = [
   'api::occasion.occasion.findOne',
   'api::editorial-collection.editorial-collection.find',
   'api::editorial-collection.editorial-collection.findOne',
-  'api::service-page.service-page.find',
-  'api::service-page.service-page.findOne',
   'api::support-page.support-page.find',
   'api::support-page.support-page.findOne',
   'api::category-landing.category-landing.find',

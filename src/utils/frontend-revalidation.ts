@@ -81,10 +81,6 @@ const REVALIDATION_MAPPINGS: Record<string, RevalidationMapping> = {
     tags: ['cms:category-landing'],
     slugPaths: ['/category/:slug'],
   },
-  'api::service-page.service-page': {
-    tags: ['cms:service-page'],
-    slugPaths: ['/:slug'],
-  },
   'api::career-opening.career-opening': {
     tags: ['cms:career-opening'],
     paths: ['/careers'],
