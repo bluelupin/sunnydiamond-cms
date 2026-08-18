@@ -18,7 +18,6 @@ export const fullImageAssetPopulate = {
 };
 
 export const videoAssetPopulate = {
-  fields: ['altText'],
   populate: {
     heroVideo: true,
   },

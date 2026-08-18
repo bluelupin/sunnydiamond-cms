@@ -30,9 +30,6 @@
       "type": "component",
       "component": "shared.image-asset",
       "repeatable": false
-    },
-    "isVideo": {
-      "type": "boolean"
     }
   }
 }

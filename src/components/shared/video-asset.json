@@ -12,10 +12,6 @@
       "allowedTypes": [
         "videos"
       ]
-    },
-    "altText": {
-      "type": "string",
-      "required": false
     }
   }
 }
