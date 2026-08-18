@@ -5,10 +5,13 @@
     "description": "Page hero content"
   },
   "attributes": {
-    "eyebrow": {
+    "title": {
       "type": "string"
     },
-    "title": {
+    "subtitle": {
+      "type": "text"
+    },
+    "eyebrow": {
       "type": "string"
     },
     "bgImage": {
@@ -20,9 +23,6 @@
       "type": "component",
       "component": "shared.image-asset",
       "repeatable": false
-    },
-    "subtitle": {
-      "type": "text"
     },
     "heroVideo": {
       "type": "component",

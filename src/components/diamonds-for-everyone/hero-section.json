@@ -5,12 +5,12 @@
     "description": "Full-width hero for the Diamonds for Everyone page"
   },
   "attributes": {
-    "eyebrow": {
-      "type": "string"
-    },
     "title": {
       "type": "string",
       "required": true
+    },
+    "eyebrow": {
+      "type": "string"
     },
     "backgroundImage": {
       "type": "component",

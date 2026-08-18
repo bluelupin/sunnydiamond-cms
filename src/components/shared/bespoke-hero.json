@@ -6,13 +6,13 @@
   },
   "options": {},
   "attributes": {
+    "title": { "type": "string", "required": true },
     "backgroundImage": {
       "type": "component",
       "repeatable": false,
       "component": "shared.image-asset",
       "required": true
     },
-    "title": { "type": "string", "required": true },
     "showField": { "type": "boolean", "default": true }
   }
 }

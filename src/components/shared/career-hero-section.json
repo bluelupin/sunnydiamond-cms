@@ -5,20 +5,20 @@
   },
   "options": {},
   "attributes": {
-    "isActive": {
-      "type": "boolean",
-      "default": true
-    },
     "title": {
-      "type": "string"
-    },
-    "CtaLable": {
       "type": "string"
     },
     "backgroundImage": {
       "type": "component",
       "component": "shared.image-asset",
       "repeatable": false
+    },
+    "CtaLable": {
+      "type": "string"
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
     }
   },
   "config": {}

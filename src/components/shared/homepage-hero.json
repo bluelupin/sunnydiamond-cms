@@ -6,20 +6,20 @@
   },
   "options": {},
   "attributes": {
-    "videoBackground": {
-      "type": "component",
-      "repeatable": false,
-      "component": "shared.video-asset"
+    "mainTitle": {
+      "type": "string"
     },
     "imageBackground": {
       "type": "component",
       "repeatable": false,
       "component": "shared.image-asset"
     },
-    "eyebrow": {
-      "type": "string"
+    "videoBackground": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.video-asset"
     },
-    "mainTitle": {
+    "eyebrow": {
       "type": "string"
     },
     "ctaButton": {
