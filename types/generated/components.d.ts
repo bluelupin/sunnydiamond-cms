@@ -170,7 +170,7 @@ export interface GiftingGiftCardSection extends Struct.ComponentSchema {
   attributes: {
     backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
     cta: Schema.Attribute.Component<'shared.cta', false>;
-    cutOutImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    actualProductImage: Schema.Attribute.Component<'shared.image-asset', false>;
     description: Schema.Attribute.Text;
     eyebrow: Schema.Attribute.String;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
@@ -503,7 +503,7 @@ export interface SharedCategoryCard extends Struct.ComponentSchema {
   };
   attributes: {
     cta: Schema.Attribute.Component<'shared.cta', false>;
-    cutoutImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    actualProductImage: Schema.Attribute.Component<'shared.image-asset', false>;
     hoverImage: Schema.Attribute.Component<'shared.image-asset', false>;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
@@ -545,7 +545,7 @@ export interface SharedCertificateSection extends Struct.ComponentSchema {
   attributes: {
     bgImage: Schema.Attribute.Component<'shared.image-asset', false>;
     certificationLabs: Schema.Attribute.Component<'shared.cert-lab-card', true>;
-    cutoutImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    actualProductImage: Schema.Attribute.Component<'shared.image-asset', false>;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     sectionDescription: Schema.Attribute.RichText;
     sectionHeading: Schema.Attribute.String & Schema.Attribute.Required;
@@ -669,13 +669,13 @@ export interface SharedCraftingBrillianceSection
   extends Struct.ComponentSchema {
   collectionName: 'components_shared_crafting_brilliances';
   info: {
-    description: 'Crafting Brilliance Section with background, cutout image, title, and CTA';
+    description: 'Crafting Brilliance Section with background, actual product image, title, and CTA';
     displayName: 'Crafting Brilliance Section';
   };
   attributes: {
     backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
     cta: Schema.Attribute.Component<'shared.cta', false>;
-    cutoutImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    actualProductImage: Schema.Attribute.Component<'shared.image-asset', false>;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     title: Schema.Attribute.String;
   };
@@ -723,7 +723,7 @@ export interface SharedDiamondSourcingSection extends Struct.ComponentSchema {
   };
   attributes: {
     backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
-    cutoutImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    actualProductImage: Schema.Attribute.Component<'shared.image-asset', false>;
     gifOrImage: Schema.Attribute.Component<'shared.image-asset', false>;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     title: Schema.Attribute.String;
@@ -780,7 +780,7 @@ export interface SharedEditorialSection extends Struct.ComponentSchema {
   attributes: {
     bgImage: Schema.Attribute.Component<'shared.image-asset', false>;
     cta: Schema.Attribute.Component<'shared.cta', false>;
-    cutoutImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    actualProductImage: Schema.Attribute.Component<'shared.image-asset', false>;
     description: Schema.Attribute.Text;
     image: Schema.Attribute.Media<'images'>;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
@@ -1006,14 +1006,14 @@ export interface SharedGenericFormSection extends Struct.ComponentSchema {
 export interface SharedGiftingBanner extends Struct.ComponentSchema {
   collectionName: 'components_shared_gifting_banners';
   info: {
-    description: 'Gifting banner with background, cutout image, title, description, and primary/secondary CTAs';
+    description: 'Gifting banner with background, actual product image, title, description, and primary/secondary CTAs';
     displayName: 'Gifting Banner';
   };
   attributes: {
     backgroundColor: Schema.Attribute.String;
     backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
     backgroundVideo: Schema.Attribute.Component<'shared.video-asset', false>;
-    cutoutImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    actualProductImage: Schema.Attribute.Component<'shared.image-asset', false>;
     description: Schema.Attribute.Text;
     primaryCta: Schema.Attribute.Component<'shared.cta', false>;
     secondaryCta: Schema.Attribute.Component<'shared.cta', false>;

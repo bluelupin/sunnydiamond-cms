@@ -83,7 +83,7 @@
       "component": "shared.image-asset",
       "repeatable": false
     },
-    "cutoutImage": {
+    "actualProductImage": {
       "type": "component",
       "pluginOptions": {
         "i18n": {

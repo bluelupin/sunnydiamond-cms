@@ -2,7 +2,7 @@
   "collectionName": "components_shared_crafting_brilliances",
   "info": {
     "displayName": "Crafting Brilliance Section",
-    "description": "Crafting Brilliance Section with background, cutout image, title, and CTA"
+    "description": "Crafting Brilliance Section with background, actual product image, title, and CTA"
   },
   "options": {},
   "attributes": {
@@ -11,7 +11,7 @@
       "repeatable": false,
       "component": "shared.image-asset"
     },
-    "cutoutImage": {
+    "actualProductImage": {
       "type": "component",
       "repeatable": false,
       "component": "shared.image-asset"

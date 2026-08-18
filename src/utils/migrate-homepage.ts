@@ -128,7 +128,8 @@ function mapCategoryCards(cards: any[]): any[] {
     const sortOrder = getVal(card, 'sortOrder');
     const isActive = getVal(card, 'isActive');
     const hoverImage = getVal(card, 'hoverImage');
-    const cutoutImage = getVal(card, 'cutoutImage');
+    const actualProductImage =
+      getVal(card, 'actualProductImage') || getVal(card, 'cutoutImage');
     const cta = getVal(card, 'cta');
 
     return {
@@ -137,7 +138,7 @@ function mapCategoryCards(cards: any[]): any[] {
       isActive: typeof isActive === 'boolean' ? isActive : true,
       showField: typeof isActive === 'boolean' ? isActive : true,
       hoverImage: mapImageAsset(hoverImage),
-      cutoutImage: mapImageAsset(cutoutImage),
+      actualProductImage: mapImageAsset(actualProductImage),
       cta: mapCta(cta),
     };
   });
@@ -147,7 +148,8 @@ function mapDiamondSourcing(section: any): any {
   if (!section) return null;
   const sectionTitle = getVal(section, 'sectionTitle');
   const image = getVal(section, 'image');
-  const cutoutImage = getVal(section, 'cutoutImage');
+  const actualProductImage =
+    getVal(section, 'actualProductImage') || getVal(section, 'cutoutImage');
   const bgImage = getVal(section, 'bgImage');
   const isActive = getVal(section, 'isActive');
 
@@ -157,7 +159,7 @@ function mapDiamondSourcing(section: any): any {
   return {
     gifOrImage: gifOrImage || mapImageAsset(image),
     title: sectionTitle || '',
-    cutoutImage: mapImageAsset(cutoutImage),
+    actualProductImage: mapImageAsset(actualProductImage),
     backgroundImage: mapImageAsset(bgImage),
     showField: typeof isActive === 'boolean' ? isActive : true,
   };
@@ -218,7 +220,10 @@ function mapGiftingBanner(banner: any): any {
   const subtitle = getVal(banner, 'subtitle');
   const bgImage = getVal(banner, 'bgImage');
   const backgroundColor = getVal(banner, 'backgroundColor');
-  const image = getVal(banner, 'image');
+  const actualProductImage =
+    getVal(banner, 'actualProductImage') ||
+    getVal(banner, 'cutoutImage') ||
+    getVal(banner, 'image');
   const primaryCta = getVal(banner, 'primaryCta');
   const secondaryCta = getVal(banner, 'secondaryCta');
   const isActive = getVal(banner, 'isActive');
@@ -226,7 +231,7 @@ function mapGiftingBanner(banner: any): any {
   return {
     backgroundImage: mapImageAsset(bgImage),
     backgroundColor: backgroundColor || '',
-    cutoutImage: mapImageAsset(image),
+    actualProductImage: mapImageAsset(actualProductImage),
     title: title || '',
     description: subtitle || '',
     primaryCta: mapCta(primaryCta),

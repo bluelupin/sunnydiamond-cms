@@ -14,7 +14,7 @@
       "component": "shared.image-asset",
       "repeatable": false
     },
-    "cutoutImage": {
+    "actualProductImage": {
       "type": "component",
       "component": "shared.image-asset",
       "repeatable": false

@@ -2,7 +2,7 @@
   "collectionName": "components_shared_gifting_banners",
   "info": {
     "displayName": "Gifting Banner",
-    "description": "Gifting banner with background, cutout image, title, description, and primary/secondary CTAs"
+    "description": "Gifting banner with background, actual product image, title, description, and primary/secondary CTAs"
   },
   "options": {},
   "attributes": {
@@ -19,7 +19,7 @@
     "backgroundColor": {
       "type": "string"
     },
-    "cutoutImage": {
+    "actualProductImage": {
       "type": "component",
       "repeatable": false,
       "component": "shared.image-asset"
