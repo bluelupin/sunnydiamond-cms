@@ -1639,6 +1639,7 @@ export interface SharedSunnyPromiseSection extends Struct.ComponentSchema {
     cta: Schema.Attribute.Component<'shared.cta', false>;
     description: Schema.Attribute.Text;
     image: Schema.Attribute.Component<'shared.image-asset', false>;
+    isVideo: Schema.Attribute.Boolean;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     title: Schema.Attribute.String;
     video: Schema.Attribute.Component<'shared.video-asset', false>;
@@ -1770,6 +1771,7 @@ export interface SharedVideoAsset extends Struct.ComponentSchema {
     displayName: 'Video Asset';
   };
   attributes: {
+    altText: Schema.Attribute.String;
     heroVideo: Schema.Attribute.Media<'videos'>;
   };
 }
