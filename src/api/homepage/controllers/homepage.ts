@@ -140,7 +140,6 @@ const collectionShowcaseSectionPopulate = {
   populate: {
     collections: {
       fields: [
-        'collectionName',
         'title',
         'slug',
         'description',

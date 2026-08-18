@@ -1389,13 +1389,6 @@ export interface ApiEditorialCollectionEditorialCollection
           localized: true;
         };
       }>;
-    collectionName: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1405,7 +1398,7 @@ export interface ApiEditorialCollectionEditorialCollection
           localized: true;
         };
       }>;
-    description: Schema.Attribute.RichText &
+    description: Schema.Attribute.Text &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -1420,7 +1413,7 @@ export interface ApiEditorialCollectionEditorialCollection
     >;
     productSkus: Schema.Attribute.Component<'shared.product-sku', true>;
     publishedAt: Schema.Attribute.DateTime;
-    slug: Schema.Attribute.UID<'collectionName'> & Schema.Attribute.Required;
+    slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     title: Schema.Attribute.String &
       Schema.Attribute.Required &
@@ -1429,56 +1422,6 @@ export interface ApiEditorialCollectionEditorialCollection
           localized: true;
         };
       }>;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
-export interface ApiFaqFaq extends Struct.CollectionTypeSchema {
-  collectionName: 'faqs';
-  info: {
-    displayName: 'FAQ';
-    pluralName: 'faqs';
-    singularName: 'faq';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  pluginOptions: {
-    i18n: {
-      localized: true;
-    };
-  };
-  attributes: {
-    answer: Schema.Attribute.RichText &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    category: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
-    locale: Schema.Attribute.String;
-    localizations: Schema.Attribute.Relation<'oneToMany', 'api::faq.faq'>;
-    publishedAt: Schema.Attribute.DateTime;
-    question: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -3409,7 +3352,6 @@ declare module '@strapi/strapi' {
       'api::contact-page.contact-page': ApiContactPageContactPage;
       'api::diamonds-for-everyone-page.diamonds-for-everyone-page': ApiDiamondsForEveryonePageDiamondsForEveryonePage;
       'api::editorial-collection.editorial-collection': ApiEditorialCollectionEditorialCollection;
-      'api::faq.faq': ApiFaqFaq;
       'api::featured-story.featured-story': ApiFeaturedStoryFeaturedStory;
       'api::generic-form.generic-form': ApiGenericFormGenericForm;
       'api::generic-submission.generic-submission': ApiGenericSubmissionGenericSubmission;

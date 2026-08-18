@@ -99,10 +99,6 @@ const REVALIDATION_MAPPINGS: Record<string, RevalidationMapping> = {
     paths: ['/collections'],
     slugPaths: ['/collections/:slug'],
   },
-  'api::faq.faq': {
-    tags: ['cms:faq'],
-    paths: ['/faqs'],
-  },
   'api::product-form.product-form': {
     tags: ['cms:product-form'],
     formTagTags: ['cms:product-form:formTag'],
