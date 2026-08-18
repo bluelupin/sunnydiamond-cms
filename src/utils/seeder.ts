@@ -11,11 +11,8 @@ const publicReadActions = [
   'api::about-page.about-page.find',
   'api::learn-about-diamonds-page.learn-about-diamonds-page.find',
   'api::contact-bespoke-page.contact-bespoke-page.find',
-  'api::share-your-vision-page.share-your-vision-page.find',
   'api::featured-story.featured-story.find',
   'api::featured-story.featured-story.findOne',
-  'api::design-story.design-story.find',
-  'api::design-story.design-story.findOne',
   'api::gallery.gallery.find',
   'api::gallery.gallery.findOne',
   'api::global-config.global-config.find',
@@ -34,18 +31,12 @@ const publicReadActions = [
   'api::occasion.occasion.findOne',
   'api::editorial-collection.editorial-collection.find',
   'api::editorial-collection.editorial-collection.findOne',
-  'api::legal-page.legal-page.find',
-  'api::legal-page.legal-page.findOne',
-  'api::service-page.service-page.find',
-  'api::service-page.service-page.findOne',
   'api::support-page.support-page.find',
   'api::support-page.support-page.findOne',
   'api::category-landing.category-landing.find',
   'api::category-landing.category-landing.findOne',
   'api::blog-post.blog-post.find',
   'api::blog-post.blog-post.findOne',
-  'api::news-article.news-article.find',
-  'api::news-article.news-article.findOne',
 ];
 
 export async function seedCms(strapi: Core.Strapi) {
@@ -430,37 +421,7 @@ export async function seedCms(strapi: Core.Strapi) {
       } as any);
     }
 
-    // 4. Seed Legal Pages (api::legal-page.legal-page)
-    const legalCount = await strapi.documents('api::legal-page.legal-page').count({});
-    if (legalCount === 0) {
-      strapi.log.info('Seeding Legal Pages...');
-      const legalPages = [
-        { title: 'Returns and Cancellations', slug: 'returns-and-cancellations', summary: 'Policy regarding returns and product cancellations.' },
-        { title: 'Exchange and Resizing', slug: 'exchange-and-resizing', summary: 'Guidelines for exchange and resizing of jewelry items.' },
-        { title: 'Shipping & Delivery', slug: 'shipping-delivery', summary: 'Shipping fees, delivery timelines, and transit insurance details.' },
-        { title: 'Cash on Delivery Policy', slug: 'cash-on-delivery-policy', summary: 'Terms of payment on delivery.' },
-        { title: 'Old Gold Purchase Policy (Kerala Only)', slug: 'old-gold-purchase-policy-kerala-only', summary: 'Exchange details for gold purchased in Kerala.' },
-        { title: 'Privacy Policy', slug: 'privacy-policy', summary: 'Your privacy is extremely important to us.' },
-        { title: 'Terms & Conditions', slug: 'terms-and-conditions', summary: 'The terms governing the use of Sunny Diamonds storefront.' },
-        { title: 'Policy and Certification', slug: 'policy-and-certification', summary: 'Our product guarantee, BIS Hallmark, and internally flawless diamond certificates.' },
-      ];
-
-      for (const page of legalPages) {
-        await strapi.documents('api::legal-page.legal-page').create({
-          data: {
-            ...page,
-            body: `This is the placeholder page for ${page.title}. Real content can be configured directly from the Strapi Admin Panel.`,
-            isActive: true,
-            publishedAt: new Date(),
-          },
-        });
-      }
-      strapi.log.info('Legal Pages successfully seeded.');
-    } else {
-      strapi.log.info('Legal Pages already exist. Skipping.');
-    }
-
-    // 5. Seed Global Config Single Type (api::global-config.global-config)
+    // 4. Seed Global Config Single Type (api::global-config.global-config)
     const globalConfigData = {
         headerNavigationLinks: [
           { label: 'Jewellery', url: '/products', targetType: 'internal' as 'internal', sortOrder: 1, isActive: true },
