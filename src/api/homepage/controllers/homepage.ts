@@ -17,7 +17,7 @@ const categoryCardPopulate = {
   fields: ['title', 'sortOrder','showField'],
   populate: {
     hoverImage: imageAssetPopulate,
-    actualProductImage: imageAssetPopulate,
+    cutoutImage: imageAssetPopulate,
     cta: ctaPopulate,
   },
 };
@@ -25,7 +25,7 @@ const categoryCardPopulate = {
 const craftingBrillianceSectionPopulate = {
   populate: {
     backgroundImage: imageAssetPopulate,
-    actualProductImage: imageAssetPopulate,
+    cutoutImage: imageAssetPopulate,
     cta: ctaPopulate,
   },
 };
@@ -33,7 +33,7 @@ const craftingBrillianceSectionPopulate = {
 const diamondSourcingSectionPopulate = {
   populate: {
     gifOrImage: imageAssetPopulate,
-    actualProductImage: imageAssetPopulate,
+    cutoutImage: imageAssetPopulate,
     backgroundImage: imageAssetPopulate,
   },
 };
@@ -50,7 +50,7 @@ const giftingBannerPopulate = {
   populate: {
     backgroundImage: imageAssetPopulate,
     backgroundVideo: videoAssetPopulate,
-    actualProductImage: imageAssetPopulate,
+    cutoutImage: imageAssetPopulate,
     primaryCta: ctaPopulate,
     secondaryCta: ctaPopulate,
   },

@@ -734,7 +734,7 @@ export interface ApiBlogPostBlogPost extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    actualProductImage: Schema.Attribute.Component<'shared.image-asset', false> &
+    cutoutImage: Schema.Attribute.Component<'shared.image-asset', false> &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;

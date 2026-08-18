@@ -14,7 +14,7 @@
     "title": {
       "type": "string"
     },
-    "actualProductImage": {
+    "cutoutImage": {
       "type": "component",
       "repeatable": false,
       "component": "shared.image-asset"

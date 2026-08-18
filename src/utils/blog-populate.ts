@@ -4,7 +4,7 @@ export const blogPostMediaPopulate = {
   tags: true,
   heroImage: fullImageAssetPopulate,
   coverImage: fullImageAssetPopulate,
-  actualProductImage: fullImageAssetPopulate,
+  cutoutImage: fullImageAssetPopulate,
   seo: fullSeoPopulate,
 };
 
