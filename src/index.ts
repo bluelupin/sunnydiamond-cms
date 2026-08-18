@@ -8,7 +8,6 @@ import { seedBlogPosts } from './utils/blog-seeder';
 import { seedBlogCategories } from './utils/seed-blog-categories';
 import { migrateCareerOpeningCkeditor } from './utils/migrate-career-opening-ckeditor';
 import { seedCareerOpenings } from './utils/career-opening-seeder';
-import { syncHeroComponentLayouts } from './utils/sync-hero-component-layouts';
 // import { cleanStaleAdminPermissions } from './utils/clean-stale-admin-permissions';
 
 export default {
@@ -29,7 +28,6 @@ export default {
    */
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {
     // await cleanStaleAdminPermissions(strapi);
-    await syncHeroComponentLayouts(strapi);
     registerFrontendRevalidation(strapi);
     if (process.env.CMS_SEED_ENABLED === 'true') {
       await seedCms(strapi);
