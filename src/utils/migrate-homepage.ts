@@ -127,7 +127,6 @@ function mapCategoryCards(cards: any[]): any[] {
     const title = getVal(card, 'title');
     const sortOrder = getVal(card, 'sortOrder');
     const isActive = getVal(card, 'isActive');
-    const image = getVal(card, 'image');
     const hoverImage = getVal(card, 'hoverImage');
     const cutoutImage = getVal(card, 'cutoutImage');
     const cta = getVal(card, 'cta');
@@ -137,7 +136,6 @@ function mapCategoryCards(cards: any[]): any[] {
       sortOrder: typeof sortOrder === 'number' ? sortOrder : 0,
       isActive: typeof isActive === 'boolean' ? isActive : true,
       showField: typeof isActive === 'boolean' ? isActive : true,
-      image: mapImageAsset(image),
       hoverImage: mapImageAsset(hoverImage),
       cutoutImage: mapImageAsset(cutoutImage),
       cta: mapCta(cta),

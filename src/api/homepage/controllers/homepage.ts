@@ -16,7 +16,6 @@ const GLOBAL_CONFIG_UID = 'api::global-config.global-config';
 const categoryCardPopulate = {
   fields: ['title', 'sortOrder','showField'],
   populate: {
-    image: imageAssetPopulate,
     hoverImage: imageAssetPopulate,
     cutoutImage: imageAssetPopulate,
     cta: ctaPopulate,
