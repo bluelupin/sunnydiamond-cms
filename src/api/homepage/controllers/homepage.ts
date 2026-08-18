@@ -110,7 +110,6 @@ const showroomSectionPopulate = {
   populate: {
     image: imageAssetPopulate,
     showrooms: showroomPopulate,
-    cta: ctaPopulate,
   },
 };
 
@@ -199,9 +198,6 @@ const homepageShellPopulate = {
 const homepageSectionsPopulate = {
   trustBadges: {
     fields: ['label', 'sortOrder', 'showField'],
-    populate: {
-      icon: mediaPopulate,
-    },
   },
   craftingBrillianceSection: craftingBrillianceSectionPopulate,
   categoryCards: categoryCardPopulate,

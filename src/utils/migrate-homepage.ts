@@ -350,7 +350,6 @@ function mapShowroom(section: any): any {
   const sortOrder = getVal(section, 'sortOrder');
   const isActive = getVal(section, 'isActive');
   const image = getVal(section, 'image');
-  const cta = getVal(section, 'cta');
   const showrooms = getVal(section, 'showrooms');
   const showroomDocIds = Array.isArray(showrooms) ? showrooms : [];
 
@@ -361,7 +360,6 @@ function mapShowroom(section: any): any {
     isActive: typeof isActive === 'boolean' ? isActive : true,
     showField: typeof isActive === 'boolean' ? isActive : true,
     image: mapImageAsset(image),
-    cta: mapCta(cta),
     showrooms: showroomDocIds.length > 0 ? { connect: showroomDocIds } : null,
   };
 }
@@ -567,14 +565,11 @@ export async function migrateHomepage(strapi: Core.Strapi) {
         const badgeLabel = getVal(badge, 'label');
         const badgeSort = getVal(badge, 'sortOrder');
         const badgeActive = getVal(badge, 'isActive');
-        const badgeIcon = getVal(badge, 'icon');
-
         return {
           label: badgeLabel || '',
           sortOrder: typeof badgeSort === 'number' ? badgeSort : 0,
           isActive: typeof badgeActive === 'boolean' ? badgeActive : true,
           showField: typeof badgeActive === 'boolean' ? badgeActive : true,
-          icon: extractMediaId(badgeIcon),
         };
       });
     }

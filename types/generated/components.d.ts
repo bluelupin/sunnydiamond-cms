@@ -1595,9 +1595,7 @@ export interface SharedShowroomSection extends Struct.ComponentSchema {
     displayName: 'Showroom Section';
   };
   attributes: {
-    cta: Schema.Attribute.Component<'shared.cta', false>;
     description: Schema.Attribute.Text;
-    formCta: Schema.Attribute.Component<'shared.modal-cta', false>;
     image: Schema.Attribute.Component<'shared.image-asset', false>;
     sectionTitle: Schema.Attribute.String;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
@@ -1748,7 +1746,6 @@ export interface SharedTrustBadge extends Struct.ComponentSchema {
     displayName: 'Trust Badge';
   };
   attributes: {
-    icon: Schema.Attribute.Media;
     label: Schema.Attribute.String & Schema.Attribute.Required;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
