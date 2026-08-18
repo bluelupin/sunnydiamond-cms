@@ -13,8 +13,6 @@ const publicReadActions = [
   'api::contact-bespoke-page.contact-bespoke-page.find',
   'api::featured-story.featured-story.find',
   'api::featured-story.featured-story.findOne',
-  'api::gallery.gallery.find',
-  'api::gallery.gallery.findOne',
   'api::global-config.global-config.find',
   'api::homepage.homepage.find',
   'api::homepage.homepage.shell',
