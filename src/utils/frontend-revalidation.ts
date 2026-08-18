@@ -77,10 +77,6 @@ const REVALIDATION_MAPPINGS: Record<string, RevalidationMapping> = {
     paths: ['/', '/occasions'],
     slugPaths: ['/occasions/:slug'],
   },
-  'api::category-landing.category-landing': {
-    tags: ['cms:category-landing'],
-    slugPaths: ['/category/:slug'],
-  },
   'api::career-opening.career-opening': {
     tags: ['cms:career-opening'],
     paths: ['/careers'],
