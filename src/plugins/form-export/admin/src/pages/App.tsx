@@ -131,6 +131,30 @@ const App = () => {
     }
   };
 
+  const handleResumeDownload = async (application: JobApplication) => {
+    const downloadKey = `resume:${application.documentId}`;
+    setDownloading(downloadKey);
+
+    try {
+      const response = await get(
+        `/form-export/job-applications/${encodeURIComponent(application.documentId)}/resume`,
+        { responseType: 'blob' }
+      );
+
+      downloadBlob(
+        response.data,
+        getFilename(response, application.resume?.name || 'resume')
+      );
+    } catch {
+      toggleNotification({
+        type: 'danger',
+        message: 'Could not download resume.',
+      });
+    } finally {
+      setDownloading(null);
+    }
+  };
+
   return (
     <Page.Main>
       <Main>
@@ -274,14 +298,17 @@ const App = () => {
                         </td>
                         <td style={{ padding: 16, verticalAlign: 'top' }}>
                           {application.resume?.url ? (
-                            <a
-                              href={application.resume.url}
-                              target="_blank"
-                              rel="noreferrer"
-                              download={application.resume.name}
+                            <Button
+                              variant="tertiary"
+                              size="S"
+                              loading={
+                                downloading === `resume:${application.documentId}`
+                              }
+                              disabled={downloading !== null}
+                              onClick={() => handleResumeDownload(application)}
                             >
                               Download resume
-                            </a>
+                            </Button>
                           ) : (
                             '—'
                           )}

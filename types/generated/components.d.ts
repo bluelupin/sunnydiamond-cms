@@ -1310,7 +1310,7 @@ export interface SharedListingHeroSection extends Struct.ComponentSchema {
     displayName: 'Listing Hero Section';
   };
   attributes: {
-    backgroundImage: Schema.Attribute.Component<'shared.image-asset', true>;
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     title: Schema.Attribute.String;
   };

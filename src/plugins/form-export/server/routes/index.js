@@ -20,6 +20,14 @@ module.exports = {
           policies: [],
         },
       },
+      {
+        method: 'GET',
+        path: '/job-applications/:documentId/resume',
+        handler: 'export.resume',
+        config: {
+          policies: [],
+        },
+      },
     ],
   },
 };
