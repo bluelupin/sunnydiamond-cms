@@ -9,12 +9,13 @@ export default factories.createCoreController(
         populate: {
           heroSection: { populate: { backgroundImage: { populate: '*' } } },
           introSection: { populate: { backgroundImage: { populate: '*' } } },
-          occasionGridSection: { populate: { occasions: { populate: { image: { populate: '*' }, cta: true, seo: { populate: '*' } } } } },
+          occasionGridSection: { populate: { occasions: { populate: { image: { populate: '*' }, cta: true } } } },
           perfectGiftSection: true,
           giftFinderSection: { populate: { image: { populate: '*' } } },
           giftCardSection: { populate: { backgroundImage: { populate: '*' }, cutOutImage: { populate: '*' }, cta: true } },
           finishingTouchSection: { populate: { services: { populate: { image: { populate: '*' }, cta: true } } } },
           trustBadgesSection: { populate: { trustBadge: { populate: { icon: { populate: '*' } } } } },
+          seo: { populate: '*' },
         },
       } as any;
       return super.find(ctx);
