@@ -52,9 +52,6 @@ const populate = {
       decorativeImage: imageAssetPopulate,
       fourCsTags: {
         fields: ['label', 'sortOrder', 'showField'],
-        populate: {
-          icon: true,
-        },
       },
     },
   },
