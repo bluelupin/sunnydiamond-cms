@@ -8,11 +8,21 @@
     "title": {
       "type": "string"
     },
+    "eyebrow": {
+      "type": "string"
+    },
     "subtitle": {
       "type": "text"
     },
-    "eyebrow": {
-      "type": "string"
+    "primaryCta": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": false
+    },
+    "secondaryCta": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": false
     },
     "bgImage": {
       "type": "component",
@@ -32,16 +42,6 @@
     "backgroundVideo": {
       "type": "component",
       "component": "shared.video-asset",
-      "repeatable": false
-    },
-    "primaryCta": {
-      "type": "component",
-      "component": "shared.cta",
-      "repeatable": false
-    },
-    "secondaryCta": {
-      "type": "component",
-      "component": "shared.cta",
       "repeatable": false
     },
     "isActive": {
