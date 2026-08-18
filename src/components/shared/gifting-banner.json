@@ -16,6 +16,9 @@
       "repeatable": false,
       "component": "shared.video-asset"
     },
+    "backgroundColor": {
+      "type": "string"
+    },
     "cutoutImage": {
       "type": "component",
       "repeatable": false,

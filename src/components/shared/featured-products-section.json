@@ -15,7 +15,7 @@
     "cta": {
       "type": "component",
       "repeatable": false,
-      "component": "shared.cta"
+      "component": "shared.featured-products-cta"
     },
     "showField": {
       "type": "boolean",

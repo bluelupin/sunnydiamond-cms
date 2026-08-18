@@ -41,7 +41,9 @@ const diamondSourcingSectionPopulate = {
 
 const featuredProductsSectionPopulate = {
   populate: {
-    cta: ctaPopulate,
+    cta: {
+      fields: ['label', 'targetType', 'openInNewTab'],
+    },
   },
 };
 
@@ -134,7 +136,7 @@ const showroomRelationFallbackPopulate = {
 };
 
 const collectionShowcaseSectionPopulate = {
-  fields: ['eyebrow', 'title', 'isActive'],
+  fields: ['isActive'],
   populate: {
     collections: {
       fields: [

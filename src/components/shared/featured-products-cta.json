@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_shared_featured_products_ctas",
+  "info": {
+    "displayName": "Featured Products CTA",
+    "description": "CTA configuration for the Featured Products Section without a URL"
+  },
+  "attributes": {
+    "label": {
+      "type": "string"
+    },
+    "targetType": {
+      "type": "enumeration",
+      "enum": [
+        "internal",
+        "external",
+        "magento"
+      ],
+      "default": "internal"
+    },
+    "openInNewTab": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

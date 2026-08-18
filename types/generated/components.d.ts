@@ -565,9 +565,7 @@ export interface SharedCollectionShowcaseSection
       'manyToMany',
       'api::editorial-collection.editorial-collection'
     >;
-    eyebrow: Schema.Attribute.String;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
-    title: Schema.Attribute.String;
   };
 }
 
@@ -841,6 +839,22 @@ export interface SharedFeaturedBlogSection extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedFeaturedProductsCta extends Struct.ComponentSchema {
+  collectionName: 'components_shared_featured_products_ctas';
+  info: {
+    description: 'CTA configuration for the Featured Products Section without a URL';
+    displayName: 'Featured Products CTA';
+  };
+  attributes: {
+    label: Schema.Attribute.String;
+    openInNewTab: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    targetType: Schema.Attribute.Enumeration<
+      ['internal', 'external', 'magento']
+    > &
+      Schema.Attribute.DefaultTo<'internal'>;
+  };
+}
+
 export interface SharedFeaturedProductsSection extends Struct.ComponentSchema {
   collectionName: 'components_shared_featured_products_sections';
   info: {
@@ -848,7 +862,7 @@ export interface SharedFeaturedProductsSection extends Struct.ComponentSchema {
     displayName: 'Featured Products Section';
   };
   attributes: {
-    cta: Schema.Attribute.Component<'shared.cta', false>;
+    cta: Schema.Attribute.Component<'shared.featured-products-cta', false>;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     subtitle: Schema.Attribute.String;
     title: Schema.Attribute.String;
@@ -868,6 +882,7 @@ export interface SharedFeaturedStoriesSection extends Struct.ComponentSchema {
       'api::featured-story.featured-story'
     >;
     cta: Schema.Attribute.Component<'shared.cta', false>;
+    secondaryCta: Schema.Attribute.Component<'shared.cta', false>;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
   };
@@ -996,6 +1011,7 @@ export interface SharedGiftingBanner extends Struct.ComponentSchema {
     displayName: 'Gifting Banner';
   };
   attributes: {
+    backgroundColor: Schema.Attribute.String;
     backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
     backgroundVideo: Schema.Attribute.Component<'shared.video-asset', false>;
     cutoutImage: Schema.Attribute.Component<'shared.image-asset', false>;
@@ -1832,6 +1848,7 @@ declare module '@strapi/strapi' {
       'shared.faq-section': SharedFaqSection;
       'shared.feature-slide': SharedFeatureSlide;
       'shared.featured-blog-section': SharedFeaturedBlogSection;
+      'shared.featured-products-cta': SharedFeaturedProductsCta;
       'shared.featured-products-section': SharedFeaturedProductsSection;
       'shared.featured-stories-section': SharedFeaturedStoriesSection;
       'shared.featured-story-card': SharedFeaturedStoryCard;

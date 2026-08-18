@@ -167,16 +167,21 @@ function mapDiamondSourcing(section: any): any {
 
 function mapFeaturedCollection(section: any): any {
   if (!section) return null;
-  const eyebrow = getVal(section, 'eyebrow');
-  const sectionTitle = getVal(section, 'sectionTitle');
   const collection = getVal(section, 'collections') || getVal(section, 'collection');
 
   const collectionDocId = Array.isArray(collection) && collection.length > 0 ? collection[0] : collection;
 
   return {
-    eyebrow: eyebrow || '',
-    title: sectionTitle || '',
     collections: collectionDocId ? { connect: [collectionDocId] } : null,
+  };
+}
+
+function mapFeaturedProductsCta(cta: any): any {
+  if (!cta) return null;
+  return {
+    label: getVal(cta, 'label') || '',
+    targetType: getVal(cta, 'targetType') || 'internal',
+    openInNewTab: Boolean(getVal(cta, 'openInNewTab')),
   };
 }
 
@@ -204,7 +209,7 @@ function mapFeaturedProducts(section: any): any {
   return {
     title: sectionTitle || '',
     subtitle: description || '',
-    cta: mapCta(cta),
+    cta: mapFeaturedProductsCta(cta),
     showField: typeof isActive === 'boolean' ? isActive : true,
   };
 }
@@ -214,6 +219,7 @@ function mapGiftingBanner(banner: any): any {
   const title = getVal(banner, 'title');
   const subtitle = getVal(banner, 'subtitle');
   const bgImage = getVal(banner, 'bgImage');
+  const backgroundColor = getVal(banner, 'backgroundColor');
   const image = getVal(banner, 'image');
   const primaryCta = getVal(banner, 'primaryCta');
   const secondaryCta = getVal(banner, 'secondaryCta');
@@ -221,6 +227,7 @@ function mapGiftingBanner(banner: any): any {
 
   return {
     backgroundImage: mapImageAsset(bgImage),
+    backgroundColor: backgroundColor || '',
     cutoutImage: mapImageAsset(image),
     title: title || '',
     description: subtitle || '',
