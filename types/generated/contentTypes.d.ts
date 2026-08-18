@@ -1540,47 +1540,6 @@ export interface ApiFeaturedStoryFeaturedStory
   };
 }
 
-export interface ApiGalleryGallery extends Struct.CollectionTypeSchema {
-  collectionName: 'galleries';
-  info: {
-    description: 'Reusable image galleries';
-    displayName: 'Gallery';
-    pluralName: 'galleries';
-    singularName: 'gallery';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  pluginOptions: {
-    i18n: {
-      localized: true;
-    };
-  };
-  attributes: {
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    images: Schema.Attribute.Media<'images', true> & Schema.Attribute.Required;
-    locale: Schema.Attribute.String;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::gallery.gallery'
-    >;
-    publishedAt: Schema.Attribute.DateTime;
-    slug: Schema.Attribute.UID<'title'>;
-    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
-    title: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
 export interface ApiGenericFormGenericForm extends Struct.CollectionTypeSchema {
   collectionName: 'generic_forms';
   info: {
@@ -3452,7 +3411,6 @@ declare module '@strapi/strapi' {
       'api::editorial-collection.editorial-collection': ApiEditorialCollectionEditorialCollection;
       'api::faq.faq': ApiFaqFaq;
       'api::featured-story.featured-story': ApiFeaturedStoryFeaturedStory;
-      'api::gallery.gallery': ApiGalleryGallery;
       'api::generic-form.generic-form': ApiGenericFormGenericForm;
       'api::generic-submission.generic-submission': ApiGenericSubmissionGenericSubmission;
       'api::gifting-page.gifting-page': ApiGiftingPageGiftingPage;
