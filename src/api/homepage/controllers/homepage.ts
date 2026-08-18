@@ -250,6 +250,31 @@ const findPublishedSingle = async (
   } as any);
 };
 
+const relationDocumentIds = (relations: any) =>
+  Array.isArray(relations)
+    ? relations
+        .map((relation) => relation?.documentId)
+        .filter((documentId): documentId is string => typeof documentId === 'string')
+    : [];
+
+const orderByRelation = (records: any[], documentIds: string[]) => {
+  if (documentIds.length === 0) return records;
+
+  const positions = new Map(
+    documentIds.map((documentId, index) => [documentId, index])
+  );
+
+  return [...records].sort((left, right) => {
+    const leftPosition = positions.get(left?.documentId);
+    const rightPosition = positions.get(right?.documentId);
+
+    if (leftPosition === undefined && rightPosition === undefined) return 0;
+    if (leftPosition === undefined) return 1;
+    if (rightPosition === undefined) return -1;
+    return leftPosition - rightPosition;
+  });
+};
+
 const attachOccasionsAndShowrooms = async (
   strapiInstance: typeof strapi,
   homepage: any,
@@ -262,6 +287,26 @@ const attachOccasionsAndShowrooms = async (
   const needsShowrooms = Boolean(homepage.showroom);
 
   if (!needsOccasions && !needsShowrooms) return homepage;
+
+  const relationState = await strapiInstance.db.query(HOMEPAGE_UID).findOne({
+    where: { id: homepage.id },
+    populate: {
+      occasionSection: {
+        populate: {
+          occasions: { select: ['documentId'] },
+        },
+      },
+      showroom: {
+        populate: {
+          showrooms: { select: ['documentId'] },
+        },
+      },
+    },
+  } as any);
+  const occasionOrder = relationDocumentIds(
+    relationState?.occasionSection?.occasions
+  );
+  const showroomOrder = relationDocumentIds(relationState?.showroom?.showrooms);
 
   const [occasions, showrooms] = await Promise.all([
     needsOccasions
@@ -302,10 +347,16 @@ const attachOccasionsAndShowrooms = async (
   ]);
 
   if (needsOccasions) {
-    homepage.occasionSection.occasions = sanitizedOccasions ?? [];
+    homepage.occasionSection.occasions = orderByRelation(
+      Array.isArray(sanitizedOccasions) ? sanitizedOccasions : [],
+      occasionOrder
+    );
   }
   if (needsShowrooms) {
-    homepage.showroom.showrooms = sanitizedShowrooms ?? [];
+    homepage.showroom.showrooms = orderByRelation(
+      Array.isArray(sanitizedShowrooms) ? sanitizedShowrooms : [],
+      showroomOrder
+    );
   }
 
   return homepage;
