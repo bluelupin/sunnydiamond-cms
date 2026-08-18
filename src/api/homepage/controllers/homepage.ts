@@ -113,26 +113,6 @@ const showroomSectionPopulate = {
   },
 };
 
-const occasionRelationFallbackPopulate = {
-  image: {
-    populate: {
-      desktopImage: true,
-      mobileImage: true,
-    },
-  },
-  cta: true,
-};
-
-
-const showroomRelationFallbackPopulate = {
-  image: {
-    populate: {
-      desktopImage: true,
-      mobileImage: true,
-    },
-  },
-};
-
 const collectionShowcaseSectionPopulate = {
   fields: ['eyebrow', 'title', 'isActive'],
   populate: {
@@ -250,67 +230,6 @@ const findPublishedSingle = async (
   } as any);
 };
 
-const attachOccasionsAndShowrooms = async (
-  strapiInstance: typeof strapi,
-  homepage: any,
-  ctx: any,
-  locale?: string
-) => {
-  if (!homepage) return homepage;
-
-  const needsOccasions = Boolean(homepage.occasionSection);
-  const needsShowrooms = Boolean(homepage.showroom);
-
-  if (!needsOccasions && !needsShowrooms) return homepage;
-
-  const [occasions, showrooms] = await Promise.all([
-    needsOccasions
-      ? strapiInstance.documents('api::occasion.occasion').findMany({
-          status: 'published',
-          locale,
-          filters: { showField: true },
-          sort: ['sortOrder:asc'],
-          populate: occasionRelationFallbackPopulate,
-        } as any)
-      : Promise.resolve([]),
-    needsShowrooms
-      ? strapiInstance.documents('api::showroom.showroom').findMany({
-          status: 'published',
-          locale,
-          filters: { isActive: true },
-          sort: ['sortOrder:asc'],
-          populate: showroomRelationFallbackPopulate,
-        } as any)
-      : Promise.resolve([]),
-  ]);
-
-  const [sanitizedOccasions, sanitizedShowrooms] = await Promise.all([
-    needsOccasions
-      ? strapiInstance.contentAPI.sanitize.output(
-          occasions,
-          strapiInstance.contentType('api::occasion.occasion'),
-          { auth: ctx.state.auth }
-        )
-      : Promise.resolve([]),
-    needsShowrooms
-      ? strapiInstance.contentAPI.sanitize.output(
-          showrooms,
-          strapiInstance.contentType('api::showroom.showroom'),
-          { auth: ctx.state.auth }
-        )
-      : Promise.resolve([]),
-  ]);
-
-  if (needsOccasions) {
-    homepage.occasionSection.occasions = sanitizedOccasions ?? [];
-  }
-  if (needsShowrooms) {
-    homepage.showroom.showrooms = sanitizedShowrooms ?? [];
-  }
-
-  return homepage;
-};
-
 export default factories.createCoreController(HOMEPAGE_UID as any, ({ strapi }) => ({
   async shell(ctx) {
     const locale = requestLocale(ctx);
@@ -354,14 +273,7 @@ export default factories.createCoreController(HOMEPAGE_UID as any, ({ strapi }) 
     }
 
     const sanitizedHomepage = await this.sanitizeOutput(homepage, ctx);
-    const enrichedHomepage = await attachOccasionsAndShowrooms(
-      strapi,
-      sanitizedHomepage,
-      ctx,
-      locale
-    );
-
-    return this.transformResponse(enrichedHomepage);
+    return this.transformResponse(sanitizedHomepage);
   },
 
   async shoppingBlocks(ctx) {
@@ -391,13 +303,6 @@ export default factories.createCoreController(HOMEPAGE_UID as any, ({ strapi }) 
     }
 
     const sanitizedHomepage = await this.sanitizeOutput(homepage, ctx);
-    const enrichedHomepage = await attachOccasionsAndShowrooms(
-      strapi,
-      sanitizedHomepage,
-      ctx,
-      locale
-    );
-
-    return this.transformResponse(enrichedHomepage);
+    return this.transformResponse(sanitizedHomepage);
   },
 }));
