@@ -61,15 +61,6 @@ export default factories.createCoreController(
               secondaryCta: true,
             },
           },
-          pastCreations: {
-            populate: {
-                coverImage:{
-                  populate:'*'
-                },
-              gallery: { populate: '*' },
-              cta: true,
-            },
-          },
           serviceHighlights: { populate: '*' },
           getInTouchSection: { 
             populate:{

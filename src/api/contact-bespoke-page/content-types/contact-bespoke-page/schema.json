@@ -45,11 +45,6 @@
         }
       }
     },
-    "pastCreations": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::featured-story.featured-story"
-    },
     "serviceHighlights": {
       "type": "component",
       "repeatable": true,
