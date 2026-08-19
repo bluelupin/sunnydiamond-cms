@@ -1082,10 +1082,6 @@ export interface ApiContactBespokePageContactBespokePage
       'oneToMany',
       'api::contact-bespoke-page.contact-bespoke-page'
     >;
-    pastCreations: Schema.Attribute.Relation<
-      'manyToMany',
-      'api::featured-story.featured-story'
-    >;
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<'shared.seo', false> &
       Schema.Attribute.SetPluginOptions<{
@@ -1147,6 +1143,12 @@ export interface ApiContactPageContactPage extends Struct.SingleTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    cta: Schema.Attribute.Component<'shared.cta', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     formSection: Schema.Attribute.Component<
       'shared.generic-form-section',
       false

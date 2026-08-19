@@ -16,6 +16,11 @@
       "component": "shared.image-asset",
       "repeatable": false
     },
+    "cta": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": false
+    },
     "showrooms": {
       "type": "relation",
       "relation": "oneToMany",

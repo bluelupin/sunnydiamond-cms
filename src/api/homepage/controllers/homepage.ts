@@ -109,6 +109,7 @@ const showroomSectionPopulate = {
   fields: ['sectionTitle', 'description', 'sortOrder', 'showField'],
   populate: {
     image: imageAssetPopulate,
+    cta: ctaPopulate,
     showrooms: showroomPopulate,
   },
 };
