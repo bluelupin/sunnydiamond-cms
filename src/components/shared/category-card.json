@@ -9,11 +9,6 @@
       "type": "string",
       "required": true
     },
-    "image": {
-      "type": "component",
-      "component": "shared.image-asset",
-      "repeatable": false
-    },
     "hoverImage": {
       "type": "component",
       "component": "shared.image-asset",

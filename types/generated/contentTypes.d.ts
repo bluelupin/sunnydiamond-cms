@@ -1024,87 +1024,6 @@ export interface ApiCareerOpeningCareerOpening
   };
 }
 
-export interface ApiCategoryLandingCategoryLanding
-  extends Struct.CollectionTypeSchema {
-  collectionName: 'category_landings';
-  info: {
-    displayName: 'Category Landing';
-    pluralName: 'category-landings';
-    singularName: 'category-landing';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  pluginOptions: {
-    i18n: {
-      localized: true;
-    };
-  };
-  attributes: {
-    categoryCards: Schema.Attribute.Component<'shared.category-card', true> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    description: Schema.Attribute.RichText &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    editorialCards: Schema.Attribute.Component<'shared.promo-card', true> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    hero: Schema.Attribute.Component<'shared.hero-section', false> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
-    locale: Schema.Attribute.String;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::category-landing.category-landing'
-    >;
-    productSection: Schema.Attribute.Component<
-      'shared.editorial-section',
-      false
-    > &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    publishedAt: Schema.Attribute.DateTime;
-    seo: Schema.Attribute.Component<'shared.seo', false> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
-    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
-    title: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
 export interface ApiContactBespokePageContactBespokePage
   extends Struct.SingleTypeSchema {
   collectionName: 'contact_bespoke_pages';
@@ -1389,13 +1308,6 @@ export interface ApiEditorialCollectionEditorialCollection
           localized: true;
         };
       }>;
-    collectionName: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1405,7 +1317,7 @@ export interface ApiEditorialCollectionEditorialCollection
           localized: true;
         };
       }>;
-    description: Schema.Attribute.RichText &
+    description: Schema.Attribute.Text &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -1420,7 +1332,7 @@ export interface ApiEditorialCollectionEditorialCollection
     >;
     productSkus: Schema.Attribute.Component<'shared.product-sku', true>;
     publishedAt: Schema.Attribute.DateTime;
-    slug: Schema.Attribute.UID<'collectionName'> & Schema.Attribute.Required;
+    slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     title: Schema.Attribute.String &
       Schema.Attribute.Required &
@@ -1429,56 +1341,6 @@ export interface ApiEditorialCollectionEditorialCollection
           localized: true;
         };
       }>;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
-export interface ApiFaqFaq extends Struct.CollectionTypeSchema {
-  collectionName: 'faqs';
-  info: {
-    displayName: 'FAQ';
-    pluralName: 'faqs';
-    singularName: 'faq';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  pluginOptions: {
-    i18n: {
-      localized: true;
-    };
-  };
-  attributes: {
-    answer: Schema.Attribute.RichText &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    category: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
-    locale: Schema.Attribute.String;
-    localizations: Schema.Attribute.Relation<'oneToMany', 'api::faq.faq'>;
-    publishedAt: Schema.Attribute.DateTime;
-    question: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -2102,7 +1964,7 @@ export interface ApiOccasionOccasion extends Struct.CollectionTypeSchema {
           localized: true;
         };
       }>;
-    description: Schema.Attribute.RichText &
+    description: Schema.Attribute.Text &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -2121,12 +1983,6 @@ export interface ApiOccasionOccasion extends Struct.CollectionTypeSchema {
       'api::occasion.occasion'
     >;
     publishedAt: Schema.Attribute.DateTime;
-    seo: Schema.Attribute.Component<'shared.seo', false> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     title: Schema.Attribute.String &
@@ -2565,12 +2421,6 @@ export interface ApiShowroomShowroom extends Struct.CollectionTypeSchema {
       'oneToMany',
       'api::showroom.showroom'
     >;
-    mapEmbed: Schema.Attribute.RichText &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
     mapUrl: Schema.Attribute.String & Schema.Attribute.Required;
     name: Schema.Attribute.String &
       Schema.Attribute.Required &
@@ -2587,12 +2437,6 @@ export interface ApiShowroomShowroom extends Struct.CollectionTypeSchema {
       }>;
     phone: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
-    seo: Schema.Attribute.Component<'shared.seo', false> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
     slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     state: Schema.Attribute.String &
@@ -3404,12 +3248,10 @@ declare module '@strapi/strapi' {
       'api::career-landing-page.career-landing-page': ApiCareerLandingPageCareerLandingPage;
       'api::career-listing-page.career-listing-page': ApiCareerListingPageCareerListingPage;
       'api::career-opening.career-opening': ApiCareerOpeningCareerOpening;
-      'api::category-landing.category-landing': ApiCategoryLandingCategoryLanding;
       'api::contact-bespoke-page.contact-bespoke-page': ApiContactBespokePageContactBespokePage;
       'api::contact-page.contact-page': ApiContactPageContactPage;
       'api::diamonds-for-everyone-page.diamonds-for-everyone-page': ApiDiamondsForEveryonePageDiamondsForEveryonePage;
       'api::editorial-collection.editorial-collection': ApiEditorialCollectionEditorialCollection;
-      'api::faq.faq': ApiFaqFaq;
       'api::featured-story.featured-story': ApiFeaturedStoryFeaturedStory;
       'api::generic-form.generic-form': ApiGenericFormGenericForm;
       'api::generic-submission.generic-submission': ApiGenericSubmissionGenericSubmission;

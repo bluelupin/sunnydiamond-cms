@@ -16,7 +16,6 @@ const GLOBAL_CONFIG_UID = 'api::global-config.global-config';
 const categoryCardPopulate = {
   fields: ['title', 'sortOrder','showField'],
   populate: {
-    image: imageAssetPopulate,
     hoverImage: imageAssetPopulate,
     cutoutImage: imageAssetPopulate,
     cta: ctaPopulate,
@@ -41,7 +40,9 @@ const diamondSourcingSectionPopulate = {
 
 const featuredProductsSectionPopulate = {
   populate: {
-    cta: ctaPopulate,
+    cta: {
+      fields: ['label', 'targetType', 'openInNewTab'],
+    },
   },
 };
 
@@ -109,7 +110,6 @@ const showroomSectionPopulate = {
   populate: {
     image: imageAssetPopulate,
     showrooms: showroomPopulate,
-    cta: ctaPopulate,
   },
 };
 
@@ -134,11 +134,10 @@ const showroomRelationFallbackPopulate = {
 };
 
 const collectionShowcaseSectionPopulate = {
-  fields: ['eyebrow', 'title', 'isActive'],
+  fields: ['isActive'],
   populate: {
     collections: {
       fields: [
-        'collectionName',
         'title',
         'slug',
         'description',
@@ -199,9 +198,6 @@ const homepageShellPopulate = {
 const homepageSectionsPopulate = {
   trustBadges: {
     fields: ['label', 'sortOrder', 'showField'],
-    populate: {
-      icon: mediaPopulate,
-    },
   },
   craftingBrillianceSection: craftingBrillianceSectionPopulate,
   categoryCards: categoryCardPopulate,

@@ -15,15 +15,6 @@
     }
   },
   "attributes": {
-    "collectionName": {
-      "type": "string",
-      "required": true,
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
-    },
     "title": {
       "type": "string",
       "required": true,
@@ -35,11 +26,11 @@
     },
     "slug": {
       "type": "uid",
-      "targetField": "collectionName",
+      "targetField": "title",
       "required": true
     },
     "description": {
-      "type": "richtext",
+      "type": "text",
       "pluginOptions": {
         "i18n": {
           "localized": true

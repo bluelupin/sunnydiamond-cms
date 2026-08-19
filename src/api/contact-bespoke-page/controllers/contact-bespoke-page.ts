@@ -58,6 +58,7 @@ export default factories.createCoreController(
               }
             },
               cta: true,
+              secondaryCta: true,
             },
           },
           pastCreations: {

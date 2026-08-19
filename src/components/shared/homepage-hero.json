@@ -9,6 +9,14 @@
     "mainTitle": {
       "type": "string"
     },
+    "eyebrow": {
+      "type": "string"
+    },
+    "ctaButton": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
+    },
     "imageBackground": {
       "type": "component",
       "repeatable": false,
@@ -18,14 +26,6 @@
       "type": "component",
       "repeatable": false,
       "component": "shared.video-asset"
-    },
-    "eyebrow": {
-      "type": "string"
-    },
-    "ctaButton": {
-      "type": "component",
-      "repeatable": false,
-      "component": "shared.cta"
     },
     "showField": {
       "type": "boolean",

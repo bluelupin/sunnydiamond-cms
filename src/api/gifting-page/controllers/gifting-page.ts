@@ -9,7 +9,7 @@ export default factories.createCoreController(
         populate: {
           heroSection: { populate: { backgroundImage: { populate: '*' } } },
           introSection: { populate: { backgroundImage: { populate: '*' } } },
-          occasionGridSection: { populate: { occasions: { populate: { image: { populate: '*' }, cta: true, seo: { populate: '*' } } } } },
+          occasionGridSection: { populate: { occasions: { populate: { image: { populate: '*' }, cta: true } } } },
           perfectGiftSection: true,
           giftFinderSection: { populate: { image: { populate: '*' } } },
           giftCardSection: { populate: { backgroundImage: { populate: '*' }, cutOutImage: { populate: '*' }, cta: true } },

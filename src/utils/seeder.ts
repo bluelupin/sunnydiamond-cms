@@ -31,8 +31,6 @@ const publicReadActions = [
   'api::editorial-collection.editorial-collection.findOne',
   'api::support-page.support-page.find',
   'api::support-page.support-page.findOne',
-  'api::category-landing.category-landing.find',
-  'api::category-landing.category-landing.findOne',
   'api::blog-post.blog-post.find',
   'api::blog-post.blog-post.findOne',
 ];

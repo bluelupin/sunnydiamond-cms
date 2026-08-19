@@ -127,7 +127,6 @@ function mapCategoryCards(cards: any[]): any[] {
     const title = getVal(card, 'title');
     const sortOrder = getVal(card, 'sortOrder');
     const isActive = getVal(card, 'isActive');
-    const image = getVal(card, 'image');
     const hoverImage = getVal(card, 'hoverImage');
     const cutoutImage = getVal(card, 'cutoutImage');
     const cta = getVal(card, 'cta');
@@ -137,7 +136,6 @@ function mapCategoryCards(cards: any[]): any[] {
       sortOrder: typeof sortOrder === 'number' ? sortOrder : 0,
       isActive: typeof isActive === 'boolean' ? isActive : true,
       showField: typeof isActive === 'boolean' ? isActive : true,
-      image: mapImageAsset(image),
       hoverImage: mapImageAsset(hoverImage),
       cutoutImage: mapImageAsset(cutoutImage),
       cta: mapCta(cta),
@@ -167,16 +165,21 @@ function mapDiamondSourcing(section: any): any {
 
 function mapFeaturedCollection(section: any): any {
   if (!section) return null;
-  const eyebrow = getVal(section, 'eyebrow');
-  const sectionTitle = getVal(section, 'sectionTitle');
   const collection = getVal(section, 'collections') || getVal(section, 'collection');
 
   const collectionDocId = Array.isArray(collection) && collection.length > 0 ? collection[0] : collection;
 
   return {
-    eyebrow: eyebrow || '',
-    title: sectionTitle || '',
     collections: collectionDocId ? { connect: [collectionDocId] } : null,
+  };
+}
+
+function mapFeaturedProductsCta(cta: any): any {
+  if (!cta) return null;
+  return {
+    label: getVal(cta, 'label') || '',
+    targetType: getVal(cta, 'targetType') || 'internal',
+    openInNewTab: Boolean(getVal(cta, 'openInNewTab')),
   };
 }
 
@@ -204,7 +207,7 @@ function mapFeaturedProducts(section: any): any {
   return {
     title: sectionTitle || '',
     subtitle: description || '',
-    cta: mapCta(cta),
+    cta: mapFeaturedProductsCta(cta),
     showField: typeof isActive === 'boolean' ? isActive : true,
   };
 }
@@ -214,6 +217,7 @@ function mapGiftingBanner(banner: any): any {
   const title = getVal(banner, 'title');
   const subtitle = getVal(banner, 'subtitle');
   const bgImage = getVal(banner, 'bgImage');
+  const backgroundColor = getVal(banner, 'backgroundColor');
   const image = getVal(banner, 'image');
   const primaryCta = getVal(banner, 'primaryCta');
   const secondaryCta = getVal(banner, 'secondaryCta');
@@ -221,6 +225,7 @@ function mapGiftingBanner(banner: any): any {
 
   return {
     backgroundImage: mapImageAsset(bgImage),
+    backgroundColor: backgroundColor || '',
     cutoutImage: mapImageAsset(image),
     title: title || '',
     description: subtitle || '',
@@ -345,7 +350,6 @@ function mapShowroom(section: any): any {
   const sortOrder = getVal(section, 'sortOrder');
   const isActive = getVal(section, 'isActive');
   const image = getVal(section, 'image');
-  const cta = getVal(section, 'cta');
   const showrooms = getVal(section, 'showrooms');
   const showroomDocIds = Array.isArray(showrooms) ? showrooms : [];
 
@@ -356,7 +360,6 @@ function mapShowroom(section: any): any {
     isActive: typeof isActive === 'boolean' ? isActive : true,
     showField: typeof isActive === 'boolean' ? isActive : true,
     image: mapImageAsset(image),
-    cta: mapCta(cta),
     showrooms: showroomDocIds.length > 0 ? { connect: showroomDocIds } : null,
   };
 }
@@ -562,14 +565,11 @@ export async function migrateHomepage(strapi: Core.Strapi) {
         const badgeLabel = getVal(badge, 'label');
         const badgeSort = getVal(badge, 'sortOrder');
         const badgeActive = getVal(badge, 'isActive');
-        const badgeIcon = getVal(badge, 'icon');
-
         return {
           label: badgeLabel || '',
           sortOrder: typeof badgeSort === 'number' ? badgeSort : 0,
           isActive: typeof badgeActive === 'boolean' ? badgeActive : true,
           showField: typeof badgeActive === 'boolean' ? badgeActive : true,
-          icon: extractMediaId(badgeIcon),
         };
       });
     }

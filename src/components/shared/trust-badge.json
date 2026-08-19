@@ -9,10 +9,6 @@
       "type": "string",
       "required": true
     },
-    "icon": {
-      "type": "media",
-      "multiple": false
-    },
     "sortOrder": {
       "type": "integer",
       "default": 0

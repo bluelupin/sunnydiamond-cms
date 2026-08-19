@@ -505,7 +505,6 @@ export interface SharedCategoryCard extends Struct.ComponentSchema {
     cta: Schema.Attribute.Component<'shared.cta', false>;
     cutoutImage: Schema.Attribute.Component<'shared.image-asset', false>;
     hoverImage: Schema.Attribute.Component<'shared.image-asset', false>;
-    image: Schema.Attribute.Component<'shared.image-asset', false>;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
@@ -565,9 +564,7 @@ export interface SharedCollectionShowcaseSection
       'manyToMany',
       'api::editorial-collection.editorial-collection'
     >;
-    eyebrow: Schema.Attribute.String;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
-    title: Schema.Attribute.String;
   };
 }
 
@@ -841,6 +838,22 @@ export interface SharedFeaturedBlogSection extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedFeaturedProductsCta extends Struct.ComponentSchema {
+  collectionName: 'components_shared_featured_products_ctas';
+  info: {
+    description: 'CTA configuration for the Featured Products Section without a URL';
+    displayName: 'Featured Products CTA';
+  };
+  attributes: {
+    label: Schema.Attribute.String;
+    openInNewTab: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    targetType: Schema.Attribute.Enumeration<
+      ['internal', 'external', 'magento']
+    > &
+      Schema.Attribute.DefaultTo<'internal'>;
+  };
+}
+
 export interface SharedFeaturedProductsSection extends Struct.ComponentSchema {
   collectionName: 'components_shared_featured_products_sections';
   info: {
@@ -848,7 +861,7 @@ export interface SharedFeaturedProductsSection extends Struct.ComponentSchema {
     displayName: 'Featured Products Section';
   };
   attributes: {
-    cta: Schema.Attribute.Component<'shared.cta', false>;
+    cta: Schema.Attribute.Component<'shared.featured-products-cta', false>;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     subtitle: Schema.Attribute.String;
     title: Schema.Attribute.String;
@@ -868,6 +881,7 @@ export interface SharedFeaturedStoriesSection extends Struct.ComponentSchema {
       'api::featured-story.featured-story'
     >;
     cta: Schema.Attribute.Component<'shared.cta', false>;
+    secondaryCta: Schema.Attribute.Component<'shared.cta', false>;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
   };
@@ -996,6 +1010,7 @@ export interface SharedGiftingBanner extends Struct.ComponentSchema {
     displayName: 'Gifting Banner';
   };
   attributes: {
+    backgroundColor: Schema.Attribute.String;
     backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
     backgroundVideo: Schema.Attribute.Component<'shared.video-asset', false>;
     cutoutImage: Schema.Attribute.Component<'shared.image-asset', false>;
@@ -1580,9 +1595,7 @@ export interface SharedShowroomSection extends Struct.ComponentSchema {
     displayName: 'Showroom Section';
   };
   attributes: {
-    cta: Schema.Attribute.Component<'shared.cta', false>;
     description: Schema.Attribute.Text;
-    formCta: Schema.Attribute.Component<'shared.modal-cta', false>;
     image: Schema.Attribute.Component<'shared.image-asset', false>;
     sectionTitle: Schema.Attribute.String;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
@@ -1733,7 +1746,6 @@ export interface SharedTrustBadge extends Struct.ComponentSchema {
     displayName: 'Trust Badge';
   };
   attributes: {
-    icon: Schema.Attribute.Media;
     label: Schema.Attribute.String & Schema.Attribute.Required;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
@@ -1830,6 +1842,7 @@ declare module '@strapi/strapi' {
       'shared.faq-section': SharedFaqSection;
       'shared.feature-slide': SharedFeatureSlide;
       'shared.featured-blog-section': SharedFeaturedBlogSection;
+      'shared.featured-products-cta': SharedFeaturedProductsCta;
       'shared.featured-products-section': SharedFeaturedProductsSection;
       'shared.featured-stories-section': SharedFeaturedStoriesSection;
       'shared.featured-story-card': SharedFeaturedStoryCard;

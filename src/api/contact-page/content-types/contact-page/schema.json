@@ -21,6 +21,12 @@
       "type": "text",
       "pluginOptions": { "i18n": { "localized": true } }
     },
+    "cta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta",
+      "pluginOptions": { "i18n": { "localized": true } }
+    },
     "contactSection": {
       "type": "component",
       "repeatable": false,

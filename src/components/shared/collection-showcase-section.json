@@ -9,12 +9,6 @@
       "type": "boolean",
       "default": true
     },
-    "eyebrow": {
-      "type": "string"
-    },
-    "title": {
-      "type": "string"
-    },
     "collections": {
       "type": "relation",
       "relation": "manyToMany",
