@@ -1552,6 +1552,57 @@ export interface SharedProductSku extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedProfileSideTab extends Struct.ComponentSchema {
+  collectionName: 'components_shared_profile_side_tabs';
+  info: {
+    description: 'One navigation tab displayed in the profile page sidebar';
+    displayName: 'Profile Side Tab';
+  };
+  attributes: {
+    tabLabel: Schema.Attribute.String & Schema.Attribute.Required;
+    tabValue: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedProfileSideTabs extends Struct.ComponentSchema {
+  collectionName: 'components_shared_profile_side_tabs';
+  info: {
+    description: 'Navigation links displayed in the profile page sidebar';
+    displayName: 'Profile Side Tabs';
+  };
+  attributes: {
+    addressesTab: Schema.Attribute.Component<'shared.cta', false> &
+      Schema.Attribute.Required;
+    appointmentsTab: Schema.Attribute.Component<'shared.cta', false> &
+      Schema.Attribute.Required;
+    bespokeInspirationsTab: Schema.Attribute.Component<'shared.cta', false> &
+      Schema.Attribute.Required;
+    diamondsForEveryoneTab: Schema.Attribute.Component<'shared.cta', false> &
+      Schema.Attribute.Required;
+    helpSupportTab: Schema.Attribute.Component<'shared.cta', false> &
+      Schema.Attribute.Required;
+    ordersTab: Schema.Attribute.Component<'shared.cta', false> &
+      Schema.Attribute.Required;
+    profileTab: Schema.Attribute.Component<'shared.cta', false> &
+      Schema.Attribute.Required;
+    wishlistTab: Schema.Attribute.Component<'shared.cta', false> &
+      Schema.Attribute.Required;
+  };
+}
+
+export interface SharedProfileTrustBadgeSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_profile_trust_badge_sections';
+  info: {
+    description: 'Trust message and related actions displayed on the profile page';
+    displayName: 'Profile Trust Badge Section';
+  };
+  attributes: {
+    callsToAction: Schema.Attribute.Component<'shared.cta', true>;
+    description: Schema.Attribute.Text;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface SharedPromoCard extends Struct.ComponentSchema {
   collectionName: 'components_shared_promo_cards';
   info: {
@@ -1888,6 +1939,9 @@ declare module '@strapi/strapi' {
       'shared.process-section': SharedProcessSection;
       'shared.process-step': SharedProcessStep;
       'shared.product-sku': SharedProductSku;
+      'shared.profile-side-tab': SharedProfileSideTab;
+      'shared.profile-side-tabs': SharedProfileSideTabs;
+      'shared.profile-trust-badge-section': SharedProfileTrustBadgeSection;
       'shared.promo-card': SharedPromoCard;
       'shared.seo': SharedSeo;
       'shared.showroom-section': SharedShowroomSection;

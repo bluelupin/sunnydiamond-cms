@@ -1082,10 +1082,6 @@ export interface ApiContactBespokePageContactBespokePage
       'oneToMany',
       'api::contact-bespoke-page.contact-bespoke-page'
     >;
-    pastCreations: Schema.Attribute.Relation<
-      'manyToMany',
-      'api::featured-story.featured-story'
-    >;
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<'shared.seo', false> &
       Schema.Attribute.SetPluginOptions<{
@@ -1147,6 +1143,12 @@ export interface ApiContactPageContactPage extends Struct.SingleTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    cta: Schema.Attribute.Component<'shared.cta', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     formSection: Schema.Attribute.Component<
       'shared.generic-form-section',
       false
@@ -2334,6 +2336,41 @@ export interface ApiProductSubmissionProductSubmission
   };
 }
 
+export interface ApiProfilePageProfilePage extends Struct.SingleTypeSchema {
+  collectionName: 'profile_pages';
+  info: {
+    description: 'Editorial configuration for the customer profile page';
+    displayName: 'Profile Page';
+    pluralName: 'profile-pages';
+    singularName: 'profile-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::profile-page.profile-page'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    sideTabs: Schema.Attribute.Component<'shared.profile-side-tab', true> &
+      Schema.Attribute.Required;
+    trustBadgeSection: Schema.Attribute.Component<
+      'shared.profile-trust-badge-section',
+      false
+    >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiSavedCreationSavedCreation
   extends Struct.CollectionTypeSchema {
   collectionName: 'saved_creations';
@@ -3265,6 +3302,7 @@ declare module '@strapi/strapi' {
       'api::product-form.product-form': ApiProductFormProductForm;
       'api::product-landing-page.product-landing-page': ApiProductLandingPageProductLandingPage;
       'api::product-submission.product-submission': ApiProductSubmissionProductSubmission;
+      'api::profile-page.profile-page': ApiProfilePageProfilePage;
       'api::saved-creation.saved-creation': ApiSavedCreationSavedCreation;
       'api::showroom.showroom': ApiShowroomShowroom;
       'api::size-guide.size-guide': ApiSizeGuideSizeGuide;

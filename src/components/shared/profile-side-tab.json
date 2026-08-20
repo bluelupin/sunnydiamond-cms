@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_shared_profile_side_tabs",
+  "info": {
+    "displayName": "Profile Side Tab",
+    "description": "One navigation tab displayed in the profile page sidebar"
+  },
+  "options": {},
+  "attributes": {
+    "tabLabel": {
+      "type": "string",
+      "required": true,
+      "description": "Visible tab name, such as My Orders or My Wishlist"
+    },
+    "tabValue": {
+      "type": "string",
+      "required": true,
+      "description": "Stable frontend value used to identify or route the tab, such as orders or wishlist"
+    }
+  }
+}

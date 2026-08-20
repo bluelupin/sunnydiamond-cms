@@ -1,0 +1,35 @@
+{
+  "kind": "singleType",
+  "collectionName": "profile_pages",
+  "info": {
+    "singularName": "profile-page",
+    "pluralName": "profile-pages",
+    "displayName": "Profile Page",
+    "description": "Editorial configuration for the customer profile page"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "backgroundImage": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset",
+      "description": "Responsive background image displayed on the profile page"
+    },
+    "sideTabs": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.profile-side-tab",
+      "required": true,
+      "description": "Ordered profile sidebar tabs; add each tab label and frontend value separately"
+    },
+    "trustBadgeSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.profile-trust-badge-section",
+      "description": "Trust message with repeatable calls to action"
+    }
+  }
+}

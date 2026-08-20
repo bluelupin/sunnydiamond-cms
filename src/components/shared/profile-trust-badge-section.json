@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_shared_profile_trust_badge_sections",
+  "info": {
+    "displayName": "Profile Trust Badge Section",
+    "description": "Trust message and related actions displayed on the profile page"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "description": "Main heading for the profile trust badge section"
+    },
+    "description": {
+      "type": "text",
+      "description": "Supporting trust or reassurance message"
+    },
+    "callsToAction": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.cta",
+      "description": "Links or buttons displayed below the trust message"
+    }
+  }
+}
