@@ -35,6 +35,16 @@
         }
       }
     },
+    "sidebarNavigation": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.sidebar-navigation-item",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
     "footerLinkGroups": {
       "type": "component",
       "repeatable": true,

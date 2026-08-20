@@ -258,7 +258,6 @@ export interface GiftingServiceCard extends Struct.ComponentSchema {
     cta: Schema.Attribute.Component<'shared.cta', false>;
     description: Schema.Attribute.Text;
     image: Schema.Attribute.Component<'shared.image-asset', false>;
-    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
@@ -356,7 +355,6 @@ export interface SharedBespokeServiceHighlight extends Struct.ComponentSchema {
     iconAltText: Schema.Attribute.String & Schema.Attribute.Required;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     label: Schema.Attribute.String & Schema.Attribute.Required;
-    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
   };
 }
 
@@ -370,7 +368,6 @@ export interface SharedBespokeVisionCard extends Struct.ComponentSchema {
     description: Schema.Attribute.Text;
     image: Schema.Attribute.Component<'shared.image-asset', false>;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
-    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     stepLabel: Schema.Attribute.String & Schema.Attribute.Required;
     title: Schema.Attribute.String & Schema.Attribute.Required;
     video: Schema.Attribute.Component<'shared.video-asset', false>;
@@ -506,7 +503,6 @@ export interface SharedCategoryCard extends Struct.ComponentSchema {
     cutoutImage: Schema.Attribute.Component<'shared.image-asset', false>;
     hoverImage: Schema.Attribute.Component<'shared.image-asset', false>;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
-    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
@@ -580,14 +576,6 @@ export interface SharedContactOption extends Struct.ComponentSchema {
     description: Schema.Attribute.Text;
     heading: Schema.Attribute.String & Schema.Attribute.Required;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
-    sortOrder: Schema.Attribute.Integer &
-      Schema.Attribute.SetMinMax<
-        {
-          min: 0;
-        },
-        number
-      > &
-      Schema.Attribute.DefaultTo<0>;
     type: Schema.Attribute.Enumeration<['phone', 'email', 'link']> &
       Schema.Attribute.Required;
     value: Schema.Attribute.String & Schema.Attribute.Required;
@@ -624,7 +612,6 @@ export interface SharedContentSection extends Struct.ComponentSchema {
       ['text_only', 'image_left', 'image_right', 'full_bleed']
     > &
       Schema.Attribute.DefaultTo<'text_only'>;
-    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     title: Schema.Attribute.String;
   };
 }
@@ -841,7 +828,7 @@ export interface SharedFeaturedBlogSection extends Struct.ComponentSchema {
 export interface SharedFeaturedProductsCta extends Struct.ComponentSchema {
   collectionName: 'components_shared_featured_products_ctas';
   info: {
-    description: 'CTA configuration for the Featured Products Section without a URL';
+    description: 'CTA configuration for the Featured Products Section';
     displayName: 'Featured Products CTA';
   };
   attributes: {
@@ -851,6 +838,7 @@ export interface SharedFeaturedProductsCta extends Struct.ComponentSchema {
       ['internal', 'external', 'magento']
     > &
       Schema.Attribute.DefaultTo<'internal'>;
+    url: Schema.Attribute.String;
   };
 }
 
@@ -898,7 +886,6 @@ export interface SharedFeaturedStoryCard extends Struct.ComponentSchema {
     image: Schema.Attribute.Component<'shared.image-asset', false> &
       Schema.Attribute.Required;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
-    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     title: Schema.Attribute.String;
   };
 }
@@ -935,7 +922,6 @@ export interface SharedFooterLinkGroup extends Struct.ComponentSchema {
   attributes: {
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     links: Schema.Attribute.Component<'shared.link-item', true>;
-    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
@@ -949,7 +935,6 @@ export interface SharedFooterTickerItem extends Struct.ComponentSchema {
   attributes: {
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     label: Schema.Attribute.String & Schema.Attribute.Required;
-    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
   };
 }
 
@@ -1266,7 +1251,7 @@ export interface SharedLegacyImageBlock extends Struct.ComponentSchema {
     displayName: 'Legacy Image Block';
   };
   attributes: {
-    description: Schema.Attribute.RichText & Schema.Attribute.Required;
+    description: Schema.Attribute.Text & Schema.Attribute.Required;
     image: Schema.Attribute.Component<'shared.image-asset', false>;
   };
 }
@@ -1296,7 +1281,6 @@ export interface SharedLinkItem extends Struct.ComponentSchema {
   attributes: {
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     label: Schema.Attribute.String & Schema.Attribute.Required;
-    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     targetType: Schema.Attribute.Enumeration<
       ['internal', 'external', 'magento']
     > &
@@ -1411,7 +1395,7 @@ export interface SharedPageIntro extends Struct.ComponentSchema {
     displayName: 'Page Intro';
   };
   attributes: {
-    body: Schema.Attribute.RichText & Schema.Attribute.Required;
+    body: Schema.Attribute.Text & Schema.Attribute.Required;
     decorativeImage: Schema.Attribute.Component<'shared.image-asset', false>;
     fourCsTags: Schema.Attribute.Component<'shared.trust-badge', true>;
     heading: Schema.Attribute.String & Schema.Attribute.Required;
@@ -1430,14 +1414,6 @@ export interface SharedPolicyAccordionItem extends Struct.ComponentSchema {
     isOpenByDefault: Schema.Attribute.Boolean &
       Schema.Attribute.DefaultTo<false>;
     question: Schema.Attribute.String & Schema.Attribute.Required;
-    sortOrder: Schema.Attribute.Integer &
-      Schema.Attribute.SetMinMax<
-        {
-          min: 0;
-        },
-        number
-      > &
-      Schema.Attribute.DefaultTo<0>;
   };
 }
 
@@ -1452,14 +1428,6 @@ export interface SharedPolicyCategory extends Struct.ComponentSchema {
     policies: Schema.Attribute.Component<'shared.policy-entry', true> &
       Schema.Attribute.Required;
     slug: Schema.Attribute.String & Schema.Attribute.Required;
-    sortOrder: Schema.Attribute.Integer &
-      Schema.Attribute.SetMinMax<
-        {
-          min: 0;
-        },
-        number
-      > &
-      Schema.Attribute.DefaultTo<0>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
@@ -1477,14 +1445,6 @@ export interface SharedPolicyEntry extends Struct.ComponentSchema {
     >;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     slug: Schema.Attribute.String & Schema.Attribute.Required;
-    sortOrder: Schema.Attribute.Integer &
-      Schema.Attribute.SetMinMax<
-        {
-          min: 0;
-        },
-        number
-      > &
-      Schema.Attribute.DefaultTo<0>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
@@ -1520,7 +1480,6 @@ export interface SharedProcessSection extends Struct.ComponentSchema {
     image: Schema.Attribute.Component<'shared.image-asset', false>;
     sectionTitle: Schema.Attribute.String;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
-    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     steps: Schema.Attribute.Component<'shared.process-step', true>;
   };
 }
@@ -1536,7 +1495,6 @@ export interface SharedProcessStep extends Struct.ComponentSchema {
     icon: Schema.Attribute.Media;
     image: Schema.Attribute.Component<'shared.image-asset', false>;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
-    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
@@ -1615,7 +1573,6 @@ export interface SharedPromoCard extends Struct.ComponentSchema {
     eyebrowText: Schema.Attribute.String;
     image: Schema.Attribute.Component<'shared.image-asset', false>;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
-    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     steps: Schema.Attribute.Component<'shared.process-step', true>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
     video: Schema.Attribute.Component<'shared.video-asset', false>;
@@ -1646,12 +1603,24 @@ export interface SharedShowroomSection extends Struct.ComponentSchema {
     displayName: 'Showroom Section';
   };
   attributes: {
+    cta: Schema.Attribute.Component<'shared.cta', false>;
     description: Schema.Attribute.Text;
     image: Schema.Attribute.Component<'shared.image-asset', false>;
     sectionTitle: Schema.Attribute.String;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     showrooms: Schema.Attribute.Relation<'oneToMany', 'api::showroom.showroom'>;
-    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+  };
+}
+
+export interface SharedSidebarNavigationItem extends Struct.ComponentSchema {
+  collectionName: 'components_shared_sidebar_navigation_items';
+  info: {
+    description: 'Link displayed in the sidebar navigation';
+    displayName: 'Sidebar Navigation Item';
+  };
+  attributes: {
+    label: Schema.Attribute.String & Schema.Attribute.Required;
+    sectionId: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
 
@@ -1688,7 +1657,6 @@ export interface SharedStoreLocationFilter extends Struct.ComponentSchema {
     icon: Schema.Attribute.Component<'shared.image-asset', false>;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     label: Schema.Attribute.String & Schema.Attribute.Required;
-    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     value: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
@@ -1799,7 +1767,6 @@ export interface SharedTrustBadge extends Struct.ComponentSchema {
   attributes: {
     label: Schema.Attribute.String & Schema.Attribute.Required;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
-    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
   };
 }
 
@@ -1945,6 +1912,7 @@ declare module '@strapi/strapi' {
       'shared.promo-card': SharedPromoCard;
       'shared.seo': SharedSeo;
       'shared.showroom-section': SharedShowroomSection;
+      'shared.sidebar-navigation-item': SharedSidebarNavigationItem;
       'shared.size-row': SharedSizeRow;
       'shared.skill-items': SharedSkillItems;
       'shared.store-location-filter': SharedStoreLocationFilter;

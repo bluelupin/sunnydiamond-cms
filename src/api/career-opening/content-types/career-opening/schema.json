@@ -90,10 +90,6 @@
       "component": "shared.cta",
       "repeatable": false
     },
-    "sortOrder": {
-      "type": "integer",
-      "default": 0
-    },
     "isActive": {
       "type": "boolean",
       "default": true

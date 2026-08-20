@@ -1,6 +1,6 @@
 import type { Core } from '@strapi/strapi';
 
-const bySortOrder = { sortOrder: 'asc' } as const;
+const byCreatedAt = { createdAt: 'asc' } as const;
 const obsoleteHomepageFields = ['occasionsTeaser', 'showroomTeaser', 'craftsmanshipSteps'];
 
 const withExistingId = (component: any, data: Record<string, unknown>) => {
@@ -47,15 +47,15 @@ export async function repairHomepageSections(strapi: Core.Strapi) {
   const [occasions, showrooms, collections] = await Promise.all([
     strapi.documents('api::occasion.occasion').findMany({
       status: 'published',
-      sort: bySortOrder,
+      sort: byCreatedAt,
     } as any),
     strapi.documents('api::showroom.showroom').findMany({
       status: 'published',
-      sort: bySortOrder,
+      sort: byCreatedAt,
     } as any),
     strapi.documents('api::editorial-collection.editorial-collection').findMany({
       status: 'published',
-      sort: bySortOrder,
+      sort: byCreatedAt,
     } as any),
   ]);
 
@@ -106,10 +106,10 @@ export async function repairHomepageSections(strapi: Core.Strapi) {
         sectionTitle: 'From Vision to Masterpiece',
         description: 'Our process brings each diamond from first sketch to finished jewel.',
         steps: [
-          { title: 'Design', description: 'Collaborate with our designers to sketch your perfect piece, tailored to your style and story.', sortOrder: 1, isActive: true },
-          { title: 'Source', description: 'Expert gemologists choose Belgium-sourced internally flawless stones adhering to conflict-free mandates.', sortOrder: 2, isActive: true },
-          { title: 'Craft', description: 'Master artisans set each stone to capture ultimate light in our dedicated atelier.', sortOrder: 3, isActive: true },
-          { title: 'Deliver', description: 'Secure complimentary shipping directly to your doorstep with guaranteed certification.', sortOrder: 4, isActive: true },
+          { title: 'Design', description: 'Collaborate with our designers to sketch your perfect piece, tailored to your style and story.', isActive: true },
+          { title: 'Source', description: 'Expert gemologists choose Belgium-sourced internally flawless stones adhering to conflict-free mandates.', isActive: true },
+          { title: 'Craft', description: 'Master artisans set each stone to capture ultimate light in our dedicated atelier.', isActive: true },
+          { title: 'Deliver', description: 'Secure complimentary shipping directly to your doorstep with guaranteed certification.', isActive: true },
         ],
         isActive: true,
       }),

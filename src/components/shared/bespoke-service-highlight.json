@@ -8,7 +8,6 @@
   "attributes": {
     "icon": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
     "label": { "type": "string", "required": true },
-    "sortOrder": { "type": "integer", "default": 0 },
     "isActive": { "type": "boolean", "default": true },
     "iconAltText": { "type": "string", "required": true }
   }

@@ -6,7 +6,6 @@ import { factories } from '@strapi/strapi';
 import { requestLocale } from '../../../utils/request-locale';
 
 const imageAssetPopulate = {
-  fields: ['altText'],
   populate: {
     desktopImage: true,
     mobileImage: true,
@@ -51,7 +50,7 @@ const populate = {
     populate: {
       decorativeImage: imageAssetPopulate,
       fourCsTags: {
-        fields: ['label', 'sortOrder', 'showField'],
+        fields: ['label', 'showField'],
       },
     },
   },

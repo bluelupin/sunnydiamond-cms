@@ -2,10 +2,13 @@
   "collectionName": "components_shared_featured_products_ctas",
   "info": {
     "displayName": "Featured Products CTA",
-    "description": "CTA configuration for the Featured Products Section without a URL"
+    "description": "CTA configuration for the Featured Products Section"
   },
   "attributes": {
     "label": {
+      "type": "string"
+    },
+    "url": {
       "type": "string"
     },
     "targetType": {

@@ -35,10 +35,6 @@
       "component": "shared.process-step",
       "repeatable": true
     },
-    "sortOrder": {
-      "type": "integer",
-      "default": 0
-    },
     "isActive": {
       "type": "boolean",
       "default": true

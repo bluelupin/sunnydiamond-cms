@@ -7,7 +7,7 @@
   "options": {},
   "attributes": {
     "description": {
-      "type": "richtext",
+      "type": "text",
       "required": true
     },
     "image": {

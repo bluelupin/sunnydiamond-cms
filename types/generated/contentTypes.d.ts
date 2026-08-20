@@ -1004,7 +1004,6 @@ export interface ApiCareerOpeningCareerOpening
         };
       }>;
     slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
-    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     summary: Schema.Attribute.Text &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
@@ -1335,7 +1334,6 @@ export interface ApiEditorialCollectionEditorialCollection
     productSkus: Schema.Attribute.Component<'shared.product-sku', true>;
     publishedAt: Schema.Attribute.DateTime;
     slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
-    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     title: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.SetPluginOptions<{
@@ -1377,7 +1375,7 @@ export interface ApiFeaturedStoryFeaturedStory
           localized: true;
         };
       }>;
-    description: Schema.Attribute.RichText &
+    description: Schema.Attribute.Text &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -1701,6 +1699,15 @@ export interface ApiGlobalConfigGlobalConfig extends Struct.SingleTypeSchema {
           localized: true;
         };
       }>;
+    sidebarNavigation: Schema.Attribute.Component<
+      'shared.sidebar-navigation-item',
+      true
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1986,7 +1993,6 @@ export interface ApiOccasionOccasion extends Struct.CollectionTypeSchema {
     >;
     publishedAt: Schema.Attribute.DateTime;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
-    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     title: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.SetPluginOptions<{
@@ -2475,7 +2481,6 @@ export interface ApiShowroomShowroom extends Struct.CollectionTypeSchema {
     phone: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
-    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     state: Schema.Attribute.String &
       Schema.Attribute.SetPluginOptions<{
         i18n: {

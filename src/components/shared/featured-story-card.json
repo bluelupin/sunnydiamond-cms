@@ -9,7 +9,6 @@
     "image": { "type": "component", "repeatable": false, "component": "shared.image-asset", "required": true },
     "title": { "type": "string" },
     "cta": { "type": "component", "repeatable": false, "component": "shared.cta" },
-    "sortOrder": { "type": "integer", "default": 0 },
     "isActive": { "type": "boolean", "default": true }
   }
 }

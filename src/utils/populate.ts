@@ -3,7 +3,6 @@ export const mediaPopulate = {
 };
 
 export const imageAssetPopulate = {
-  fields: ['altText'],
   populate: {
     desktopImage: true,
     mobileImage: true,
@@ -53,7 +52,7 @@ export const fullSeoPopulate = {
 };
 
 export const occasionPopulate = {
-  fields: ['title', 'description', 'sortOrder', 'showField'],
+  fields: ['title', 'description', 'showField'],
   populate: {
     image: imageAssetPopulate,
     cta: ctaPopulate,
@@ -62,7 +61,7 @@ export const occasionPopulate = {
 
 
 export const showroomPopulate = {
-  fields: ['name', 'slug', 'address', 'city', 'state', 'phone', 'email', 'mapUrl', 'openingHours', 'sortOrder', 'isActive'],
+  fields: ['name', 'slug', 'address', 'city', 'state', 'phone', 'email', 'mapUrl', 'openingHours', 'isActive'],
   populate: {
     image: imageAssetPopulate,
   },

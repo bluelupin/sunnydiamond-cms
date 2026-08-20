@@ -5,7 +5,6 @@
     "title": { "type": "string", "required": true },
     "description": { "type": "text" },
     "image": { "type": "component", "component": "shared.image-asset", "repeatable": false },
-    "cta": { "type": "component", "component": "shared.cta", "repeatable": false },
-    "sortOrder": { "type": "integer", "default": 0 }
+    "cta": { "type": "component", "component": "shared.cta", "repeatable": false }
   }
 }
