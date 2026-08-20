@@ -168,7 +168,7 @@ const globalHeaderPopulate = {
     fields: ['label', 'url', 'targetType', 'sortOrder', 'isActive'],
   },
   sidebarNavigation: {
-    fields: ['label', 'url'],
+    fields: ['label', 'sectionId'],
   },
   footerLinkGroups: {
     fields: ['title', 'sortOrder', 'isActive'],

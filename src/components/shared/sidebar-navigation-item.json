@@ -9,7 +9,7 @@
       "type": "string",
       "required": true
     },
-    "url": {
+    "sectionId": {
       "type": "string",
       "required": true
     }
