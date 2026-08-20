@@ -3,7 +3,6 @@ export const mediaPopulate = {
 };
 
 export const imageAssetPopulate = {
-  fields: ['altText'],
   populate: {
     desktopImage: true,
     mobileImage: true,

@@ -6,7 +6,6 @@ import { factories } from '@strapi/strapi';
 import { requestLocale } from '../../../utils/request-locale';
 
 const imageAssetPopulate = {
-  fields: ['altText'],
   populate: {
     desktopImage: true,
     mobileImage: true,
