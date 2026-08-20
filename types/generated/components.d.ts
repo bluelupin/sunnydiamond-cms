@@ -1606,6 +1606,18 @@ export interface SharedShowroomSection extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedSidebarNavigationItem extends Struct.ComponentSchema {
+  collectionName: 'components_shared_sidebar_navigation_items';
+  info: {
+    description: 'Link displayed in the sidebar navigation';
+    displayName: 'Sidebar Navigation Item';
+  };
+  attributes: {
+    label: Schema.Attribute.String & Schema.Attribute.Required;
+    url: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface SharedSizeRow extends Struct.ComponentSchema {
   collectionName: 'components_shared_size_rows';
   info: {
@@ -1893,6 +1905,7 @@ declare module '@strapi/strapi' {
       'shared.promo-card': SharedPromoCard;
       'shared.seo': SharedSeo;
       'shared.showroom-section': SharedShowroomSection;
+      'shared.sidebar-navigation-item': SharedSidebarNavigationItem;
       'shared.size-row': SharedSizeRow;
       'shared.skill-items': SharedSkillItems;
       'shared.store-location-filter': SharedStoreLocationFilter;

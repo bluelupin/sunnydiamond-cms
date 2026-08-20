@@ -1701,6 +1701,15 @@ export interface ApiGlobalConfigGlobalConfig extends Struct.SingleTypeSchema {
           localized: true;
         };
       }>;
+    sidebarNavigation: Schema.Attribute.Component<
+      'shared.sidebar-navigation-item',
+      true
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

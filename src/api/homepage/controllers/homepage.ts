@@ -167,6 +167,9 @@ const globalHeaderPopulate = {
   headerNavigationLinks: {
     fields: ['label', 'url', 'targetType', 'sortOrder', 'isActive'],
   },
+  sidebarNavigation: {
+    fields: ['label', 'url'],
+  },
   footerLinkGroups: {
     fields: ['title', 'sortOrder', 'isActive'],
     populate: {

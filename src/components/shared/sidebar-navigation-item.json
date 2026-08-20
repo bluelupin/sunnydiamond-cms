@@ -1,0 +1,17 @@
+{
+  "collectionName": "components_shared_sidebar_navigation_items",
+  "info": {
+    "displayName": "Sidebar Navigation Item",
+    "description": "Link displayed in the sidebar navigation"
+  },
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true
+    },
+    "url": {
+      "type": "string",
+      "required": true
+    }
+  }
+}
