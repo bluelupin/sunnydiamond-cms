@@ -41,7 +41,7 @@ const diamondSourcingSectionPopulate = {
 const featuredProductsSectionPopulate = {
   populate: {
     cta: {
-      fields: ['label', 'targetType', 'openInNewTab'],
+      fields: ['label', 'url', 'targetType', 'openInNewTab'],
     },
   },
 };

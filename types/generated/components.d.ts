@@ -841,7 +841,7 @@ export interface SharedFeaturedBlogSection extends Struct.ComponentSchema {
 export interface SharedFeaturedProductsCta extends Struct.ComponentSchema {
   collectionName: 'components_shared_featured_products_ctas';
   info: {
-    description: 'CTA configuration for the Featured Products Section without a URL';
+    description: 'CTA configuration for the Featured Products Section';
     displayName: 'Featured Products CTA';
   };
   attributes: {
@@ -851,6 +851,7 @@ export interface SharedFeaturedProductsCta extends Struct.ComponentSchema {
       ['internal', 'external', 'magento']
     > &
       Schema.Attribute.DefaultTo<'internal'>;
+    url: Schema.Attribute.String;
   };
 }
 
