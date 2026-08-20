@@ -1693,16 +1693,16 @@ export interface ApiGlobalConfigGlobalConfig extends Struct.SingleTypeSchema {
     >;
     paymentMethodLogos: Schema.Attribute.Media<undefined, true>;
     publishedAt: Schema.Attribute.DateTime;
-    socialLinks: Schema.Attribute.Component<'shared.link-item', true> &
+    sidebarNavigation: Schema.Attribute.Component<
+      'shared.sidebar-navigation-item',
+      true
+    > &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
         };
       }>;
-    sidebarNavigation: Schema.Attribute.Component<
-      'shared.sidebar-navigation-item',
-      true
-    > &
+    socialLinks: Schema.Attribute.Component<'shared.link-item', true> &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -2369,7 +2369,7 @@ export interface ApiProfilePageProfilePage extends Struct.SingleTypeSchema {
       Schema.Attribute.Required;
     trustBadgeSection: Schema.Attribute.Component<
       'shared.profile-trust-badge-section',
-      false
+      true
     >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &

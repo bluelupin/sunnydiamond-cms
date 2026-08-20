@@ -27,9 +27,9 @@
     },
     "trustBadgeSection": {
       "type": "component",
-      "repeatable": false,
+      "repeatable": true,
       "component": "shared.profile-trust-badge-section",
-      "description": "Trust message with repeatable calls to action"
+      "description": "Repeatable trust messages with calls to action"
     }
   }
 }

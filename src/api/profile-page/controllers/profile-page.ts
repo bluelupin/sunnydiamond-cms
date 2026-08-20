@@ -3,5 +3,28 @@
  */
 
 import { factories } from '@strapi/strapi';
+import { ctaPopulate, imageAssetPopulate } from '../../../utils/populate';
 
-export default factories.createCoreController('api::profile-page.profile-page');
+const populate = {
+  backgroundImage: imageAssetPopulate,
+  sideTabs: true,
+  trustBadgeSection: {
+    populate: {
+      callsToAction: ctaPopulate,
+    },
+  },
+};
+
+export default factories.createCoreController(
+  'api::profile-page.profile-page',
+  () => ({
+    async find(ctx) {
+      ctx.query = {
+        ...ctx.query,
+        populate,
+      } as any;
+
+      return super.find(ctx);
+    },
+  })
+);
