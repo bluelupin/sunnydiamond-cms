@@ -1251,7 +1251,7 @@ export interface SharedLegacyImageBlock extends Struct.ComponentSchema {
     displayName: 'Legacy Image Block';
   };
   attributes: {
-    description: Schema.Attribute.RichText & Schema.Attribute.Required;
+    description: Schema.Attribute.Text & Schema.Attribute.Required;
     image: Schema.Attribute.Component<'shared.image-asset', false>;
   };
 }
@@ -1395,7 +1395,7 @@ export interface SharedPageIntro extends Struct.ComponentSchema {
     displayName: 'Page Intro';
   };
   attributes: {
-    body: Schema.Attribute.RichText & Schema.Attribute.Required;
+    body: Schema.Attribute.Text & Schema.Attribute.Required;
     decorativeImage: Schema.Attribute.Component<'shared.image-asset', false>;
     fourCsTags: Schema.Attribute.Component<'shared.trust-badge', true>;
     heading: Schema.Attribute.String & Schema.Attribute.Required;

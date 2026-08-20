@@ -1375,7 +1375,7 @@ export interface ApiFeaturedStoryFeaturedStory
           localized: true;
         };
       }>;
-    description: Schema.Attribute.RichText &
+    description: Schema.Attribute.Text &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
