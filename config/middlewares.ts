@@ -43,6 +43,7 @@ const config: Core.Config.Middlewares = [
   },
   'strapi::session',
   'strapi::favicon',
+  'global::admin-cache-control',
   'strapi::public',
 ];
 
