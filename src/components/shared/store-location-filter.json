@@ -18,10 +18,6 @@
       "component": "shared.image-asset",
       "repeatable": false
     },
-    "sortOrder": {
-      "type": "integer",
-      "default": 0
-    },
     "isActive": {
       "type": "boolean",
       "default": true

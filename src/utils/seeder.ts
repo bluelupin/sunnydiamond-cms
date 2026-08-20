@@ -277,7 +277,6 @@ export async function seedCms(strapi: Core.Strapi) {
           phone: '+91 97443 55555',
           mapUrl: 'https://maps.google.com/?q=Sunny+Diamonds+Kochi',
           openingHours: 'Mon-Sat: 10:00 AM - 8:00 PM',
-          sortOrder: 1,
           isActive: true,
           publishedAt: new Date(),
         },
@@ -290,7 +289,6 @@ export async function seedCms(strapi: Core.Strapi) {
           phone: '+91 97443 55555',
           mapUrl: 'https://maps.google.com/?q=Sunny+Diamonds+Calicut',
           openingHours: 'Mon-Sat: 10:00 AM - 8:00 PM',
-          sortOrder: 2,
           isActive: true,
           publishedAt: new Date(),
         },
@@ -303,7 +301,6 @@ export async function seedCms(strapi: Core.Strapi) {
           phone: '+91 97443 55555',
           mapUrl: 'https://maps.google.com/?q=Sunny+Diamonds+Thrissur',
           openingHours: 'Mon-Sat: 10:00 AM - 8:00 PM',
-          sortOrder: 3,
           isActive: true,
           publishedAt: new Date(),
         },
@@ -316,7 +313,6 @@ export async function seedCms(strapi: Core.Strapi) {
           phone: '+91 97443 55555',
           mapUrl: 'https://maps.google.com/?q=Sunny+Diamonds+Coimbatore',
           openingHours: 'Mon-Sat: 10:00 AM - 8:00 PM',
-          sortOrder: 4,
           isActive: true,
           publishedAt: new Date(),
         },
@@ -329,7 +325,6 @@ export async function seedCms(strapi: Core.Strapi) {
           phone: '+91 9744355555',
           mapUrl: 'https://maps.google.com/?q=Sunny+Diamonds+Trivandrum',
           openingHours: 'Mon-Sat: 10:00 AM - 8:00 PM',
-          sortOrder: 5,
           isActive: true,
           publishedAt: new Date(),
         },
@@ -344,7 +339,7 @@ export async function seedCms(strapi: Core.Strapi) {
       strapi.log.info('Showrooms already exist. Skipping.');
       seededShowrooms = await strapi.documents('api::showroom.showroom').findMany({
         status: 'published',
-        sort: { sortOrder: 'asc' },
+        sort: { createdAt: 'asc' },
       } as any);
     }
 
@@ -356,21 +351,18 @@ export async function seedCms(strapi: Core.Strapi) {
         {
           title: 'Festival',
           description: 'Timeless pieces for festival occasions.',
-          sortOrder: 1,
           showField: true,
           publishedAt: new Date(),
         },
         {
           title: 'Cocktail',
           description: 'Premium collections for cocktail parties.',
-          sortOrder: 2,
           showField: true,
           publishedAt: new Date(),
         },
         {
           title: 'Wedding',
           description: 'Exquisite settings for your special day.',
-          sortOrder: 3,
           showField: true,
           publishedAt: new Date(),
         },
@@ -385,7 +377,7 @@ export async function seedCms(strapi: Core.Strapi) {
       strapi.log.info('Occasions already exist. Skipping.');
       seededOccasions = await strapi.documents('api::occasion.occasion').findMany({
         status: 'published',
-        sort: { sortOrder: 'asc' },
+        sort: { createdAt: 'asc' },
       } as any);
     }
 
@@ -403,7 +395,6 @@ export async function seedCms(strapi: Core.Strapi) {
             description: 'Celestial Solitaire Ring, Aurora Halo Ring, Lumiere Pendant Necklace, and Riviere Tennis Bracelet.',
             isActive: true,
           },
-          sortOrder: 1,
           isActive: true,
           publishedAt: new Date(),
         },
@@ -413,81 +404,77 @@ export async function seedCms(strapi: Core.Strapi) {
       strapi.log.info('Editorial Collections already exist. Skipping.');
       seededCollections = await strapi.documents('api::editorial-collection.editorial-collection').findMany({
         status: 'published',
-        sort: { sortOrder: 'asc' },
+        sort: { createdAt: 'asc' },
       } as any);
     }
 
     // 4. Seed Global Config Single Type (api::global-config.global-config)
     const globalConfigData = {
         headerNavigationLinks: [
-          { label: 'Jewellery', url: '/products', targetType: 'internal' as 'internal', sortOrder: 1, isActive: true },
-          { label: 'Collection', url: '/products', targetType: 'internal' as 'internal', sortOrder: 2, isActive: true },
-          { label: 'Gifting', url: '/products', targetType: 'internal' as 'internal', sortOrder: 3, isActive: true },
-          { label: 'Bespoke', url: '/contact', targetType: 'internal' as 'internal', sortOrder: 4, isActive: true },
-          { label: 'World of Sunny', url: '/about', targetType: 'internal' as 'internal', sortOrder: 5, isActive: true },
+          { label: 'Jewellery', url: '/products', targetType: 'internal' as 'internal', isActive: true },
+          { label: 'Collection', url: '/products', targetType: 'internal' as 'internal', isActive: true },
+          { label: 'Gifting', url: '/products', targetType: 'internal' as 'internal', isActive: true },
+          { label: 'Bespoke', url: '/contact', targetType: 'internal' as 'internal', isActive: true },
+          { label: 'World of Sunny', url: '/about', targetType: 'internal' as 'internal', isActive: true },
         ],
         footerLinkGroups: [
           {
             title: 'Our Company',
-            sortOrder: 1,
             isActive: true,
             links: [
-              { label: 'About Us', url: '/about', targetType: 'internal' as 'internal', sortOrder: 1, isActive: true },
-              { label: 'Learn About Diamonds', url: '/education', targetType: 'internal' as 'internal', sortOrder: 2, isActive: true },
-              { label: 'Diamonds For Everyone', url: '/diamonds-for-everyone', targetType: 'internal' as 'internal', sortOrder: 3, isActive: true },
-              { label: 'Careers', url: '/careers', targetType: 'internal' as 'internal', sortOrder: 4, isActive: true },
-              { label: 'News', url: '/news', targetType: 'internal' as 'internal', sortOrder: 5, isActive: true },
-              { label: 'Blog', url: '/blogs', targetType: 'internal' as 'internal', sortOrder: 6, isActive: true },
+              { label: 'About Us', url: '/about', targetType: 'internal' as 'internal', isActive: true },
+              { label: 'Learn About Diamonds', url: '/education', targetType: 'internal' as 'internal', isActive: true },
+              { label: 'Diamonds For Everyone', url: '/diamonds-for-everyone', targetType: 'internal' as 'internal', isActive: true },
+              { label: 'Careers', url: '/careers', targetType: 'internal' as 'internal', isActive: true },
+              { label: 'News', url: '/news', targetType: 'internal' as 'internal', isActive: true },
+              { label: 'Blog', url: '/blogs', targetType: 'internal' as 'internal', isActive: true },
             ],
           },
           {
             title: 'Support',
-            sortOrder: 2,
             isActive: true,
             links: [
-              { label: 'Contact Us', url: '/contact', targetType: 'internal' as 'internal', sortOrder: 1, isActive: true },
-              { label: 'Store Locator', url: '/store-locator', targetType: 'internal' as 'internal', sortOrder: 2, isActive: true },
-              { label: 'FAQs', url: '/faqs', targetType: 'internal' as 'internal', sortOrder: 3, isActive: true },
-              { label: 'Help and Support', url: '/help-and-support', targetType: 'internal' as 'internal', sortOrder: 4, isActive: true },
+              { label: 'Contact Us', url: '/contact', targetType: 'internal' as 'internal', isActive: true },
+              { label: 'Store Locator', url: '/store-locator', targetType: 'internal' as 'internal', isActive: true },
+              { label: 'FAQs', url: '/faqs', targetType: 'internal' as 'internal', isActive: true },
+              { label: 'Help and Support', url: '/help-and-support', targetType: 'internal' as 'internal', isActive: true },
             ],
           },
           {
             title: 'Services',
-            sortOrder: 3,
             isActive: true,
             links: [
-              { label: 'Book an Appointment', url: '/book-an-appointment', targetType: 'internal' as 'internal', sortOrder: 1, isActive: true },
-              { label: 'Bespoke Jewellery', url: '/bespoke-jewellery', targetType: 'internal' as 'internal', sortOrder: 2, isActive: true },
-              { label: 'Monthly Plans', url: '/monthly-plans', targetType: 'internal' as 'internal', sortOrder: 3, isActive: true },
-              { label: 'Gift Card', url: '/gift-card', targetType: 'internal' as 'internal', sortOrder: 4, isActive: true },
-              { label: 'Finance Options', url: '/finance-options', targetType: 'internal' as 'internal', sortOrder: 5, isActive: true },
+              { label: 'Book an Appointment', url: '/book-an-appointment', targetType: 'internal' as 'internal', isActive: true },
+              { label: 'Bespoke Jewellery', url: '/bespoke-jewellery', targetType: 'internal' as 'internal', isActive: true },
+              { label: 'Monthly Plans', url: '/monthly-plans', targetType: 'internal' as 'internal', isActive: true },
+              { label: 'Gift Card', url: '/gift-card', targetType: 'internal' as 'internal', isActive: true },
+              { label: 'Finance Options', url: '/finance-options', targetType: 'internal' as 'internal', isActive: true },
             ],
           },
           {
             title: 'Legal',
-            sortOrder: 4,
             isActive: true,
             links: [
-              { label: 'Returns and Cancellations', url: '/returns-and-cancellations', targetType: 'internal' as 'internal', sortOrder: 1, isActive: true },
-              { label: 'Exchange and Resizing', url: '/exchange-and-resizing', targetType: 'internal' as 'internal', sortOrder: 2, isActive: true },
-              { label: 'Shipping & Delivery', url: '/shipping-delivery', targetType: 'internal' as 'internal', sortOrder: 3, isActive: true },
-              { label: 'Cash on Delivery Policy', url: '/cash-on-delivery-policy', targetType: 'internal' as 'internal', sortOrder: 4, isActive: true },
-              { label: 'Old Gold Purchase Policy (Kerala Only)', url: '/old-gold-purchase-policy-kerala-only', targetType: 'internal' as 'internal', sortOrder: 5, isActive: true },
-              { label: 'Privacy Policy', url: '/privacy-policy', targetType: 'internal' as 'internal', sortOrder: 6, isActive: true },
-              { label: 'Terms & Conditions', url: '/terms-and-conditions', targetType: 'internal' as 'internal', sortOrder: 7, isActive: true },
-              { label: 'Policy and Certification', url: '/policy-and-certification', targetType: 'internal' as 'internal', sortOrder: 8, isActive: true },
+              { label: 'Returns and Cancellations', url: '/returns-and-cancellations', targetType: 'internal' as 'internal', isActive: true },
+              { label: 'Exchange and Resizing', url: '/exchange-and-resizing', targetType: 'internal' as 'internal', isActive: true },
+              { label: 'Shipping & Delivery', url: '/shipping-delivery', targetType: 'internal' as 'internal', isActive: true },
+              { label: 'Cash on Delivery Policy', url: '/cash-on-delivery-policy', targetType: 'internal' as 'internal', isActive: true },
+              { label: 'Old Gold Purchase Policy (Kerala Only)', url: '/old-gold-purchase-policy-kerala-only', targetType: 'internal' as 'internal', isActive: true },
+              { label: 'Privacy Policy', url: '/privacy-policy', targetType: 'internal' as 'internal', isActive: true },
+              { label: 'Terms & Conditions', url: '/terms-and-conditions', targetType: 'internal' as 'internal', isActive: true },
+              { label: 'Policy and Certification', url: '/policy-and-certification', targetType: 'internal' as 'internal', isActive: true },
             ],
           },
         ],
         footerTickerItems: [
-          { label: '100% MONEYBACK GUARANTEE', sortOrder: 1, isActive: true },
-          { label: 'BIS HALLMARK FOR JEWELLERY', sortOrder: 2, isActive: true },
-          { label: 'CASH ON DELIVERY', sortOrder: 3, isActive: true },
-          { label: 'INTERNALLY FLAWLESS DIAMONDS', sortOrder: 4, isActive: true },
+          { label: '100% MONEYBACK GUARANTEE', isActive: true },
+          { label: 'BIS HALLMARK FOR JEWELLERY', isActive: true },
+          { label: 'CASH ON DELIVERY', isActive: true },
+          { label: 'INTERNALLY FLAWLESS DIAMONDS', isActive: true },
         ],
         socialLinks: [
-          { label: 'Instagram', url: 'https://instagram.com/sunnydiamonds', targetType: 'external' as 'external', sortOrder: 1, isActive: true },
-          { label: 'Facebook', url: 'https://facebook.com/sunnydiamonds', targetType: 'external' as 'external', sortOrder: 2, isActive: true },
+          { label: 'Instagram', url: 'https://instagram.com/sunnydiamonds', targetType: 'external' as 'external', isActive: true },
+          { label: 'Facebook', url: 'https://facebook.com/sunnydiamonds', targetType: 'external' as 'external', isActive: true },
         ],
         footerCopyright: '© 2026 Sunny Diamonds. All Rights Reserved.',
         defaultSeo: {
@@ -507,16 +494,16 @@ export async function seedCms(strapi: Core.Strapi) {
           showField: true,
         },
         trustBadges: [
-          { label: 'BIS Halmark for Jewellery', sortOrder: 1, showField: true },
-          { label: 'Cash on Delivery', sortOrder: 2, showField: true },
-          { label: 'Internally Flawless Diamonds', sortOrder: 3, showField: true },
-          { label: '100% Moneyback Guarantee', sortOrder: 4, showField: true },
+          { label: 'BIS Halmark for Jewellery', showField: true },
+          { label: 'Cash on Delivery', showField: true },
+          { label: 'Internally Flawless Diamonds', showField: true },
+          { label: '100% Moneyback Guarantee', showField: true },
         ],
         categoryCards: [
-          { title: 'RINGS', sortOrder: 1, showField: true, cta: { label: 'Explore Rings', url: '/products?category=Rings', targetType: 'internal' as 'internal' } },
-          { title: 'EARRINGS', sortOrder: 2, showField: true, cta: { label: 'Explore Earrings', url: '/products?category=Earrings', targetType: 'internal' as 'internal' } },
-          { title: 'BRACELETS', sortOrder: 3, showField: true, cta: { label: 'Explore Bracelets', url: '/products?category=Bracelets', targetType: 'internal' as 'internal' } },
-          { title: 'NECKLACE', sortOrder: 4, showField: true, cta: { label: 'Explore Necklaces', url: '/products?category=Necklaces', targetType: 'internal' as 'internal' } },
+          { title: 'RINGS', showField: true, cta: { label: 'Explore Rings', url: '/products?category=Rings', targetType: 'internal' as 'internal' } },
+          { title: 'EARRINGS', showField: true, cta: { label: 'Explore Earrings', url: '/products?category=Earrings', targetType: 'internal' as 'internal' } },
+          { title: 'BRACELETS', showField: true, cta: { label: 'Explore Bracelets', url: '/products?category=Bracelets', targetType: 'internal' as 'internal' } },
+          { title: 'NECKLACE', showField: true, cta: { label: 'Explore Necklaces', url: '/products?category=Necklaces', targetType: 'internal' as 'internal' } },
         ],
         diamondSourcingSection: {
           title: 'Internally flawless diamonds, sourced from Belgium',
@@ -552,10 +539,10 @@ export async function seedCms(strapi: Core.Strapi) {
           sectionTitle: 'From Vision to Masterpiece',
           description: 'Our process brings each diamond from first sketch to finished jewel.',
           steps: [
-            { title: 'Design', description: 'Collaborate with our designers to sketch your perfect piece, tailored to your style and story.', sortOrder: 1, isActive: true },
-            { title: 'Source', description: 'Expert gemologists choose Belgium-sourced internally flawless stones adhering to conflict-free mandates.', sortOrder: 2, isActive: true },
-            { title: 'Craft', description: 'Master artisans set each stone to capture ultimate light in our dedicated atelier.', sortOrder: 3, isActive: true },
-            { title: 'Deliver', description: 'Secure complimentary shipping directly to your doorstep with guaranteed certification.', sortOrder: 4, isActive: true },
+            { title: 'Design', description: 'Collaborate with our designers to sketch your perfect piece, tailored to your style and story.', isActive: true },
+            { title: 'Source', description: 'Expert gemologists choose Belgium-sourced internally flawless stones adhering to conflict-free mandates.', isActive: true },
+            { title: 'Craft', description: 'Master artisans set each stone to capture ultimate light in our dedicated atelier.', isActive: true },
+            { title: 'Deliver', description: 'Secure complimentary shipping directly to your doorstep with guaranteed certification.', isActive: true },
           ],
           showField: true,
         },
@@ -882,16 +869,15 @@ export async function seedCms(strapi: Core.Strapi) {
         contactEmail: 'hello@sunnydiamonds.com',
         contactPhone: '+1 (555) 123-4567',
         bespokeSteps: [
-          { title: 'Design Sketching', description: 'Sketch your vision with certified, custom-design advisors.', sortOrder: 1, isActive: true },
-          { title: 'Sourcing Selection', description: 'Filter the ultimate Belgian conflict-free diamonds.', sortOrder: 2, isActive: true },
-          { title: 'Master Crafting', description: 'Artisanal setting of your custom solitaire or pendant.', sortOrder: 3, isActive: true },
-          { title: 'Secure Delivery', description: 'Safe shipping straight to your home with certification.', sortOrder: 4, isActive: true },
+          { title: 'Design Sketching', description: 'Sketch your vision with certified, custom-design advisors.', isActive: true },
+          { title: 'Sourcing Selection', description: 'Filter the ultimate Belgian conflict-free diamonds.', isActive: true },
+          { title: 'Master Crafting', description: 'Artisanal setting of your custom solitaire or pendant.', isActive: true },
+          { title: 'Secure Delivery', description: 'Safe shipping straight to your home with certification.', isActive: true },
         ],
         promoCards: [
           {
             title: 'Visit Our Boutique',
             description: '123 Diamond Avenue, New York, NY 10001',
-            sortOrder: 1,
             isActive: true,
           },
         ],

@@ -14,7 +14,7 @@ const HOMEPAGE_UID = 'api::homepage.homepage';
 const GLOBAL_CONFIG_UID = 'api::global-config.global-config';
 
 const categoryCardPopulate = {
-  fields: ['title', 'sortOrder','showField'],
+  fields: ['title', 'showField'],
   populate: {
     hoverImage: imageAssetPopulate,
     cutoutImage: imageAssetPopulate,
@@ -81,7 +81,7 @@ const diamondsForEveryonePopulate = {
 };
 
 const processStepPopulate = {
-  fields: ['title', 'description', 'sortOrder', 'isActive'],
+  fields: ['title', 'description', 'isActive'],
   populate: {
     icon: mediaPopulate,
     image: imageAssetPopulate,
@@ -96,7 +96,7 @@ const occasionSectionPopulate = {
 };
 
 const processSectionPopulate = {
-  fields: ['sectionTitle', 'description', 'sortOrder', 'showField'],
+  fields: ['sectionTitle', 'description', 'showField'],
   populate: {
     image: imageAssetPopulate,
     steps: processStepPopulate,
@@ -106,7 +106,7 @@ const processSectionPopulate = {
 };
 
 const showroomSectionPopulate = {
-  fields: ['sectionTitle', 'description', 'sortOrder', 'showField'],
+  fields: ['sectionTitle', 'description', 'showField'],
   populate: {
     image: imageAssetPopulate,
     cta: ctaPopulate,
@@ -143,7 +143,6 @@ const collectionShowcaseSectionPopulate = {
         'slug',
         'description',
         'featuredProductSku',
-        'sortOrder',
         'isActive',
       ],
       populate: {
@@ -165,24 +164,24 @@ const globalHeaderPopulate = {
     },
   },
   headerNavigationLinks: {
-    fields: ['label', 'url', 'targetType', 'sortOrder', 'isActive'],
+    fields: ['label', 'url', 'targetType', 'isActive'],
   },
   sidebarNavigation: {
     fields: ['label', 'sectionId'],
   },
   footerLinkGroups: {
-    fields: ['title', 'sortOrder', 'isActive'],
+    fields: ['title', 'isActive'],
     populate: {
       links: {
-        fields: ['label', 'url', 'targetType', 'sortOrder', 'isActive'],
+        fields: ['label', 'url', 'targetType', 'isActive'],
       },
     },
   },
   footerTickerItems: {
-    fields: ['label', 'sortOrder', 'isActive'],
+    fields: ['label', 'isActive'],
   },
   socialLinks: {
-    fields: ['label', 'url', 'targetType', 'sortOrder', 'isActive'],
+    fields: ['label', 'url', 'targetType', 'isActive'],
   },
   paymentMethodLogos: mediaPopulate,
   defaultSeo: seoPopulate,
@@ -201,7 +200,7 @@ const homepageShellPopulate = {
 
 const homepageSectionsPopulate = {
   trustBadges: {
-    fields: ['label', 'sortOrder', 'showField'],
+    fields: ['label', 'showField'],
   },
   craftingBrillianceSection: craftingBrillianceSectionPopulate,
   categoryCards: categoryCardPopulate,
@@ -314,7 +313,7 @@ const attachOccasionsAndShowrooms = async (
           status: 'published',
           locale,
           filters: { showField: true },
-          sort: ['sortOrder:asc'],
+          sort: ['createdAt:asc'],
           populate: occasionRelationFallbackPopulate,
         } as any)
       : Promise.resolve([]),
@@ -323,7 +322,7 @@ const attachOccasionsAndShowrooms = async (
           status: 'published',
           locale,
           filters: { isActive: true },
-          sort: ['sortOrder:asc'],
+          sort: ['createdAt:asc'],
           populate: showroomRelationFallbackPopulate,
         } as any)
       : Promise.resolve([]),

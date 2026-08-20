@@ -125,7 +125,6 @@ function mapCategoryCards(cards: any[]): any[] {
   if (!Array.isArray(cards)) return [];
   return cards.map((card) => {
     const title = getVal(card, 'title');
-    const sortOrder = getVal(card, 'sortOrder');
     const isActive = getVal(card, 'isActive');
     const hoverImage = getVal(card, 'hoverImage');
     const cutoutImage = getVal(card, 'cutoutImage');
@@ -133,7 +132,6 @@ function mapCategoryCards(cards: any[]): any[] {
 
     return {
       title: title || '',
-      sortOrder: typeof sortOrder === 'number' ? sortOrder : 0,
       isActive: typeof isActive === 'boolean' ? isActive : true,
       showField: typeof isActive === 'boolean' ? isActive : true,
       hoverImage: mapImageAsset(hoverImage),
@@ -307,7 +305,6 @@ function mapCraftsmanship(section: any): any {
   if (!section) return null;
   const sectionTitle = getVal(section, 'sectionTitle');
   const description = getVal(section, 'description');
-  const sortOrder = getVal(section, 'sortOrder');
   const isActive = getVal(section, 'isActive');
   const cta = getVal(section, 'cta');
   const image = getVal(section, 'image');
@@ -316,7 +313,6 @@ function mapCraftsmanship(section: any): any {
   return {
     sectionTitle: sectionTitle || '',
     description: description || '',
-    sortOrder: typeof sortOrder === 'number' ? sortOrder : 0,
     isActive: typeof isActive === 'boolean' ? isActive : true,
     showField: typeof isActive === 'boolean' ? isActive : true,
     cta: mapCta(cta),
@@ -325,7 +321,6 @@ function mapCraftsmanship(section: any): any {
       ? steps.map((step: any) => {
           const stepTitle = getVal(step, 'title');
           const stepDesc = getVal(step, 'description');
-          const stepSort = getVal(step, 'sortOrder');
           const stepActive = getVal(step, 'isActive');
           const stepIcon = getVal(step, 'icon');
           const stepImg = getVal(step, 'image');
@@ -333,7 +328,6 @@ function mapCraftsmanship(section: any): any {
           return {
             title: stepTitle || '',
             description: stepDesc || '',
-            sortOrder: typeof stepSort === 'number' ? stepSort : 0,
             isActive: typeof stepActive === 'boolean' ? stepActive : true,
             icon: extractMediaId(stepIcon),
             image: mapImageAsset(stepImg),
@@ -347,7 +341,6 @@ function mapShowroom(section: any): any {
   if (!section) return null;
   const sectionTitle = getVal(section, 'sectionTitle');
   const description = getVal(section, 'description');
-  const sortOrder = getVal(section, 'sortOrder');
   const isActive = getVal(section, 'isActive');
   const image = getVal(section, 'image');
   const showrooms = getVal(section, 'showrooms');
@@ -356,7 +349,6 @@ function mapShowroom(section: any): any {
   return {
     sectionTitle: sectionTitle || '',
     description: description || '',
-    sortOrder: typeof sortOrder === 'number' ? sortOrder : 0,
     isActive: typeof isActive === 'boolean' ? isActive : true,
     showField: typeof isActive === 'boolean' ? isActive : true,
     image: mapImageAsset(image),
@@ -563,11 +555,9 @@ export async function migrateHomepage(strapi: Core.Strapi) {
     if (oldData.trustBadges) {
       data.trustBadges = oldData.trustBadges.map((badge: any) => {
         const badgeLabel = getVal(badge, 'label');
-        const badgeSort = getVal(badge, 'sortOrder');
         const badgeActive = getVal(badge, 'isActive');
         return {
           label: badgeLabel || '',
-          sortOrder: typeof badgeSort === 'number' ? badgeSort : 0,
           isActive: typeof badgeActive === 'boolean' ? badgeActive : true,
           showField: typeof badgeActive === 'boolean' ? badgeActive : true,
         };

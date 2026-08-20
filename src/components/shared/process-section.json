@@ -31,10 +31,6 @@
       "component": "shared.cta",
       "repeatable": false
     },
-    "sortOrder": {
-      "type": "integer",
-      "default": 0
-    },
     "showField": {
       "type": "boolean",
       "default": true

@@ -65,10 +65,6 @@
       "repeatable": true,
       "component": "shared.product-sku"
     },
-    "sortOrder": {
-      "type": "integer",
-      "default": 0
-    },
     "isActive": {
       "type": "boolean",
       "default": true

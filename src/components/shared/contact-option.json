@@ -33,11 +33,6 @@
       "type": "string",
       "required": true
     },
-    "sortOrder": {
-      "type": "integer",
-      "default": 0,
-      "min": 0
-    },
     "isActive": {
       "type": "boolean",
       "default": true

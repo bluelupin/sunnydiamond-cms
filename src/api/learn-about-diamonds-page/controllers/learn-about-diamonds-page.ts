@@ -51,7 +51,7 @@ const populate = {
     populate: {
       decorativeImage: imageAssetPopulate,
       fourCsTags: {
-        fields: ['label', 'sortOrder', 'showField'],
+        fields: ['label', 'showField'],
       },
     },
   },

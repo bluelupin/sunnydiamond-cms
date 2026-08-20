@@ -26,10 +26,6 @@
       "relation": "oneToMany",
       "target": "api::showroom.showroom"
     },
-    "sortOrder": {
-      "type": "integer",
-      "default": 0
-    },
     "showField": {
       "type": "boolean",
       "default": true

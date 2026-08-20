@@ -9,10 +9,6 @@
       "type": "string",
       "required": true
     },
-    "sortOrder": {
-      "type": "integer",
-      "default": 0
-    },
     "showField": {
       "type": "boolean",
       "default": true
