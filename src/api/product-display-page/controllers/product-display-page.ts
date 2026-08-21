@@ -4,22 +4,56 @@
 
 import { factories } from '@strapi/strapi';
 
+const imageAssetPopulate = {
+  populate: {
+    desktopImage: true,
+    mobileImage: true,
+  },
+};
+
+const infoCardPopulate = {
+  populate: {
+    image: true,
+    buttons: true,
+  },
+};
+
 const wildcardPopulate = {
   findYourSize: true,
   stripItems: {
     populate: {
       icon: true,
+      image: imageAssetPopulate,
     },
   },
   stripTnc: true,
-  hereForYouCard: true,
-  personaliseCard: {
+  hereForYouCard: infoCardPopulate,
+  personaliseCard: infoCardPopulate,
+  pairItWith: {
     populate: {
-      image: true,
+      collections: {
+        populate: {
+          backgroundImage: imageAssetPopulate,
+          cta: true,
+          productSkus: true,
+          localizations: true,
+        },
+      },
     },
   },
-  pairItWith: true,
-  visitUsSection: true,
+  visitUsSection: {
+    populate: {
+      image: imageAssetPopulate,
+      cta: true,
+      showrooms: {
+        populate: {
+          image: imageAssetPopulate,
+          localizations: true,
+        },
+      },
+    },
+  },
+  localizations: true,
 };
 
 export default factories.createCoreController(
