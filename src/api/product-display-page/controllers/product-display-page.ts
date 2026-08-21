@@ -13,7 +13,11 @@ const wildcardPopulate = {
   },
   stripTnc: true,
   hereForYouCard: true,
-  personaliseCard: true,
+  personaliseCard: {
+    populate: {
+      image: true,
+    },
+  },
   pairItWith: true,
   visitUsSection: true,
 };
