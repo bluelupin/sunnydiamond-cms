@@ -12,6 +12,10 @@
     "sectionId": {
       "type": "string",
       "required": true
+    },
+    "showField": {
+      "type": "boolean",
+      "default": true
     }
   }
 }

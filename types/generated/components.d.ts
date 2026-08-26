@@ -1619,6 +1619,7 @@ export interface SharedSidebarNavigationItem extends Struct.ComponentSchema {
   attributes: {
     label: Schema.Attribute.String & Schema.Attribute.Required;
     sectionId: Schema.Attribute.String & Schema.Attribute.Required;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
   };
 }
 
