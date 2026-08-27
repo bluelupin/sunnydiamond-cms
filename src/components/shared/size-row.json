@@ -9,6 +9,7 @@
   "attributes": {
     "circumference": { "type": "string" },
     "diameter": { "type": "string" },
-    "sizeLabel": { "type": "string" }
+    "sizeLabel": { "type": "string" },
+    "groupLabel": { "type": "string" }
   }
 }
