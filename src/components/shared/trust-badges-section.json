@@ -5,7 +5,19 @@
     "description": "Grid panel of certificates, badges or security icons"
   },
   "options": {},
+  "config":{
+    "metadatas":{
+     "isActive": {
+        "label": "Show Section",
+        "description": "If the section is active or not"
+      }
+    }
+  },
   "attributes": {
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
     "trustBadge": {
       "type": "component",
       "repeatable": true,
