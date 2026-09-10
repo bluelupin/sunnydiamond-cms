@@ -1520,32 +1520,6 @@ export interface SharedProfileSideTab extends Struct.ComponentSchema {
   };
 }
 
-export interface SharedProfileSideTabs extends Struct.ComponentSchema {
-  collectionName: 'components_shared_profile_side_tabs';
-  info: {
-    description: 'Navigation links displayed in the profile page sidebar';
-    displayName: 'Profile Side Tabs';
-  };
-  attributes: {
-    addressesTab: Schema.Attribute.Component<'shared.cta', false> &
-      Schema.Attribute.Required;
-    appointmentsTab: Schema.Attribute.Component<'shared.cta', false> &
-      Schema.Attribute.Required;
-    bespokeInspirationsTab: Schema.Attribute.Component<'shared.cta', false> &
-      Schema.Attribute.Required;
-    diamondsForEveryoneTab: Schema.Attribute.Component<'shared.cta', false> &
-      Schema.Attribute.Required;
-    helpSupportTab: Schema.Attribute.Component<'shared.cta', false> &
-      Schema.Attribute.Required;
-    ordersTab: Schema.Attribute.Component<'shared.cta', false> &
-      Schema.Attribute.Required;
-    profileTab: Schema.Attribute.Component<'shared.cta', false> &
-      Schema.Attribute.Required;
-    wishlistTab: Schema.Attribute.Component<'shared.cta', false> &
-      Schema.Attribute.Required;
-  };
-}
-
 export interface SharedProfileTrustBadgeSection extends Struct.ComponentSchema {
   collectionName: 'components_shared_profile_trust_badge_sections';
   info: {
@@ -1632,6 +1606,7 @@ export interface SharedSizeRow extends Struct.ComponentSchema {
   attributes: {
     circumference: Schema.Attribute.String;
     diameter: Schema.Attribute.String;
+    groupLabel: Schema.Attribute.String;
     sizeLabel: Schema.Attribute.String;
   };
 }
@@ -1788,6 +1763,7 @@ export interface SharedTrustBadgesSection extends Struct.ComponentSchema {
     displayName: 'Trust Badges Section';
   };
   attributes: {
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     trustBadge: Schema.Attribute.Component<'shared.trust-badge-item', true>;
   };
 }
@@ -1906,7 +1882,6 @@ declare module '@strapi/strapi' {
       'shared.process-step': SharedProcessStep;
       'shared.product-sku': SharedProductSku;
       'shared.profile-side-tab': SharedProfileSideTab;
-      'shared.profile-side-tabs': SharedProfileSideTabs;
       'shared.profile-trust-badge-section': SharedProfileTrustBadgeSection;
       'shared.promo-card': SharedPromoCard;
       'shared.seo': SharedSeo;

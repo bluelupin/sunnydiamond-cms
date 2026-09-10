@@ -3,6 +3,7 @@ import { fullSeoPopulate } from '../../../utils/populate';
 
 const populate = {
   applyCta: true,
+  linkedinCta: true,
   seo: fullSeoPopulate,
   jobDescription: {
     populate: {

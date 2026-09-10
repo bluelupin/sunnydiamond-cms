@@ -10,6 +10,7 @@ import {
 
 const careerOpeningPopulate = {
   applyCta: true,
+  linkedinCta: true,
   seo: fullSeoPopulate,
 };
 

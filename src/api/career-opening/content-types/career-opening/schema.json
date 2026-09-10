@@ -90,6 +90,16 @@
       "component": "shared.cta",
       "repeatable": false
     },
+    "linkedinCta": {
+      "type": "component",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "component": "shared.cta",
+      "repeatable": false
+    },
     "isActive": {
       "type": "boolean",
       "default": true

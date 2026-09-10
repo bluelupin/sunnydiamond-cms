@@ -985,6 +985,12 @@ export interface ApiCareerOpeningCareerOpening
           localized: true;
         };
       }>;
+    linkedinCta: Schema.Attribute.Component<'shared.cta', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
