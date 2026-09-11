@@ -112,7 +112,8 @@
       "customField": "plugin::ckeditor.CKEditor",
       "options": {
         "output": "HTML",
-        "preset": "standard"
+        "preset": "standard",
+        "blogEditing": true
       }
     },
     "seo": {

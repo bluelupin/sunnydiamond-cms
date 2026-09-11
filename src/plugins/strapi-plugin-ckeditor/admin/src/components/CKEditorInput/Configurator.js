@@ -22,6 +22,7 @@ const {
   FontColor,
   FontBackgroundColor,
   GeneralHtmlSupport,
+  SourceEditing,
   Heading,
   HorizontalLine,
   Image,
@@ -384,6 +385,18 @@ export default class Configurator {
       ]
     };
 
+    if ( this.fieldConfig.options.blogEditing ) {
+      config.plugins.push( SourceEditing );
+      const toolbar = Array.isArray( config.toolbar ) ? config.toolbar : config.toolbar.items;
+      toolbar.push( '|', 'sourceEditing' );
+      config.htmlSupport.allow.push( {
+        name: /^(div|section|article|header|footer|aside|span|p|h[1-6]|a|ul|ol|li|dl|dt|dd|figure|figcaption|img|picture|table|thead|tbody|tfoot|tr|th|td|caption|colgroup|col|blockquote|pre|code|strong|em|b|i|u|s|sub|sup|br|hr|video|source)$/,
+        attributes: /^(id|title|lang|dir|role|aria-[\w-]+|data-[\w-]+|href|target|rel|src|srcset|sizes|alt|width|height|colspan|rowspan|scope|start|reversed|type|controls|preload|playsinline|poster)$/,
+        classes: true,
+        styles: true
+      } );
+    }
+
     if ( config.plugins.includes( MediaEmbed ) ) {
       config.mediaEmbed = {
         previewsInData: true,
@@ -418,13 +431,24 @@ export default class Configurator {
 
     switch ( presetName ) {
       case 'light':
-        return CKEDITOR_BASE_CONFIG_FOR_PRESETS.light;
+        return this._clonePreset( 'light' );
       case 'standard':
-        return CKEDITOR_BASE_CONFIG_FOR_PRESETS.standard;
+        return this._clonePreset( 'standard' );
       case 'rich':
-        return CKEDITOR_BASE_CONFIG_FOR_PRESETS.rich;
+        return this._clonePreset( 'rich' );
       default:
         throw new Error('Invalid preset name ' + presetName);
     }
+  }
+
+  _clonePreset( name ) {
+    const preset = CKEDITOR_BASE_CONFIG_FOR_PRESETS[ name ];
+    return {
+      ...preset,
+      plugins: [ ...preset.plugins ],
+      toolbar: Array.isArray( preset.toolbar )
+        ? [ ...preset.toolbar ]
+        : { ...preset.toolbar, items: [ ...preset.toolbar.items ] }
+    };
   }
 }

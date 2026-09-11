@@ -725,6 +725,7 @@ export interface ApiBlogPostBlogPost extends Struct.CollectionTypeSchema {
       Schema.Attribute.CustomField<
         'plugin::ckeditor.CKEditor',
         {
+          blogEditing: true;
           output: 'HTML';
           preset: 'standard';
         }
