@@ -23,12 +23,21 @@
     "tags": {
       "type": "component",
       "pluginOptions": {
+        "content-manager": { "visible": false },
         "i18n": {
           "localized": true
         }
       },
       "component": "shared.tag",
       "repeatable": true
+    },
+    "blogTags": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::blog-tag.blog-tag",
+      "pluginOptions": {
+        "i18n": { "localized": true }
+      }
     },
     "blog_category": {
       "type": "relation",

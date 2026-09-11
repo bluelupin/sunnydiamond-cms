@@ -2,6 +2,7 @@ import { fullImageAssetPopulate, fullSeoPopulate } from './populate';
 
 export const blogPostMediaPopulate = {
   tags: true,
+  blogTags: true,
   heroImage: fullImageAssetPopulate,
   coverImage: fullImageAssetPopulate,
   cutoutImage: fullImageAssetPopulate,
