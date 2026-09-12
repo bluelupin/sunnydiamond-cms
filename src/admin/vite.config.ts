@@ -4,6 +4,18 @@ import { readFile } from 'node:fs/promises';
 /** Keep Strapi's relation fetching/saving, changing only the blog tag picker. */
 export function transformBlogPostAdmin(source: string, id: string) {
     const path = id.split('?')[0].replace(/\\/g, '/');
+    if (path.endsWith('/content-manager/dist/admin/pages/EditView/components/FormInputs/Relations/RelationModal.mjs')) {
+      const before = 'const documentTitle = currentDocument.getTitle(documentLayoutResponse.edit.settings.mainField);';
+      if (source.split(before).length !== 2) {
+        throw new Error('Strapi relation modal changed. Update the blog tag heading customization.');
+      }
+      return {
+        code: source.replace(before, `const documentTitle = currentDocumentMeta.model === 'api::blog-tag.blog-tag'
+          ? (isCreating ? 'New Blog Tag' : currentDocument.document?.label || 'Blog Tag')
+          : currentDocument.getTitle(documentLayoutResponse.edit.settings.mainField);`),
+        map: null,
+      };
+    }
     if (path.endsWith('/content-manager/dist/admin/pages/ListView/ListViewPage.mjs')) {
       // Strapi also stores each editor's chosen columns in local storage.
       const before = 'displayedHeaderNames.filter((header)=>Object.keys(schema?.attributes).includes(header))';
@@ -28,7 +40,20 @@ export function transformBlogPostAdmin(source: string, id: string) {
         `const [textValue, setTextValue] = React.useState('');
     const isBlogTagPicker = relation.model === 'api::blog-tag.blog-tag' && name === 'blogTags';
     const [pickerOpen, setPickerOpen] = React.useState(false);
-    const keepOpenAfterSelection = React.useRef(false);`,
+    const keepOpenAfterSelection = React.useRef(false);
+    const creatingTag = React.useRef(false);`,
+      ],
+      [
+        'onCreateOption: ()=>{',
+        `onCreateOption: ()=>{
+                    if (isBlogTagPicker) {
+                        // CreateItem also emits the search text as a selected value
+                        // after this callback. It is not an existing relation ID.
+                        creatingTag.current = true;
+                        queueMicrotask(()=>{ creatingTag.current = false; });
+                        keepOpenAfterSelection.current = false;
+                        setPickerOpen(false);
+                    }`,
       ],
       [
         'onOpenChange: ()=>{\n                    handleSearch(textValue ?? \'\');\n                },',
@@ -50,6 +75,9 @@ export function transformBlogPostAdmin(source: string, id: string) {
       [
         'onChange: handleChange,',
         `onChange: (value)=>{
+                    if (isBlogTagPicker && (creatingTag.current || !options.some((option)=>option.id.toString() === value))) {
+                        return;
+                    }
                     if (isBlogTagPicker && value) {
                         keepOpenAfterSelection.current = true;
                         // The combobox requests closure synchronously after selection.
@@ -92,7 +120,7 @@ export default (config: UserConfig) => mergeConfig(config, {
       plugins: [{
         name: 'blog-post-admin-prebundle',
         setup(build) {
-          build.onLoad({ filter: /[\\/]content-manager[\\/]dist[\\/]admin[\\/].*[\\/](Relations|ListViewPage)\.mjs$/ }, async ({ path }) => {
+          build.onLoad({ filter: /[\\/]content-manager[\\/]dist[\\/]admin[\\/].*[\\/](Relations|RelationModal|ListViewPage)\.mjs$/ }, async ({ path }) => {
             const result = transformBlogPostAdmin(await readFile(path, 'utf8'), path);
             return result ? { contents: result.code, loader: 'js' } : undefined;
           });

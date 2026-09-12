@@ -9,6 +9,7 @@ import { seedBlogCategories } from './utils/seed-blog-categories';
 import { migrateCareerOpeningCkeditor } from './utils/migrate-career-opening-ckeditor';
 import { seedCareerOpenings } from './utils/career-opening-seeder';
 import { configureBlogPostList } from './utils/configure-blog-post-list';
+import { configureBlogTagForm } from './utils/configure-blog-tag-form';
 // import { cleanStaleAdminPermissions } from './utils/clean-stale-admin-permissions';
 
 export default {
@@ -29,6 +30,7 @@ export default {
    */
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {
     await configureBlogPostList(strapi);
+    await configureBlogTagForm(strapi);
     // await cleanStaleAdminPermissions(strapi);
     registerFrontendRevalidation(strapi);
     if (process.env.CMS_SEED_ENABLED === 'true') {
