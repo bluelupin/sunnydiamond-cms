@@ -42,8 +42,16 @@ export default factories.createCoreController('api::blog-post.blog-post' as any,
   async related(ctx) {
     await this.validateQuery(ctx);
     const query = await this.sanitizeQuery(ctx);
-    const source = await strapi.documents('api::blog-post.blog-post').findOne({
-      documentId: ctx.params.documentId,
+    const page = Number((query.pagination as { page?: unknown } | undefined)?.page ?? 1);
+    const pageSize = 3;
+    if (!Number.isSafeInteger(page) || page < 1 || !Number.isSafeInteger(page * pageSize)) {
+      return ctx.badRequest('pagination[page] must be a positive integer.');
+    }
+    const paginationMeta = (total: number) => ({
+      pagination: { page, pageSize, pageCount: Math.ceil(total / pageSize), total },
+    });
+    const source = await strapi.documents('api::blog-post.blog-post').findFirst({
+      filters: { slug: { $eq: ctx.params.slug } },
       locale: query.locale,
       status: 'published',
       populate: { blogTags: true },
@@ -51,18 +59,27 @@ export default factories.createCoreController('api::blog-post.blog-post' as any,
 
     if (!source) return ctx.notFound('Blog not found');
     const tagIds = (source.blogTags ?? []).map((tag: any) => tag.documentId);
-    if (!tagIds.length) return this.transformResponse([]);
+    if (!tagIds.length) return this.transformResponse([], paginationMeta(0));
 
-    const related = await strapi.documents('api::blog-post.blog-post').findMany({
+    const filters = relatedBlogFilters(source.documentId, tagIds);
+    const documentService = strapi.documents('api::blog-post.blog-post');
+    const criteria = {
       locale: source.locale,
-      status: 'published',
-      filters: relatedBlogFilters(source.documentId, tagIds),
-      sort: ['publishedDate:desc', 'publishedAt:desc', 'documentId:asc'],
-      limit: 6,
-      populate: blogPostPopulate,
-    } as any);
+      status: 'published' as const,
+      filters,
+    };
+    const [related, total] = await Promise.all([
+      documentService.findMany({
+        ...criteria,
+        sort: ['publishedDate:desc', 'publishedAt:desc', 'documentId:asc'],
+        start: (page - 1) * pageSize,
+        limit: pageSize,
+        populate: blogPostPopulate,
+      } as any),
+      documentService.count(criteria as any),
+    ]);
     const sanitized = await this.sanitizeOutput(related, ctx) as any[];
-    return this.transformResponse(sanitized.map(addReadTime));
+    return this.transformResponse(sanitized.map(addReadTime), paginationMeta(total));
   },
 
   async find(ctx) {
