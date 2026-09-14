@@ -1562,12 +1562,10 @@ export interface SharedSeo extends Struct.ComponentSchema {
     displayName: 'SEO';
   };
   attributes: {
-    canonicalUrl: Schema.Attribute.String;
     metaDescription: Schema.Attribute.Text;
     metaKeywords: Schema.Attribute.String;
     metaTitle: Schema.Attribute.String;
     ogImage: Schema.Attribute.Media<'images'>;
-    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     structuredData: Schema.Attribute.JSON;
   };
 }

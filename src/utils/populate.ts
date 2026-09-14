@@ -39,7 +39,7 @@ export const heroPopulate = {
 };
 
 export const seoPopulate = {
-  fields: ['metaTitle', 'metaDescription', 'canonicalUrl'],
+  fields: ['metaTitle', 'metaDescription'],
   populate: {
     ogImage: mediaPopulate,
   },

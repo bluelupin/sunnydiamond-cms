@@ -18,18 +18,11 @@
         "images"
       ]
     },
-    "canonicalUrl": {
-      "type": "string"
-    },
     "metaKeywords": {
       "type": "string"
     },
     "structuredData": {
       "type": "json"
-    },
-    "showField": {
-      "type": "boolean",
-      "default": true
     }
   }
 }

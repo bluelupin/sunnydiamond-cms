@@ -360,17 +360,14 @@ function mapSEO(seo: any): any {
   if (!seo) return null;
   const metaTitle = getVal(seo, 'metaTitle');
   const metaDescription = getVal(seo, 'metaDescription');
-  const canonicalUrl = getVal(seo, 'canonicalUrl');
   const structuredData = getVal(seo, 'structuredData');
   const ogImage = getVal(seo, 'ogImage');
 
   return {
     metaTitle: metaTitle || '',
     metaDescription: metaDescription || '',
-    canonicalUrl: canonicalUrl || '',
     structuredData: structuredData || null,
     ogImage: extractMediaId(ogImage),
-    showField: true,
   };
 }
 

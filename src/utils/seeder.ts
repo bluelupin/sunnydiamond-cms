@@ -650,7 +650,6 @@ export async function seedCms(strapi: Core.Strapi) {
         seo: {
           metaTitle: 'Our Story | Sunny Diamonds',
           metaDescription: 'Learn about Sunny Diamonds\' legacy of crafting premium diamond jewellery with master artisans.',
-          canonicalUrl: '/about',
         },
         publishedAt: new Date(),
       };

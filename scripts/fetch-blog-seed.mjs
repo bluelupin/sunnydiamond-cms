@@ -172,9 +172,7 @@ async function parsePost({ url, listingTitle }) {
     seo: {
       metaTitle: safeTitle,
       metaDescription: excerpt,
-      canonicalUrl: url,
       metaKeywords: uniqueTagLabels.join(', ').slice(0, 255),
-      showField: true,
     },
   };
 }

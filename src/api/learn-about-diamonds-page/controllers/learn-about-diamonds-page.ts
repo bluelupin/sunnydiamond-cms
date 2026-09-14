@@ -35,10 +35,8 @@ const populate = {
     fields: [
       'metaTitle',
       'metaDescription',
-      'canonicalUrl',
       'metaKeywords',
       'structuredData',
-      'showField',
     ],
     populate: {
       ogImage: true,
