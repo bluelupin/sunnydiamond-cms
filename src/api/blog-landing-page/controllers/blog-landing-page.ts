@@ -27,9 +27,14 @@ export default factories.createCoreController(UID as any, ({ strapi }) => ({
       filters: { blog_category: { documentId: { $notNull: true } } },
       populate: { blog_category: { fields: ['documentId'] } },
     } as any) as any[];
-    const categoryIds = [...new Set(
-      posts.map((post) => post.blog_category?.documentId).filter(Boolean)
-    )];
+    const categoryCounts = new Map<string, number>();
+    for (const post of posts) {
+      const categoryId = post.blog_category?.documentId;
+      if (categoryId) {
+        categoryCounts.set(categoryId, (categoryCounts.get(categoryId) ?? 0) + 1);
+      }
+    }
+    const categoryIds = [...categoryCounts.keys()];
     const categories = categoryIds.length
       ? await strapi.documents('api::blog-category.blog-category').findMany({
           locale: query.locale,
@@ -39,11 +44,15 @@ export default factories.createCoreController(UID as any, ({ strapi }) => ({
           sort: ['title:asc', 'documentId:asc'],
         } as any)
       : [];
-    const blogCategory = await strapi.contentAPI.sanitize.output(
+    const sanitizedCategories = await strapi.contentAPI.sanitize.output(
       categories,
       strapi.contentType('api::blog-category.blog-category'),
       { auth: ctx.state.auth }
-    );
+    ) as Array<{ documentId: string; [key: string]: unknown }>;
+    const blogCategory = sanitizedCategories.map((category) => ({
+      ...category,
+      count: categoryCounts.get(category.documentId) ?? 0,
+    }));
 
     return {
       ...response,
