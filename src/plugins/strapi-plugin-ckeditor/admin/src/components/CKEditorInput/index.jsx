@@ -22,6 +22,7 @@ const CKEditorInput = ( props ) => {
   const {
     attribute,
     name,
+    label,
     disabled,
     labelAction,
     required,
@@ -79,7 +80,7 @@ const CKEditorInput = ( props ) => {
     >
       <Flex spacing={ 1 } alignItems="normal" style={ { 'flexDirection': 'column' } }>
         <Field.Label action={ labelAction } required={ required }>
-          { intlLabel ? formatMessage( intlLabel ) : fieldLabel }
+          { label ?? ( intlLabel ? formatMessage( intlLabel ) : fieldLabel ) }
         </Field.Label>
         <GlobalStyling />
         <CKEditor
@@ -109,6 +110,7 @@ const CKEditorInput = ( props ) => {
 CKEditorInput.propTypes = {
   attribute: PropTypes.object.isRequired,
   name: PropTypes.string.isRequired,
+  label: PropTypes.string,
   description: PropTypes.object,
   disabled: PropTypes.bool,
   error: PropTypes.string,

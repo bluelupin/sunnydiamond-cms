@@ -17,6 +17,7 @@ const getLicenseKey = () => {
 const CKEditorProvider = ( {
   attribute,
   name,
+  label,
   disabled = false,
   labelAction = null,
   required = false,
@@ -78,6 +79,7 @@ const CKEditorProvider = ( {
     <cloud.loadedPlugins.CKEditorInput
       attribute={ attribute }
       name={ name }
+      label={ label }
       disabled={ disabled }
       labelAction={ labelAction }
       required={ required }
