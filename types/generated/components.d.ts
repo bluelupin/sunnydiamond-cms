@@ -572,8 +572,7 @@ export interface SharedContactOption extends Struct.ComponentSchema {
   };
   attributes: {
     availability: Schema.Attribute.Text;
-    cta: Schema.Attribute.Component<'shared.cta', false> &
-      Schema.Attribute.Required;
+    cta: Schema.Attribute.Component<'shared.cta', false>;
     description: Schema.Attribute.Text;
     heading: Schema.Attribute.String & Schema.Attribute.Required;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
