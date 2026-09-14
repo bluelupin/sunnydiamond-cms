@@ -23,10 +23,10 @@ export const blogLandingPopulate = {
   featuredBlogSection: {
     populate: {
       backgroundImage: fullImageAssetPopulate,
+      featuredBlog: {
+        populate: blogPostPopulate,
+      },
     },
-  },
-  featuredBlog: {
-    populate: blogPostPopulate,
   },
   blogCategory: true,
   seo: fullSeoPopulate,

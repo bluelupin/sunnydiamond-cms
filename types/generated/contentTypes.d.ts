@@ -649,10 +649,6 @@ export interface ApiBlogLandingPageBlogLandingPage
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    featuredBlog: Schema.Attribute.Relation<
-      'oneToOne',
-      'api::blog-post.blog-post'
-    >;
     featuredBlogSection: Schema.Attribute.Component<
       'shared.featured-blog-section',
       false

@@ -821,6 +821,10 @@ export interface SharedFeaturedBlogSection extends Struct.ComponentSchema {
   };
   attributes: {
     backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    featuredBlog: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::blog-post.blog-post'
+    >;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
   };
 }
