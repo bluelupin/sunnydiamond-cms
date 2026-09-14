@@ -28,6 +28,5 @@ export const blogLandingPopulate = {
       },
     },
   },
-  blogCategory: true,
   seo: fullSeoPopulate,
 };

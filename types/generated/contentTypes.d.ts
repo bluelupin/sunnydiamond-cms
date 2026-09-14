@@ -642,10 +642,6 @@ export interface ApiBlogLandingPageBlogLandingPage
     };
   };
   attributes: {
-    blogCategory: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::blog-category.blog-category'
-    >;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
