@@ -1577,12 +1577,14 @@ export interface SharedShowroomSection extends Struct.ComponentSchema {
     displayName: 'Showroom Section';
   };
   attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
     cta: Schema.Attribute.Component<'shared.cta', false>;
     description: Schema.Attribute.Text;
     image: Schema.Attribute.Component<'shared.image-asset', false>;
     sectionTitle: Schema.Attribute.String;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     showrooms: Schema.Attribute.Relation<'oneToMany', 'api::showroom.showroom'>;
+    welcomeNote: Schema.Attribute.Text;
   };
 }
 

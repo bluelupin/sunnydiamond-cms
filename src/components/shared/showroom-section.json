@@ -8,10 +8,18 @@
     "sectionTitle": {
       "type": "string"
     },
+    "welcomeNote": {
+      "type": "text"
+    },
     "description": {
       "type": "text"
     },
     "image": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "backgroundImage": {
       "type": "component",
       "component": "shared.image-asset",
       "repeatable": false

@@ -12,7 +12,36 @@ const reloadAfterStaleChunk = () => {
 
 export default {
   config: {},
-  bootstrap() {
+  bootstrap(app: { registerHook: (name: string, handler: (args: any) => any) => void }) {
+    app.registerHook('Admin/CM/pages/EditView/mutate-edit-view-layout', (args) => {
+      const component = args.layout.components?.['shared.showroom-section'];
+      if (!component) return args;
+
+      const isVisitSection = args.layout.layout.some((panel: any[][]) =>
+        panel.some((row) => row.some((field) =>
+          field.name === 'visitSection' &&
+          field.attribute?.component === 'shared.showroom-section'
+        ))
+      );
+      const hiddenFields = isVisitSection ? ['showrooms'] : ['backgroundImage', 'welcomeNote'];
+
+      return {
+        ...args,
+        layout: {
+          ...args.layout,
+          components: {
+            ...args.layout.components,
+            'shared.showroom-section': {
+              ...component,
+              layout: component.layout
+                .map((row: { name: string }[]) => row.filter((field) => !hiddenFields.includes(field.name)))
+                .filter((row: { name: string }[]) => row.length > 0),
+            },
+          },
+        },
+      };
+    });
+
     window.addEventListener('vite:preloadError', (event) => {
       event.preventDefault();
       reloadAfterStaleChunk();

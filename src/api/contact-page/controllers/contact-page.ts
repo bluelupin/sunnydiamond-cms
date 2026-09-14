@@ -9,7 +9,6 @@ import {
 
 const populate = {
   heroSection: heroPopulate,
-  cta: ctaPopulate,
   contactSection: {
     populate: {
       contactOptions: true,
@@ -33,7 +32,7 @@ const populate = {
   visitSection: {
     populate: {
       image: imageAssetPopulate,
-      showrooms: showroomPopulate,
+      backgroundImage: imageAssetPopulate,
       cta: ctaPopulate,
     },
   },
