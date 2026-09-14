@@ -113,7 +113,8 @@
       "options": {
         "output": "HTML",
         "preset": "standard",
-        "blogEditing": true
+        "blogEditing": true,
+        "helpText": "Table of content should be in h2 tag."
       }
     },
     "seo": {
