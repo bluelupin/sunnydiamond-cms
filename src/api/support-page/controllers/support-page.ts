@@ -1,10 +1,10 @@
 import { factories } from '@strapi/strapi';
-import { fullSeoPopulate } from '../../../utils/populate';
+import { ctaPopulate, fullSeoPopulate } from '../../../utils/populate';
 
 const populate = {
   contactSection: {
     populate: {
-      contactOptions: true,
+      contactOptions: { populate: { cta: ctaPopulate } },
     },
   },
   faqSection: {

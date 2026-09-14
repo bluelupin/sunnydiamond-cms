@@ -11,7 +11,7 @@ const populate = {
   heroSection: heroPopulate,
   contactSection: {
     populate: {
-      contactOptions: true,
+      contactOptions: { populate: { cta: ctaPopulate } },
     },
   },
   formSection: {

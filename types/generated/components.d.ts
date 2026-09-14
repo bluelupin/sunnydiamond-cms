@@ -572,13 +572,13 @@ export interface SharedContactOption extends Struct.ComponentSchema {
   };
   attributes: {
     availability: Schema.Attribute.Text;
-    buttonLabel: Schema.Attribute.String & Schema.Attribute.Required;
+    cta: Schema.Attribute.Component<'shared.cta', false> &
+      Schema.Attribute.Required;
     description: Schema.Attribute.Text;
     heading: Schema.Attribute.String & Schema.Attribute.Required;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     type: Schema.Attribute.Enumeration<['phone', 'email', 'link']> &
       Schema.Attribute.Required;
-    value: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
 

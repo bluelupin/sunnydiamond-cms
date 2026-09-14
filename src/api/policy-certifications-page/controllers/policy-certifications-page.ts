@@ -3,7 +3,7 @@
  */
 
 import { factories } from '@strapi/strapi';
-import { fullSeoPopulate } from '../../../utils/populate';
+import { ctaPopulate, fullSeoPopulate } from '../../../utils/populate';
 
 const populate = {
   headerSection: true,
@@ -18,7 +18,7 @@ const populate = {
   },
   contactSection: {
     populate: {
-      contactOptions: true,
+      contactOptions: { populate: { cta: ctaPopulate } },
     },
   },
   seo: fullSeoPopulate,
