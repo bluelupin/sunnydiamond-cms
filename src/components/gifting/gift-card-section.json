@@ -7,7 +7,7 @@
     "description": { "type": "text" },
     "backgroundImage": { "type": "component", "component": "shared.image-asset", "repeatable": false },
     "cutOutImage": { "type": "component", "component": "shared.image-asset", "repeatable": false },
-    "cta": { "type": "component", "component": "shared.cta", "repeatable": false },
+    "buttonLabel": { "type": "string" },
     "showField": { "type": "boolean", "default": true }
   }
 }

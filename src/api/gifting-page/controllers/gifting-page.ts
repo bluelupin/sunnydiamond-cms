@@ -12,7 +12,7 @@ export default factories.createCoreController(
           occasionGridSection: { populate: { occasions: { populate: { image: { populate: '*' }, cta: true } } } },
           perfectGiftSection: true,
           giftFinderSection: { populate: { image: { populate: '*' } } },
-          giftCardSection: { populate: { backgroundImage: { populate: '*' }, cutOutImage: { populate: '*' }, cta: true } },
+          giftCardSection: { populate: { backgroundImage: { populate: '*' }, cutOutImage: { populate: '*' } } },
           finishingTouchSection: { populate: { services: { populate: { image: { populate: '*' }, cta: true } } } },
           trustBadgesSection: { populate: { trustBadge: { populate: { icon: { populate: '*' } } } } },
           seo: { populate: '*' },

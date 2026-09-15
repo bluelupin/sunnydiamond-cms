@@ -169,7 +169,7 @@ export interface GiftingGiftCardSection extends Struct.ComponentSchema {
   };
   attributes: {
     backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
-    cta: Schema.Attribute.Component<'shared.cta', false>;
+    buttonLabel: Schema.Attribute.String;
     cutOutImage: Schema.Attribute.Component<'shared.image-asset', false>;
     description: Schema.Attribute.Text;
     eyebrow: Schema.Attribute.String;
