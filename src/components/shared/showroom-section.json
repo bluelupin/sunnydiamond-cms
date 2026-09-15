@@ -24,6 +24,9 @@
       "component": "shared.image-asset",
       "repeatable": false
     },
+    "appointmentLabel": {
+      "type": "string"
+    },
     "cta": {
       "type": "component",
       "component": "shared.cta",

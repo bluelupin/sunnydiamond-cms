@@ -33,7 +33,6 @@ const populate = {
     populate: {
       image: imageAssetPopulate,
       backgroundImage: imageAssetPopulate,
-      cta: ctaPopulate,
     },
   },
   seo: fullSeoPopulate,

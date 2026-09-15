@@ -23,7 +23,9 @@ export default {
           field.attribute?.component === 'shared.showroom-section'
         ))
       );
-      const hiddenFields = isVisitSection ? ['showrooms'] : ['backgroundImage', 'welcomeNote'];
+      const hiddenFields = isVisitSection
+        ? ['showrooms', 'cta']
+        : ['backgroundImage', 'welcomeNote', 'appointmentLabel'];
 
       return {
         ...args,

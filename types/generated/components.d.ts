@@ -1594,6 +1594,7 @@ export interface SharedShowroomSection extends Struct.ComponentSchema {
     displayName: 'Showroom Section';
   };
   attributes: {
+    appointmentLabel: Schema.Attribute.String;
     backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
     cta: Schema.Attribute.Component<'shared.cta', false>;
     description: Schema.Attribute.Text;
