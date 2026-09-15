@@ -223,6 +223,24 @@ export interface GiftingIntroSection extends Struct.ComponentSchema {
   };
 }
 
+export interface GiftingOccasionCta extends Struct.ComponentSchema {
+  collectionName: 'components_gifting_occasion_ctas';
+  info: {
+    description: 'Occasion button or link with an additional label';
+    displayName: 'Occasion CTA';
+  };
+  attributes: {
+    additionalLabel: Schema.Attribute.String;
+    label: Schema.Attribute.String;
+    openInNewTab: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    targetType: Schema.Attribute.Enumeration<
+      ['internal', 'external', 'magento']
+    > &
+      Schema.Attribute.DefaultTo<'internal'>;
+    url: Schema.Attribute.String;
+  };
+}
+
 export interface GiftingOccasionGridSection extends Struct.ComponentSchema {
   collectionName: 'components_gifting_occasion_grid_sections';
   info: {
@@ -1798,6 +1816,7 @@ declare module '@strapi/strapi' {
       'gifting.gift-finder-section': GiftingGiftFinderSection;
       'gifting.hero-section': GiftingHeroSection;
       'gifting.intro-section': GiftingIntroSection;
+      'gifting.occasion-cta': GiftingOccasionCta;
       'gifting.occasion-grid-section': GiftingOccasionGridSection;
       'gifting.perfect-gift-section': GiftingPerfectGiftSection;
       'gifting.service-card': GiftingServiceCard;

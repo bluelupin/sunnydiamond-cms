@@ -10,6 +10,7 @@ import { migrateCareerOpeningCkeditor } from './utils/migrate-career-opening-cke
 import { seedCareerOpenings } from './utils/career-opening-seeder';
 import { configureBlogPostList } from './utils/configure-blog-post-list';
 import { configureBlogTagForm } from './utils/configure-blog-tag-form';
+import { migrateOccasionCta } from './utils/migrate-occasion-cta';
 // import { cleanStaleAdminPermissions } from './utils/clean-stale-admin-permissions';
 
 export default {
@@ -29,6 +30,7 @@ export default {
    * run jobs, or perform some special logic.
    */
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {
+    await migrateOccasionCta(strapi);
     await configureBlogPostList(strapi);
     await configureBlogTagForm(strapi);
     // await cleanStaleAdminPermissions(strapi);

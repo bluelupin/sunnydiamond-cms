@@ -48,7 +48,7 @@
     "cta": {
       "type": "component",
       "repeatable": false,
-      "component": "shared.cta",
+      "component": "gifting.occasion-cta",
       "pluginOptions": {
         "i18n": {
           "localized": true

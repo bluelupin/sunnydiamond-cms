@@ -2016,7 +2016,7 @@ export interface ApiOccasionOccasion extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    cta: Schema.Attribute.Component<'shared.cta', false> &
+    cta: Schema.Attribute.Component<'gifting.occasion-cta', false> &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
