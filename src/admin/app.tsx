@@ -1,6 +1,6 @@
 import type { StrapiApp } from '@strapi/strapi/admin';
 import type { ComponentType } from 'react';
-import { PolicyCategorySlugInput } from './components/PolicyCategorySlugInput';
+import { PolicySlugInput } from './components/PolicySlugInput';
 
 const CHUNK_RELOAD_KEY = 'strapi-admin-chunk-reload';
 const CHUNK_RELOAD_COOLDOWN_MS = 30_000;
@@ -17,28 +17,29 @@ const reloadAfterStaleChunk = () => {
 export default {
   config: {},
   register(app: StrapiApp) {
-    app.addFields({ type: 'policy-category-slug', Component: PolicyCategorySlugInput as ComponentType });
+    app.addFields({ type: 'policy-slug', Component: PolicySlugInput as ComponentType });
   },
   bootstrap(app: { registerHook: (name: string, handler: (args: any) => any) => void }) {
     app.registerHook('Admin/CM/pages/EditView/mutate-edit-view-layout', (args) => {
-      const component = args.layout.components?.['shared.policy-category'];
-      if (!component) return args;
+      const components = { ...args.layout.components };
+      for (const uid of ['shared.policy-category', 'shared.policy-entry']) {
+        const component = components[uid];
+        if (!component) continue;
+        components[uid] = {
+          ...component,
+          layout: component.layout.map((row: { name: string }[]) =>
+            row.map((field) => field.name === 'slug'
+              ? { ...field, type: 'policy-slug' }
+              : field)
+          ),
+        };
+      }
 
       return {
         ...args,
         layout: {
           ...args.layout,
-          components: {
-            ...args.layout.components,
-            'shared.policy-category': {
-              ...component,
-              layout: component.layout.map((row: { name: string }[]) =>
-                row.map((field) => field.name === 'slug'
-                  ? { ...field, type: 'policy-category-slug' }
-                  : field)
-              ),
-            },
-          },
+          components,
         },
       };
     });
