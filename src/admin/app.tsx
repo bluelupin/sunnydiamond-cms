@@ -1,3 +1,7 @@
+import type { StrapiApp } from '@strapi/strapi/admin';
+import type { ComponentType } from 'react';
+import { PolicyCategorySlugInput } from './components/PolicyCategorySlugInput';
+
 const CHUNK_RELOAD_KEY = 'strapi-admin-chunk-reload';
 const CHUNK_RELOAD_COOLDOWN_MS = 30_000;
 
@@ -12,7 +16,32 @@ const reloadAfterStaleChunk = () => {
 
 export default {
   config: {},
+  register(app: StrapiApp) {
+    app.addFields({ type: 'policy-category-slug', Component: PolicyCategorySlugInput as ComponentType });
+  },
   bootstrap(app: { registerHook: (name: string, handler: (args: any) => any) => void }) {
+    app.registerHook('Admin/CM/pages/EditView/mutate-edit-view-layout', (args) => {
+      const component = args.layout.components?.['shared.policy-category'];
+      if (!component) return args;
+
+      return {
+        ...args,
+        layout: {
+          ...args.layout,
+          components: {
+            ...args.layout.components,
+            'shared.policy-category': {
+              ...component,
+              layout: component.layout.map((row: { name: string }[]) =>
+                row.map((field) => field.name === 'slug'
+                  ? { ...field, type: 'policy-category-slug' }
+                  : field)
+              ),
+            },
+          },
+        },
+      };
+    });
     app.registerHook('Admin/CM/pages/EditView/mutate-edit-view-layout', (args) => {
       const component = args.layout.components?.['shared.showroom-section'];
       if (!component) return args;
