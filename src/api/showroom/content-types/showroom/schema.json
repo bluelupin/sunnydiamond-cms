@@ -39,6 +39,7 @@
     },
     "city": {
       "type": "string",
+      "required": true,
       "pluginOptions": {
         "i18n": {
           "localized": true
@@ -47,11 +48,16 @@
     },
     "state": {
       "type": "string",
+      "required": true,
       "pluginOptions": {
         "i18n": {
           "localized": true
         }
       }
+    },
+    "pincode": {
+      "type": "string",
+      "required": true
     },
     "phone": {
       "type": "string"

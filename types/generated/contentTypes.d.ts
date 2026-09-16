@@ -2492,6 +2492,7 @@ export interface ApiShowroomShowroom extends Struct.CollectionTypeSchema {
         };
       }>;
     city: Schema.Attribute.String &
+      Schema.Attribute.Required &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -2528,9 +2529,11 @@ export interface ApiShowroomShowroom extends Struct.CollectionTypeSchema {
         };
       }>;
     phone: Schema.Attribute.String;
+    pincode: Schema.Attribute.String & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
     slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
     state: Schema.Attribute.String &
+      Schema.Attribute.Required &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;

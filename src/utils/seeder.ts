@@ -331,7 +331,13 @@ export async function seedCms(strapi: Core.Strapi) {
       ];
 
       for (const showroom of showrooms) {
-        const createdShowroom = await strapi.documents('api::showroom.showroom').create({ data: showroom });
+        // Extract known pincodes from seed addresses; incomplete entries remain drafts.
+        const pincode = showroom.address.match(/\b\d{6}\b/)?.[0] ?? '';
+        const { publishedAt, ...showroomData } = showroom;
+        const createdShowroom = await strapi.documents('api::showroom.showroom').create({
+          status: 'draft',
+          data: { ...showroomData, pincode },
+        });
         seededShowrooms.push(createdShowroom);
       }
       strapi.log.info('Showrooms successfully seeded.');

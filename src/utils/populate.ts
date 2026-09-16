@@ -61,7 +61,7 @@ export const occasionPopulate = {
 
 
 export const showroomPopulate = {
-  fields: ['name', 'slug', 'address', 'city', 'state', 'phone', 'email', 'mapUrl', 'openingHours', 'isActive'],
+  fields: ['name', 'slug', 'address', 'city', 'state', 'pincode', 'phone', 'email', 'mapUrl', 'openingHours', 'isActive'],
   populate: {
     image: imageAssetPopulate,
   },
