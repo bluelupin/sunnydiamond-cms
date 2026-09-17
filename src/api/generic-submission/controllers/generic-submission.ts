@@ -121,7 +121,7 @@ export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ 
         locale,
         filters: {
           $or: [
-            { city: preferredShowroomVal },
+            { name: preferredShowroomVal },
             { slug: preferredShowroomVal },
             { documentId: preferredShowroomVal }
           ]

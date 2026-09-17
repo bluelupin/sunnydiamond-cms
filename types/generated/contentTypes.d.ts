@@ -2515,6 +2515,13 @@ export interface ApiShowroomShowroom extends Struct.CollectionTypeSchema {
       'api::showroom.showroom'
     >;
     mapUrl: Schema.Attribute.String & Schema.Attribute.Required;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     openingHours: Schema.Attribute.Text &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
@@ -2524,7 +2531,7 @@ export interface ApiShowroomShowroom extends Struct.CollectionTypeSchema {
     phone: Schema.Attribute.String;
     pincode: Schema.Attribute.String & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
-    slug: Schema.Attribute.UID<'city'> & Schema.Attribute.Required;
+    slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
     state: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.SetPluginOptions<{

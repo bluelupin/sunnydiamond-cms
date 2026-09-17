@@ -15,9 +15,18 @@
     }
   },
   "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
     "slug": {
       "type": "uid",
-      "targetField": "city",
+      "targetField": "name",
       "required": true
     },
     "address": {

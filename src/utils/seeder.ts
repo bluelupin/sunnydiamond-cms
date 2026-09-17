@@ -269,6 +269,7 @@ export async function seedCms(strapi: Core.Strapi) {
       strapi.log.info('Seeding Showrooms...');
       const showrooms = [
         {
+          name: 'Kochi',
           slug: 'kochi',
           address: 'Sunny Diamonds Kochi 40/9134 B & C, Rajaji Rd, Ernakulam, Kerala 682035',
           city: 'Kochi',
@@ -280,6 +281,7 @@ export async function seedCms(strapi: Core.Strapi) {
           publishedAt: new Date(),
         },
         {
+          name: 'Calicut',
           slug: 'calicut',
           address: 'Sunny Diamonds Calicut, Kerala',
           city: 'Calicut',
@@ -291,6 +293,7 @@ export async function seedCms(strapi: Core.Strapi) {
           publishedAt: new Date(),
         },
         {
+          name: 'Thrissur',
           slug: 'thrissur',
           address: 'Sunny Diamonds Thrissur, Kerala',
           city: 'Thrissur',
@@ -302,6 +305,7 @@ export async function seedCms(strapi: Core.Strapi) {
           publishedAt: new Date(),
         },
         {
+          name: 'Coimbatore',
           slug: 'coimbatore',
           address: 'Sunny Diamonds Coimbatore, Tamil Nadu',
           city: 'Coimbatore',
@@ -313,6 +317,7 @@ export async function seedCms(strapi: Core.Strapi) {
           publishedAt: new Date(),
         },
         {
+          name: 'Trivandrum',
           slug: 'trivandrum',
           address: 'Sunny Diamonds Trivandrum, Kerala',
           city: 'Trivandrum',
