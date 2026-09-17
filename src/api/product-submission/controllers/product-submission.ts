@@ -114,7 +114,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       filters: { formTag },
       populate: {
         showroomOptions: {
-          fields: ['documentId', 'name', 'slug'],
+          fields: ['documentId', 'city', 'slug'],
         },
       },
     } as any);
@@ -135,7 +135,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
           $or: [
             { documentId: preferredShowroomValue },
             { slug: preferredShowroomValue },
-            { name: preferredShowroomValue },
+            { city: preferredShowroomValue },
           ],
         },
       } as any);
@@ -277,7 +277,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
             fields: ['documentId', 'name', 'code'],
           },
           preferredShowroom: {
-            fields: ['documentId', 'name', 'slug', 'city', 'state'],
+            fields: ['documentId', 'slug', 'city', 'state'],
           },
         },
         sort: ['createdAt:desc'],
@@ -295,7 +295,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
           documentId: showroomDocumentId,
           status: 'published',
           locale,
-          fields: ['documentId', 'name', 'slug', 'city', 'state'],
+          fields: ['documentId', 'slug', 'city', 'state'],
         } as any);
 
         return {

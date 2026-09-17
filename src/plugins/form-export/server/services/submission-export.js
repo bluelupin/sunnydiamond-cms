@@ -205,7 +205,7 @@ const getCellValue = (record, field, baseUrl) => {
     return record.resume?.name || '';
   }
   if (field === 'preferredShowroom') {
-    return record.preferredShowroom?.name || '';
+    return record.preferredShowroom?.city || '';
   }
   if (field === 'state') {
     return record.state?.name || '';

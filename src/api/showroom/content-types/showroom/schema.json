@@ -15,18 +15,9 @@
     }
   },
   "attributes": {
-    "name": {
-      "type": "string",
-      "required": true,
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
-    },
     "slug": {
       "type": "uid",
-      "targetField": "name",
+      "targetField": "city",
       "required": true
     },
     "address": {
