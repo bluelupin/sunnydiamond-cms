@@ -1,16 +1,13 @@
 import { factories } from '@strapi/strapi';
 import { checkFormSubmissionRateLimit } from '../../../utils/form-submission-rate-limit';
-import {
-  bearerToken,
-  MagentoCustomerUnauthorizedError,
-  resolveMagentoCustomer,
-} from '../../../utils/magento-customer';
 import { requestLocale } from '../../../utils/request-locale';
+import { RESCHEDULABLE_FORM_TAGS, validateAppointmentSchedule } from '../../../utils/appointment-schedule';
 
 const PRODUCT_SUBMISSION_UID = 'api::product-submission.product-submission';
 const PRODUCT_FORM_UID = 'api::product-form.product-form';
 const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
 const APPOINTMENT_FORM_TAGS = [
+...RESCHEDULABLE_FORM_TAGS,
 'product-video-call',
 'product-personalisation',
 'try-at-home-form',
@@ -89,30 +86,12 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     if (customerEmail === null) return ctx.badRequest('customerEmail must be a valid email address.');
     if (requestedDate === null) return ctx.badRequest('requestedDate must use YYYY-MM-DD format.');
 
-    let magentoCustomerId: number | undefined;
-    const token = bearerToken(ctx.request.headers.authorization);
-    if (token) {
-      try {
-        magentoCustomerId = (await resolveMagentoCustomer(token)).id;
-      } catch (error) {
-        if (error instanceof MagentoCustomerUnauthorizedError) {
-          return ctx.unauthorized(error.message);
-        }
-
-        strapi.log.error(
-          `Magento customer resolution failed during product submission: ${
-            error instanceof Error ? error.message : 'Unknown error'
-          }`
-        );
-        return ctx.throw(503, 'Customer authentication is temporarily unavailable.');
-      }
-    }
-
     const form = await strapi.documents(PRODUCT_FORM_UID as any).findFirst({
       status: 'published',
       locale,
       filters: { formTag },
       populate: {
+        availableTimeSlots: true,
         showroomOptions: {
           fields: ['documentId', 'city', 'slug'],
         },
@@ -120,6 +99,10 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     } as any);
 
     if (!form) return ctx.badRequest('Unknown formTag.');
+    if (RESCHEDULABLE_FORM_TAGS.includes(formTag)) {
+      const scheduleError = validateAppointmentSchedule(requestedDate, stringOrUndefined(input.selectedTimeSlot), form);
+      if (scheduleError) return ctx.badRequest(scheduleError);
+    }
 
     let preferredShowroomRef: string | undefined;
     const preferredShowroomValue =
@@ -198,7 +181,6 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
         customerName,
         customerPhone,
         customerEmail,
-        magentoCustomerId,
         requestedDate,
         selectedTimeSlot: stringOrUndefined(input.selectedTimeSlot),
         requestDetails: stringOrUndefined(input.requestDetails),
@@ -234,9 +216,64 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     };
   },
 
+  async reschedule(ctx) {
+    const input = requestData(ctx);
+    const documentId = stringOrUndefined(ctx.params.documentId);
+    const requestedDate = stringOrUndefined(input.requestedDate);
+    const selectedTimeSlot = stringOrUndefined(input.selectedTimeSlot);
+    if (!documentId) return ctx.badRequest('Appointment documentId is required.');
+    const rateLimit = checkFormSubmissionRateLimit(['reschedule', ctx.ip, documentId]);
+    if (!rateLimit.allowed) {
+      ctx.set('Retry-After', String(rateLimit.retryAfterSeconds));
+      return ctx.tooManyRequests('Too many rescheduling requests. Please try again later.');
+    }
+
+    // Lock the appointment so concurrent changes record the actual previous schedule.
+    const result = await strapi.db.transaction(async ({ trx }) => {
+      const table = strapi.db.metadata.get(PRODUCT_SUBMISSION_UID).tableName;
+      const locked = await strapi.db.connection(table).transacting(trx)
+        .where({ document_id: documentId }).forUpdate().first();
+      if (!locked) return { error: 'Appointment not found.', status: 404 };
+      const appointment = await strapi.db.query(PRODUCT_SUBMISSION_UID).findOne({ where: { id: locked.id } });
+      if (!RESCHEDULABLE_FORM_TAGS.includes(appointment.formTag)) {
+        return { error: 'This appointment type cannot be rescheduled.', status: 400 };
+      }
+      if (['Visited', 'Closed'].includes(appointment.workflowStatus)) {
+        return { error: 'Completed or closed appointments cannot be rescheduled.', status: 400 };
+      }
+      const form = await strapi.documents(PRODUCT_FORM_UID as any).findFirst({
+        status: 'published', locale: requestLocale(ctx, input),
+        filters: { formTag: appointment.formTag }, populate: { availableTimeSlots: true },
+      } as any);
+      if (!form) return { error: 'The appointment form is unavailable.', status: 400 };
+      const scheduleError = validateAppointmentSchedule(requestedDate, selectedTimeSlot, form);
+      if (scheduleError) return { error: scheduleError, status: 400 };
+      if (appointment.requestedDate === requestedDate && appointment.selectedTimeSlot === selectedTimeSlot) {
+        return { data: { documentId, requestedDate, selectedTimeSlot }, changed: false };
+      }
+      await strapi.documents(PRODUCT_SUBMISSION_UID as any).update({
+        documentId,
+        data: {
+          requestedDate, selectedTimeSlot,
+          rescheduleHistory: [
+            ...(Array.isArray(appointment.rescheduleHistory) ? appointment.rescheduleHistory : []),
+            {
+              previousData: { requestedDate: appointment.requestedDate ?? null, selectedTimeSlot: appointment.selectedTimeSlot ?? null },
+              newData: { requestedDate, selectedTimeSlot },
+              productId: appointment.productId ?? null,
+              changedAt: new Date().toISOString(),
+            },
+          ],
+        },
+      } as any);
+      return { data: { documentId, requestedDate, selectedTimeSlot }, changed: true };
+    });
+    if (result.error) return result.status === 404 ? ctx.notFound(result.error) : ctx.badRequest(result.error);
+    return { data: result.data, meta: { changed: result.changed } };
+  },
+
   async customerAppointments(ctx) {
     const locale = requestLocale(ctx);
-    const magentoCustomerId = ctx.state.magentoCustomer.id;
     const requestedPage = Number(ctx.query.page);
     const requestedPageSize = Number(ctx.query.pageSize);
     const page = Number.isInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
@@ -245,7 +282,6 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
         ? Math.min(requestedPageSize, 100)
         : 20;
     const filters = {
-      magentoCustomerId,
       formTag: { $in: APPOINTMENT_FORM_TAGS },
     };
 

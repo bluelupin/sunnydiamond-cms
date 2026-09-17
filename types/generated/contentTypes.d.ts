@@ -2378,6 +2378,7 @@ export interface ApiProductSubmissionProductSubmission
     publishedAt: Schema.Attribute.DateTime;
     requestDetails: Schema.Attribute.Text;
     requestedDate: Schema.Attribute.Date;
+    rescheduleHistory: Schema.Attribute.JSON & Schema.Attribute.Private;
     selectedTimeSlot: Schema.Attribute.String;
     sourcePage: Schema.Attribute.String;
     state: Schema.Attribute.Relation<'oneToOne', 'api::state.state'>;

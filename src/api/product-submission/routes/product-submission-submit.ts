@@ -5,7 +5,8 @@ export default {
       path: '/product-submissions/submit',
       handler: 'product-submission.submit',
       config: {
-        auth: false,
+        auth: { strategies: ['content-api-token', 'api-token'] },
+        policies: [],
       },
     },
   ],

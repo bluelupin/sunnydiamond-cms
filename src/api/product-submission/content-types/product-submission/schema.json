@@ -6,22 +6,61 @@
     "pluralName": "product-submissions",
     "displayName": "Submissions: Product"
   },
-  "options": { "draftAndPublish": false },
+  "options": {
+    "draftAndPublish": false
+  },
   "attributes": {
-    "formTag": { "type": "string", "required": true },
-    "productName": { "type": "string", "required": true },
-    "productId": { "type": "string" },
-    "customerName": { "type": "string", "required": true },
-    "customerPhone": { "type": "string", "required": true },
-    "customerEmail": { "type": "email" },
-    "magentoCustomerId": { "type": "integer", "private": true },
-    "requestedDate": { "type": "date" },
-    "selectedTimeSlot": { "type": "string" },
-    "requestDetails": { "type": "text" },
-    "addressLine1": { "type": "string" },
-    "addressLine2": { "type": "string" },
-    "pincode": { "type": "string" },
-    "city": { "type": "string" },
+    "formTag": {
+      "type": "string",
+      "required": true
+    },
+    "productName": {
+      "type": "string",
+      "required": true
+    },
+    "productId": {
+      "type": "string"
+    },
+    "customerName": {
+      "type": "string",
+      "required": true
+    },
+    "customerPhone": {
+      "type": "string",
+      "required": true
+    },
+    "customerEmail": {
+      "type": "email"
+    },
+    "magentoCustomerId": {
+      "type": "integer",
+      "private": true
+    },
+    "requestedDate": {
+      "type": "date"
+    },
+    "selectedTimeSlot": {
+      "type": "string"
+    },
+    "rescheduleHistory": {
+      "type": "json",
+      "private": true
+    },
+    "requestDetails": {
+      "type": "text"
+    },
+    "addressLine1": {
+      "type": "string"
+    },
+    "addressLine2": {
+      "type": "string"
+    },
+    "pincode": {
+      "type": "string"
+    },
+    "city": {
+      "type": "string"
+    },
     "state": {
       "type": "relation",
       "relation": "oneToOne",
@@ -32,18 +71,33 @@
       "relation": "manyToOne",
       "target": "api::showroom.showroom"
     },
-    "sourcePage": { "type": "string" },
-    "consentAccepted": { "type": "boolean", "default": false },
-    "internalNotes": { "type": "text" },
+    "sourcePage": {
+      "type": "string"
+    },
+    "consentAccepted": {
+      "type": "boolean",
+      "default": false
+    },
+    "internalNotes": {
+      "type": "text"
+    },
     "uploadedImage": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "workflowStatus": {
       "type": "enumeration",
       "default": "New",
-      "enum": ["New", "Contacted", "Scheduled", "Visited", "Closed"]
+      "enum": [
+        "New",
+        "Contacted",
+        "Scheduled",
+        "Visited",
+        "Closed"
+      ]
     }
   }
 }

@@ -7,8 +7,13 @@ import {
 
 const { UnauthorizedError } = errors;
 
-export default async (policyContext: any, _config: unknown, { strapi }: any) => {
-  const token = bearerToken(policyContext.request.headers.authorization);
+export default async (policyContext: any, config: { tokenHeader?: string }, { strapi }: any) => {
+  const customerToken = config?.tokenHeader
+    ? policyContext.request.headers[config.tokenHeader.toLowerCase()]
+    : undefined;
+  const token = config?.tokenHeader
+    ? (typeof customerToken === 'string' ? customerToken.trim() : undefined)
+    : bearerToken(policyContext.request.headers.authorization);
   if (!token) {
     throw new UnauthorizedError('Magento customer token is required.');
   }

@@ -11,6 +11,7 @@ import { seedCareerOpenings } from './utils/career-opening-seeder';
 import { configureBlogPostList } from './utils/configure-blog-post-list';
 import { configureBlogTagForm } from './utils/configure-blog-tag-form';
 import { configureShowroomForm } from './utils/configure-showroom-form';
+import { configureProductSubmissionTracker } from './utils/configure-product-submission-tracker';
 import { migrateOccasionCta } from './utils/migrate-occasion-cta';
 // import { cleanStaleAdminPermissions } from './utils/clean-stale-admin-permissions';
 
@@ -35,6 +36,7 @@ export default {
     await configureBlogPostList(strapi);
     await configureBlogTagForm(strapi);
     await configureShowroomForm(strapi);
+    await configureProductSubmissionTracker(strapi);
     // await cleanStaleAdminPermissions(strapi);
     registerFrontendRevalidation(strapi);
     if (process.env.CMS_SEED_ENABLED === 'true') {
