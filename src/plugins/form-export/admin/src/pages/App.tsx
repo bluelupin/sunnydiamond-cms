@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Box, Button, Flex, Main, Typography } from '@strapi/design-system';
+import { Box, Button, Field, Flex, Main, SingleSelect, SingleSelectOption, Typography } from '@strapi/design-system';
 import { Download } from '@strapi/icons';
 import { Page, useFetchClient, useNotification } from '@strapi/strapi/admin';
 
@@ -62,6 +62,9 @@ const App = () => {
   const { get } = useFetchClient();
   const { toggleNotification } = useNotification();
   const [downloading, setDownloading] = React.useState<string | null>(null);
+  const [genericTags, setGenericTags] = React.useState<string[]>([]);
+  const [formTag, setFormTag] = React.useState('');
+  const [tagsLoading, setTagsLoading] = React.useState(true);
   const [applications, setApplications] = React.useState<JobApplication[]>([]);
   const [applicationsLoading, setApplicationsLoading] = React.useState(true);
   const [page, setPage] = React.useState(1);
@@ -109,12 +112,29 @@ const App = () => {
     };
   }, [get, page, toggleNotification]);
 
+  React.useEffect(() => {
+    let active = true;
+    const loadTags = async () => {
+      try {
+        const response = await get('/form-export/generic-tags');
+        if (active) setGenericTags(response.data?.data ?? []);
+      } catch {
+        if (active) toggleNotification({ type: 'danger', message: 'Could not load generic form tags. Refresh to try again.' });
+      } finally {
+        if (active) setTagsLoading(false);
+      }
+    };
+    void loadTags();
+    return () => { active = false; };
+  }, [get, toggleNotification]);
+
   const handleDownload = async (type: string) => {
     setDownloading(type);
 
     try {
       const response = await get(`/form-export/submissions/${type}.csv`, {
         responseType: 'blob',
+        ...(type === 'generic' && formTag ? { params: { formTag } } : {}),
       });
 
       downloadBlob(
@@ -189,6 +209,24 @@ const App = () => {
                         {item.description}
                       </Typography>
                     </Box>
+                    {item.type === 'generic' && (
+                      <Box paddingTop={3}>
+                        <Field.Root name="formTag">
+                          <Field.Label>Filter by tag</Field.Label>
+                          <SingleSelect
+                            value={formTag ? `tag:${formTag}` : 'all'}
+                            onChange={(value) => setFormTag(String(value).startsWith('tag:') ? String(value).slice(4) : '')}
+                            disabled={tagsLoading || downloading !== null}
+                            placeholder={tagsLoading ? 'Loading tags…' : 'All tags'}
+                          >
+                            <SingleSelectOption value="all">All tags</SingleSelectOption>
+                            {genericTags.map((tag) => (
+                              <SingleSelectOption key={tag} value={`tag:${tag}`}>{tag}</SingleSelectOption>
+                            ))}
+                          </SingleSelect>
+                        </Field.Root>
+                      </Box>
+                    )}
                   </Box>
 
                   <Button

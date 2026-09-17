@@ -228,6 +228,14 @@ const toCsv = (records, fields, headers = {}, baseUrl) => {
 };
 
 module.exports = ({ strapi }) => ({
+  async listGenericTags() {
+    const records = await strapi.db.query('api::generic-form.generic-form').findMany({
+      select: ['formTag'],
+    });
+    return [...new Set(records.map((record) => record.formTag).filter(Boolean))]
+      .sort((a, b) => a.localeCompare(b));
+  },
+
   async listJobApplications({ page, pageSize, search }) {
     const uid = 'api::submissions-job-opening.submissions-job-opening';
     const where = search
@@ -286,7 +294,7 @@ module.exports = ({ strapi }) => ({
     };
   },
 
-  async exportSubmissions(type, baseUrl) {
+  async exportSubmissions(type, baseUrl, { formTag } = {}) {
     const exportConfig = EXPORTS[type];
 
     if (!exportConfig) {
@@ -296,6 +304,7 @@ module.exports = ({ strapi }) => ({
     }
 
     const records = await strapi.db.query(exportConfig.uid).findMany({
+      ...(type === 'generic' && formTag ? { where: { formTag: { $eq: formTag } } } : {}),
       orderBy: { createdAt: 'desc' },
       populate: exportConfig.populate || [],
     });

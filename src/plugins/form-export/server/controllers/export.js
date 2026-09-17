@@ -16,6 +16,16 @@ const attachmentHeader = (filename) => {
 };
 
 module.exports = ({ strapi }) => ({
+  async genericTags(ctx) {
+    try {
+      ctx.body = { data: await strapi.plugin('form-export')
+        .service('submissionExport').listGenericTags() };
+    } catch (error) {
+      strapi.log.error('Failed to list generic form tags', error);
+      return ctx.internalServerError('Failed to list generic form tags');
+    }
+  },
+
   async jobApplications(ctx) {
     const page = Number(ctx.query.page);
     const pageSize = Number(ctx.query.pageSize);
@@ -43,6 +53,10 @@ module.exports = ({ strapi }) => ({
 
   async submissions(ctx) {
     const { type } = ctx.params;
+    const { formTag } = ctx.query;
+    if (formTag !== undefined && typeof formTag !== 'string') {
+      return ctx.badRequest('formTag must be a string.');
+    }
 
     try {
       const exportResult = await strapi
@@ -50,7 +64,8 @@ module.exports = ({ strapi }) => ({
         .service('submissionExport')
         .exportSubmissions(
           type,
-          strapi.config.get('server.url') || ctx.origin
+          strapi.config.get('server.url') || ctx.origin,
+          { formTag }
         );
 
       ctx.set('Content-Type', 'text/csv; charset=utf-8');

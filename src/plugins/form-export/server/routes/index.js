@@ -6,6 +6,12 @@ module.exports = {
     routes: [
       {
         method: 'GET',
+        path: '/generic-tags',
+        handler: 'export.genericTags',
+        config: { policies: [] },
+      },
+      {
+        method: 'GET',
         path: '/submissions/:type.csv',
         handler: 'export.submissions',
         config: {
