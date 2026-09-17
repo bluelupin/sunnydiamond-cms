@@ -87,20 +87,6 @@ export interface CareerQualificationsAndExperience
   };
 }
 
-export interface DiamondsForEveryoneEditorialBannerSection
-  extends Struct.ComponentSchema {
-  collectionName: 'components_dfe_editorial_banner_sections';
-  info: {
-    description: 'Full-width visual break between investment-plan sections';
-    displayName: 'Diamonds Editorial Banner';
-  };
-  attributes: {
-    cta: Schema.Attribute.Component<'shared.cta', false>;
-    image: Schema.Attribute.Component<'shared.image-asset', false>;
-    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
-  };
-}
-
 export interface DiamondsForEveryoneHeroSection extends Struct.ComponentSchema {
   collectionName: 'components_dfe_hero_sections';
   info: {
@@ -1810,7 +1796,6 @@ declare module '@strapi/strapi' {
       'career.job-description': CareerJobDescription;
       'career.job-description-section': CareerJobDescriptionSection;
       'career.qualifications-and-experience': CareerQualificationsAndExperience;
-      'diamonds-for-everyone.editorial-banner-section': DiamondsForEveryoneEditorialBannerSection;
       'diamonds-for-everyone.hero-section': DiamondsForEveryoneHeroSection;
       'diamonds-for-everyone.investment-planner-section': DiamondsForEveryoneInvestmentPlannerSection;
       'diamonds-for-everyone.plan-intro-section': DiamondsForEveryonePlanIntroSection;

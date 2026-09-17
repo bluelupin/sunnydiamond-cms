@@ -238,8 +238,8 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       if (!RESCHEDULABLE_FORM_TAGS.includes(appointment.formTag)) {
         return { error: 'This appointment type cannot be rescheduled.', status: 400 };
       }
-      if (['Visited', 'Closed'].includes(appointment.workflowStatus)) {
-        return { error: 'Completed or closed appointments cannot be rescheduled.', status: 400 };
+      if (['Visited', 'Closed', 'Cancelled'].includes(appointment.workflowStatus)) {
+        return { error: 'Completed, closed or cancelled appointments cannot be rescheduled.', status: 400 };
       }
       const form = await strapi.documents(PRODUCT_FORM_UID as any).findFirst({
         status: 'published', locale: requestLocale(ctx, input),
@@ -267,6 +267,40 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
         },
       } as any);
       return { data: { documentId, requestedDate, selectedTimeSlot }, changed: true };
+    });
+    if (result.error) return result.status === 404 ? ctx.notFound(result.error) : ctx.badRequest(result.error);
+    return { data: result.data, meta: { changed: result.changed } };
+  },
+
+  async cancel(ctx) {
+    const documentId = stringOrUndefined(ctx.params.documentId);
+    if (!documentId) return ctx.badRequest('Appointment documentId is required.');
+    const rateLimit = checkFormSubmissionRateLimit(['cancel', ctx.ip, documentId]);
+    if (!rateLimit.allowed) {
+      ctx.set('Retry-After', String(rateLimit.retryAfterSeconds));
+      return ctx.tooManyRequests('Too many cancellation requests. Please try again later.');
+    }
+    const result = await strapi.db.transaction(async ({ trx }) => {
+      const table = strapi.db.metadata.get(PRODUCT_SUBMISSION_UID).tableName;
+      const locked = await strapi.db.connection(table).transacting(trx)
+        .where({ document_id: documentId }).forUpdate().first();
+      if (!locked) return { error: 'Appointment not found.', status: 404 };
+      const appointment = await strapi.db.query(PRODUCT_SUBMISSION_UID).findOne({ where: { id: locked.id } });
+      if (!APPOINTMENT_FORM_TAGS.includes(appointment.formTag)) {
+        return { error: 'This submission is not an appointment.', status: 400 };
+      }
+      const data = { documentId, workflowStatus: 'Cancelled', requestedDate: appointment.requestedDate, selectedTimeSlot: appointment.selectedTimeSlot };
+      if (appointment.workflowStatus === 'Cancelled') return { data, changed: false };
+      if (['Visited', 'Closed'].includes(appointment.workflowStatus)) {
+        return { error: 'Completed or closed appointments cannot be cancelled.', status: 400 };
+      }
+      await strapi.documents(PRODUCT_SUBMISSION_UID as any).update({
+        documentId,
+        data: {
+          workflowStatus: 'Cancelled',
+        },
+      } as any);
+      return { data, changed: true };
     });
     if (result.error) return result.status === 404 ? ctx.notFound(result.error) : ctx.badRequest(result.error);
     return { data: result.data, meta: { changed: result.changed } };

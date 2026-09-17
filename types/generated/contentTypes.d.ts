@@ -2378,7 +2378,7 @@ export interface ApiProductSubmissionProductSubmission
       Schema.Attribute.Private;
     uploadedImage: Schema.Attribute.Media<'images'>;
     workflowStatus: Schema.Attribute.Enumeration<
-      ['New', 'Contacted', 'Scheduled', 'Visited', 'Closed']
+      ['New', 'Contacted', 'Scheduled', 'Visited', 'Closed', 'Cancelled']
     > &
       Schema.Attribute.DefaultTo<'New'>;
   };

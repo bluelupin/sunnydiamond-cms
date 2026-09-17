@@ -2,6 +2,15 @@ export default {
   routes: [
     {
       method: 'POST',
+      path: '/customer/appointments/:documentId/cancel',
+      handler: 'product-submission.cancel',
+      config: {
+        auth: { strategies: ['content-api-token', 'api-token'] },
+        policies: [],
+      },
+    },
+    {
+      method: 'POST',
       path: '/customer/appointments/:documentId/reschedule',
       handler: 'product-submission.reschedule',
       config: {

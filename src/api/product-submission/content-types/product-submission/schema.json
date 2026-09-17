@@ -96,7 +96,8 @@
         "Contacted",
         "Scheduled",
         "Visited",
-        "Closed"
+        "Closed",
+        "Cancelled"
       ]
     }
   }

@@ -2,14 +2,14 @@ import { useField, type InputProps } from '@strapi/strapi/admin';
 import { Box, Field, Typography } from '@strapi/design-system';
 
 type Change = {
-  previousData?: { requestedDate?: string | null; selectedTimeSlot?: string | null };
-  newData?: { requestedDate?: string | null; selectedTimeSlot?: string | null };
+  previousData?: { requestedDate?: string | null; selectedTimeSlot?: string | null; workflowStatus?: string };
+  newData?: { requestedDate?: string | null; selectedTimeSlot?: string | null; workflowStatus?: string };
   productId?: string | null;
   changedAt?: string;
 };
 
 const scheduleText = (data: Change['previousData']) =>
-  `${data?.requestedDate || 'No date'} · ${data?.selectedTimeSlot || 'No time slot'}`;
+  `${data?.requestedDate || 'No date'} · ${data?.selectedTimeSlot || 'No time slot'}${data?.workflowStatus ? ` · ${data.workflowStatus}` : ''}`;
 
 export const RescheduleTracker = (props: InputProps) => {
   const field = useField<Change[]>(props.name);
@@ -20,7 +20,7 @@ export const RescheduleTracker = (props: InputProps) => {
       <Field.Label>Reschedule tracker</Field.Label>
       <Box background="neutral0" borderColor="neutral150" hasRadius style={{ overflowX: 'auto' }}>
         {history.length === 0 ? (
-          <Box padding={4}><Typography textColor="neutral600">No rescheduling changes yet.</Typography></Box>
+          <Box padding={4}><Typography textColor="neutral600">No appointment changes yet.</Typography></Box>
         ) : (
           <table aria-label="Reschedule history" style={{ width: '100%', borderCollapse: 'collapse', minWidth: 650 }}>
             <thead><tr>
