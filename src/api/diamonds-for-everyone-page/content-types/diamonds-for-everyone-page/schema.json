@@ -46,16 +46,6 @@
         }
       }
     },
-    "editorialBannerSection": {
-      "type": "component",
-      "component": "diamonds-for-everyone.editorial-banner-section",
-      "repeatable": false,
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
-    },
     "benefitsSection": {
       "type": "component",
       "component": "shared.diamonds-for-everyone-section",

@@ -20,6 +20,11 @@
     "showField": {
       "type": "boolean",
       "default": true
+    },
+    "textureImage": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
     }
   }
 }

@@ -124,9 +124,10 @@ export interface DiamondsForEveryoneInvestmentPlannerSection
   };
   attributes: {
     backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
-    cta: Schema.Attribute.Component<'shared.cta', false>;
+    buttonLabel: Schema.Attribute.String;
     description: Schema.Attribute.Text;
     image: Schema.Attribute.Component<'shared.image-asset', false>;
+    monthlySummary: Schema.Attribute.Text;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
   };
@@ -143,6 +144,7 @@ export interface DiamondsForEveryonePlanIntroSection
     backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
     description: Schema.Attribute.Text;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    textureImage: Schema.Attribute.Component<'shared.image-asset', false>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }

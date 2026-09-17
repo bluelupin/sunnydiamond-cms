@@ -15,19 +15,13 @@ export default factories.createCoreController(
           planIntroSection: {
             populate: {
               backgroundImage: { populate: '*' },
+              textureImage: { populate: '*' },
             },
           },
           investmentPlannerSection: {
             populate: {
               image: { populate: '*' },
               backgroundImage: { populate: '*' },
-              cta: true,
-            },
-          },
-          editorialBannerSection: {
-            populate: {
-              image: { populate: '*' },
-              cta: true,
             },
           },
           benefitsSection: {

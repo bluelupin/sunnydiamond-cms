@@ -1276,15 +1276,6 @@ export interface ApiDiamondsForEveryonePageDiamondsForEveryonePage
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    editorialBannerSection: Schema.Attribute.Component<
-      'diamonds-for-everyone.editorial-banner-section',
-      false
-    > &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
     faqSection: Schema.Attribute.Component<'shared.faq-section', false> &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
