@@ -10,6 +10,7 @@ import { migrateCareerOpeningCkeditor } from './utils/migrate-career-opening-cke
 import { seedCareerOpenings } from './utils/career-opening-seeder';
 import { configureBlogPostList } from './utils/configure-blog-post-list';
 import { configureBlogTagForm } from './utils/configure-blog-tag-form';
+import { configureShowroomForm } from './utils/configure-showroom-form';
 import { migrateOccasionCta } from './utils/migrate-occasion-cta';
 // import { cleanStaleAdminPermissions } from './utils/clean-stale-admin-permissions';
 
@@ -33,6 +34,7 @@ export default {
     await migrateOccasionCta(strapi);
     await configureBlogPostList(strapi);
     await configureBlogTagForm(strapi);
+    await configureShowroomForm(strapi);
     // await cleanStaleAdminPermissions(strapi);
     registerFrontendRevalidation(strapi);
     if (process.env.CMS_SEED_ENABLED === 'true') {
