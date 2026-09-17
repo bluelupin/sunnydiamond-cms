@@ -2,6 +2,7 @@ import type { StrapiApp } from '@strapi/strapi/admin';
 import type { ComponentType } from 'react';
 import { PolicySlugInput } from './components/PolicySlugInput';
 import { RescheduleTracker } from './components/RescheduleTracker';
+import { AppointmentDetails } from './components/AppointmentDetails';
 
 const CHUNK_RELOAD_KEY = 'strapi-admin-chunk-reload';
 const CHUNK_RELOAD_COOLDOWN_MS = 30_000;
@@ -20,6 +21,7 @@ export default {
   register(app: StrapiApp) {
     app.addFields({ type: 'policy-slug', Component: PolicySlugInput as ComponentType });
     app.addFields({ type: 'reschedule-tracker', Component: RescheduleTracker as ComponentType });
+    app.addFields({ type: 'appointment-details', Component: AppointmentDetails as ComponentType });
   },
   bootstrap(app: { registerHook: (name: string, handler: (args: any) => any) => void }) {
     app.registerHook('Admin/CM/pages/EditView/mutate-edit-view-layout', (args) => ({
@@ -29,7 +31,9 @@ export default {
         layout: args.layout.layout.map((panel: any[][]) => panel.map((row) => row.map((field) =>
           field.name === 'rescheduleHistory' && field.attribute?.type === 'json'
             ? { ...field, type: 'reschedule-tracker', size: 12 }
-            : field
+            : ['previousData', 'newData'].includes(field.name) && field.attribute?.type === 'json'
+              ? { ...field, type: 'appointment-details', size: 12 }
+              : field
         ))),
       },
     }));

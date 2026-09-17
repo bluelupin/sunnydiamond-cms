@@ -546,6 +546,116 @@ export interface ApiAboutPageAboutPage extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiAppointmentChangeAppointmentChange
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'appointment_changes';
+  info: {
+    displayName: 'Appointment Change Logs';
+    pluralName: 'appointment-changes';
+    singularName: 'appointment-change';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    actorType: Schema.Attribute.Enumeration<
+      ['Customer', 'Admin', 'Migration']
+    > &
+      Schema.Attribute.DefaultTo<'Customer'>;
+    affectedSubmissions: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::product-submission.product-submission'
+    >;
+    changedAt: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    eventType: Schema.Attribute.Enumeration<['Rescheduled', 'Cancelled']> &
+      Schema.Attribute.Required;
+    legacyMigrationKey: Schema.Attribute.String &
+      Schema.Attribute.Private &
+      Schema.Attribute.Unique &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 64;
+      }>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::appointment-change.appointment-change'
+    > &
+      Schema.Attribute.Private;
+    magentoCustomerId: Schema.Attribute.Integer & Schema.Attribute.Private;
+    newData: Schema.Attribute.JSON & Schema.Attribute.Required;
+    previousData: Schema.Attribute.JSON & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    sourceGroup: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::appointment-group.appointment-group'
+    >;
+    targetGroup: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::appointment-group.appointment-group'
+    >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiAppointmentGroupAppointmentGroup
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'appointment_groups';
+  info: {
+    displayName: 'Appointment Groups';
+    pluralName: 'appointment-groups';
+    singularName: 'appointment-group';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    activeScheduleKey: Schema.Attribute.String &
+      Schema.Attribute.Private &
+      Schema.Attribute.Unique &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 64;
+      }>;
+    addressLine1: Schema.Attribute.String;
+    addressLine2: Schema.Attribute.String;
+    city: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::appointment-group.appointment-group'
+    > &
+      Schema.Attribute.Private;
+    magentoCustomerId: Schema.Attribute.Integer & Schema.Attribute.Private;
+    mergedInto: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::appointment-group.appointment-group'
+    >;
+    pincode: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    requestedDate: Schema.Attribute.Date;
+    selectedTimeSlot: Schema.Attribute.String;
+    state: Schema.Attribute.Relation<'manyToOne', 'api::state.state'>;
+    submissions: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::product-submission.product-submission'
+    >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    workflowStatus: Schema.Attribute.Enumeration<
+      ['New', 'Contacted', 'Scheduled', 'Visited', 'Closed', 'Cancelled']
+    > &
+      Schema.Attribute.DefaultTo<'New'>;
+  };
+}
+
 export interface ApiBespokeSubmissionBespokeSubmission
   extends Struct.CollectionTypeSchema {
   collectionName: 'bespoke_submissions';
@@ -2341,6 +2451,16 @@ export interface ApiProductSubmissionProductSubmission
   attributes: {
     addressLine1: Schema.Attribute.String;
     addressLine2: Schema.Attribute.String;
+    appointmentChanges: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::appointment-change.appointment-change'
+    > &
+      Schema.Attribute.Private;
+    appointmentGroup: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::appointment-group.appointment-group'
+    > &
+      Schema.Attribute.Private;
     city: Schema.Attribute.String;
     consentAccepted: Schema.Attribute.Boolean &
       Schema.Attribute.DefaultTo<false>;
@@ -2372,7 +2492,7 @@ export interface ApiProductSubmissionProductSubmission
     rescheduleHistory: Schema.Attribute.JSON & Schema.Attribute.Private;
     selectedTimeSlot: Schema.Attribute.String;
     sourcePage: Schema.Attribute.String;
-    state: Schema.Attribute.Relation<'oneToOne', 'api::state.state'>;
+    state: Schema.Attribute.Relation<'manyToOne', 'api::state.state'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -3321,6 +3441,8 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::about-page.about-page': ApiAboutPageAboutPage;
+      'api::appointment-change.appointment-change': ApiAppointmentChangeAppointmentChange;
+      'api::appointment-group.appointment-group': ApiAppointmentGroupAppointmentGroup;
       'api::bespoke-submission.bespoke-submission': ApiBespokeSubmissionBespokeSubmission;
       'api::blog-category.blog-category': ApiBlogCategoryBlogCategory;
       'api::blog-landing-page.blog-landing-page': ApiBlogLandingPageBlogLandingPage;

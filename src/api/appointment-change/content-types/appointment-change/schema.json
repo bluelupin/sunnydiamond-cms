@@ -1,0 +1,29 @@
+{
+  "kind": "collectionType",
+  "collectionName": "appointment_changes",
+  "info": {
+    "singularName": "appointment-change",
+    "pluralName": "appointment-changes",
+    "displayName": "Appointment Change Logs"
+  },
+  "options": { "draftAndPublish": false },
+  "indexes": [
+    { "name": "appt_changes_changed_at_idx", "columns": ["changed_at"] },
+    { "name": "appt_changes_customer_idx", "columns": ["magento_customer_id"] }
+  ],
+  "attributes": {
+    "legacyMigrationKey": { "type": "string", "maxLength": 64, "unique": true, "private": true },
+    "eventType": { "type": "enumeration", "enum": ["Rescheduled", "Cancelled"], "required": true },
+    "changedAt": { "type": "datetime", "required": true },
+    "magentoCustomerId": { "type": "integer", "private": true },
+    "actorType": { "type": "enumeration", "enum": ["Customer", "Admin", "Migration"], "default": "Customer" },
+    "previousData": { "type": "json", "required": true },
+    "newData": { "type": "json", "required": true },
+    "sourceGroup": { "type": "relation", "relation": "manyToOne", "target": "api::appointment-group.appointment-group" },
+    "targetGroup": { "type": "relation", "relation": "manyToOne", "target": "api::appointment-group.appointment-group" },
+    "affectedSubmissions": {
+      "type": "relation", "relation": "manyToMany",
+      "target": "api::product-submission.product-submission", "inversedBy": "appointmentChanges"
+    }
+  }
+}

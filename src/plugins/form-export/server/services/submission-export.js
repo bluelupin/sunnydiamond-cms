@@ -33,6 +33,16 @@ const EXPORTS = {
       'formTag',
       'productName',
       'productId',
+      'appointmentGroupId',
+      'appointmentRequestedDate',
+      'appointmentSelectedTimeSlot',
+      'appointmentWorkflowStatus',
+      'appointmentAddressLine1',
+      'appointmentAddressLine2',
+      'appointmentCity',
+      'appointmentPincode',
+      'appointmentState',
+      'appointmentChanges',
       'customerName',
       'customerPhone',
       'customerEmail',
@@ -53,7 +63,14 @@ const EXPORTS = {
       'createdAt',
       'updatedAt',
     ],
-    populate: ['uploadedImage', 'state', 'preferredShowroom'],
+    populate: {
+      uploadedImage: true, state: true, preferredShowroom: true,
+      appointmentGroup: { populate: { state: true } },
+      appointmentChanges: { populate: {
+        sourceGroup: true, targetGroup: true,
+        affectedSubmissions: { select: ['documentId', 'productId', 'productName'] },
+      } },
+    },
   },
   bespoke: {
     uid: 'api::bespoke-submission.bespoke-submission',
@@ -185,6 +202,25 @@ const absoluteUrl = (url, baseUrl) => {
 };
 
 const getCellValue = (record, field, baseUrl) => {
+  if (field === 'appointmentGroupId') return record.appointmentGroup?.documentId || '';
+  const canonicalFields = {
+    appointmentRequestedDate: 'requestedDate', appointmentSelectedTimeSlot: 'selectedTimeSlot',
+    appointmentWorkflowStatus: 'workflowStatus', appointmentAddressLine1: 'addressLine1',
+    appointmentAddressLine2: 'addressLine2', appointmentCity: 'city', appointmentPincode: 'pincode',
+  };
+  if (canonicalFields[field]) return (record.appointmentGroup ?? record)[canonicalFields[field]];
+  if (field === 'appointmentState') return (record.appointmentGroup ?? record).state?.name || '';
+  if (field === 'appointmentChanges') return (record.appointmentChanges ?? [])
+    .slice().sort((a, b) => String(a.changedAt).localeCompare(String(b.changedAt)))
+    .map(change => ({
+      documentId: change.documentId, eventType: change.eventType, changedAt: change.changedAt,
+      actorType: change.actorType, sourceGroupId: change.sourceGroup?.documentId ?? null,
+      targetGroupId: change.targetGroup?.documentId ?? null,
+      previousData: change.previousData, newData: change.newData,
+      affectedProducts: (change.affectedSubmissions ?? []).map(product => ({
+        documentId: product.documentId, productId: product.productId, productName: product.productName,
+      })),
+    }));
   if (
     field === 'experience' &&
     typeof record.experience === 'string' &&

@@ -63,7 +63,7 @@
     },
     "state": {
       "type": "relation",
-      "relation": "oneToOne",
+      "relation": "manyToOne",
       "target": "api::state.state"
     },
     "preferredShowroom": {
@@ -99,6 +99,43 @@
         "Closed",
         "Cancelled"
       ]
+    },
+    "appointmentGroup": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::appointment-group.appointment-group",
+      "inversedBy": "submissions",
+      "private": true
+    },
+    "appointmentChanges": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::appointment-change.appointment-change",
+      "mappedBy": "affectedSubmissions",
+      "private": true
     }
-  }
+  },
+  "indexes": [
+    {
+      "name": "product_subs_customer_idx",
+      "columns": [
+        "magento_customer_id"
+      ]
+    },
+    {
+      "name": "product_subs_schedule_idx",
+      "columns": [
+        "requested_date",
+        "selected_time_slot"
+      ]
+    },
+    {
+      "name": "product_subs_customer_schedule_idx",
+      "columns": [
+        "magento_customer_id",
+        "requested_date",
+        "selected_time_slot"
+      ]
+    }
+  ]
 }

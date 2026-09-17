@@ -2,6 +2,10 @@ import { factories } from '@strapi/strapi';
 import { checkFormSubmissionRateLimit } from '../../../utils/form-submission-rate-limit';
 import { requestLocale } from '../../../utils/request-locale';
 import { RESCHEDULABLE_FORM_TAGS, validateAppointmentSchedule } from '../../../utils/appointment-schedule';
+import { HOME_TRIAL_FORM_TAGS } from '../../../utils/home-trial-group-key';
+import { createHomeTrialSubmission } from '../../../utils/create-home-trial-submission';
+import { mutateHomeTrialGroup } from '../../../utils/mutate-home-trial-group';
+import { listCustomerAppointments } from '../../../utils/list-customer-appointments';
 
 const PRODUCT_SUBMISSION_UID = 'api::product-submission.product-submission';
 const PRODUCT_FORM_UID = 'api::product-form.product-form';
@@ -63,6 +67,7 @@ const fileMime = (file: any) => file?.mimetype ?? file?.type;
 
 export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ strapi }) => ({
   async submit(ctx) {
+    const magentoCustomerId = ctx.state.magentoCustomer.id;
     const input = requestData(ctx);
     const locale = requestLocale(ctx, input);
     const upload = firstFile(ctx.request.files);
@@ -173,27 +178,30 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       }
     }
 
-    const entity = await strapi.documents(PRODUCT_SUBMISSION_UID as any).create({
-      data: {
-        formTag,
-        productName,
-        productId: stringOrUndefined(input.productId),
-        customerName,
-        customerPhone,
-        customerEmail,
-        requestedDate,
-        selectedTimeSlot: stringOrUndefined(input.selectedTimeSlot),
-        requestDetails: stringOrUndefined(input.requestDetails),
-        addressLine1: stringOrUndefined(input.addressLine1),
-        addressLine2: stringOrUndefined(input.addressLine2),
-        pincode: stringOrUndefined(input.pincode),
-        city: stringOrUndefined(input.city),
-        state: stateRef,
-        preferredShowroom: preferredShowroomRef,
-        sourcePage: stringOrUndefined(input.sourcePage),
-        consentAccepted: booleanValue(input.consentAccepted),
-      },
-    } as any);
+    const submissionData = {
+      formTag,
+      productName,
+      productId: stringOrUndefined(input.productId),
+      customerName,
+      customerPhone,
+      customerEmail,
+      magentoCustomerId,
+      requestedDate,
+      selectedTimeSlot: stringOrUndefined(input.selectedTimeSlot),
+      requestDetails: stringOrUndefined(input.requestDetails),
+      addressLine1: stringOrUndefined(input.addressLine1),
+      addressLine2: stringOrUndefined(input.addressLine2),
+      pincode: stringOrUndefined(input.pincode),
+      city: stringOrUndefined(input.city),
+      state: stateRef,
+      preferredShowroom: preferredShowroomRef,
+      sourcePage: stringOrUndefined(input.sourcePage),
+      consentAccepted: booleanValue(input.consentAccepted),
+    };
+    const grouped = HOME_TRIAL_FORM_TAGS.includes(formTag)
+      ? await createHomeTrialSubmission(strapi, submissionData)
+      : undefined;
+    const entity = grouped?.entity ?? await strapi.documents(PRODUCT_SUBMISSION_UID as any).create({ data: submissionData } as any);
 
     if (upload) {
       await strapi.plugin('upload').service('upload').upload({
@@ -211,6 +219,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
         id: entity.id,
         documentId: entity.documentId,
         formTag: entity.formTag,
+        ...(grouped ? { appointmentGroupId: grouped.groupDocumentId } : {}),
       },
       meta: {},
     };
@@ -228,13 +237,24 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       return ctx.tooManyRequests('Too many rescheduling requests. Please try again later.');
     }
 
+    const grouped = await mutateHomeTrialGroup(strapi, {
+      documentId, customerId: ctx.state.magentoCustomer.id, action: 'reschedule',
+      requestedDate, selectedTimeSlot, locale: requestLocale(ctx, input),
+    });
+    if (grouped) {
+      if (grouped.error) return grouped.status === 404 ? ctx.notFound(grouped.error) : ctx.badRequest(grouped.error);
+      return { data: grouped.data, meta: { changed: grouped.changed } };
+    }
     // Lock the appointment so concurrent changes record the actual previous schedule.
     const result = await strapi.db.transaction(async ({ trx }) => {
       const table = strapi.db.metadata.get(PRODUCT_SUBMISSION_UID).tableName;
       const locked = await strapi.db.connection(table).transacting(trx)
-        .where({ document_id: documentId }).forUpdate().first();
+        .where({ document_id: documentId, magento_customer_id: ctx.state.magentoCustomer.id }).forUpdate().first();
       if (!locked) return { error: 'Appointment not found.', status: 404 };
-      const appointment = await strapi.db.query(PRODUCT_SUBMISSION_UID).findOne({ where: { id: locked.id } });
+      const appointment = await strapi.db.query(PRODUCT_SUBMISSION_UID).findOne({ where: { id: locked.id }, populate: { appointmentGroup: true } });
+      if (appointment.appointmentGroup && HOME_TRIAL_FORM_TAGS.includes(appointment.formTag)) {
+        return { error: 'Appointment grouping changed. Please retry the request.', status: 409 };
+      }
       if (!RESCHEDULABLE_FORM_TAGS.includes(appointment.formTag)) {
         return { error: 'This appointment type cannot be rescheduled.', status: 400 };
       }
@@ -268,7 +288,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       } as any);
       return { data: { documentId, requestedDate, selectedTimeSlot }, changed: true };
     });
-    if (result.error) return result.status === 404 ? ctx.notFound(result.error) : ctx.badRequest(result.error);
+    if (result.error) return result.status === 404 ? ctx.notFound(result.error) : result.status === 409 ? ctx.conflict(result.error) : ctx.badRequest(result.error);
     return { data: result.data, meta: { changed: result.changed } };
   },
 
@@ -280,12 +300,22 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       ctx.set('Retry-After', String(rateLimit.retryAfterSeconds));
       return ctx.tooManyRequests('Too many cancellation requests. Please try again later.');
     }
+    const grouped = await mutateHomeTrialGroup(strapi, {
+      documentId, customerId: ctx.state.magentoCustomer.id, action: 'cancel',
+    });
+    if (grouped) {
+      if (grouped.error) return grouped.status === 404 ? ctx.notFound(grouped.error) : ctx.badRequest(grouped.error);
+      return { data: grouped.data, meta: { changed: grouped.changed } };
+    }
     const result = await strapi.db.transaction(async ({ trx }) => {
       const table = strapi.db.metadata.get(PRODUCT_SUBMISSION_UID).tableName;
       const locked = await strapi.db.connection(table).transacting(trx)
-        .where({ document_id: documentId }).forUpdate().first();
+        .where({ document_id: documentId, magento_customer_id: ctx.state.magentoCustomer.id }).forUpdate().first();
       if (!locked) return { error: 'Appointment not found.', status: 404 };
-      const appointment = await strapi.db.query(PRODUCT_SUBMISSION_UID).findOne({ where: { id: locked.id } });
+      const appointment = await strapi.db.query(PRODUCT_SUBMISSION_UID).findOne({ where: { id: locked.id }, populate: { appointmentGroup: true } });
+      if (appointment.appointmentGroup && HOME_TRIAL_FORM_TAGS.includes(appointment.formTag)) {
+        return { error: 'Appointment grouping changed. Please retry the request.', status: 409 };
+      }
       if (!APPOINTMENT_FORM_TAGS.includes(appointment.formTag)) {
         return { error: 'This submission is not an appointment.', status: 400 };
       }
@@ -302,7 +332,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       } as any);
       return { data, changed: true };
     });
-    if (result.error) return result.status === 404 ? ctx.notFound(result.error) : ctx.badRequest(result.error);
+    if (result.error) return result.status === 404 ? ctx.notFound(result.error) : result.status === 409 ? ctx.conflict(result.error) : ctx.badRequest(result.error);
     return { data: result.data, meta: { changed: result.changed } };
   },
 
@@ -315,76 +345,9 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       Number.isInteger(requestedPageSize) && requestedPageSize > 0
         ? Math.min(requestedPageSize, 100)
         : 20;
-    const filters = {
-      formTag: { $in: APPOINTMENT_FORM_TAGS },
-    };
-
-    const documentService = strapi.documents(PRODUCT_SUBMISSION_UID as any);
-    const [appointments, total] = await Promise.all([
-      documentService.findMany({
-        filters,
-        fields: [
-          'documentId',
-          'formTag',
-          'productName',
-          'productId',
-          'customerName',
-          'customerPhone',
-          'customerEmail',
-          'requestedDate',
-          'requestDetails',
-          'selectedTimeSlot',
-          'workflowStatus',
-          'addressLine1',
-          'addressLine2',
-          'pincode',
-          'city',
-          'createdAt',
-          'updatedAt',
-        ],
-        populate: {
-          state: {
-            fields: ['documentId', 'name', 'code'],
-          },
-          preferredShowroom: {
-            fields: ['documentId', 'slug', 'city', 'state'],
-          },
-        },
-        sort: ['createdAt:desc'],
-        pagination: { page, pageSize },
-      } as any),
-      documentService.count({ filters } as any),
-    ]);
-
-    const localizedAppointments = await Promise.all(
-      appointments.map(async (appointment: any) => {
-        const showroomDocumentId = appointment.preferredShowroom?.documentId;
-        if (!showroomDocumentId || !locale) return appointment;
-
-        const preferredShowroom = await strapi.documents('api::showroom.showroom').findOne({
-          documentId: showroomDocumentId,
-          status: 'published',
-          locale,
-          fields: ['documentId', 'slug', 'city', 'state'],
-        } as any);
-
-        return {
-          ...appointment,
-          preferredShowroom: preferredShowroom ?? appointment.preferredShowroom,
-        };
-      })
-    );
-
-    return {
-      data: localizedAppointments,
-      meta: {
-        pagination: {
-          page,
-          pageSize,
-          pageCount: Math.ceil(total / pageSize),
-          total,
-        },
-      },
-    };
+    return listCustomerAppointments(strapi, {
+      customerId: ctx.state.magentoCustomer.id, page, pageSize, locale,
+      formTags: APPOINTMENT_FORM_TAGS,
+    });
   },
 }));

@@ -5,8 +5,7 @@ export default {
       path: '/customer/appointments/:documentId/cancel',
       handler: 'product-submission.cancel',
       config: {
-        auth: { strategies: ['content-api-token', 'api-token'] },
-        policies: [],
+        policies: ['global::trusted-magento-customer'],
       },
     },
     {
@@ -14,8 +13,7 @@ export default {
       path: '/customer/appointments/:documentId/reschedule',
       handler: 'product-submission.reschedule',
       config: {
-        auth: { strategies: ['content-api-token', 'api-token'] },
-        policies: [],
+        policies: ['global::trusted-magento-customer'],
       },
     },
     {
@@ -23,8 +21,7 @@ export default {
       path: '/customer/appointments',
       handler: 'product-submission.customerAppointments',
       config: {
-        auth: { strategies: ['content-api-token', 'api-token'] },
-        policies: [],
+        policies: ['global::trusted-magento-customer'],
       },
     },
   ],
