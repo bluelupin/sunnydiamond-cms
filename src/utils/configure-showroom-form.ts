@@ -14,14 +14,19 @@ export async function configureShowroomForm(strapi: Core.Strapi) {
   }
   const list = [...new Set<string>((configuration.layouts?.list ?? [])
     .map((name: string) => name === 'name' ? 'city' : name))];
+  const settings = {
+    ...configuration.settings,
+    mainField: 'city',
+    ...(configuration.settings?.defaultSortBy === 'name' ? { defaultSortBy: 'city' } : {}),
+  };
 
-  if (configuration.settings?.mainField === 'city' &&
+  if (JSON.stringify(configuration.settings) === JSON.stringify(settings) &&
     JSON.stringify(configuration.layouts?.edit) === JSON.stringify(edit) &&
     JSON.stringify(configuration.layouts?.list) === JSON.stringify(list)) return;
 
   await service.updateConfiguration(contentType, {
     ...configuration,
-    settings: { ...configuration.settings, mainField: 'city' },
+    settings,
     layouts: { ...configuration.layouts, edit, list },
   });
 }
