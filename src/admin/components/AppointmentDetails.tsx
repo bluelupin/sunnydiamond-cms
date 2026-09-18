@@ -23,6 +23,11 @@ export const AppointmentDetails = (props: InputProps) => {
     ['Status', statuses[data.workflowStatus] || data.workflowStatus || 'Not recorded'],
     ['Address', [data.addressLine1, data.addressLine2, data.city, data.pincode].filter(Boolean).join(', ') || 'Not recorded'],
   ];
+  const customers = (Array.isArray(data.customerDetails) ? data.customerDetails : [])
+    .filter((detail: any) => detail && typeof detail === 'object')
+    .filter((detail: any, index: number, all: any[]) => all.findIndex(other =>
+      other.customerName === detail.customerName && other.customerPhone === detail.customerPhone &&
+      other.customerEmail === detail.customerEmail) === index);
   return (
     <Field.Root name={props.name}>
       <Field.Label>{props.name === 'previousData' ? 'Previous appointment' : 'Updated appointment'}</Field.Label>
@@ -35,6 +40,16 @@ export const AppointmentDetails = (props: InputProps) => {
             </div>
           ))}
         </dl>
+        {customers.length > 0 && <Box marginTop={4}>
+          <Typography fontWeight="bold">Customer details</Typography>
+          {customers.map((customer: any, index: number) => <dl key={index}>
+            {[['Name', customer.customerName], ['Phone', customer.customerPhone], ['Email', customer.customerEmail]].map(([label, value]) =>
+              <div key={label} style={{ display: 'grid', gridTemplateColumns: '90px 1fr', gap: 12, marginBottom: 12 }}>
+                <dt><Typography fontWeight="bold">{label}</Typography></dt>
+                <dd style={{ margin: 0 }}><Typography>{value || 'Not recorded'}</Typography></dd>
+              </div>)}
+          </dl>)}
+        </Box>}
       </Box>
     </Field.Root>
   );

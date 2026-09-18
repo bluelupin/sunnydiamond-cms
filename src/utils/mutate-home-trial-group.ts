@@ -1,6 +1,7 @@
 import { HOME_TRIAL_FORM_TAGS, homeTrialScheduleKey } from './home-trial-group-key';
 import { validateAppointmentSchedule, validateReschedulingWindow } from './appointment-schedule';
 import { retryableGroupRace } from './create-home-trial-submission';
+import { customerDetailsChanged, customerDetailsSnapshot } from './appointment-customer-details';
 
 const GROUP = 'api::appointment-group.appointment-group';
 const PRODUCT = 'api::product-submission.product-submission';
@@ -17,6 +18,7 @@ const canonical = (group: any) => ({
 /** Undefined means a legacy/ungrouped submission; its existing handler remains responsible. */
 export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any> {
   const { documentId, customerId, action, requestedDate, selectedTimeSlot, locale } = input;
+  const customerChanges = action === 'reschedule' ? input.customerChanges ?? {} : {};
   const lookup = () => strapi.db.query(PRODUCT).findOne({
     where: { documentId, magentoCustomerId: customerId }, populate: { appointmentGroup: true },
   });
@@ -49,9 +51,12 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
           data: { documentId, appointmentGroupId: value.documentId,
             requestedDate: value.requestedDate, selectedTimeSlot: value.selectedTimeSlot,
             workflowStatus: value.workflowStatus,
+            ...customerChanges,
             affectedProductDocumentIds: affected.map((row: any) => row.documentId) }, changed,
         });
-        const previousData = canonical(group);
+        const contactAudit = Object.keys(customerChanges).length > 0;
+        const previousData = { ...canonical(group),
+          ...(contactAudit ? { customerDetails: rows.map((row: any) => customerDetailsSnapshot(row)) } : {}) };
         let target = group;
         let affected = rows;
         if (action === 'cancel') {
@@ -66,47 +71,52 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
           if (inactive(group) || rows.some(inactive)) return { error: 'Completed, closed or cancelled appointments cannot be rescheduled.', status: 400 };
           const windowError = validateReschedulingWindow(group.requestedDate);
           if (windowError) return { error: windowError, status: 400 };
-          if (group.requestedDate === requestedDate && group.selectedTimeSlot === selectedTimeSlot) return response(group, false);
-          for (const formTag of new Set(rows.map((row: any) => row.formTag))) {
-            const form = await strapi.documents('api::product-form.product-form').findFirst({
-              status: 'published', locale, filters: { formTag }, populate: { availableTimeSlots: true },
-            });
-            const error = form ? validateAppointmentSchedule(requestedDate, selectedTimeSlot, form) : 'The appointment form is unavailable.';
-            if (error) return { error, status: 400 };
-          }
-          const key = homeTrialScheduleKey(customerId, requestedDate, selectedTimeSlot);
-          let occupied = await groups.findFirst({ filters: { activeScheduleKey: key }, populate: { state: true } });
-          if (occupied) {
-            // Also cover a target inserted after the initial customer-group lock query.
-            await strapi.db.connection(table).transacting(trx)
-              .where({ id: occupied.id }).forUpdate();
-            occupied = await groups.findOne({ documentId: occupied.documentId, populate: { state: true } });
-            if (!occupied || occupied.activeScheduleKey !== key) {
-              throw Object.assign(new Error('Target appointment changed; retry transaction.'), { code: '40001' });
+          const scheduleChanged = group.requestedDate !== requestedDate || group.selectedTimeSlot !== selectedTimeSlot;
+          if (!scheduleChanged && !customerDetailsChanged(rows, customerChanges)) return response(group, false);
+          if (scheduleChanged) {
+            for (const formTag of new Set(rows.map((row: any) => row.formTag))) {
+              const form = await strapi.documents('api::product-form.product-form').findFirst({
+                status: 'published', locale, filters: { formTag }, populate: { availableTimeSlots: true },
+              });
+              const error = form ? validateAppointmentSchedule(requestedDate, selectedTimeSlot, form) : 'The appointment form is unavailable.';
+              if (error) return { error, status: 400 };
             }
-          }
-          if (occupied && (occupied.magentoCustomerId !== customerId || inactive(occupied) || occupied.requestedDate !== requestedDate || occupied.selectedTimeSlot !== selectedTimeSlot)) {
-            throw new Error('Appointment group does not match its active schedule key.');
-          }
-          if (occupied && occupied.documentId !== groupId) {
-            target = occupied;
-            await groups.update({ documentId: groupId, data: { activeScheduleKey: null, mergedInto: target.documentId, workflowStatus: 'Closed' } });
-          } else {
-            target = { ...group, requestedDate, selectedTimeSlot };
-            await groups.update({ documentId: groupId, data: { requestedDate, selectedTimeSlot, activeScheduleKey: key } });
+            const key = homeTrialScheduleKey(customerId, requestedDate, selectedTimeSlot);
+            let occupied = await groups.findFirst({ filters: { activeScheduleKey: key }, populate: { state: true } });
+            if (occupied) {
+              // Also cover a target inserted after the initial customer-group lock query.
+              await strapi.db.connection(table).transacting(trx)
+                .where({ id: occupied.id }).forUpdate();
+              occupied = await groups.findOne({ documentId: occupied.documentId, populate: { state: true } });
+              if (!occupied || occupied.activeScheduleKey !== key) {
+                throw Object.assign(new Error('Target appointment changed; retry transaction.'), { code: '40001' });
+              }
+            }
+            if (occupied && (occupied.magentoCustomerId !== customerId || inactive(occupied) || occupied.requestedDate !== requestedDate || occupied.selectedTimeSlot !== selectedTimeSlot)) {
+              throw new Error('Appointment group does not match its active schedule key.');
+            }
+            if (occupied && occupied.documentId !== groupId) {
+              target = occupied;
+              await groups.update({ documentId: groupId, data: { activeScheduleKey: null, mergedInto: target.documentId, workflowStatus: 'Closed' } });
+            } else {
+              target = { ...group, requestedDate, selectedTimeSlot };
+              await groups.update({ documentId: groupId, data: { requestedDate, selectedTimeSlot, activeScheduleKey: key } });
+            }
           }
         }
         for (const row of affected) {
           await strapi.documents(PRODUCT).update({ documentId: row.documentId, data:
             action === 'cancel' ? { workflowStatus: 'Cancelled' }
-              : { ...canonical(target), appointmentGroup: target.documentId },
+              : { ...canonical(target), appointmentGroup: target.documentId, ...customerChanges },
           });
         }
         await strapi.documents(CHANGE).create({ data: {
           eventType: action === 'cancel' ? 'Cancelled' : 'Rescheduled', changedAt: new Date().toISOString(),
           actorType: 'Customer', magentoCustomerId: customerId,
           sourceGroup: groupId, targetGroup: target.documentId,
-          previousData, newData: { ...canonical(target), products: affected.map((row: any) => ({ documentId: row.documentId, productId: row.productId ?? null, productName: row.productName ?? null })) },
+          previousData, newData: { ...canonical(target),
+            ...(contactAudit ? { customerDetails: affected.map((row: any) => customerDetailsSnapshot(row, customerChanges)) } : {}),
+            products: affected.map((row: any) => ({ documentId: row.documentId, productId: row.productId ?? null, productName: row.productName ?? null })) },
           affectedSubmissions: { connect: affected.map((row: any) => row.documentId) },
         } });
         return response(target, true, affected);

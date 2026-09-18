@@ -15,6 +15,7 @@ import { configureProductSubmissionTracker } from './utils/configure-product-sub
 import { configureAppointmentHistory } from './utils/configure-appointment-history';
 import { migrateOccasionCta } from './utils/migrate-occasion-cta';
 import { migrateHomeTrialAppointments } from './utils/migrate-home-trial-appointments';
+import { registerReachOutSubmissionProtection } from './utils/protect-reach-out-submissions';
 // import { cleanStaleAdminPermissions } from './utils/clean-stale-admin-permissions';
 
 export default {
@@ -24,7 +25,9 @@ export default {
    *
    * This gives you an opportunity to extend code.
    */
-  register(/* { strapi }: { strapi: Core.Strapi } */) {},
+  register({ strapi }: { strapi: Core.Strapi }) {
+    registerReachOutSubmissionProtection(strapi);
+  },
 
   /**
    * An asynchronous bootstrap function that runs before

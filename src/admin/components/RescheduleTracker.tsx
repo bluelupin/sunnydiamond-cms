@@ -2,14 +2,17 @@ import { useField, type InputProps } from '@strapi/strapi/admin';
 import { Box, Field, Typography } from '@strapi/design-system';
 
 type Change = {
-  previousData?: { requestedDate?: string | null; selectedTimeSlot?: string | null; workflowStatus?: string };
-  newData?: { requestedDate?: string | null; selectedTimeSlot?: string | null; workflowStatus?: string };
+  previousData?: { requestedDate?: string | null; selectedTimeSlot?: string | null; workflowStatus?: string; customerDetails?: { customerName?: string; customerPhone?: string; customerEmail?: string }[] };
+  newData?: Change['previousData'];
   productId?: string | null;
   changedAt?: string;
 };
 
-const scheduleText = (data: Change['previousData']) =>
-  `${data?.requestedDate || 'No date'} · ${data?.selectedTimeSlot || 'No time slot'}${data?.workflowStatus ? ` · ${data.workflowStatus}` : ''}`;
+const scheduleText = (data: Change['previousData']) => {
+  const contact = data?.customerDetails?.map(customer =>
+    [customer.customerName, customer.customerPhone, customer.customerEmail].filter(Boolean).join(' · ')).join('; ');
+  return `${data?.requestedDate || 'No date'} · ${data?.selectedTimeSlot || 'No time slot'}${data?.workflowStatus ? ` · ${data.workflowStatus}` : ''}${contact ? ` — Customer: ${contact}` : ''}`;
+};
 
 export const RescheduleTracker = (props: InputProps) => {
   const field = useField<Change[]>(props.name);

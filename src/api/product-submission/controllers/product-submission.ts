@@ -6,6 +6,7 @@ import { HOME_TRIAL_FORM_TAGS } from '../../../utils/home-trial-group-key';
 import { createHomeTrialSubmission } from '../../../utils/create-home-trial-submission';
 import { mutateHomeTrialGroup } from '../../../utils/mutate-home-trial-group';
 import { listCustomerAppointments } from '../../../utils/list-customer-appointments';
+import { appointmentCustomerChanges, customerDetailsChanged, customerDetailsSnapshot } from '../../../utils/appointment-customer-details';
 
 const PRODUCT_SUBMISSION_UID = 'api::product-submission.product-submission';
 const PRODUCT_FORM_UID = 'api::product-form.product-form';
@@ -230,6 +231,8 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     const documentId = stringOrUndefined(ctx.params.documentId);
     const requestedDate = stringOrUndefined(input.requestedDate);
     const selectedTimeSlot = stringOrUndefined(input.selectedTimeSlot);
+    const customerChanges = appointmentCustomerChanges(input);
+    if (customerChanges.error) return ctx.badRequest(customerChanges.error);
     if (!documentId) return ctx.badRequest('Appointment documentId is required.');
     const rateLimit = checkFormSubmissionRateLimit(['reschedule', ctx.ip, documentId]);
     if (!rateLimit.allowed) {
@@ -240,6 +243,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     const grouped = await mutateHomeTrialGroup(strapi, {
       documentId, customerId: ctx.state.magentoCustomer.id, action: 'reschedule',
       requestedDate, selectedTimeSlot, locale: requestLocale(ctx, input),
+      customerChanges: customerChanges.data,
     });
     if (grouped) {
       if (grouped.error) return grouped.status === 404 ? ctx.notFound(grouped.error) : ctx.badRequest(grouped.error);
@@ -263,32 +267,38 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       }
       const windowError = validateReschedulingWindow(appointment.requestedDate);
       if (windowError) return { error: windowError, status: 400 };
-      if (appointment.requestedDate === requestedDate && appointment.selectedTimeSlot === selectedTimeSlot) {
+      const scheduleChanged = appointment.requestedDate !== requestedDate || appointment.selectedTimeSlot !== selectedTimeSlot;
+      if (!scheduleChanged && !customerDetailsChanged([appointment], customerChanges.data)) {
         return { data: { documentId, requestedDate, selectedTimeSlot }, changed: false };
       }
-      const form = await strapi.documents(PRODUCT_FORM_UID as any).findFirst({
-        status: 'published', locale: requestLocale(ctx, input),
-        filters: { formTag: appointment.formTag }, populate: { availableTimeSlots: true },
-      } as any);
-      if (!form) return { error: 'The appointment form is unavailable.', status: 400 };
-      const scheduleError = validateAppointmentSchedule(requestedDate, selectedTimeSlot, form);
-      if (scheduleError) return { error: scheduleError, status: 400 };
+      if (scheduleChanged) {
+        const form = await strapi.documents(PRODUCT_FORM_UID as any).findFirst({
+          status: 'published', locale: requestLocale(ctx, input),
+          filters: { formTag: appointment.formTag }, populate: { availableTimeSlots: true },
+        } as any);
+        if (!form) return { error: 'The appointment form is unavailable.', status: 400 };
+        const scheduleError = validateAppointmentSchedule(requestedDate, selectedTimeSlot, form);
+        if (scheduleError) return { error: scheduleError, status: 400 };
+      }
       await strapi.documents(PRODUCT_SUBMISSION_UID as any).update({
         documentId,
         data: {
           requestedDate, selectedTimeSlot,
+          ...customerChanges.data,
           rescheduleHistory: [
             ...(Array.isArray(appointment.rescheduleHistory) ? appointment.rescheduleHistory : []),
             {
-              previousData: { requestedDate: appointment.requestedDate ?? null, selectedTimeSlot: appointment.selectedTimeSlot ?? null },
-              newData: { requestedDate, selectedTimeSlot },
+              previousData: { requestedDate: appointment.requestedDate ?? null, selectedTimeSlot: appointment.selectedTimeSlot ?? null,
+                ...(Object.keys(customerChanges.data).length ? { customerDetails: [customerDetailsSnapshot(appointment)] } : {}) },
+              newData: { requestedDate, selectedTimeSlot,
+                ...(Object.keys(customerChanges.data).length ? { customerDetails: [customerDetailsSnapshot(appointment, customerChanges.data)] } : {}) },
               productId: appointment.productId ?? null,
               changedAt: new Date().toISOString(),
             },
           ],
         },
       } as any);
-      return { data: { documentId, requestedDate, selectedTimeSlot }, changed: true };
+      return { data: { documentId, requestedDate, selectedTimeSlot, ...customerChanges.data }, changed: true };
     });
     if (result.error) return result.status === 404 ? ctx.notFound(result.error) : result.status === 409 ? ctx.conflict(result.error) : ctx.badRequest(result.error);
     return { data: result.data, meta: { changed: result.changed } };
