@@ -7,6 +7,7 @@ import { createHomeTrialSubmission } from '../../../utils/create-home-trial-subm
 import { mutateHomeTrialGroup } from '../../../utils/mutate-home-trial-group';
 import { listCustomerAppointments } from '../../../utils/list-customer-appointments';
 import { appointmentCustomerChanges, customerDetailsChanged, customerDetailsSnapshot } from '../../../utils/appointment-customer-details';
+import { appointmentNoteChanges } from '../../../utils/appointment-note';
 
 const PRODUCT_SUBMISSION_UID = 'api::product-submission.product-submission';
 const PRODUCT_FORM_UID = 'api::product-form.product-form';
@@ -233,6 +234,8 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     const selectedTimeSlot = stringOrUndefined(input.selectedTimeSlot);
     const customerChanges = appointmentCustomerChanges(input);
     if (customerChanges.error) return ctx.badRequest(customerChanges.error);
+    const noteChanges = appointmentNoteChanges(input);
+    if (noteChanges.error) return ctx.badRequest(noteChanges.error);
     if (!documentId) return ctx.badRequest('Appointment documentId is required.');
     const rateLimit = checkFormSubmissionRateLimit(['reschedule', ctx.ip, documentId]);
     if (!rateLimit.allowed) {
@@ -244,6 +247,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       documentId, customerId: ctx.state.magentoCustomer?.id, action: 'reschedule',
       requestedDate, selectedTimeSlot, locale: requestLocale(ctx, input),
       customerChanges: customerChanges.data,
+      noteChanges: noteChanges.data,
     }) : undefined;
     if (grouped) {
       if (grouped.error) return grouped.status === 404 ? ctx.notFound(grouped.error) : ctx.badRequest(grouped.error);
@@ -272,7 +276,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       const windowError = validateReschedulingWindow(appointment.requestedDate);
       if (windowError) return { error: windowError, status: 400 };
       const scheduleChanged = appointment.requestedDate !== requestedDate || appointment.selectedTimeSlot !== selectedTimeSlot;
-      if (!scheduleChanged && !customerDetailsChanged([appointment], customerChanges.data)) {
+      if (!scheduleChanged && !customerDetailsChanged([appointment], { ...customerChanges.data, ...noteChanges.data })) {
         return { data: { documentId, requestedDate, selectedTimeSlot }, changed: false };
       }
       if (scheduleChanged) {
@@ -289,12 +293,15 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
         data: {
           requestedDate, selectedTimeSlot,
           ...customerChanges.data,
+          ...noteChanges.data,
           rescheduleHistory: [
             ...(Array.isArray(appointment.rescheduleHistory) ? appointment.rescheduleHistory : []),
             {
               previousData: { requestedDate: appointment.requestedDate ?? null, selectedTimeSlot: appointment.selectedTimeSlot ?? null,
+                ...(Object.keys(noteChanges.data).length ? { requestDetails: appointment.requestDetails ?? null } : {}),
                 ...(Object.keys(customerChanges.data).length ? { customerDetails: [customerDetailsSnapshot(appointment)] } : {}) },
               newData: { requestedDate, selectedTimeSlot,
+                ...noteChanges.data,
                 ...(Object.keys(customerChanges.data).length ? { customerDetails: [customerDetailsSnapshot(appointment, customerChanges.data)] } : {}) },
               productId: appointment.productId ?? null,
               changedAt: new Date().toISOString(),
@@ -302,7 +309,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
           ],
         },
       } as any);
-      return { data: { documentId, requestedDate, selectedTimeSlot, ...customerChanges.data }, changed: true };
+      return { data: { documentId, requestedDate, selectedTimeSlot, ...customerChanges.data, ...noteChanges.data }, changed: true };
     });
     if (result.error) return result.status === 404 ? ctx.notFound(result.error) : result.status === 409 ? ctx.conflict(result.error) : ctx.badRequest(result.error);
     return { data: result.data, meta: { changed: result.changed } };

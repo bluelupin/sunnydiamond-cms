@@ -19,6 +19,7 @@ const canonical = (group: any) => ({
 export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any> {
   const { documentId, customerId, action, requestedDate, selectedTimeSlot, locale } = input;
   const customerChanges = action === 'reschedule' ? input.customerChanges ?? {} : {};
+  const noteChanges = action === 'reschedule' ? input.noteChanges ?? {} : {};
   const lookup = () => strapi.db.query(PRODUCT).findOne({
     where: { documentId, magentoCustomerId: customerId }, populate: { appointmentGroup: true },
   });
@@ -52,11 +53,14 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
             requestedDate: value.requestedDate, selectedTimeSlot: value.selectedTimeSlot,
             workflowStatus: value.workflowStatus,
             ...customerChanges,
+            ...noteChanges,
             affectedProductDocumentIds: affected.map((row: any) => row.documentId) }, changed,
         });
         const contactAudit = Object.keys(customerChanges).length > 0;
         const groupCustomerDetails = { ...customerContactDetails(rows[0]), ...customerChanges };
         const previousData = { ...canonical(group),
+          ...(Object.keys(noteChanges).length ? { requestDetails: rows[0].requestDetails ?? null,
+            productNotes: rows.map((row: any) => ({ documentId: row.documentId, requestDetails: row.requestDetails ?? null })) } : {}),
           ...(contactAudit ? { customerDetails: rows.map((row: any) => customerDetailsSnapshot(row)) } : {}) };
         let target = group;
         let affected = rows;
@@ -73,7 +77,7 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
           const windowError = validateReschedulingWindow(group.requestedDate);
           if (windowError) return { error: windowError, status: 400 };
           const scheduleChanged = group.requestedDate !== requestedDate || group.selectedTimeSlot !== selectedTimeSlot;
-          if (!scheduleChanged && !customerDetailsChanged(rows, customerChanges)) return response(group, false);
+          if (!scheduleChanged && !customerDetailsChanged(rows, { ...customerChanges, ...noteChanges })) return response(group, false);
           if (scheduleChanged) {
             for (const formTag of new Set(rows.map((row: any) => row.formTag))) {
               const form = await strapi.documents('api::product-form.product-form').findFirst({
@@ -114,7 +118,7 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
         for (const row of affected) {
           await strapi.documents(PRODUCT).update({ documentId: row.documentId, data:
             action === 'cancel' ? { workflowStatus: 'Cancelled' }
-              : { ...canonical(target), appointmentGroup: target.documentId, ...groupCustomerDetails },
+              : { ...canonical(target), appointmentGroup: target.documentId, ...groupCustomerDetails, ...noteChanges },
           });
         }
         await strapi.documents(CHANGE).create({ data: {
@@ -122,6 +126,7 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
           actorType: 'Customer', magentoCustomerId: customerId,
           sourceGroup: groupId, targetGroup: target.documentId,
           previousData, newData: { ...canonical(target),
+            ...noteChanges,
             ...(contactAudit ? { customerDetails: affected.map((row: any) => customerDetailsSnapshot(row, groupCustomerDetails)) } : {}),
             products: affected.map((row: any) => ({ documentId: row.documentId, productId: row.productId ?? null, productName: row.productName ?? null })) },
           affectedSubmissions: { connect: affected.map((row: any) => row.documentId) },

@@ -23,6 +23,7 @@ export const AppointmentDetails = (props: InputProps) => {
     ['Status', statuses[data.workflowStatus] || data.workflowStatus || 'Not recorded'],
     ['Address', [data.addressLine1, data.addressLine2, data.city, data.pincode].filter(Boolean).join(', ') || 'Not recorded'],
   ];
+  if (Object.prototype.hasOwnProperty.call(data, 'requestDetails')) rows.push(['Note', data.requestDetails || 'Not recorded']);
   const details = (Array.isArray(data.customerDetails) ? data.customerDetails : [])
     .filter((detail: any) => detail && typeof detail === 'object');
   const customers = details.slice(0, 1);
