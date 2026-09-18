@@ -1258,6 +1258,7 @@ export interface SharedLegacyImageBlock extends Struct.ComponentSchema {
     displayName: 'Legacy Image Block';
   };
   attributes: {
+    caption: Schema.Attribute.String;
     description: Schema.Attribute.Text & Schema.Attribute.Required;
     image: Schema.Attribute.Component<'shared.image-asset', false>;
   };

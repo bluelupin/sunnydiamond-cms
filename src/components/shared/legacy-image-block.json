@@ -6,6 +6,9 @@
   },
   "options": {},
   "attributes": {
+    "caption": {
+      "type": "string"
+    },
     "description": {
       "type": "text",
       "required": true
