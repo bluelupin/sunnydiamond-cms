@@ -18,7 +18,7 @@ export const validateReschedulingWindow = (scheduledDate: unknown, today = appoi
   const deadline = new Date(`${scheduledDate}T00:00:00Z`);
   deadline.setUTCDate(deadline.getUTCDate() - 3);
   if (today > deadline.toISOString().slice(0, 10)) {
-    return 'This appointment is out of the 3-day rescheduling window period.';
+    return 'You cannot reschedule as it is outside the 3-day rescheduling window period.';
   }
   return undefined;
 };

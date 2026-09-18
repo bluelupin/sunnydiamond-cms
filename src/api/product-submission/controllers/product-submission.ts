@@ -261,11 +261,11 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       if (['Visited', 'Closed', 'Cancelled'].includes(appointment.workflowStatus)) {
         return { error: 'Completed, closed or cancelled appointments cannot be rescheduled.', status: 400 };
       }
+      const windowError = validateReschedulingWindow(appointment.requestedDate);
+      if (windowError) return { error: windowError, status: 400 };
       if (appointment.requestedDate === requestedDate && appointment.selectedTimeSlot === selectedTimeSlot) {
         return { data: { documentId, requestedDate, selectedTimeSlot }, changed: false };
       }
-      const windowError = validateReschedulingWindow(appointment.requestedDate);
-      if (windowError) return { error: windowError, status: 400 };
       const form = await strapi.documents(PRODUCT_FORM_UID as any).findFirst({
         status: 'published', locale: requestLocale(ctx, input),
         filters: { formTag: appointment.formTag }, populate: { availableTimeSlots: true },
