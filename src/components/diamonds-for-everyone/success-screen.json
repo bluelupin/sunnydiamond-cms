@@ -1,0 +1,37 @@
+{
+  "collectionName": "components_dfe_success_screens",
+  "info": {
+    "displayName": "Success Screen",
+    "description": "Confirmation content after opening an investment account"
+  },
+  "attributes": {
+    "heading": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "successIcon": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "image": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "managePaymentsButtonLabel": {
+      "type": "string"
+    },
+    "managePaymentsUrl": {
+      "type": "string"
+    },
+    "shoppingLinkLabel": {
+      "type": "string"
+    },
+    "shoppingUrl": {
+      "type": "string"
+    }
+  }
+}

@@ -109,13 +109,48 @@ export interface DiamondsForEveryoneInvestmentPlannerSection
     displayName: 'Plan Your Investment Section';
   };
   attributes: {
+    accountSetupDescription: Schema.Attribute.Text;
+    accountSetupHeading: Schema.Attribute.String;
+    accountSetupSteps: Schema.Attribute.Component<'shared.diamonds-step', true>;
     backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
     buttonLabel: Schema.Attribute.String;
+    cancelButtonLabel: Schema.Attribute.String;
     description: Schema.Attribute.Text;
     image: Schema.Attribute.Component<'shared.image-asset', false>;
     monthlySummary: Schema.Attribute.Text;
+    openAccountButtonLabel: Schema.Attribute.String;
+    stepperSteps: Schema.Attribute.Component<'diamonds-for-everyone.stepper-step', true>;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface DiamondsForEveryoneSuccessScreen extends Struct.ComponentSchema {
+  collectionName: 'components_dfe_success_screens';
+  info: {
+    displayName: 'Success Screen';
+    description: 'Confirmation content after opening an investment account';
+  };
+  attributes: {
+    heading: Schema.Attribute.String;
+    description: Schema.Attribute.Text;
+    successIcon: Schema.Attribute.Media<'images'>;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
+    managePaymentsButtonLabel: Schema.Attribute.String;
+    managePaymentsUrl: Schema.Attribute.String;
+    shoppingLinkLabel: Schema.Attribute.String;
+    shoppingUrl: Schema.Attribute.String;
+  };
+}
+
+export interface DiamondsForEveryoneStepperStep extends Struct.ComponentSchema {
+  collectionName: 'components_dfe_stepper_steps';
+  info: {
+    displayName: 'Stepper Step';
+    description: 'Ordered step label for the investment account stepper';
+  };
+  attributes: {
+    label: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
 
@@ -1799,6 +1834,8 @@ declare module '@strapi/strapi' {
       'career.qualifications-and-experience': CareerQualificationsAndExperience;
       'diamonds-for-everyone.hero-section': DiamondsForEveryoneHeroSection;
       'diamonds-for-everyone.investment-planner-section': DiamondsForEveryoneInvestmentPlannerSection;
+      'diamonds-for-everyone.stepper-step': DiamondsForEveryoneStepperStep;
+      'diamonds-for-everyone.success-screen': DiamondsForEveryoneSuccessScreen;
       'diamonds-for-everyone.plan-intro-section': DiamondsForEveryonePlanIntroSection;
       'gifting.finishing-touch-section': GiftingFinishingTouchSection;
       'gifting.gift-card-section': GiftingGiftCardSection;

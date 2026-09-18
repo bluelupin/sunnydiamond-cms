@@ -31,6 +31,28 @@
     },
     "buttonLabel": {
       "type": "string"
+    },
+    "accountSetupHeading": {
+      "type": "string"
+    },
+    "accountSetupDescription": {
+      "type": "text"
+    },
+    "accountSetupSteps": {
+      "type": "component",
+      "component": "shared.diamonds-step",
+      "repeatable": true
+    },
+    "stepperSteps": {
+      "type": "component",
+      "component": "diamonds-for-everyone.stepper-step",
+      "repeatable": true
+    },
+    "openAccountButtonLabel": {
+      "type": "string"
+    },
+    "cancelButtonLabel": {
+      "type": "string"
     }
   }
 }

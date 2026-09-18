@@ -46,6 +46,16 @@
         }
       }
     },
+    "successScreen": {
+      "type": "component",
+      "component": "diamonds-for-everyone.success-screen",
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
     "benefitsSection": {
       "type": "component",
       "component": "shared.diamonds-for-everyone-section",

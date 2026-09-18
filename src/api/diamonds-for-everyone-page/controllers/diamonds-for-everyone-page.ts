@@ -20,8 +20,16 @@ export default factories.createCoreController(
           },
           investmentPlannerSection: {
             populate: {
+              accountSetupSteps: true,
+              stepperSteps: true,
               image: { populate: '*' },
               backgroundImage: { populate: '*' },
+            },
+          },
+          successScreen: {
+            populate: {
+              successIcon: true,
+              image: { populate: '*' },
             },
           },
           benefitsSection: {
