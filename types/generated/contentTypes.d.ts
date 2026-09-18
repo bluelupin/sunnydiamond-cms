@@ -613,6 +613,11 @@ export interface ApiAppointmentGroupAppointmentGroup
   options: {
     draftAndPublish: false;
   };
+  pluginOptions: {
+    'content-manager': {
+      visible: false;
+    };
+  };
   attributes: {
     activeScheduleKey: Schema.Attribute.String &
       Schema.Attribute.Private &

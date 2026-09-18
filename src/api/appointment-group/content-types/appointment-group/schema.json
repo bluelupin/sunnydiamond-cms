@@ -7,6 +7,9 @@
     "displayName": "Appointment Groups"
   },
   "options": { "draftAndPublish": false },
+  "pluginOptions": {
+    "content-manager": { "visible": false }
+  },
   "indexes": [
     { "name": "appt_groups_customer_idx", "columns": ["magento_customer_id"] },
     { "name": "appt_groups_schedule_idx", "columns": ["requested_date", "selected_time_slot"] },
