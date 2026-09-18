@@ -1,5 +1,5 @@
 import { HOME_TRIAL_FORM_TAGS, homeTrialScheduleKey } from './home-trial-group-key';
-import { validateAppointmentSchedule } from './appointment-schedule';
+import { validateAppointmentSchedule, validateReschedulingWindow } from './appointment-schedule';
 import { retryableGroupRace } from './create-home-trial-submission';
 
 const GROUP = 'api::appointment-group.appointment-group';
@@ -65,6 +65,8 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
         } else {
           if (inactive(group) || rows.some(inactive)) return { error: 'Completed, closed or cancelled appointments cannot be rescheduled.', status: 400 };
           if (group.requestedDate === requestedDate && group.selectedTimeSlot === selectedTimeSlot) return response(group, false);
+          const windowError = validateReschedulingWindow(group.requestedDate);
+          if (windowError) return { error: windowError, status: 400 };
           for (const formTag of new Set(rows.map((row: any) => row.formTag))) {
             const form = await strapi.documents('api::product-form.product-form').findFirst({
               status: 'published', locale, filters: { formTag }, populate: { availableTimeSlots: true },

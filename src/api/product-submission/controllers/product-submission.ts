@@ -1,7 +1,7 @@
 import { factories } from '@strapi/strapi';
 import { checkFormSubmissionRateLimit } from '../../../utils/form-submission-rate-limit';
 import { requestLocale } from '../../../utils/request-locale';
-import { RESCHEDULABLE_FORM_TAGS, validateAppointmentSchedule } from '../../../utils/appointment-schedule';
+import { RESCHEDULABLE_FORM_TAGS, validateAppointmentSchedule, validateReschedulingWindow } from '../../../utils/appointment-schedule';
 import { HOME_TRIAL_FORM_TAGS } from '../../../utils/home-trial-group-key';
 import { createHomeTrialSubmission } from '../../../utils/create-home-trial-submission';
 import { mutateHomeTrialGroup } from '../../../utils/mutate-home-trial-group';
@@ -261,6 +261,11 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       if (['Visited', 'Closed', 'Cancelled'].includes(appointment.workflowStatus)) {
         return { error: 'Completed, closed or cancelled appointments cannot be rescheduled.', status: 400 };
       }
+      if (appointment.requestedDate === requestedDate && appointment.selectedTimeSlot === selectedTimeSlot) {
+        return { data: { documentId, requestedDate, selectedTimeSlot }, changed: false };
+      }
+      const windowError = validateReschedulingWindow(appointment.requestedDate);
+      if (windowError) return { error: windowError, status: 400 };
       const form = await strapi.documents(PRODUCT_FORM_UID as any).findFirst({
         status: 'published', locale: requestLocale(ctx, input),
         filters: { formTag: appointment.formTag }, populate: { availableTimeSlots: true },
@@ -268,9 +273,6 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       if (!form) return { error: 'The appointment form is unavailable.', status: 400 };
       const scheduleError = validateAppointmentSchedule(requestedDate, selectedTimeSlot, form);
       if (scheduleError) return { error: scheduleError, status: 400 };
-      if (appointment.requestedDate === requestedDate && appointment.selectedTimeSlot === selectedTimeSlot) {
-        return { data: { documentId, requestedDate, selectedTimeSlot }, changed: false };
-      }
       await strapi.documents(PRODUCT_SUBMISSION_UID as any).update({
         documentId,
         data: {

@@ -12,6 +12,17 @@ export const appointmentToday = () => new Intl.DateTimeFormat('en-CA', {
   timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit',
 }).format(new Date());
 
+/** Last permitted day is three calendar days before the existing appointment. */
+export const validateReschedulingWindow = (scheduledDate: unknown, today = appointmentToday()) => {
+  if (!validAppointmentDate(scheduledDate)) return 'The current appointment date is missing or invalid.';
+  const deadline = new Date(`${scheduledDate}T00:00:00Z`);
+  deadline.setUTCDate(deadline.getUTCDate() - 3);
+  if (today > deadline.toISOString().slice(0, 10)) {
+    return 'This appointment is out of the 3-day rescheduling window period.';
+  }
+  return undefined;
+};
+
 export const validateAppointmentSchedule = (date: unknown, slot: unknown, form: any) => {
   if (!validAppointmentDate(date)) return 'requestedDate must be a valid date in YYYY-MM-DD format.';
   if (date < appointmentToday()) return 'Appointments cannot be scheduled in the past.';
