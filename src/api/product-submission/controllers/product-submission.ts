@@ -68,7 +68,7 @@ const fileMime = (file: any) => file?.mimetype ?? file?.type;
 
 export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ strapi }) => ({
   async submit(ctx) {
-    const magentoCustomerId = ctx.state.magentoCustomer.id;
+    const magentoCustomerId = ctx.state.magentoCustomer?.id;
     const input = requestData(ctx);
     const locale = requestLocale(ctx, input);
     const upload = firstFile(ctx.request.files);
@@ -240,11 +240,11 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       return ctx.tooManyRequests('Too many rescheduling requests. Please try again later.');
     }
 
-    const grouped = await mutateHomeTrialGroup(strapi, {
-      documentId, customerId: ctx.state.magentoCustomer.id, action: 'reschedule',
+    const grouped = ctx.state.magentoCustomer ? await mutateHomeTrialGroup(strapi, {
+      documentId, customerId: ctx.state.magentoCustomer?.id, action: 'reschedule',
       requestedDate, selectedTimeSlot, locale: requestLocale(ctx, input),
       customerChanges: customerChanges.data,
-    });
+    }) : undefined;
     if (grouped) {
       if (grouped.error) return grouped.status === 404 ? ctx.notFound(grouped.error) : ctx.badRequest(grouped.error);
       return { data: grouped.data, meta: { changed: grouped.changed } };
@@ -253,13 +253,17 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     const result = await strapi.db.transaction(async ({ trx }) => {
       const table = strapi.db.metadata.get(PRODUCT_SUBMISSION_UID).tableName;
       const locked = await strapi.db.connection(table).transacting(trx)
-        .where({ document_id: documentId, magento_customer_id: ctx.state.magentoCustomer.id }).forUpdate().first();
+        .where({ document_id: documentId })
+        .modify(query => {
+          if (ctx.state.magentoCustomer) query.where({ magento_customer_id: ctx.state.magentoCustomer.id });
+          else query.where({ form_tag: 'product-store-visit' });
+        }).forUpdate().first();
       if (!locked) return { error: 'Appointment not found.', status: 404 };
       const appointment = await strapi.db.query(PRODUCT_SUBMISSION_UID).findOne({ where: { id: locked.id }, populate: { appointmentGroup: true } });
       if (appointment.appointmentGroup && HOME_TRIAL_FORM_TAGS.includes(appointment.formTag)) {
         return { error: 'Appointment grouping changed. Please retry the request.', status: 409 };
       }
-      if (!RESCHEDULABLE_FORM_TAGS.includes(appointment.formTag)) {
+      if (!RESCHEDULABLE_FORM_TAGS.includes(appointment.formTag) && appointment.formTag !== 'product-store-visit') {
         return { error: 'This appointment type cannot be rescheduled.', status: 400 };
       }
       if (['Visited', 'Closed', 'Cancelled'].includes(appointment.workflowStatus)) {
@@ -312,9 +316,9 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       ctx.set('Retry-After', String(rateLimit.retryAfterSeconds));
       return ctx.tooManyRequests('Too many cancellation requests. Please try again later.');
     }
-    const grouped = await mutateHomeTrialGroup(strapi, {
-      documentId, customerId: ctx.state.magentoCustomer.id, action: 'cancel',
-    });
+    const grouped = ctx.state.magentoCustomer ? await mutateHomeTrialGroup(strapi, {
+      documentId, customerId: ctx.state.magentoCustomer?.id, action: 'cancel',
+    }) : undefined;
     if (grouped) {
       if (grouped.error) return grouped.status === 404 ? ctx.notFound(grouped.error) : ctx.badRequest(grouped.error);
       return { data: grouped.data, meta: { changed: grouped.changed } };
@@ -322,7 +326,11 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     const result = await strapi.db.transaction(async ({ trx }) => {
       const table = strapi.db.metadata.get(PRODUCT_SUBMISSION_UID).tableName;
       const locked = await strapi.db.connection(table).transacting(trx)
-        .where({ document_id: documentId, magento_customer_id: ctx.state.magentoCustomer.id }).forUpdate().first();
+        .where({ document_id: documentId })
+        .modify(query => {
+          if (ctx.state.magentoCustomer) query.where({ magento_customer_id: ctx.state.magentoCustomer.id });
+          else query.where({ form_tag: 'product-store-visit' });
+        }).forUpdate().first();
       if (!locked) return { error: 'Appointment not found.', status: 404 };
       const appointment = await strapi.db.query(PRODUCT_SUBMISSION_UID).findOne({ where: { id: locked.id }, populate: { appointmentGroup: true } });
       if (appointment.appointmentGroup && HOME_TRIAL_FORM_TAGS.includes(appointment.formTag)) {
@@ -358,8 +366,9 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
         ? Math.min(requestedPageSize, 100)
         : 20;
     return listCustomerAppointments(strapi, {
-      customerId: ctx.state.magentoCustomer.id, page, pageSize, locale,
+      customerId: ctx.state.magentoCustomer?.id, page, pageSize, locale,
       formTags: APPOINTMENT_FORM_TAGS,
+      guestDocumentId: stringOrUndefined(ctx.query.documentId),
     });
   },
 }));

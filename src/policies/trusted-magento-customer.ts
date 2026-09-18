@@ -1,7 +1,7 @@
 import { errors } from '@strapi/utils';
 
 /** Customer identity asserted by the authenticated website server. */
-export default async (ctx: any) => {
+export default async (ctx: any, config: { allowGuestFormTags?: string[]; allowGuestAppointments?: boolean } = {}) => {
   if (ctx.state.auth?.strategy?.name !== 'content-api-token') {
     throw new errors.UnauthorizedError('A CMS API token is required.');
   }
@@ -15,6 +15,21 @@ export default async (ctx: any) => {
   const value = ctx.request.method === 'GET'
     ? ctx.request.query?.magentoCustomerId
     : input?.magentoCustomerId;
+  if (config.allowGuestAppointments && (value === undefined || value === null || value === '')) {
+    if (ctx.request.method === 'GET' &&
+      (ctx.request.query?.formTag !== 'product-store-visit' ||
+        typeof ctx.request.query?.documentId !== 'string' || !ctx.request.query.documentId.trim())) {
+      throw new errors.ValidationError('Guest appointment listing requires formTag=product-store-visit and the submission documentId.');
+    }
+    ctx.state.magentoCustomer = undefined;
+    return true;
+  }
+  if (ctx.request.method === 'POST' && typeof input?.formTag === 'string' &&
+    config.allowGuestFormTags?.includes(input.formTag.trim()) &&
+    (value === undefined || value === null || value === '')) {
+    ctx.state.magentoCustomer = undefined;
+    return true;
+  }
   if (!['string', 'number'].includes(typeof value) || !/^[1-9]\d*$/.test(String(value)) || !Number.isSafeInteger(Number(value))) {
     throw new errors.ValidationError('magentoCustomerId must be a positive integer verified by the website server.');
   }

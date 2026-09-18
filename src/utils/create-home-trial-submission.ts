@@ -1,4 +1,5 @@
 import { HOME_TRIAL_FORM_TAGS, homeTrialScheduleKey } from './home-trial-group-key';
+import { customerContactDetails } from './appointment-customer-details';
 
 const GROUP_UID = 'api::appointment-group.appointment-group';
 const SUBMISSION_UID = 'api::product-submission.product-submission';
@@ -38,8 +39,12 @@ export async function createHomeTrialSubmission(strapi: any, data: any) {
           ['Cancelled', 'Closed', 'Visited'].includes(group.workflowStatus)) {
           throw new Error('Appointment group does not match its active schedule key.');
         }
+        const firstProduct = await strapi.db.query(SUBMISSION_UID).findOne({
+          where: { appointmentGroup: { documentId: group.documentId } }, orderBy: { id: 'asc' },
+        });
         const entity = await strapi.documents(SUBMISSION_UID).create({ data: {
           ...data,
+          ...(firstProduct ? customerContactDetails(firstProduct) : {}),
           appointmentGroup: group.documentId,
           requestedDate: group.requestedDate, selectedTimeSlot: group.selectedTimeSlot,
           workflowStatus: group.workflowStatus,

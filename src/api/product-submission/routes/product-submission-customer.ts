@@ -5,7 +5,7 @@ export default {
       path: '/customer/appointments/:documentId/cancel',
       handler: 'product-submission.cancel',
       config: {
-        policies: ['global::trusted-magento-customer'],
+        policies: [{ name: 'global::trusted-magento-customer', config: { allowGuestAppointments: true } }],
       },
     },
     {
@@ -13,7 +13,7 @@ export default {
       path: '/customer/appointments/:documentId/reschedule',
       handler: 'product-submission.reschedule',
       config: {
-        policies: ['global::trusted-magento-customer'],
+        policies: [{ name: 'global::trusted-magento-customer', config: { allowGuestAppointments: true } }],
       },
     },
     {
@@ -21,7 +21,7 @@ export default {
       path: '/customer/appointments',
       handler: 'product-submission.customerAppointments',
       config: {
-        policies: ['global::trusted-magento-customer'],
+        policies: [{ name: 'global::trusted-magento-customer', config: { allowGuestAppointments: true } }],
       },
     },
   ],

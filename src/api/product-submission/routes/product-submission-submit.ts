@@ -5,7 +5,7 @@ export default {
       path: '/product-submissions/submit',
       handler: 'product-submission.submit',
       config: {
-        policies: ['global::trusted-magento-customer'],
+        policies: [{ name: 'global::trusted-magento-customer', config: { allowGuestFormTags: ['product-store-visit'] } }],
       },
     },
   ],

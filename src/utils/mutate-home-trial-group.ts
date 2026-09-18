@@ -1,7 +1,7 @@
 import { HOME_TRIAL_FORM_TAGS, homeTrialScheduleKey } from './home-trial-group-key';
 import { validateAppointmentSchedule, validateReschedulingWindow } from './appointment-schedule';
 import { retryableGroupRace } from './create-home-trial-submission';
-import { customerDetailsChanged, customerDetailsSnapshot } from './appointment-customer-details';
+import { customerContactDetails, customerDetailsChanged, customerDetailsSnapshot } from './appointment-customer-details';
 
 const GROUP = 'api::appointment-group.appointment-group';
 const PRODUCT = 'api::product-submission.product-submission';
@@ -55,6 +55,7 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
             affectedProductDocumentIds: affected.map((row: any) => row.documentId) }, changed,
         });
         const contactAudit = Object.keys(customerChanges).length > 0;
+        const groupCustomerDetails = { ...customerContactDetails(rows[0]), ...customerChanges };
         const previousData = { ...canonical(group),
           ...(contactAudit ? { customerDetails: rows.map((row: any) => customerDetailsSnapshot(row)) } : {}) };
         let target = group;
@@ -96,6 +97,12 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
               throw new Error('Appointment group does not match its active schedule key.');
             }
             if (occupied && occupied.documentId !== groupId) {
+              const targetProducts = await strapi.db.query(PRODUCT).findMany({
+                where: { appointmentGroup: { documentId: occupied.documentId } }, orderBy: { id: 'asc' },
+              });
+              if (customerDetailsChanged(targetProducts, groupCustomerDetails)) {
+                return { error: 'Customer details must match the destination appointment before merging appointments.', status: 400 };
+              }
               target = occupied;
               await groups.update({ documentId: groupId, data: { activeScheduleKey: null, mergedInto: target.documentId, workflowStatus: 'Closed' } });
             } else {
@@ -107,7 +114,7 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
         for (const row of affected) {
           await strapi.documents(PRODUCT).update({ documentId: row.documentId, data:
             action === 'cancel' ? { workflowStatus: 'Cancelled' }
-              : { ...canonical(target), appointmentGroup: target.documentId, ...customerChanges },
+              : { ...canonical(target), appointmentGroup: target.documentId, ...groupCustomerDetails },
           });
         }
         await strapi.documents(CHANGE).create({ data: {
@@ -115,7 +122,7 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
           actorType: 'Customer', magentoCustomerId: customerId,
           sourceGroup: groupId, targetGroup: target.documentId,
           previousData, newData: { ...canonical(target),
-            ...(contactAudit ? { customerDetails: affected.map((row: any) => customerDetailsSnapshot(row, customerChanges)) } : {}),
+            ...(contactAudit ? { customerDetails: affected.map((row: any) => customerDetailsSnapshot(row, groupCustomerDetails)) } : {}),
             products: affected.map((row: any) => ({ documentId: row.documentId, productId: row.productId ?? null, productName: row.productName ?? null })) },
           affectedSubmissions: { connect: affected.map((row: any) => row.documentId) },
         } });

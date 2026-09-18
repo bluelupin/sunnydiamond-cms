@@ -23,11 +23,9 @@ export const AppointmentDetails = (props: InputProps) => {
     ['Status', statuses[data.workflowStatus] || data.workflowStatus || 'Not recorded'],
     ['Address', [data.addressLine1, data.addressLine2, data.city, data.pincode].filter(Boolean).join(', ') || 'Not recorded'],
   ];
-  const customers = (Array.isArray(data.customerDetails) ? data.customerDetails : [])
-    .filter((detail: any) => detail && typeof detail === 'object')
-    .filter((detail: any, index: number, all: any[]) => all.findIndex(other =>
-      other.customerName === detail.customerName && other.customerPhone === detail.customerPhone &&
-      other.customerEmail === detail.customerEmail) === index);
+  const details = (Array.isArray(data.customerDetails) ? data.customerDetails : [])
+    .filter((detail: any) => detail && typeof detail === 'object');
+  const customers = details.slice(0, 1);
   return (
     <Field.Root name={props.name}>
       <Field.Label>{props.name === 'previousData' ? 'Previous appointment' : 'Updated appointment'}</Field.Label>

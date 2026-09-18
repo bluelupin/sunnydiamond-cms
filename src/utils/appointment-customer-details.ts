@@ -1,8 +1,12 @@
-export const customerDetailsSnapshot = (row: any, changes: any = {}) => ({
-  documentId: row.documentId,
+export const customerContactDetails = (row: any) => ({
   customerName: row.customerName ?? null,
   customerPhone: row.customerPhone ?? null,
   customerEmail: row.customerEmail ?? null,
+});
+
+export const customerDetailsSnapshot = (row: any, changes: any = {}) => ({
+  documentId: row.documentId,
+  ...customerContactDetails(row),
   ...changes,
 });
 

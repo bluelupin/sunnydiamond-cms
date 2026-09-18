@@ -1,7 +1,6 @@
 import type { StrapiApp } from '@strapi/strapi/admin';
 import type { ComponentType } from 'react';
 import { PolicySlugInput } from './components/PolicySlugInput';
-import { RescheduleTracker } from './components/RescheduleTracker';
 import { AppointmentDetails } from './components/AppointmentDetails';
 import { GenericSubmissionField } from './components/GenericSubmissionField';
 import './styles/read-only-appointment-relations.css';
@@ -22,7 +21,6 @@ export default {
   config: {},
   register(app: StrapiApp) {
     app.addFields({ type: 'policy-slug', Component: PolicySlugInput as ComponentType });
-    app.addFields({ type: 'reschedule-tracker', Component: RescheduleTracker as ComponentType });
     app.addFields({ type: 'appointment-details', Component: AppointmentDetails as ComponentType });
     app.addFields({ type: 'generic-submission-field', Component: GenericSubmissionField as ComponentType });
   },
@@ -31,7 +29,9 @@ export default {
       if (args.layout.settings?.displayName !== 'Submissions: Generic') return args;
       return { ...args, layout: { ...args.layout,
         layout: args.layout.layout.map((panel: any[][]) => panel.map(row => row.map(field =>
-          !['internalNotes', 'workflowStatus'].includes(field.name) &&
+          field.name === 'preferredShowroom'
+            ? { ...field, disabled: true }
+            : !['internalNotes', 'workflowStatus'].includes(field.name) &&
           ['string', 'email', 'text', 'date', 'boolean'].includes(field.attribute?.type)
             ? { ...field, type: 'generic-submission-field' } : field,
         ))),
@@ -41,13 +41,13 @@ export default {
       ...args,
       layout: {
         ...args.layout,
-        layout: args.layout.layout.map((panel: any[][]) => panel.map((row) => row.map((field) =>
-          field.name === 'rescheduleHistory' && field.attribute?.type === 'json'
-            ? { ...field, type: 'reschedule-tracker', size: 12 }
-            : ['previousData', 'newData'].includes(field.name) && field.attribute?.type === 'json'
+        layout: args.layout.layout.map((panel: any[][]) => panel.map((row) => row
+          .filter((field) => field.name !== 'rescheduleHistory')
+          .map((field) =>
+          ['previousData', 'newData'].includes(field.name) && field.attribute?.type === 'json'
               ? { ...field, type: 'appointment-details', size: 12 }
               : field
-        ))),
+        )).filter(row => row.length > 0)).filter(panel => panel.length > 0),
       },
     }));
     app.registerHook('Admin/CM/pages/EditView/mutate-edit-view-layout', (args) => {

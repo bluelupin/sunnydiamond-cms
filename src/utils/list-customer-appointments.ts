@@ -11,19 +11,23 @@ const populate = {
 };
 
 export async function listCustomerAppointments(strapi: any, options: any) {
-  const { customerId, page, pageSize, locale, formTags } = options;
+  const { customerId, page, pageSize, locale, formTags, guestDocumentId } = options;
+  const guest = customerId === undefined;
+  const productScope = guest
+    ? { formTag: 'product-store-visit', documentId: guestDocumentId }
+    : { magentoCustomerId: customerId, formTag: { $in: formTags } };
   const groupWhere = { magentoCustomerId: customerId, mergedInto: { $null: true },
     submissions: { magentoCustomerId: customerId, formTag: { $in: HOME_TRIAL_FORM_TAGS } } };
   // Until the explicit migration, historical rows remain individual appointments.
-  const legacyWhere = { magentoCustomerId: customerId, formTag: { $in: formTags },
+  const legacyWhere = { ...productScope,
     appointmentGroup: { $null: true } };
   const prefix = page * pageSize;
   const [groupIds, legacyIds, groupCount, legacyCount] = await Promise.all([
-    strapi.db.query(GROUP).findMany({ where: groupWhere, select: ['id', 'documentId', 'createdAt'],
+    guest ? [] : strapi.db.query(GROUP).findMany({ where: groupWhere, select: ['id', 'documentId', 'createdAt'],
       orderBy: [{ createdAt: 'desc' }, { id: 'desc' }], limit: prefix }),
     strapi.db.query(PRODUCT).findMany({ where: legacyWhere, select: ['id', 'documentId', 'createdAt'],
       orderBy: [{ createdAt: 'desc' }, { id: 'desc' }], limit: prefix }),
-    strapi.db.query(GROUP).count({ where: groupWhere }),
+    guest ? 0 : strapi.db.query(GROUP).count({ where: groupWhere }),
     strapi.db.query(PRODUCT).count({ where: legacyWhere }),
   ]);
   // Merge two bounded ID-only prefixes, paginate appointment identities, then load products.
@@ -42,7 +46,7 @@ export async function listCustomerAppointments(strapi: any, options: any) {
       populate: { state: populate.state },
     }) : [],
     units.length ? strapi.db.query(PRODUCT).findMany({
-      where: { magentoCustomerId: customerId, formTag: { $in: formTags }, $or: [
+      where: { ...productScope, $or: [
         { appointmentGroup: { documentId: { $in: selectedGroupIds } } },
         { documentId: { $in: selectedLegacyIds }, appointmentGroup: { $null: true } },
       ] }, select: fields, populate: { ...populate, appointmentGroup: { select: ['documentId'] } },
