@@ -23,7 +23,6 @@ export const AppointmentDetails = (props: InputProps) => {
     ['Status', statuses[data.workflowStatus] || data.workflowStatus || 'Not recorded'],
     ['Address', [data.addressLine1, data.addressLine2, data.city, data.pincode].filter(Boolean).join(', ') || 'Not recorded'],
   ];
-  const products = Array.isArray(data.products) ? data.products : [];
   return (
     <Field.Root name={props.name}>
       <Field.Label>{props.name === 'previousData' ? 'Previous appointment' : 'Updated appointment'}</Field.Label>
@@ -36,14 +35,6 @@ export const AppointmentDetails = (props: InputProps) => {
             </div>
           ))}
         </dl>
-        {products.length > 0 && <>
-          <Typography fontWeight="bold">Affected products</Typography>
-          <ul style={{ marginBottom: 0, paddingLeft: 20 }}>
-            {products.map((product: any, index: number) => <li key={product.documentId || index}>
-              <Typography>{product.productName || 'Product'}{product.productId ? ` (ID: ${product.productId})` : ''}</Typography>
-            </li>)}
-          </ul>
-        </>}
       </Box>
     </Field.Root>
   );

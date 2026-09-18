@@ -3,6 +3,7 @@ import type { ComponentType } from 'react';
 import { PolicySlugInput } from './components/PolicySlugInput';
 import { RescheduleTracker } from './components/RescheduleTracker';
 import { AppointmentDetails } from './components/AppointmentDetails';
+import './styles/read-only-appointment-relations.css';
 
 const CHUNK_RELOAD_KEY = 'strapi-admin-chunk-reload';
 const CHUNK_RELOAD_COOLDOWN_MS = 30_000;
