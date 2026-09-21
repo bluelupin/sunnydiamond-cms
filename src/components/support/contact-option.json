@@ -1,7 +1,7 @@
 {
-  "collectionName": "components_shared_contact_options",
+  "collectionName": "components_support_contact_options",
   "info": {
-    "displayName": "Contact Option",
+    "displayName": "Support Contact Option",
     "description": "A call, email, or link action displayed in a contact section"
   },
   "options": {},
@@ -24,6 +24,9 @@
     },
     "availability": {
       "type": "text"
+    },
+    "buttonLabel": {
+      "type": "string"
     },
     "cta": {
       "type": "component",

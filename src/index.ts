@@ -14,6 +14,7 @@ import { configureShowroomForm } from './utils/configure-showroom-form';
 import { configureProductSubmissionTracker } from './utils/configure-product-submission-tracker';
 import { configureAppointmentHistory } from './utils/configure-appointment-history';
 import { migrateOccasionCta } from './utils/migrate-occasion-cta';
+import { migrateSupportContactSection } from './utils/migrate-support-contact-section';
 import { migrateHomeTrialAppointments } from './utils/migrate-home-trial-appointments';
 import { registerReachOutSubmissionProtection } from './utils/protect-reach-out-submissions';
 // import { cleanStaleAdminPermissions } from './utils/clean-stale-admin-permissions';
@@ -38,6 +39,7 @@ export default {
    */
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {
     await migrateOccasionCta(strapi);
+    await migrateSupportContactSection(strapi);
     await configureBlogPostList(strapi);
     await configureBlogTagForm(strapi);
     await configureShowroomForm(strapi);

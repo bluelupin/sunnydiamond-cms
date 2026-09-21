@@ -19,7 +19,7 @@
     "contactSection": {
       "type": "component",
       "repeatable": false,
-      "component": "shared.contact-support-section",
+      "component": "support.contact-section",
       "required": true,
       "pluginOptions": {
         "i18n": {

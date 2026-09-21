@@ -2899,7 +2899,7 @@ export interface ApiSupportPageSupportPage extends Struct.SingleTypeSchema {
   };
   attributes: {
     contactSection: Schema.Attribute.Component<
-      'shared.contact-support-section',
+      'support.contact-section',
       false
     > &
       Schema.Attribute.Required &

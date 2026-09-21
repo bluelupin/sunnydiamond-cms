@@ -1,5 +1,37 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
+export interface SupportContactOption extends Struct.ComponentSchema {
+  collectionName: 'components_support_contact_options';
+  info: {
+    description: 'A call, email, or link action displayed in a contact section';
+    displayName: 'Support Contact Option';
+  };
+  attributes: {
+    availability: Schema.Attribute.Text;
+    buttonLabel: Schema.Attribute.String;
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    description: Schema.Attribute.Text;
+    heading: Schema.Attribute.String & Schema.Attribute.Required;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    type: Schema.Attribute.Enumeration<['phone', 'email', 'link']> &
+      Schema.Attribute.Required;
+  };
+}
+
+export interface SupportContactSection extends Struct.ComponentSchema {
+  collectionName: 'components_support_contact_sections';
+  info: {
+    description: 'Contact options for the Help & Support page';
+    displayName: 'Support Contact Section';
+  };
+  attributes: {
+    contactOptions: Schema.Attribute.Component<'support.contact-option', true> &
+      Schema.Attribute.Required;
+    heading: Schema.Attribute.String;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+  };
+}
+
 export interface CareerCareerDiscoverSection extends Struct.ComponentSchema {
   collectionName: 'components_career_career_discover_sections';
   info: {
@@ -113,7 +145,6 @@ export interface DiamondsForEveryoneInvestmentPlannerSection
     accountSetupHeading: Schema.Attribute.String;
     accountSetupSteps: Schema.Attribute.Component<'shared.diamonds-step', true>;
     backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
-    buttonLabel: Schema.Attribute.String;
     cancelButtonLabel: Schema.Attribute.String;
     description: Schema.Attribute.Text;
     image: Schema.Attribute.Component<'shared.image-asset', false>;
@@ -1867,6 +1898,8 @@ declare module '@strapi/strapi' {
       'shared.cert-lab-card': SharedCertLabCard;
       'shared.certificate-section': SharedCertificateSection;
       'shared.collection-showcase-section': SharedCollectionShowcaseSection;
+      'support.contact-option': SupportContactOption;
+      'support.contact-section': SupportContactSection;
       'shared.contact-option': SharedContactOption;
       'shared.contact-support-section': SharedContactSupportSection;
       'shared.content-section': SharedContentSection;
