@@ -25,6 +25,9 @@
     "availability": {
       "type": "text"
     },
+    "buttonLabel": {
+      "type": "string"
+    },
     "cta": {
       "type": "component",
       "component": "shared.cta",
