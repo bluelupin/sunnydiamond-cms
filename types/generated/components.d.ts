@@ -181,6 +181,7 @@ export interface DiamondsForEveryoneStepperStep extends Struct.ComponentSchema {
     description: 'Ordered step label for the investment account stepper';
   };
   attributes: {
+    stepId: Schema.Attribute.String;
     label: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
