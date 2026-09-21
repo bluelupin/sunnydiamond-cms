@@ -22,9 +22,6 @@
     "description": {
       "type": "text"
     },
-    "availability": {
-      "type": "text"
-    },
     "buttonLabel": {
       "type": "string"
     },
