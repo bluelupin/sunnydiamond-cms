@@ -10,6 +10,7 @@ import { appointmentCustomerChanges, customerDetailsChanged, customerDetailsSnap
 import { appointmentNoteChanges } from '../../../utils/appointment-note';
 import { notifyRescheduleAfterCommit } from '../../../utils/appointment-reschedule-email';
 import { sendStoreVisitConfirmationEmail } from '../../../utils/appointment-confirmation-email';
+import { notifyShowroomCancellationAfterCommit } from '../../../utils/showroom-appointment-cancelled-email';
 
 const PRODUCT_SUBMISSION_UID = 'api::product-submission.product-submission';
 const PRODUCT_FORM_UID = 'api::product-form.product-form';
@@ -355,7 +356,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       if (grouped.error) return grouped.status === 404 ? ctx.notFound(grouped.error) : ctx.badRequest(grouped.error);
       return { data: grouped.data, meta: { changed: grouped.changed } };
     }
-    const result = await strapi.db.transaction(async ({ trx }) => {
+    const result = await strapi.db.transaction(async ({ trx, onCommit }) => {
       const table = strapi.db.metadata.get(PRODUCT_SUBMISSION_UID).tableName;
       const locked = await strapi.db.connection(table).transacting(trx)
         .where({ document_id: documentId })
@@ -364,7 +365,9 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
           else query.where({ form_tag: 'product-store-visit' });
         }).forUpdate().first();
       if (!locked) return { error: 'Appointment not found.', status: 404 };
-      const appointment = await strapi.db.query(PRODUCT_SUBMISSION_UID).findOne({ where: { id: locked.id }, populate: { appointmentGroup: true } });
+      const appointment = await strapi.db.query(PRODUCT_SUBMISSION_UID).findOne({
+        where: { id: locked.id }, populate: { appointmentGroup: true, preferredShowroom: true },
+      });
       if (appointment.appointmentGroup && HOME_TRIAL_FORM_TAGS.includes(appointment.formTag)) {
         return { error: 'Appointment grouping changed. Please retry the request.', status: 409 };
       }
@@ -382,6 +385,9 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
           workflowStatus: 'Cancelled',
         },
       } as any);
+      if (appointment.formTag === 'product-store-visit') {
+        notifyShowroomCancellationAfterCommit(strapi, onCommit, appointment);
+      }
       return { data, changed: true };
     });
     if (result.error) return result.status === 404 ? ctx.notFound(result.error) : result.status === 409 ? ctx.conflict(result.error) : ctx.badRequest(result.error);
