@@ -13,6 +13,7 @@ import { sendStoreVisitConfirmationEmail } from '../../../utils/appointment-conf
 import { notifyShowroomCancellationAfterCommit } from '../../../utils/showroom-appointment-cancelled-email';
 import { sendTryAtHomeConfirmationEmail } from '../../../utils/try-at-home-confirmation-email';
 import { assignAppointmentReference } from '../../../utils/appointment-reference';
+import { sendVideoCallConfirmationEmail, notifyVideoCallCancellationAfterCommit } from '../../../utils/video-call-appointment-email';
 
 const PRODUCT_SUBMISSION_UID = 'api::product-submission.product-submission';
 const PRODUCT_FORM_UID = 'api::product-form.product-form';
@@ -224,8 +225,8 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     }
 
     const appointmentReference = grouped?.appointmentReference ??
-      (formTag === 'product-store-visit'
-        ? await assignAppointmentReference(strapi, PRODUCT_SUBMISSION_UID, entity, 'SV')
+      (formTag === 'product-store-visit' || formTag === 'product-video-call'
+        ? await assignAppointmentReference(strapi, PRODUCT_SUBMISSION_UID, entity, formTag === 'product-store-visit' ? 'SV' : 'VC')
         : undefined);
 
     if (formTag === 'product-store-visit') {
@@ -242,6 +243,13 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
         requestedDate,
         selectedTimeSlot: stringOrUndefined(input.selectedTimeSlot),
         location: location || showroom?.city || 'Sunny Diamonds showroom',
+      });
+    }
+
+    if (formTag === 'product-video-call') {
+      await sendVideoCallConfirmationEmail(strapi, {
+        documentId: entity.documentId, appointmentReference, productName, customerName, customerEmail,
+        requestedDate, selectedTimeSlot: stringOrUndefined(input.selectedTimeSlot), sourcePage: stringOrUndefined(input.sourcePage),
       });
     }
 
@@ -355,7 +363,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       if (scheduleChanged) notifyRescheduleAfterCommit(strapi, onCommit, {
         ...customerDetailsSnapshot(appointment, customerChanges.data),
         appointmentReference: appointment.appointmentReference,
-        formTag: appointment.formTag, preferredShowroom: appointment.preferredShowroom,
+        formTag: appointment.formTag, preferredShowroom: appointment.preferredShowroom, productName: appointment.productName,
         previousDate: appointment.requestedDate, previousTimeSlot: appointment.selectedTimeSlot,
         requestedDate, selectedTimeSlot,
       });
@@ -413,6 +421,8 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       } as any);
       if (appointment.formTag === 'product-store-visit') {
         notifyShowroomCancellationAfterCommit(strapi, onCommit, appointment);
+      } else if (appointment.formTag === 'product-video-call') {
+        notifyVideoCallCancellationAfterCommit(strapi, onCommit, appointment);
       }
       return { data, changed: true };
     });

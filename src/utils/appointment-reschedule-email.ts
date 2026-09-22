@@ -1,12 +1,15 @@
 import type { Core } from '@strapi/strapi';
 import { appointmentRescheduledTemplate, type AppointmentRescheduledData } from '../emails/appointment-rescheduled';
 import { showroomAppointmentRescheduledTemplate } from '../emails/showroom-appointment-rescheduled';
+import { videoCallRescheduledTemplate } from '../emails/video-call-appointment';
+import { appointmentManageUrl } from './video-call-appointment-email';
 import { RESCHEDULABLE_FORM_TAGS, validAppointmentDate } from './appointment-schedule';
 
 export interface RescheduleNotification extends AppointmentRescheduledData {
   customerEmail?: string | null;
   appointmentReference?: string | null;
   formTag?: string | null;
+  productName?: string | null;
   preferredShowroom?: { city?: string | null; state?: string | null; pincode?: string | null; address?: string | null } | null;
 }
 
@@ -39,6 +42,12 @@ export async function sendAppointmentRescheduleEmail(strapi: Core.Strapi, data: 
             .map(value => value?.trim()).filter(Boolean).join(', '),
           manageUrl: manageUrl(data.documentId),
         })
+      : data.formTag === 'product-video-call'
+        ? videoCallRescheduledTemplate({
+            appointmentId: data.appointmentReference || data.documentId, customerName: data.customerName,
+            appointmentDate: data.requestedDate, appointmentTime: data.selectedTimeSlot,
+            productName: data.productName, manageUrl: appointmentManageUrl(data.documentId),
+          })
       : appointmentRescheduledTemplate(data);
     await strapi.plugin('email').service('email').send({
       to, ...template,
@@ -76,7 +85,7 @@ export function registerAdminRescheduleEmail(strapi: Core.Strapi) {
         notifyRescheduleAfterCommit(strapi, onCommit, {
           documentId: after.documentId, customerName: after.customerName, customerEmail: after.customerEmail,
           appointmentReference: after.appointmentReference,
-          formTag: after.formTag, preferredShowroom: after.preferredShowroom,
+          formTag: after.formTag, preferredShowroom: after.preferredShowroom, productName: after.productName,
           previousDate: before.requestedDate, previousTimeSlot: before.selectedTimeSlot,
           requestedDate: after.requestedDate, selectedTimeSlot: after.selectedTimeSlot,
         });

@@ -3,14 +3,14 @@ import type { Core } from '@strapi/strapi';
 const PRODUCT = 'api::product-submission.product-submission';
 const GROUP = 'api::appointment-group.appointment-group';
 
-export function buildAppointmentReference(prefix: 'TAH' | 'SV', id: number, createdAt?: string | Date | null) {
+export function buildAppointmentReference(prefix: 'TAH' | 'SV' | 'VC', id: number, createdAt?: string | Date | null) {
   if (!Number.isSafeInteger(id) || id <= 0) throw new Error('A persisted appointment ID is required.');
   const date = createdAt ? new Date(createdAt) : new Date();
   const year = Number.isNaN(date.getTime()) ? new Date().getUTCFullYear() : date.getUTCFullYear();
   return `${prefix}-${year}-${String(id).padStart(6, '0')}`;
 }
 
-export async function assignAppointmentReference(strapi: Core.Strapi, uid: string, record: any, prefix: 'TAH' | 'SV') {
+export async function assignAppointmentReference(strapi: Core.Strapi, uid: string, record: any, prefix: 'TAH' | 'SV' | 'VC') {
   if (record.appointmentReference) return record.appointmentReference;
   const appointmentReference = buildAppointmentReference(prefix, record.id, record.createdAt);
   await strapi.documents(uid as any).update({ documentId: record.documentId, data: { appointmentReference } } as any);
