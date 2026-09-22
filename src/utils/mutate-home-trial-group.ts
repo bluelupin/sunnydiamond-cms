@@ -2,6 +2,7 @@ import { HOME_TRIAL_FORM_TAGS, homeTrialScheduleKey } from './home-trial-group-k
 import { validateAppointmentSchedule, validateReschedulingWindow } from './appointment-schedule';
 import { retryableGroupRace } from './create-home-trial-submission';
 import { customerContactDetails, customerDetailsChanged, customerDetailsSnapshot } from './appointment-customer-details';
+import { notifyRescheduleAfterCommit } from './appointment-reschedule-email';
 
 const GROUP = 'api::appointment-group.appointment-group';
 const PRODUCT = 'api::product-submission.product-submission';
@@ -28,7 +29,7 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
   if (!initial.appointmentGroup || !HOME_TRIAL_FORM_TAGS.includes(initial.formTag)) return undefined;
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
-      return await strapi.db.transaction(async ({ trx }: any) => {
+      return await strapi.db.transaction(async ({ trx, onCommit }: any) => {
         // Group locks precede product locks, matching submission creation. Lock in ID
         // order so simultaneous moves between a customer's groups cannot invert order.
         const table = strapi.db.metadata.get(GROUP).tableName;
@@ -131,6 +132,11 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
             products: affected.map((row: any) => ({ documentId: row.documentId, productId: row.productId ?? null, productName: row.productName ?? null })) },
           affectedSubmissions: { connect: affected.map((row: any) => row.documentId) },
         } });
+        if (action === 'reschedule') notifyRescheduleAfterCommit(strapi, onCommit, {
+          documentId: target.documentId, ...groupCustomerDetails,
+          previousDate: group.requestedDate, previousTimeSlot: group.selectedTimeSlot,
+          requestedDate: target.requestedDate, selectedTimeSlot: target.selectedTimeSlot,
+        });
         return response(target, true, affected);
       });
     } catch (error) {

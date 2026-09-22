@@ -1,37 +1,5 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
-export interface SupportContactOption extends Struct.ComponentSchema {
-  collectionName: 'components_support_contact_options';
-  info: {
-    description: 'A call, email, or link action displayed in a contact section';
-    displayName: 'Support Contact Option';
-  };
-  attributes: {
-    availability: Schema.Attribute.Text;
-    buttonLabel: Schema.Attribute.String;
-    cta: Schema.Attribute.Component<'shared.cta', false>;
-    description: Schema.Attribute.Text;
-    heading: Schema.Attribute.String & Schema.Attribute.Required;
-    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
-    type: Schema.Attribute.Enumeration<['phone', 'email', 'link']> &
-      Schema.Attribute.Required;
-  };
-}
-
-export interface SupportContactSection extends Struct.ComponentSchema {
-  collectionName: 'components_support_contact_sections';
-  info: {
-    description: 'Contact options for the Help & Support page';
-    displayName: 'Support Contact Section';
-  };
-  attributes: {
-    contactOptions: Schema.Attribute.Component<'support.contact-option', true> &
-      Schema.Attribute.Required;
-    heading: Schema.Attribute.String;
-    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
-  };
-}
-
 export interface CareerCareerDiscoverSection extends Struct.ComponentSchema {
   collectionName: 'components_career_career_discover_sections';
   info: {
@@ -145,44 +113,18 @@ export interface DiamondsForEveryoneInvestmentPlannerSection
     accountSetupHeading: Schema.Attribute.String;
     accountSetupSteps: Schema.Attribute.Component<'shared.diamonds-step', true>;
     backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    buttonLabel: Schema.Attribute.String;
     cancelButtonLabel: Schema.Attribute.String;
     description: Schema.Attribute.Text;
     image: Schema.Attribute.Component<'shared.image-asset', false>;
     monthlySummary: Schema.Attribute.Text;
     openAccountButtonLabel: Schema.Attribute.String;
-    stepperSteps: Schema.Attribute.Component<'diamonds-for-everyone.stepper-step', true>;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    stepperSteps: Schema.Attribute.Component<
+      'diamonds-for-everyone.stepper-step',
+      true
+    >;
     title: Schema.Attribute.String & Schema.Attribute.Required;
-  };
-}
-
-export interface DiamondsForEveryoneSuccessScreen extends Struct.ComponentSchema {
-  collectionName: 'components_dfe_success_screens';
-  info: {
-    displayName: 'Success Screen';
-    description: 'Confirmation content after opening an investment account';
-  };
-  attributes: {
-    heading: Schema.Attribute.String;
-    description: Schema.Attribute.Text;
-    successIcon: Schema.Attribute.Media<'images'>;
-    image: Schema.Attribute.Component<'shared.image-asset', false>;
-    managePaymentsButtonLabel: Schema.Attribute.String;
-    managePaymentsUrl: Schema.Attribute.String;
-    shoppingLinkLabel: Schema.Attribute.String;
-    shoppingUrl: Schema.Attribute.String;
-  };
-}
-
-export interface DiamondsForEveryoneStepperStep extends Struct.ComponentSchema {
-  collectionName: 'components_dfe_stepper_steps';
-  info: {
-    displayName: 'Stepper Step';
-    description: 'Ordered step label for the investment account stepper';
-  };
-  attributes: {
-    stepId: Schema.Attribute.String;
-    label: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
 
@@ -199,6 +141,37 @@ export interface DiamondsForEveryonePlanIntroSection
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     textureImage: Schema.Attribute.Component<'shared.image-asset', false>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface DiamondsForEveryoneStepperStep extends Struct.ComponentSchema {
+  collectionName: 'components_dfe_stepper_steps';
+  info: {
+    description: 'Ordered step label for the investment account stepper';
+    displayName: 'Stepper Step';
+  };
+  attributes: {
+    label: Schema.Attribute.String & Schema.Attribute.Required;
+    stepId: Schema.Attribute.String;
+  };
+}
+
+export interface DiamondsForEveryoneSuccessScreen
+  extends Struct.ComponentSchema {
+  collectionName: 'components_dfe_success_screens';
+  info: {
+    description: 'Confirmation content after opening an investment account';
+    displayName: 'Success Screen';
+  };
+  attributes: {
+    description: Schema.Attribute.Text;
+    heading: Schema.Attribute.String;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
+    managePaymentsButtonLabel: Schema.Attribute.String;
+    managePaymentsUrl: Schema.Attribute.String;
+    shoppingLinkLabel: Schema.Attribute.String;
+    shoppingUrl: Schema.Attribute.String;
+    successIcon: Schema.Attribute.Media<'images'>;
   };
 }
 
@@ -645,7 +618,6 @@ export interface SharedContactOption extends Struct.ComponentSchema {
   };
   attributes: {
     availability: Schema.Attribute.Text;
-    buttonLabel: Schema.Attribute.String;
     cta: Schema.Attribute.Component<'shared.cta', false>;
     description: Schema.Attribute.Text;
     heading: Schema.Attribute.String & Schema.Attribute.Required;
@@ -1858,6 +1830,37 @@ export interface SharedVideoAsset extends Struct.ComponentSchema {
   };
 }
 
+export interface SupportContactOption extends Struct.ComponentSchema {
+  collectionName: 'components_support_contact_options';
+  info: {
+    description: 'A call, email, or link action displayed in a contact section';
+    displayName: 'Support Contact Option';
+  };
+  attributes: {
+    buttonLabel: Schema.Attribute.String;
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    description: Schema.Attribute.Text;
+    heading: Schema.Attribute.String & Schema.Attribute.Required;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    type: Schema.Attribute.Enumeration<['phone', 'email', 'link']> &
+      Schema.Attribute.Required;
+  };
+}
+
+export interface SupportContactSection extends Struct.ComponentSchema {
+  collectionName: 'components_support_contact_sections';
+  info: {
+    description: 'Contact options for the Help & Support page';
+    displayName: 'Support Contact Section';
+  };
+  attributes: {
+    contactOptions: Schema.Attribute.Component<'support.contact-option', true> &
+      Schema.Attribute.Required;
+    heading: Schema.Attribute.String;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+  };
+}
+
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
@@ -1867,9 +1870,9 @@ declare module '@strapi/strapi' {
       'career.qualifications-and-experience': CareerQualificationsAndExperience;
       'diamonds-for-everyone.hero-section': DiamondsForEveryoneHeroSection;
       'diamonds-for-everyone.investment-planner-section': DiamondsForEveryoneInvestmentPlannerSection;
+      'diamonds-for-everyone.plan-intro-section': DiamondsForEveryonePlanIntroSection;
       'diamonds-for-everyone.stepper-step': DiamondsForEveryoneStepperStep;
       'diamonds-for-everyone.success-screen': DiamondsForEveryoneSuccessScreen;
-      'diamonds-for-everyone.plan-intro-section': DiamondsForEveryonePlanIntroSection;
       'gifting.finishing-touch-section': GiftingFinishingTouchSection;
       'gifting.gift-card-section': GiftingGiftCardSection;
       'gifting.gift-finder-section': GiftingGiftFinderSection;
@@ -1899,8 +1902,6 @@ declare module '@strapi/strapi' {
       'shared.cert-lab-card': SharedCertLabCard;
       'shared.certificate-section': SharedCertificateSection;
       'shared.collection-showcase-section': SharedCollectionShowcaseSection;
-      'support.contact-option': SupportContactOption;
-      'support.contact-section': SupportContactSection;
       'shared.contact-option': SharedContactOption;
       'shared.contact-support-section': SharedContactSupportSection;
       'shared.content-section': SharedContentSection;
@@ -1984,6 +1985,8 @@ declare module '@strapi/strapi' {
       'shared.trust-badge-item': SharedTrustBadgeItem;
       'shared.trust-badges-section': SharedTrustBadgesSection;
       'shared.video-asset': SharedVideoAsset;
+      'support.contact-option': SupportContactOption;
+      'support.contact-section': SupportContactSection;
     }
   }
 }

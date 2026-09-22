@@ -8,6 +8,8 @@ import { mutateHomeTrialGroup } from '../../../utils/mutate-home-trial-group';
 import { listCustomerAppointments } from '../../../utils/list-customer-appointments';
 import { appointmentCustomerChanges, customerDetailsChanged, customerDetailsSnapshot } from '../../../utils/appointment-customer-details';
 import { appointmentNoteChanges } from '../../../utils/appointment-note';
+import { notifyRescheduleAfterCommit } from '../../../utils/appointment-reschedule-email';
+import { sendStoreVisitConfirmationEmail } from '../../../utils/appointment-confirmation-email';
 
 const PRODUCT_SUBMISSION_UID = 'api::product-submission.product-submission';
 const PRODUCT_FORM_UID = 'api::product-form.product-form';
@@ -112,6 +114,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     }
 
     let preferredShowroomRef: string | undefined;
+    let preferredShowroomDetails: any;
     const preferredShowroomValue =
       stringOrUndefined(input.preferredShowroom) ??
       stringOrUndefined(input.showroomDocumentId) ??
@@ -147,6 +150,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       }
 
       preferredShowroomRef = preferredShowroom.documentId;
+      preferredShowroomDetails = preferredShowroom;
     }
 
     if (formTag === 'product-store-visit' && !preferredShowroomRef) {
@@ -216,6 +220,22 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       });
     }
 
+    if (formTag === 'product-store-visit') {
+      const showroom = preferredShowroomDetails;
+      const location = [showroom?.address, showroom?.city, showroom?.state, showroom?.pincode]
+        .map(value => stringOrUndefined(value))
+        .filter(Boolean)
+        .join(', ');
+      await sendStoreVisitConfirmationEmail(strapi, {
+        documentId: entity.documentId,
+        customerName,
+        customerEmail,
+        requestedDate,
+        selectedTimeSlot: stringOrUndefined(input.selectedTimeSlot),
+        location: location || showroom?.city || 'Sunny Diamonds showroom',
+      });
+    }
+
     return {
       data: {
         id: entity.id,
@@ -254,7 +274,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       return { data: grouped.data, meta: { changed: grouped.changed } };
     }
     // Lock the appointment so concurrent changes record the actual previous schedule.
-    const result = await strapi.db.transaction(async ({ trx }) => {
+    const result = await strapi.db.transaction(async ({ trx, onCommit }) => {
       const table = strapi.db.metadata.get(PRODUCT_SUBMISSION_UID).tableName;
       const locked = await strapi.db.connection(table).transacting(trx)
         .where({ document_id: documentId })
@@ -309,6 +329,11 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
           ],
         },
       } as any);
+      if (scheduleChanged) notifyRescheduleAfterCommit(strapi, onCommit, {
+        ...customerDetailsSnapshot(appointment, customerChanges.data),
+        previousDate: appointment.requestedDate, previousTimeSlot: appointment.selectedTimeSlot,
+        requestedDate, selectedTimeSlot,
+      });
       return { data: { documentId, requestedDate, selectedTimeSlot, ...customerChanges.data, ...noteChanges.data }, changed: true };
     });
     if (result.error) return result.status === 404 ? ctx.notFound(result.error) : result.status === 409 ? ctx.conflict(result.error) : ctx.badRequest(result.error);

@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "description": "A Strapi application",
-  "workspaces": ["./src/plugins/strapi-plugin-ckeditor"],
+  "workspaces": [
+    "./src/plugins/strapi-plugin-ckeditor"
+  ],
   "scripts": {
     "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
     "build": "npm run clean && strapi build",
@@ -25,11 +27,14 @@
     "@strapi/plugin-users-permissions": "5.46.0",
     "@strapi/provider-upload-aws-s3": "5.46.0",
     "@strapi/strapi": "5.46.0",
+    "googleapis": "^181.0.0",
     "markdown-it": "14.1.1",
     "mysql2": "3.20.0",
+    "nodemailer": "^10.0.10",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.0.0",
+    "strapi-provider-email-google-mail": "file:providers/gmail",
     "styled-components": "^6.0.0"
   },
   "devDependencies": {

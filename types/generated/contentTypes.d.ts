@@ -1415,8 +1415,6 @@ export interface ApiDiamondsForEveryonePageDiamondsForEveryonePage
           localized: true;
         };
       }>;
-    successScreen: Schema.Attribute.Component<'diamonds-for-everyone.success-screen', false> &
-      Schema.Attribute.SetPluginOptions<{ i18n: { localized: true } }>;
     locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -1433,6 +1431,15 @@ export interface ApiDiamondsForEveryonePageDiamondsForEveryonePage
       }>;
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<'shared.seo', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    successScreen: Schema.Attribute.Component<
+      'diamonds-for-everyone.success-screen',
+      false
+    > &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;

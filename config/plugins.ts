@@ -3,6 +3,20 @@ import type { Core } from '@strapi/strapi';
 const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Plugin => {
   const uploadMaxFileSize = env.int('UPLOAD_MAX_FILE_SIZE', 25 * 1024 * 1024);
   const plugins: Core.Config.Plugin = {
+    email: {
+      config: {
+        provider: 'strapi-provider-email-google-mail',
+        providerOptions: {
+          clientId: env('GOOGLE_MAIL_CLIENT_ID'),
+          clientSecret: env('GOOGLE_MAIL_CLIENT_SECRET'),
+          refreshToken: env('GOOGLE_MAIL_REFRESH_TOKEN'),
+        },
+        settings: {
+          defaultFrom: env('EMAIL_FROM', 'Sunny Diamonds <mailer@mailer.sunnydiamonds.com>'),
+          defaultReplyTo: env('EMAIL_REPLY_TO', 'customerservice@sunnydiamonds.com'),
+        },
+      },
+    },
     'form-export': {
       enabled: true,
       resolve: './src/plugins/form-export',

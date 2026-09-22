@@ -1,0 +1,11 @@
+{
+  "name": "strapi-provider-email-google-mail",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "engines": { "node": ">=22" },
+  "peerDependencies": {
+    "googleapis": "^181.0.0",
+    "nodemailer": "^10.0.10"
+  }
+}

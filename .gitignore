@@ -122,6 +122,8 @@ coverage
 ############################
 
 .env
+google_mailer_token.json
+google_mailer_credentials.json
 license.txt
 exports
 build
