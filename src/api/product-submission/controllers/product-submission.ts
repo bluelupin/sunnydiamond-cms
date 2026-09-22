@@ -14,6 +14,7 @@ import { notifyShowroomCancellationAfterCommit } from '../../../utils/showroom-a
 import { sendTryAtHomeConfirmationEmail } from '../../../utils/try-at-home-confirmation-email';
 import { assignAppointmentReference } from '../../../utils/appointment-reference';
 import { sendVideoCallConfirmationEmail, notifyVideoCallCancellationAfterCommit } from '../../../utils/video-call-appointment-email';
+import { sendProductPersonalisationConfirmationEmail } from '../../../utils/product-personalisation-confirmation-email';
 
 const PRODUCT_SUBMISSION_UID = 'api::product-submission.product-submission';
 const PRODUCT_FORM_UID = 'api::product-form.product-form';
@@ -250,6 +251,13 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       await sendVideoCallConfirmationEmail(strapi, {
         documentId: entity.documentId, appointmentReference, productName, customerName, customerEmail,
         requestedDate, selectedTimeSlot: stringOrUndefined(input.selectedTimeSlot), sourcePage: stringOrUndefined(input.sourcePage),
+      });
+    }
+
+    if (formTag === 'product-personalisation') {
+      await sendProductPersonalisationConfirmationEmail(strapi, {
+        documentId: entity.documentId, customerName, customerEmail, productName,
+        requestDetails: stringOrUndefined(input.requestDetails),
       });
     }
 
