@@ -19,6 +19,7 @@
     "magentoCustomerId": { "type": "integer", "private": true },
     "requestedDate": { "type": "date" },
     "selectedTimeSlot": { "type": "string" },
+    "appointmentReference": { "type": "string", "unique": true, "private": true },
     "reminderSentForDate": { "type": "date", "private": true },
     "activeScheduleKey": { "type": "string", "maxLength": 64, "unique": true, "private": true },
     "workflowStatus": {

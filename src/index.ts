@@ -19,6 +19,7 @@ import { migrateHomeTrialAppointments } from './utils/migrate-home-trial-appoint
 import { registerReachOutSubmissionProtection } from './utils/protect-reach-out-submissions';
 import { registerAdminRescheduleEmail } from './utils/appointment-reschedule-email';
 import { registerCareerSubmissionProtection } from './utils/protect-career-submissions';
+import { backfillAppointmentReferences } from './utils/appointment-reference';
 // import { cleanStaleAdminPermissions } from './utils/clean-stale-admin-permissions';
 
 export default {
@@ -42,6 +43,7 @@ export default {
    * run jobs, or perform some special logic.
    */
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {
+    await backfillAppointmentReferences(strapi);
     await migrateOccasionCta(strapi);
     await migrateSupportContactSection(strapi);
     await configureBlogPostList(strapi);

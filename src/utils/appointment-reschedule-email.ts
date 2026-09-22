@@ -5,6 +5,7 @@ import { RESCHEDULABLE_FORM_TAGS, validAppointmentDate } from './appointment-sch
 
 export interface RescheduleNotification extends AppointmentRescheduledData {
   customerEmail?: string | null;
+  appointmentReference?: string | null;
   formTag?: string | null;
   preferredShowroom?: { city?: string | null; state?: string | null; pincode?: string | null; address?: string | null } | null;
 }
@@ -31,7 +32,7 @@ export async function sendAppointmentRescheduleEmail(strapi: Core.Strapi, data: 
     const showroom = data.preferredShowroom;
     const template = data.formTag === 'product-store-visit'
       ? showroomAppointmentRescheduledTemplate({
-          appointmentId: data.documentId, customerName: data.customerName,
+          appointmentId: data.appointmentReference || data.documentId, customerName: data.customerName,
           newDate: data.requestedDate, newTime: data.selectedTimeSlot,
           showroomName: showroom?.city,
           showroomAddress: [plainText(showroom?.address), showroom?.city, showroom?.state, showroom?.pincode]
@@ -74,6 +75,7 @@ export function registerAdminRescheduleEmail(strapi: Core.Strapi) {
       if (after && !['Cancelled', 'Closed', 'Visited'].includes(after.workflowStatus)) {
         notifyRescheduleAfterCommit(strapi, onCommit, {
           documentId: after.documentId, customerName: after.customerName, customerEmail: after.customerEmail,
+          appointmentReference: after.appointmentReference,
           formTag: after.formTag, preferredShowroom: after.preferredShowroom,
           previousDate: before.requestedDate, previousTimeSlot: before.selectedTimeSlot,
           requestedDate: after.requestedDate, selectedTimeSlot: after.selectedTimeSlot,

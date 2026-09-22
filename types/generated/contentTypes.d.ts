@@ -627,6 +627,9 @@ export interface ApiAppointmentGroupAppointmentGroup
       }>;
     addressLine1: Schema.Attribute.String;
     addressLine2: Schema.Attribute.String;
+    appointmentReference: Schema.Attribute.String &
+      Schema.Attribute.Private &
+      Schema.Attribute.Unique;
     city: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -645,6 +648,7 @@ export interface ApiAppointmentGroupAppointmentGroup
     pincode: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     requestedDate: Schema.Attribute.Date;
+    reminderSentForDate: Schema.Attribute.Date & Schema.Attribute.Private;
     selectedTimeSlot: Schema.Attribute.String;
     state: Schema.Attribute.Relation<'manyToOne', 'api::state.state'>;
     submissions: Schema.Attribute.Relation<
@@ -2476,6 +2480,9 @@ export interface ApiProductSubmissionProductSubmission
       'api::appointment-group.appointment-group'
     > &
       Schema.Attribute.Private;
+    appointmentReference: Schema.Attribute.String &
+      Schema.Attribute.Private &
+      Schema.Attribute.Unique;
     city: Schema.Attribute.String;
     consentAccepted: Schema.Attribute.Boolean &
       Schema.Attribute.DefaultTo<false>;

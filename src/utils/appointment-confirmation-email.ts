@@ -4,6 +4,7 @@ import { validAppointmentDate } from './appointment-schedule';
 
 interface StoreVisitConfirmation {
   documentId: string;
+  appointmentReference?: string | null;
   customerName?: string | null;
   customerEmail?: string | null;
   requestedDate?: string | null;
@@ -33,6 +34,7 @@ export async function sendStoreVisitConfirmationEmail(strapi: Core.Strapi, data:
       to,
       ...appointmentConfirmedTemplate({
         documentId: data.documentId,
+        appointmentReference: data.appointmentReference,
         customerName: data.customerName,
         requestedDate: data.requestedDate,
         selectedTimeSlot: data.selectedTimeSlot,

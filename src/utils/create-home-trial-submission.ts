@@ -1,5 +1,6 @@
 import { HOME_TRIAL_FORM_TAGS, homeTrialScheduleKey } from './home-trial-group-key';
 import { customerContactDetails } from './appointment-customer-details';
+import { assignAppointmentReference } from './appointment-reference';
 
 const GROUP_UID = 'api::appointment-group.appointment-group';
 const SUBMISSION_UID = 'api::product-submission.product-submission';
@@ -33,6 +34,7 @@ export async function createHomeTrialSubmission(strapi: any, data: any) {
             addressLine1: data.addressLine1, addressLine2: data.addressLine2,
             city: data.city, pincode: data.pincode, state: data.state,
           } });
+          group.appointmentReference = await assignAppointmentReference(strapi, GROUP_UID, group, 'TAH');
         }
         if (group.magentoCustomerId !== data.magentoCustomerId ||
           group.requestedDate !== data.requestedDate || group.selectedTimeSlot !== data.selectedTimeSlot ||
@@ -52,7 +54,8 @@ export async function createHomeTrialSubmission(strapi: any, data: any) {
           city: group.city ?? null, pincode: group.pincode ?? null,
           state: locked ? group.state?.documentId ?? null : data.state ?? null,
         } });
-        return { entity, groupDocumentId: group.documentId };
+        return { entity, groupDocumentId: group.documentId,
+          appointmentReference: group.appointmentReference ?? group.documentId };
       });
     } catch (error) {
       // Retry the whole transaction, never a failed statement inside an aborted transaction.

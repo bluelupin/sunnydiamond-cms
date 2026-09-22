@@ -1,5 +1,6 @@
 export interface AppointmentConfirmedData {
   documentId: string;
+  appointmentReference?: string | null;
   customerName?: string | null;
   requestedDate: string;
   selectedTimeSlot: string;
@@ -16,6 +17,7 @@ export function appointmentConfirmedTemplate(data: AppointmentConfirmedData) {
   const name = data.customerName?.trim() || 'there';
   const appointmentDate = formatEmailDate(data.requestedDate);
   const details = [
+    ['Appointment ID', data.appointmentReference || data.documentId],
     ['Appointment Type', 'Showroom Visit'],
     ['Date', appointmentDate],
     ['Time', data.selectedTimeSlot],

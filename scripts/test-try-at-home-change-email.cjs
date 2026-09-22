@@ -23,8 +23,10 @@ test('group reschedule email contains every product in the appointment', async (
   try {
     const strapi = mock(); await reschedule(strapi, data);
     assert.equal(strapi.sent.length, 1);
-    assert.match(strapi.sent[0].text, /Diamond Ring\nDiamond Pendant/);
+    assert.match(strapi.sent[0].text, /- Diamond Ring\n- Diamond Pendant/);
     assert.match(strapi.sent[0].text, /New Date: Oct 6, 2099/);
+    assert.match(strapi.sent[0].text, /successfully rescheduled as requested/);
+    assert.match(strapi.sent[0].text, /creating a personalised experience from the comfort of your home/);
   } finally { if (previous === undefined) delete process.env.APPOINTMENT_MANAGE_URL; else process.env.APPOINTMENT_MANAGE_URL = previous; }
 });
 
@@ -33,4 +35,6 @@ test('group cancellation email contains every product in the appointment', async
   assert.equal(strapi.sent.length, 1);
   assert.match(strapi.sent[0].text, /Diamond Ring\nDiamond Pendant/);
   assert.match(strapi.sent[0].text, /Date: Oct 6, 2099/);
+  assert.match(strapi.sent[0].text, /schedule another Try at Home experience/);
+  assert.match(strapi.sent[0].html, />Book a New Appointment</);
 });

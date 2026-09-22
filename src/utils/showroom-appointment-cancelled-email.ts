@@ -3,6 +3,7 @@ import { showroomAppointmentCancelledTemplate } from '../emails/showroom-appoint
 
 interface ShowroomCancellationNotification {
   documentId: string;
+  appointmentReference?: string | null;
   customerName?: string | null;
   customerEmail?: string | null;
   requestedDate?: string | null;
@@ -41,7 +42,7 @@ export async function sendShowroomAppointmentCancelledEmail(
     await strapi.plugin('email').service('email').send({
       to,
       ...showroomAppointmentCancelledTemplate({
-        appointmentId: data.documentId,
+        appointmentId: data.appointmentReference || data.documentId,
         customerName: data.customerName,
         appointmentDate: data.requestedDate,
         appointmentTime: data.selectedTimeSlot,

@@ -2,7 +2,7 @@ import { HOME_TRIAL_FORM_TAGS } from './home-trial-group-key';
 
 const GROUP = 'api::appointment-group.appointment-group';
 const PRODUCT = 'api::product-submission.product-submission';
-const fields = ['documentId', 'formTag', 'productName', 'productId', 'customerName',
+const fields = ['documentId', 'appointmentReference', 'formTag', 'productName', 'productId', 'customerName',
   'customerPhone', 'customerEmail', 'requestedDate', 'requestDetails', 'selectedTimeSlot',
   'workflowStatus', 'addressLine1', 'addressLine2', 'pincode', 'city', 'createdAt', 'updatedAt'];
 const populate = {
@@ -41,7 +41,7 @@ export async function listCustomerAppointments(strapi: any, options: any) {
   const [groups, products] = await Promise.all([
     selectedGroupIds.length ? strapi.db.query(GROUP).findMany({
       where: { ...groupWhere, documentId: { $in: selectedGroupIds } },
-      select: ['documentId', 'requestedDate', 'selectedTimeSlot', 'workflowStatus',
+      select: ['documentId', 'appointmentReference', 'requestedDate', 'selectedTimeSlot', 'workflowStatus',
         'addressLine1', 'addressLine2', 'city', 'pincode', 'createdAt', 'updatedAt'],
       populate: { state: populate.state },
     }) : [],
@@ -71,10 +71,12 @@ export async function listCustomerAppointments(strapi: any, options: any) {
     const members = localizedProducts.filter(product => unit.grouped
       ? product.groupId === unit.documentId : product.safe.documentId === unit.documentId).map(product => product.safe);
     if (!members.length) return [];
-    if (!unit.grouped) return [{ ...members[0], appointmentGroupId: null, products: members }];
+    if (!unit.grouped) return [{ ...members[0], appointmentId: members[0].appointmentReference ?? members[0].documentId,
+      appointmentGroupId: null, products: members }];
     const group = groups.find((row: any) => row.documentId === unit.documentId);
     if (!group) return [];
     return [{ ...members[0], ...group, documentId: members[0].documentId,
+      appointmentId: group.appointmentReference ?? group.documentId,
       appointmentGroupId: group.documentId, products: members }];
   });
   const total = groupCount + legacyCount;

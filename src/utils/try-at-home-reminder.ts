@@ -27,7 +27,7 @@ export async function sendTryAtHomeReminder(strapi: Core.Strapi, group: any) {
   const productNames = products.map((product: any) => product.productName?.trim()).filter(Boolean);
   try {
     await strapi.plugin('email').service('email').send({ to, ...tryAtHomeReminderTemplate({
-      appointmentId: group.documentId, customerName: representative.customerName,
+      appointmentId: group.appointmentReference || group.documentId, customerName: representative.customerName,
       appointmentDate: group.requestedDate, appointmentTime: group.selectedTimeSlot,
       deliveryAddress: address || 'Not specified', productNames,
       manageUrl: manageUrl(representative.documentId),

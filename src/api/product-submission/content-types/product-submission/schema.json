@@ -42,6 +42,11 @@
     "selectedTimeSlot": {
       "type": "string"
     },
+    "appointmentReference": {
+      "type": "string",
+      "unique": true,
+      "private": true
+    },
     "rescheduleHistory": {
       "type": "json",
       "private": true

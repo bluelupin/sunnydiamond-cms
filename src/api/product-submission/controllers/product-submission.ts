@@ -12,6 +12,7 @@ import { notifyRescheduleAfterCommit } from '../../../utils/appointment-reschedu
 import { sendStoreVisitConfirmationEmail } from '../../../utils/appointment-confirmation-email';
 import { notifyShowroomCancellationAfterCommit } from '../../../utils/showroom-appointment-cancelled-email';
 import { sendTryAtHomeConfirmationEmail } from '../../../utils/try-at-home-confirmation-email';
+import { assignAppointmentReference } from '../../../utils/appointment-reference';
 
 const PRODUCT_SUBMISSION_UID = 'api::product-submission.product-submission';
 const PRODUCT_FORM_UID = 'api::product-form.product-form';
@@ -222,6 +223,11 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       });
     }
 
+    const appointmentReference = grouped?.appointmentReference ??
+      (formTag === 'product-store-visit'
+        ? await assignAppointmentReference(strapi, PRODUCT_SUBMISSION_UID, entity, 'SV')
+        : undefined);
+
     if (formTag === 'product-store-visit') {
       const showroom = preferredShowroomDetails;
       const location = [showroom?.address, showroom?.city, showroom?.state, showroom?.pincode]
@@ -230,6 +236,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
         .join(', ');
       await sendStoreVisitConfirmationEmail(strapi, {
         documentId: entity.documentId,
+        appointmentReference,
         customerName,
         customerEmail,
         requestedDate,
@@ -240,7 +247,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
 
     if (grouped) {
       await sendTryAtHomeConfirmationEmail(strapi, {
-        documentId: entity.documentId, appointmentId: grouped.groupDocumentId,
+        documentId: entity.documentId, appointmentId: appointmentReference ?? grouped.groupDocumentId,
         productName, customerName, customerEmail, requestedDate,
         selectedTimeSlot: stringOrUndefined(input.selectedTimeSlot),
         addressLine1: stringOrUndefined(input.addressLine1), addressLine2: stringOrUndefined(input.addressLine2),
@@ -253,6 +260,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
         id: entity.id,
         documentId: entity.documentId,
         formTag: entity.formTag,
+        ...(appointmentReference ? { appointmentId: appointmentReference } : {}),
         ...(grouped ? { appointmentGroupId: grouped.groupDocumentId } : {}),
       },
       meta: {},
@@ -311,7 +319,8 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       if (windowError) return { error: windowError, status: 400 };
       const scheduleChanged = appointment.requestedDate !== requestedDate || appointment.selectedTimeSlot !== selectedTimeSlot;
       if (!scheduleChanged && !customerDetailsChanged([appointment], { ...customerChanges.data, ...noteChanges.data })) {
-        return { data: { documentId, requestedDate, selectedTimeSlot }, changed: false };
+        return { data: { documentId, appointmentId: appointment.appointmentReference ?? documentId,
+          requestedDate, selectedTimeSlot }, changed: false };
       }
       if (scheduleChanged) {
         const form = await strapi.documents(PRODUCT_FORM_UID as any).findFirst({
@@ -345,11 +354,13 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       } as any);
       if (scheduleChanged) notifyRescheduleAfterCommit(strapi, onCommit, {
         ...customerDetailsSnapshot(appointment, customerChanges.data),
+        appointmentReference: appointment.appointmentReference,
         formTag: appointment.formTag, preferredShowroom: appointment.preferredShowroom,
         previousDate: appointment.requestedDate, previousTimeSlot: appointment.selectedTimeSlot,
         requestedDate, selectedTimeSlot,
       });
-      return { data: { documentId, requestedDate, selectedTimeSlot, ...customerChanges.data, ...noteChanges.data }, changed: true };
+      return { data: { documentId, appointmentId: appointment.appointmentReference ?? documentId,
+        requestedDate, selectedTimeSlot, ...customerChanges.data, ...noteChanges.data }, changed: true };
     });
     if (result.error) return result.status === 404 ? ctx.notFound(result.error) : result.status === 409 ? ctx.conflict(result.error) : ctx.badRequest(result.error);
     return { data: result.data, meta: { changed: result.changed } };
@@ -388,7 +399,8 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       if (!APPOINTMENT_FORM_TAGS.includes(appointment.formTag)) {
         return { error: 'This submission is not an appointment.', status: 400 };
       }
-      const data = { documentId, workflowStatus: 'Cancelled', requestedDate: appointment.requestedDate, selectedTimeSlot: appointment.selectedTimeSlot };
+      const data = { documentId, appointmentId: appointment.appointmentReference ?? documentId,
+        workflowStatus: 'Cancelled', requestedDate: appointment.requestedDate, selectedTimeSlot: appointment.selectedTimeSlot };
       if (appointment.workflowStatus === 'Cancelled') return { data, changed: false };
       if (['Visited', 'Closed'].includes(appointment.workflowStatus)) {
         return { error: 'Completed or closed appointments cannot be cancelled.', status: 400 };

@@ -51,6 +51,7 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
           .whereIn('id', rows.map((row: any) => row.id)).orderBy('id', 'asc').forUpdate();
         const response = (value: any, changed: boolean, affected: any[] = []) => ({
           data: { documentId, appointmentGroupId: value.documentId,
+            appointmentId: value.appointmentReference ?? value.documentId,
             requestedDate: value.requestedDate, selectedTimeSlot: value.selectedTimeSlot,
             workflowStatus: value.workflowStatus,
             ...customerChanges,
@@ -137,6 +138,7 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
         } });
         if (action === 'cancel' || scheduleChanged) notifyTryAtHomeChangeAfterCommit(strapi, onCommit, action, {
           documentId: target.documentId, manageDocumentId: notificationProducts[0]?.documentId,
+          appointmentReference: target.appointmentReference,
           ...groupCustomerDetails, requestedDate: target.requestedDate, selectedTimeSlot: target.selectedTimeSlot,
           addressLine1: target.addressLine1, addressLine2: target.addressLine2, city: target.city,
           state: target.state?.name ?? target.state?.code, pincode: target.pincode,

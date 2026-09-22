@@ -4,6 +4,7 @@ import { tryAtHomeCancelledTemplate } from '../emails/try-at-home-cancelled';
 
 export interface TryAtHomeChangeNotification {
   documentId: string; customerName?: string | null; customerEmail?: string | null;
+  appointmentReference?: string | null;
   requestedDate?: string | null; selectedTimeSlot?: string | null;
   addressLine1?: string | null; addressLine2?: string | null; city?: string | null; state?: string | null; pincode?: string | null;
   productNames: string[]; manageDocumentId?: string | null; sourcePage?: string | null;
@@ -33,7 +34,7 @@ export async function sendTryAtHomeRescheduledEmail(strapi: Core.Strapi, data: T
   if (!to || !data.requestedDate || !data.selectedTimeSlot?.trim()) return;
   try {
     await strapi.plugin('email').service('email').send({ to, ...tryAtHomeRescheduledTemplate({
-      appointmentId: data.documentId, customerName: data.customerName, newDate: data.requestedDate,
+      appointmentId: data.appointmentReference || data.documentId, customerName: data.customerName, newDate: data.requestedDate,
       newTime: data.selectedTimeSlot, deliveryAddress: address(data), productNames: data.productNames,
       manageUrl: manageUrl(data.manageDocumentId),
     }) });
@@ -46,7 +47,7 @@ export async function sendTryAtHomeCancelledEmail(strapi: Core.Strapi, data: Try
   if (!to) return;
   try {
     await strapi.plugin('email').service('email').send({ to, ...tryAtHomeCancelledTemplate({
-      appointmentId: data.documentId, customerName: data.customerName, appointmentDate: data.requestedDate,
+      appointmentId: data.appointmentReference || data.documentId, customerName: data.customerName, appointmentDate: data.requestedDate,
       appointmentTime: data.selectedTimeSlot, deliveryAddress: address(data), productNames: data.productNames,
       bookAppointmentUrl: safeUrl(data.sourcePage),
     }) });
