@@ -284,7 +284,9 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
           else query.where({ form_tag: 'product-store-visit' });
         }).forUpdate().first();
       if (!locked) return { error: 'Appointment not found.', status: 404 };
-      const appointment = await strapi.db.query(PRODUCT_SUBMISSION_UID).findOne({ where: { id: locked.id }, populate: { appointmentGroup: true } });
+      const appointment = await strapi.db.query(PRODUCT_SUBMISSION_UID).findOne({
+        where: { id: locked.id }, populate: { appointmentGroup: true, preferredShowroom: true },
+      });
       if (appointment.appointmentGroup && HOME_TRIAL_FORM_TAGS.includes(appointment.formTag)) {
         return { error: 'Appointment grouping changed. Please retry the request.', status: 409 };
       }
@@ -332,6 +334,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       } as any);
       if (scheduleChanged) notifyRescheduleAfterCommit(strapi, onCommit, {
         ...customerDetailsSnapshot(appointment, customerChanges.data),
+        formTag: appointment.formTag, preferredShowroom: appointment.preferredShowroom,
         previousDate: appointment.requestedDate, previousTimeSlot: appointment.selectedTimeSlot,
         requestedDate, selectedTimeSlot,
       });

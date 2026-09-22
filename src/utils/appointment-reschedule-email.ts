@@ -1,10 +1,26 @@
 import type { Core } from '@strapi/strapi';
 import { appointmentRescheduledTemplate, type AppointmentRescheduledData } from '../emails/appointment-rescheduled';
+import { showroomAppointmentRescheduledTemplate } from '../emails/showroom-appointment-rescheduled';
 import { RESCHEDULABLE_FORM_TAGS, validAppointmentDate } from './appointment-schedule';
 
 export interface RescheduleNotification extends AppointmentRescheduledData {
   customerEmail?: string | null;
+  formTag?: string | null;
+  preferredShowroom?: { city?: string | null; state?: string | null; pincode?: string | null; address?: string | null } | null;
 }
+
+const plainText = (value?: string | null) => value?.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+
+const manageUrl = (documentId: string) => {
+  const configured = process.env.APPOINTMENT_MANAGE_URL?.trim();
+  if (!configured) return undefined;
+  try {
+    const url = new URL(configured);
+    if (!['http:', 'https:'].includes(url.protocol)) return undefined;
+    url.searchParams.set('documentId', documentId);
+    return url.toString();
+  } catch { return undefined; }
+};
 
 export async function sendAppointmentRescheduleEmail(strapi: Core.Strapi, data: RescheduleNotification) {
   if (data.previousDate === data.requestedDate && data.previousTimeSlot === data.selectedTimeSlot) return;
@@ -12,8 +28,19 @@ export async function sendAppointmentRescheduleEmail(strapi: Core.Strapi, data: 
   if (!to || !/^[^\s<>@,;]+@[^\s<>@,;]+\.[^\s<>@,;]+$/.test(to)) return;
   if (!validAppointmentDate(data.requestedDate) || !data.selectedTimeSlot?.trim()) return;
   try {
+    const showroom = data.preferredShowroom;
+    const template = data.formTag === 'product-store-visit'
+      ? showroomAppointmentRescheduledTemplate({
+          appointmentId: data.documentId, customerName: data.customerName,
+          newDate: data.requestedDate, newTime: data.selectedTimeSlot,
+          showroomName: showroom?.city,
+          showroomAddress: [plainText(showroom?.address), showroom?.city, showroom?.state, showroom?.pincode]
+            .map(value => value?.trim()).filter(Boolean).join(', '),
+          manageUrl: manageUrl(data.documentId),
+        })
+      : appointmentRescheduledTemplate(data);
     await strapi.plugin('email').service('email').send({
-      to, ...appointmentRescheduledTemplate(data),
+      to, ...template,
     });
     strapi.log.info(`Reschedule email accepted by the email provider for appointment ${data.documentId}.`);
   } catch {
@@ -40,13 +67,14 @@ export function registerAdminRescheduleEmail(strapi: Core.Strapi) {
     if (context.uid !== uid || context.action !== 'update' || !request?.state?.user ||
         !request?.request?.url?.startsWith('/content-manager/')) return next();
     return strapi.db.transaction(async ({ onCommit }) => {
-      const before = await strapi.db.query(uid).findOne({ where: { documentId: context.params.documentId } });
+      const before = await strapi.db.query(uid).findOne({ where: { documentId: context.params.documentId }, populate: { preferredShowroom: true } });
       const result = await next();
       if (!before || ![...RESCHEDULABLE_FORM_TAGS, 'product-store-visit'].includes(before.formTag)) return result;
-      const after = await strapi.db.query(uid).findOne({ where: { documentId: context.params.documentId } });
+      const after = await strapi.db.query(uid).findOne({ where: { documentId: context.params.documentId }, populate: { preferredShowroom: true } });
       if (after && !['Cancelled', 'Closed', 'Visited'].includes(after.workflowStatus)) {
         notifyRescheduleAfterCommit(strapi, onCommit, {
           documentId: after.documentId, customerName: after.customerName, customerEmail: after.customerEmail,
+          formTag: after.formTag, preferredShowroom: after.preferredShowroom,
           previousDate: before.requestedDate, previousTimeSlot: before.selectedTimeSlot,
           requestedDate: after.requestedDate, selectedTimeSlot: after.selectedTimeSlot,
         });
