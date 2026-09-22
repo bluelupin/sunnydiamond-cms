@@ -4,6 +4,7 @@
 
 import { factories } from '@strapi/strapi';
 import { checkFormSubmissionRateLimit } from '../../../utils/form-submission-rate-limit';
+import { sendCareerApplicationReceivedEmail } from '../../../utils/career-application-email';
 
 const UID = 'api::submissions-job-opening.submissions-job-opening';
 const CAREER_OPENING_UID = 'api::career-opening.career-opening';
@@ -229,6 +230,12 @@ export default factories.createCoreController(UID, ({ strapi }) => ({
       } as any);
       throw error;
     }
+
+    await sendCareerApplicationReceivedEmail(strapi, {
+      documentId: entity.documentId,
+      candidateName: name,
+      candidateEmail: email,
+    });
 
     ctx.status = 201;
     return {
