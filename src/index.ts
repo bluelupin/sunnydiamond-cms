@@ -18,6 +18,7 @@ import { migrateSupportContactSection } from './utils/migrate-support-contact-se
 import { migrateHomeTrialAppointments } from './utils/migrate-home-trial-appointments';
 import { registerReachOutSubmissionProtection } from './utils/protect-reach-out-submissions';
 import { registerAdminRescheduleEmail } from './utils/appointment-reschedule-email';
+import { registerCareerSubmissionProtection } from './utils/protect-career-submissions';
 // import { cleanStaleAdminPermissions } from './utils/clean-stale-admin-permissions';
 
 export default {
@@ -30,6 +31,7 @@ export default {
   register({ strapi }: { strapi: Core.Strapi }) {
     registerReachOutSubmissionProtection(strapi);
     registerAdminRescheduleEmail(strapi);
+    registerCareerSubmissionProtection(strapi);
   },
 
   /**

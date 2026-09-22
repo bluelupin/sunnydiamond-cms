@@ -17,7 +17,7 @@ export function careerApplicationReceivedTemplate(data: CareerApplicationReceive
       'We appreciate your interest in being part of the Sunny Diamonds team and wish you the very best.', '',
       'Warm regards,', 'Team Sunny Diamonds', 'Crafted to celebrate your moments',
     ].join('\n'),
-    html: `<!doctype html>
+    html: restyleSunnyEmail(`<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Application received</title></head>
 <body style="margin:0;background:#f5f5f5;color:#222;font-family:Arial,sans-serif;line-height:1.6">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:24px 12px">
@@ -30,6 +30,7 @@ export function careerApplicationReceivedTemplate(data: CareerApplicationReceive
       <p>Warm regards,<br><strong>Team Sunny Diamonds</strong><br><em>Crafted to celebrate your moments</em></p>
     </td></tr></table>
   </td></tr></table>
-</body></html>`,
+</body></html>`),
   };
 }
+import { restyleSunnyEmail } from './sunny-email-layout';

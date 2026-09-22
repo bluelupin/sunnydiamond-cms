@@ -26,6 +26,19 @@ export default {
   },
   bootstrap(app: { registerHook: (name: string, handler: (args: any) => any) => void }) {
     app.registerHook('Admin/CM/pages/EditView/mutate-edit-view-layout', (args) => {
+      if (args.layout.settings?.displayName !== 'Submissions: Job Opening') return args;
+      const editable = new Set(['workflowStatus', 'internalNotes']);
+      const components = Object.fromEntries(Object.entries(args.layout.components ?? {}).map(([uid, component]: [string, any]) => [
+        uid,
+        { ...component, layout: component.layout.map((row: any[]) => row.map(field => ({ ...field, disabled: true }))) },
+      ]));
+      return { ...args, layout: { ...args.layout, components,
+        layout: args.layout.layout.map((panel: any[][]) => panel.map((row: any[]) => row.map((field: any) =>
+          editable.has(field.name) ? field : { ...field, disabled: true }
+        ))),
+      } };
+    });
+    app.registerHook('Admin/CM/pages/EditView/mutate-edit-view-layout', (args) => {
       if (args.layout.settings?.displayName !== 'Submissions: Generic') return args;
       return { ...args, layout: { ...args.layout,
         layout: args.layout.layout.map((panel: any[][]) => panel.map(row => row.map(field =>
@@ -47,7 +60,7 @@ export default {
           ['previousData', 'newData'].includes(field.name) && field.attribute?.type === 'json'
               ? { ...field, type: 'appointment-details', size: 12 }
               : field
-        )).filter(row => row.length > 0)).filter(panel => panel.length > 0),
+        )).filter(row => row.length > 0)).filter((panel: any[][]) => panel.length > 0),
       },
     }));
     app.registerHook('Admin/CM/pages/EditView/mutate-edit-view-layout', (args) => {
