@@ -2,7 +2,7 @@ import { HOME_TRIAL_FORM_TAGS, homeTrialScheduleKey } from './home-trial-group-k
 import { validateAppointmentSchedule, validateReschedulingWindow } from './appointment-schedule';
 import { retryableGroupRace } from './create-home-trial-submission';
 import { customerContactDetails, customerDetailsChanged, customerDetailsSnapshot } from './appointment-customer-details';
-import { notifyRescheduleAfterCommit } from './appointment-reschedule-email';
+import { notifyTryAtHomeChangeAfterCommit } from './try-at-home-change-email';
 
 const GROUP = 'api::appointment-group.appointment-group';
 const PRODUCT = 'api::product-submission.product-submission';
@@ -65,6 +65,8 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
           ...(contactAudit ? { customerDetails: rows.map((row: any) => customerDetailsSnapshot(row)) } : {}) };
         let target = group;
         let affected = rows;
+        let notificationProducts = rows;
+        let scheduleChanged = false;
         if (action === 'cancel') {
           affected = rows.filter((row: any) => !inactive(row));
           if (!affected.length && group.workflowStatus === 'Cancelled') return response(group, false);
@@ -77,7 +79,7 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
           if (inactive(group) || rows.some(inactive)) return { error: 'Completed, closed or cancelled appointments cannot be rescheduled.', status: 400 };
           const windowError = validateReschedulingWindow(group.requestedDate);
           if (windowError) return { error: windowError, status: 400 };
-          const scheduleChanged = group.requestedDate !== requestedDate || group.selectedTimeSlot !== selectedTimeSlot;
+          scheduleChanged = group.requestedDate !== requestedDate || group.selectedTimeSlot !== selectedTimeSlot;
           if (!scheduleChanged && !customerDetailsChanged(rows, { ...customerChanges, ...noteChanges })) return response(group, false);
           if (scheduleChanged) {
             for (const formTag of new Set(rows.map((row: any) => row.formTag))) {
@@ -105,6 +107,7 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
               const targetProducts = await strapi.db.query(PRODUCT).findMany({
                 where: { appointmentGroup: { documentId: occupied.documentId } }, orderBy: { id: 'asc' },
               });
+              notificationProducts = [...targetProducts, ...rows];
               if (customerDetailsChanged(targetProducts, groupCustomerDetails)) {
                 return { error: 'Customer details must match the destination appointment before merging appointments.', status: 400 };
               }
@@ -132,10 +135,13 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
             products: affected.map((row: any) => ({ documentId: row.documentId, productId: row.productId ?? null, productName: row.productName ?? null })) },
           affectedSubmissions: { connect: affected.map((row: any) => row.documentId) },
         } });
-        if (action === 'reschedule') notifyRescheduleAfterCommit(strapi, onCommit, {
-          documentId: target.documentId, ...groupCustomerDetails,
-          previousDate: group.requestedDate, previousTimeSlot: group.selectedTimeSlot,
-          requestedDate: target.requestedDate, selectedTimeSlot: target.selectedTimeSlot,
+        if (action === 'cancel' || scheduleChanged) notifyTryAtHomeChangeAfterCommit(strapi, onCommit, action, {
+          documentId: target.documentId, manageDocumentId: notificationProducts[0]?.documentId,
+          ...groupCustomerDetails, requestedDate: target.requestedDate, selectedTimeSlot: target.selectedTimeSlot,
+          addressLine1: target.addressLine1, addressLine2: target.addressLine2, city: target.city,
+          state: target.state?.name ?? target.state?.code, pincode: target.pincode,
+          productNames: notificationProducts.map((row: any) => row.productName).filter(Boolean),
+          sourcePage: notificationProducts[0]?.sourcePage,
         });
         return response(target, true, affected);
       });

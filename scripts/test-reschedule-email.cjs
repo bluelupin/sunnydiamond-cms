@@ -88,7 +88,7 @@ function transactionHarness(strapi, rollback = false) {
   return { callbacks, commit: async () => { for (const callback of callbacks.splice(0)) callback(); await flush(); } };
 }
 
-test('group reschedule registers exactly one email after updating multiple products', async () => {
+test('group appointment changes register exactly one email after updating multiple products', async () => {
   for (const scenario of ['reschedule', 'unchanged', 'notes', 'cancel', 'rollback', 'merge']) {
     const strapi = mailMock();
     const harness = transactionHarness(strapi, scenario === 'rollback');
@@ -121,7 +121,7 @@ test('group reschedule registers exactly one email after updating multiple produ
     if (scenario === 'rollback') await assert.rejects(mutateHomeTrialGroup(strapi, request), /rollback/);
     else await mutateHomeTrialGroup(strapi, request);
     assert.equal(strapi.sent.length, 0, scenario);
-    const shouldSend = ['reschedule', 'merge'].includes(scenario);
+    const shouldSend = ['reschedule', 'merge', 'cancel'].includes(scenario);
     assert.equal(harness.callbacks.length, shouldSend ? 1 : 0, scenario);
     await harness.commit();
     assert.equal(strapi.sent.length, shouldSend ? 1 : 0, scenario);
