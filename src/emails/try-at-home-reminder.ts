@@ -16,7 +16,7 @@ export function tryAtHomeReminderTemplate(data: TryAtHomeReminderData) {
   const name = data.customerName?.trim() || 'there';
   const products = data.productNames.length ? data.productNames : ['Selected jewellery'];
   const details = [
-    ['Appointment ID', data.appointmentId], ['Date', data.appointmentDate], ['Time', data.appointmentTime],
+    ['Appointment ID', data.appointmentId], ['Date', formatEmailDate(data.appointmentDate)], ['Time', data.appointmentTime],
     ['Delivery Address', data.deliveryAddress],
   ];
   const manageText = data.manageUrl
@@ -26,6 +26,7 @@ export function tryAtHomeReminderTemplate(data: TryAtHomeReminderData) {
       <p>If you need to reschedule or cancel your appointment, you can manage your appointment using the link above.</p>` : '';
   return {
     subject: 'Reminder: Your Sunny Diamonds Try at Home Appointment Is Tomorrow',
+    attachments: sunnyEmailLogoAttachments(),
     text: [
       `Dear ${name},`, '', 'Just a gentle reminder that your Sunny Diamonds Try at Home appointment is scheduled for tomorrow.',
       'We’re looking forward to bringing your selected jewellery to you and helping you experience it from the comfort of your home.', '',
@@ -60,4 +61,4 @@ export function tryAtHomeReminderTemplate(data: TryAtHomeReminderData) {
 </body></html>`),
   };
 }
-import { restyleSunnyEmail } from './sunny-email-layout';
+import { formatEmailDate, restyleSunnyEmail, sunnyEmailLogoAttachments } from './sunny-email-layout';

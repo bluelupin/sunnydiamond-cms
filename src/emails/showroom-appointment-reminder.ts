@@ -14,7 +14,7 @@ const escapeHtml = (value: string) => value.replace(/[&<>"']/g, char => ({
 export function showroomAppointmentReminderTemplate(data: ShowroomAppointmentReminderData) {
   const name = data.customerName?.trim() || 'there';
   const details = [
-    ['Appointment Type', 'Showroom Visit'], ['Date', data.appointmentDate], ['Time', data.appointmentTime],
+    ['Appointment Type', 'Showroom Visit'], ['Date', formatEmailDate(data.appointmentDate)], ['Time', data.appointmentTime],
     ['Showroom', data.showroomName || 'Sunny Diamonds showroom'], ['Location', data.showroomAddress || 'Not specified'],
   ];
   const manageText = data.manageUrl
@@ -24,6 +24,7 @@ export function showroomAppointmentReminderTemplate(data: ShowroomAppointmentRem
       <p>If you need to make any changes to your appointment, please use the link above.</p>` : '';
   return {
     subject: 'Reminder: Your Sunny Diamonds Appointment Is Tomorrow',
+    attachments: sunnyEmailLogoAttachments(),
     text: [
       `Dear ${name},`, '', 'Just a gentle reminder that your Sunny Diamonds Showroom appointment is scheduled for tomorrow.', '',
       'Appointment Details', '', ...details.map(([label, value]) => `${label}: ${value}`), '',
@@ -51,4 +52,4 @@ export function showroomAppointmentReminderTemplate(data: ShowroomAppointmentRem
 </body></html>`),
   };
 }
-import { restyleSunnyEmail } from './sunny-email-layout';
+import { formatEmailDate, restyleSunnyEmail, sunnyEmailLogoAttachments } from './sunny-email-layout';

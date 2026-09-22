@@ -10,6 +10,7 @@ export function careerApplicationReceivedTemplate(data: CareerApplicationReceive
   const name = data.candidateName?.trim() || 'Candidate';
   return {
     subject: 'Thank You for Your Interest in Sunny Diamonds',
+    attachments: sunnyEmailLogoAttachments(),
     text: [
       `Dear ${name},`, '',
       'Thank you for your interest in Sunny Diamonds and for taking the time to apply for a career opportunity with us.', '',
@@ -33,4 +34,4 @@ export function careerApplicationReceivedTemplate(data: CareerApplicationReceive
 </body></html>`),
   };
 }
-import { restyleSunnyEmail } from './sunny-email-layout';
+import { restyleSunnyEmail, sunnyEmailLogoAttachments } from './sunny-email-layout';

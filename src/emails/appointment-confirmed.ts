@@ -14,9 +14,10 @@ const escapeHtml = (value: string) => value.replace(/[&<>"']/g, char => ({
 /** Copy and layout for the product-store-visit submission confirmation. */
 export function appointmentConfirmedTemplate(data: AppointmentConfirmedData) {
   const name = data.customerName?.trim() || 'there';
+  const appointmentDate = formatEmailDate(data.requestedDate);
   const details = [
     ['Appointment Type', 'Showroom Visit'],
-    ['Date', data.requestedDate],
+    ['Date', appointmentDate],
     ['Time', data.selectedTimeSlot],
     ['Showroom', data.location],
   ];
@@ -29,7 +30,8 @@ export function appointmentConfirmedTemplate(data: AppointmentConfirmedData) {
     : '';
 
   return {
-    subject: `Your Sunny Diamonds Appointment Is Confirmed – ${data.requestedDate}`,
+    subject: `Your Sunny Diamonds Appointment Is Confirmed – ${appointmentDate}`,
+    attachments: sunnyEmailLogoAttachments(),
     text: [
       `Dear ${name},`, '', 'Thank you for choosing to connect with Sunny Diamonds. Your Showroom Visit appointment has been successfully booked.', '',
       'Appointment Details', '', ...details.map(([label, value]) => `${label}: ${value}`), '',
@@ -57,4 +59,4 @@ export function appointmentConfirmedTemplate(data: AppointmentConfirmedData) {
 </body></html>`),
   };
 }
-import { restyleSunnyEmail } from './sunny-email-layout';
+import { formatEmailDate, restyleSunnyEmail, sunnyEmailLogoAttachments } from './sunny-email-layout';

@@ -36,7 +36,13 @@ function mailMock(fail = false) {
 
 test('confirmation template follows the requested copy and escapes dynamic HTML', () => {
   const message = template({ ...data, manageUrl: 'https://example.com/manage?a=1&b=2' });
-  assert.equal(message.subject, 'Your Sunny Diamonds Appointment Is Confirmed – 2099-10-05');
+  assert.equal(message.subject, 'Your Sunny Diamonds Appointment Is Confirmed – Oct 5, 2099');
+  assert.match(message.text, /Date: Oct 5, 2099/);
+  assert.match(message.html, /cid:sunny-diamonds-logo/);
+  assert.match(message.html, /max-width:560px/);
+  assert.match(message.html, /background:#0A0A0A;color:#FFFFFF/);
+  assert.equal(message.attachments[0].cid, 'sunny-diamonds-logo');
+  assert.ok(message.attachments[0].content.length > 0);
   assert.match(message.text, /Appointment Type: Showroom Visit/);
   assert.match(message.html, /&lt;Customer &amp; Co&gt;/);
   assert.match(message.html, /&lt;11:00 AM&gt;/);

@@ -17,7 +17,7 @@ export function showroomAppointmentRescheduledTemplate(data: ShowroomAppointment
   const details = [
     ['Appointment ID', data.appointmentId],
     ['Appointment Type', 'Showroom Visit'],
-    ['New Date', data.newDate],
+    ['New Date', formatEmailDate(data.newDate)],
     ['New Time', data.newTime],
     ['Showroom', data.showroomName || 'Sunny Diamonds showroom'],
     ['Location', data.showroomAddress || 'Not specified'],
@@ -31,6 +31,7 @@ export function showroomAppointmentRescheduledTemplate(data: ShowroomAppointment
     : '';
   return {
     subject: 'Your Sunny Diamonds Appointment Has Been Rescheduled',
+    attachments: sunnyEmailLogoAttachments(),
     text: [
       `Dear ${name},`, '', 'Your Sunny Diamonds showroom appointment has been successfully rescheduled as requested.', '',
       'Updated Appointment Details', '', ...details.map(([label, value]) => `${label}: ${value}`), '',
@@ -58,4 +59,4 @@ export function showroomAppointmentRescheduledTemplate(data: ShowroomAppointment
 </body></html>`),
   };
 }
-import { restyleSunnyEmail } from './sunny-email-layout';
+import { formatEmailDate, restyleSunnyEmail, sunnyEmailLogoAttachments } from './sunny-email-layout';

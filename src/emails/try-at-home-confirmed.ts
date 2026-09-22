@@ -15,7 +15,7 @@ const escapeHtml = (value: string) => value.replace(/[&<>"']/g, char => ({
 export function tryAtHomeConfirmedTemplate(data: TryAtHomeConfirmedData) {
   const name = data.customerName?.trim() || 'there';
   const details = [
-    ['Appointment ID', data.appointmentId], ['Date', data.appointmentDate], ['Time', data.appointmentTime],
+    ['Appointment ID', data.appointmentId], ['Date', formatEmailDate(data.appointmentDate)], ['Time', data.appointmentTime],
     ['Delivery Address', data.deliveryAddress],
   ];
   const manageText = data.manageUrl
@@ -25,6 +25,7 @@ export function tryAtHomeConfirmedTemplate(data: TryAtHomeConfirmedData) {
       <p>If you need to reschedule or cancel your appointment, you can do so using the link above.</p>` : '';
   return {
     subject: 'Your Sunny Diamonds Try at Home Appointment Is Confirmed',
+    attachments: sunnyEmailLogoAttachments(),
     text: [
       `Dear ${name},`, '', 'Thank you for choosing Sunny Diamonds.',
       'Your Try at Home appointment has been successfully booked. We look forward to bringing your selected jewellery to you, so you can explore it from the comfort of your home.', '',
@@ -59,4 +60,4 @@ export function tryAtHomeConfirmedTemplate(data: TryAtHomeConfirmedData) {
 </body></html>`),
   };
 }
-import { restyleSunnyEmail } from './sunny-email-layout';
+import { formatEmailDate, restyleSunnyEmail, sunnyEmailLogoAttachments } from './sunny-email-layout';

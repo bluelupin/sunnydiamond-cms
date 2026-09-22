@@ -36,8 +36,8 @@ function mailMock(fail = false) {
 }
 test('template includes both schedules and escapes all dynamic HTML values', () => {
   const message = template({ ...data, documentId: '<reference>', selectedTimeSlot: '<slot>' });
-  assert.match(message.text, /2099-10-01/);
-  assert.match(message.text, /2099-10-05/);
+  assert.match(message.text, /Oct 1, 2099/);
+  assert.match(message.text, /Oct 5, 2099/);
   assert.match(message.html, /&lt;Customer &amp; Co&gt;/);
   assert.match(message.html, /&lt;reference&gt;/);
   assert.match(message.html, /&lt;slot&gt;/);

@@ -11,6 +11,7 @@ export function reachOutConfirmationTemplate(data: ReachOutConfirmationData) {
   const name = data.customerName?.trim() || 'there';
   return {
     subject: 'We’ve Received Your Message – Sunny Diamonds',
+    attachments: sunnyEmailLogoAttachments(),
     text: [
       `Dear ${name},`, '',
       'Thank you for reaching out to Sunny Diamonds.', '',
@@ -34,4 +35,4 @@ export function reachOutConfirmationTemplate(data: ReachOutConfirmationData) {
 </body></html>`),
   };
 }
-import { restyleSunnyEmail } from './sunny-email-layout';
+import { restyleSunnyEmail, sunnyEmailLogoAttachments } from './sunny-email-layout';

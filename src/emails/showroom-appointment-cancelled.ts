@@ -17,7 +17,7 @@ export function showroomAppointmentCancelledTemplate(data: ShowroomAppointmentCa
   const name = data.customerName?.trim() || 'there';
   const details = [
     ['Appointment ID', data.appointmentId],
-    ['Date', data.appointmentDate || 'Not specified'],
+    ['Date', formatEmailDate(data.appointmentDate)],
     ['Time', data.appointmentTime || 'Not specified'],
     ['Showroom', data.showroomName || 'Sunny Diamonds showroom'],
     ['Location', data.showroomAddress || 'Not specified'],
@@ -29,6 +29,7 @@ export function showroomAppointmentCancelledTemplate(data: ShowroomAppointmentCa
 
   return {
     subject: 'Your Sunny Diamonds Showroom Appointment Has Been Cancelled',
+    attachments: sunnyEmailLogoAttachments(),
     text: [
       `Dear ${name},`, '',
       'This is to confirm that your Sunny Diamonds showroom appointment has been successfully cancelled.', '',
@@ -62,4 +63,4 @@ export function showroomAppointmentCancelledTemplate(data: ShowroomAppointmentCa
 </body></html>`),
   };
 }
-import { restyleSunnyEmail } from './sunny-email-layout';
+import { formatEmailDate, restyleSunnyEmail, sunnyEmailLogoAttachments } from './sunny-email-layout';

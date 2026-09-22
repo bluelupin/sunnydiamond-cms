@@ -16,13 +16,14 @@ export function appointmentRescheduledTemplate(data: AppointmentRescheduledData)
   const name = data.customerName?.trim() || 'there';
   const details = [
     ['Appointment reference', data.documentId],
-    ['Previous date', data.previousDate || 'Not specified'],
+    ['Previous date', formatEmailDate(data.previousDate)],
     ['Previous time', data.previousTimeSlot || 'Not specified'],
-    ['New date', data.requestedDate],
+    ['New date', formatEmailDate(data.requestedDate)],
     ['New time', data.selectedTimeSlot],
   ];
   return {
     subject: 'Your Sunny Diamonds appointment has been rescheduled',
+    attachments: sunnyEmailLogoAttachments(),
     text: [
       `Hi ${name},`, '', 'Your Sunny Diamonds appointment has been rescheduled.', '',
       ...details.map(([label, value]) => `${label}: ${value}`),
@@ -49,4 +50,4 @@ export function appointmentRescheduledTemplate(data: AppointmentRescheduledData)
 </body></html>`),
   };
 }
-import { restyleSunnyEmail } from './sunny-email-layout';
+import { formatEmailDate, restyleSunnyEmail, sunnyEmailLogoAttachments } from './sunny-email-layout';
