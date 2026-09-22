@@ -25,7 +25,6 @@ const manageUrl = (documentId: string) => {
 };
 
 export async function sendStoreVisitConfirmationEmail(strapi: Core.Strapi, data: StoreVisitConfirmation) {
-  if (process.env.APPOINTMENT_EMAIL_ENABLED === 'false') return;
   const to = data.customerEmail?.trim();
   if (!to || !/^[^\s<>@,;]+@[^\s<>@,;]+\.[^\s<>@,;]+$/.test(to)) return;
   if (!validAppointmentDate(data.requestedDate) || !data.selectedTimeSlot?.trim()) return;

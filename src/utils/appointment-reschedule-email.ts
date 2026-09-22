@@ -7,7 +7,6 @@ export interface RescheduleNotification extends AppointmentRescheduledData {
 }
 
 export async function sendAppointmentRescheduleEmail(strapi: Core.Strapi, data: RescheduleNotification) {
-  if (process.env.APPOINTMENT_EMAIL_ENABLED === 'false') return;
   if (data.previousDate === data.requestedDate && data.previousTimeSlot === data.selectedTimeSlot) return;
   const to = data.customerEmail?.trim();
   if (!to || !/^[^\s<>@,;]+@[^\s<>@,;]+\.[^\s<>@,;]+$/.test(to)) return;

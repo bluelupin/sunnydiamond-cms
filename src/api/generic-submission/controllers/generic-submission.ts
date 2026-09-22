@@ -1,6 +1,7 @@
 import { factories } from '@strapi/strapi';
 import { checkFormSubmissionRateLimit } from '../../../utils/form-submission-rate-limit';
 import { requestLocale } from '../../../utils/request-locale';
+import { sendReachOutConfirmationEmail } from '../../../utils/reach-out-confirmation-email';
 
 const GENERIC_SUBMISSION_UID = 'api::generic-submission.generic-submission';
 const GENERIC_FORM_UID = 'api::generic-form.generic-form';
@@ -147,6 +148,14 @@ export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ 
         consentAccepted,
       },
     } as any);
+
+    if (formTag === 'reach-out-to-us') {
+      await sendReachOutConfirmationEmail(strapi, {
+        documentId: entity.documentId,
+        customerName: fullName,
+        customerEmail: email,
+      });
+    }
 
     return {
       data: {
