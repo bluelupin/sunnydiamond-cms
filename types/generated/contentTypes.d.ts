@@ -2501,6 +2501,7 @@ export interface ApiProductSubmissionProductSubmission
     productId: Schema.Attribute.String;
     productName: Schema.Attribute.String & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
+    reminderSentForDate: Schema.Attribute.Date & Schema.Attribute.Private;
     requestDetails: Schema.Attribute.Text;
     requestedDate: Schema.Attribute.Date;
     rescheduleHistory: Schema.Attribute.JSON & Schema.Attribute.Private;

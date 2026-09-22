@@ -46,6 +46,10 @@
       "type": "json",
       "private": true
     },
+    "reminderSentForDate": {
+      "type": "date",
+      "private": true
+    },
     "requestDetails": {
       "type": "text"
     },
