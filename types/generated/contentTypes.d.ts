@@ -1145,6 +1145,7 @@ export interface ApiCareerOpeningCareerOpening
       }>;
     jobID: Schema.Attribute.String &
       Schema.Attribute.Required &
+      Schema.Attribute.Unique &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
