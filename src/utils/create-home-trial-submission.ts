@@ -25,6 +25,7 @@ export async function createHomeTrialSubmission(strapi: any, data: any) {
         let group = locked
           ? await groups.findOne({ documentId: locked.document_id, populate: { state: true } })
           : undefined;
+        const createdGroup = !group;
         if (!group) {
           group = await groups.create({ data: {
             magentoCustomerId: data.magentoCustomerId,
@@ -52,7 +53,7 @@ export async function createHomeTrialSubmission(strapi: any, data: any) {
           city: group.city ?? null, pincode: group.pincode ?? null,
           state: locked ? group.state?.documentId ?? null : data.state ?? null,
         } });
-        return { entity, groupDocumentId: group.documentId };
+        return { entity, groupDocumentId: group.documentId, createdGroup };
       });
     } catch (error) {
       // Retry the whole transaction, never a failed statement inside an aborted transaction.

@@ -11,6 +11,7 @@ import { appointmentNoteChanges } from '../../../utils/appointment-note';
 import { notifyRescheduleAfterCommit } from '../../../utils/appointment-reschedule-email';
 import { sendStoreVisitConfirmationEmail } from '../../../utils/appointment-confirmation-email';
 import { notifyShowroomCancellationAfterCommit } from '../../../utils/showroom-appointment-cancelled-email';
+import { sendTryAtHomeConfirmationEmail } from '../../../utils/try-at-home-confirmation-email';
 
 const PRODUCT_SUBMISSION_UID = 'api::product-submission.product-submission';
 const PRODUCT_FORM_UID = 'api::product-form.product-form';
@@ -234,6 +235,16 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
         requestedDate,
         selectedTimeSlot: stringOrUndefined(input.selectedTimeSlot),
         location: location || showroom?.city || 'Sunny Diamonds showroom',
+      });
+    }
+
+    if (grouped?.createdGroup) {
+      await sendTryAtHomeConfirmationEmail(strapi, {
+        documentId: entity.documentId, appointmentId: grouped.groupDocumentId,
+        productName, customerName, customerEmail, requestedDate,
+        selectedTimeSlot: stringOrUndefined(input.selectedTimeSlot),
+        addressLine1: stringOrUndefined(input.addressLine1), addressLine2: stringOrUndefined(input.addressLine2),
+        city: stringOrUndefined(input.city), state: stateVal, pincode: stringOrUndefined(input.pincode),
       });
     }
 
