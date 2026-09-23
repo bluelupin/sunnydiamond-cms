@@ -98,8 +98,8 @@ test('group appointment changes register exactly one email after updating multip
     const group = { documentId: 'group-1', magentoCustomerId: 7, workflowStatus: 'Scheduled',
       requestedDate: data.previousDate, selectedTimeSlot: data.previousTimeSlot };
     const target = { ...group, documentId: 'group-2', requestedDate: data.requestedDate, selectedTimeSlot: data.selectedTimeSlot,
-      activeScheduleKey: require('node:crypto').createHash('sha256')
-        .update(JSON.stringify([7, data.requestedDate, data.selectedTimeSlot])).digest('hex') };
+      activeScheduleKey: load('src/utils/home-trial-group-key.ts').homeTrialScheduleKey(
+        7, data.requestedDate, data.selectedTimeSlot, group) };
     const updates = [];
     strapi.db.query = () => ({ findOne: async () => rows[0], findMany: async () => rows });
     strapi.documents = uid => ({
@@ -108,6 +108,7 @@ test('group appointment changes register exactly one email after updating multip
       update: async request => { updates.push({ uid, ...request }); return request.data; }, create: async () => ({}),
     });
     const { mutateHomeTrialGroup } = load('src/utils/mutate-home-trial-group.ts', {
+      './find-home-trial-group': { findHomeTrialGroup: async () => scenario === 'merge' ? target : undefined },
       './create-home-trial-submission': { retryableGroupRace: () => false },
       './appointment-schedule': { validateAppointmentSchedule: () => undefined, validateReschedulingWindow: () => undefined,
         validAppointmentDate: value => /^\d{4}-\d{2}-\d{2}$/.test(value) },

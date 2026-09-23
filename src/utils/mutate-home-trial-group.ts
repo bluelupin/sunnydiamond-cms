@@ -3,6 +3,7 @@ import { validateAppointmentSchedule, validateReschedulingWindow } from './appoi
 import { retryableGroupRace } from './create-home-trial-submission';
 import { customerContactDetails, customerDetailsChanged, customerDetailsSnapshot } from './appointment-customer-details';
 import { notifyTryAtHomeChangeAfterCommit } from './try-at-home-change-email';
+import { findHomeTrialGroup } from './find-home-trial-group';
 
 const GROUP = 'api::appointment-group.appointment-group';
 const PRODUCT = 'api::product-submission.product-submission';
@@ -90,17 +91,10 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
               const error = form ? validateAppointmentSchedule(requestedDate, selectedTimeSlot, form) : 'The appointment form is unavailable.';
               if (error) return { error, status: 400 };
             }
-            const key = homeTrialScheduleKey(customerId, requestedDate, selectedTimeSlot);
-            let occupied = await groups.findFirst({ filters: { activeScheduleKey: key }, populate: { state: true } });
-            if (occupied) {
-              // Also cover a target inserted after the initial customer-group lock query.
-              await strapi.db.connection(table).transacting(trx)
-                .where({ id: occupied.id }).forUpdate();
-              occupied = await groups.findOne({ documentId: occupied.documentId, populate: { state: true } });
-              if (!occupied || occupied.activeScheduleKey !== key) {
-                throw Object.assign(new Error('Target appointment changed; retry transaction.'), { code: '40001' });
-              }
-            }
+            const key = homeTrialScheduleKey(customerId, requestedDate, selectedTimeSlot, group);
+            const occupied = await findHomeTrialGroup(strapi, trx, {
+              ...group, magentoCustomerId: customerId, requestedDate, selectedTimeSlot,
+            });
             if (occupied && (occupied.magentoCustomerId !== customerId || inactive(occupied) || occupied.requestedDate !== requestedDate || occupied.selectedTimeSlot !== selectedTimeSlot)) {
               throw new Error('Appointment group does not match its active schedule key.');
             }
