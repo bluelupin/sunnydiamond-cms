@@ -25,6 +25,36 @@ const data = {
   previousDate: '2099-10-01', previousTimeSlot: '10:00 AM', requestedDate: '2099-10-05', selectedTimeSlot: '11:00 AM',
 };
 const flush = () => new Promise(resolve => setImmediate(resolve));
+
+test('both video-call forms record linked reschedule and cancellation history with before/after snapshots', async () => {
+  const { recordVideoCallChange } = load('src/utils/video-call-change-log.ts');
+  for (const formTag of ['schedule-video-call', 'product-video-call']) {
+    for (const actorType of ['Customer', 'Admin']) {
+      const logs = [];
+      const strapi = { documents: uid => {
+        assert.equal(uid, 'api::appointment-change.appointment-change');
+        return { create: async ({ data }) => { logs.push(data); } };
+      } };
+      const before = { documentId: 'video-1', magentoCustomerId: 7, formTag, workflowStatus: 'New',
+        requestedDate: '2099-10-01', selectedTimeSlot: '10:00 AM', customerName: 'Customer', productName: 'Ring' };
+      const after = { ...before, requestedDate: '2099-10-02', selectedTimeSlot: '11:00 AM' };
+      await recordVideoCallChange(strapi, before, after, actorType);
+      await recordVideoCallChange(strapi, after, { ...after, workflowStatus: 'Cancelled' }, actorType);
+      assert.deepEqual(logs.map(log => log.eventType), ['Rescheduled', 'Cancelled']);
+      assert.equal(logs[0].previousData.requestedDate, before.requestedDate);
+      assert.equal(logs[0].newData.requestedDate, after.requestedDate);
+      assert.equal(logs[1].previousData.workflowStatus, 'New');
+      assert.equal(logs[1].newData.workflowStatus, 'Cancelled');
+      assert.equal(logs[0].actorType, actorType);
+      assert.deepEqual(logs[0].affectedSubmissions, { connect: ['video-1'] });
+      assert.ok(Number.isFinite(Date.parse(logs[0].changedAt)));
+      await recordVideoCallChange(strapi, before, { ...before, customerName: 'Changed' }, actorType);
+      await recordVideoCallChange(strapi, { ...after, workflowStatus: 'Cancelled' }, { ...after, workflowStatus: 'Cancelled' }, actorType);
+      assert.equal(logs.length, 2);
+      await assert.rejects(recordVideoCallChange({ documents: () => ({ create: async () => { throw new Error('audit unavailable'); } }) }, before, after, actorType), /audit unavailable/);
+    }
+  }
+});
 function mailMock(fail = false) {
   const sent = [], errors = [];
   return { sent, errors, log: { info() {}, error: message => errors.push(message) },

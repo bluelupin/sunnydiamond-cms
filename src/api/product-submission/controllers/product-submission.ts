@@ -1,4 +1,5 @@
 import { factories } from '@strapi/strapi';
+import { recordVideoCallChange } from '../../../utils/video-call-change-log';
 import { checkFormSubmissionRateLimit } from '../../../utils/form-submission-rate-limit';
 import { requestLocale } from '../../../utils/request-locale';
 import { RESCHEDULABLE_FORM_TAGS, validateAppointmentSchedule, validateReschedulingWindow } from '../../../utils/appointment-schedule';
@@ -368,6 +369,9 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
           ],
         },
       } as any);
+      await recordVideoCallChange(strapi, appointment, {
+        ...appointment, requestedDate, selectedTimeSlot, ...customerChanges.data, ...noteChanges.data,
+      }, 'Customer');
       if (scheduleChanged) notifyRescheduleAfterCommit(strapi, onCommit, {
         ...customerDetailsSnapshot(appointment, customerChanges.data),
         appointmentReference: appointment.appointmentReference,
@@ -427,6 +431,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
           workflowStatus: 'Cancelled',
         },
       } as any);
+      await recordVideoCallChange(strapi, appointment, { ...appointment, workflowStatus: 'Cancelled' }, 'Customer');
       if (appointment.formTag === 'product-store-visit') {
         notifyShowroomCancellationAfterCommit(strapi, onCommit, appointment);
       } else if (appointment.formTag === 'product-video-call') {

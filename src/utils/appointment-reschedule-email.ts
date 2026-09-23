@@ -1,4 +1,5 @@
 import type { Core } from '@strapi/strapi';
+import { recordVideoCallChange } from './video-call-change-log';
 import { appointmentRescheduledTemplate, type AppointmentRescheduledData } from '../emails/appointment-rescheduled';
 import { showroomAppointmentRescheduledTemplate } from '../emails/showroom-appointment-rescheduled';
 import { videoCallRescheduledTemplate } from '../emails/video-call-appointment';
@@ -76,11 +77,15 @@ export function registerAdminRescheduleEmail(strapi: Core.Strapi) {
     const request = strapi.requestContext.get();
     if (context.uid !== uid || context.action !== 'update' || !request?.state?.user ||
         !request?.request?.url?.startsWith('/content-manager/')) return next();
-    return strapi.db.transaction(async ({ onCommit }) => {
+    return strapi.db.transaction(async ({ onCommit, trx }) => {
+      const table = strapi.db.metadata.get(uid).tableName;
+      await strapi.db.connection(table).transacting(trx)
+        .where({ document_id: context.params.documentId }).forUpdate().first();
       const before = await strapi.db.query(uid).findOne({ where: { documentId: context.params.documentId }, populate: { preferredShowroom: true } });
       const result = await next();
       if (!before || ![...RESCHEDULABLE_FORM_TAGS, 'product-store-visit'].includes(before.formTag)) return result;
       const after = await strapi.db.query(uid).findOne({ where: { documentId: context.params.documentId }, populate: { preferredShowroom: true } });
+      await recordVideoCallChange(strapi, before, after, 'Admin');
       if (after && !['Cancelled', 'Closed', 'Visited'].includes(after.workflowStatus)) {
         notifyRescheduleAfterCommit(strapi, onCommit, {
           documentId: after.documentId, customerName: after.customerName, customerEmail: after.customerEmail,
