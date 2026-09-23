@@ -15,6 +15,9 @@
     "featuredBody": {
       "type": "text"
     },
+    "additionalFeatureBody": {
+      "type": "text"
+    },
     "featuredDescription": {
       "type": "string"
     },

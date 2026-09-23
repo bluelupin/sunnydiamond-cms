@@ -1383,6 +1383,7 @@ export interface SharedMoreThanSection extends Struct.ComponentSchema {
     displayName: 'More than Section';
   };
   attributes: {
+    additionalFeatureBody: Schema.Attribute.Text;
     featuredBody: Schema.Attribute.Text;
     featuredDescription: Schema.Attribute.String;
     featuredImage1: Schema.Attribute.Component<'shared.image-asset', false>;
