@@ -1,4 +1,5 @@
 import type { Core } from '@strapi/strapi';
+import { appointmentSourceUrl } from './appointment-source-url';
 import { showroomAppointmentCancelledTemplate } from '../emails/showroom-appointment-cancelled';
 
 interface ShowroomCancellationNotification {
@@ -16,16 +17,6 @@ interface ShowroomCancellationNotification {
     address?: string | null;
   } | null;
 }
-
-const webUrl = (value?: string | null) => {
-  if (!value?.trim()) return undefined;
-  try {
-    const url = new URL(value);
-    return ['http:', 'https:'].includes(url.protocol) ? url.toString() : undefined;
-  } catch {
-    return undefined;
-  }
-};
 
 const plainText = (value?: string | null) => value?.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
 
@@ -48,7 +39,7 @@ export async function sendShowroomAppointmentCancelledEmail(
         appointmentTime: data.selectedTimeSlot,
         showroomName: showroom?.city,
         showroomAddress: address,
-        bookAppointmentUrl: webUrl(data.sourcePage),
+        bookAppointmentUrl: appointmentSourceUrl(data.sourcePage),
       }),
     });
     strapi.log.info(`Cancellation email accepted by the email provider for appointment ${data.documentId}.`);

@@ -26,6 +26,35 @@ const data = {
   preferredShowroom: { city: '<Kochi>', state: 'Kerala & South', pincode: '123456', address: '<p>MG Road</p>' },
 };
 
+test('all cancellation emails resolve a relative product path using WEB_BASE_URL', async () => {
+  const previous = process.env.WEB_BASE_URL;
+  process.env.WEB_BASE_URL = 'https://shop.example.com/';
+  try {
+    const senders = [send,
+      load('src/utils/video-call-appointment-email.ts').sendVideoCallCancellationEmail,
+      load('src/utils/try-at-home-change-email.ts').sendTryAtHomeCancelledEmail];
+    for (const sender of senders) {
+      const strapi = mailMock();
+      await sender(strapi, { ...data, productNames: ['Ring'], sourcePage: '/product/anya-diamond-finger-ring' });
+      assert.equal(strapi.sent.length, 1);
+      assert.match(strapi.sent[0].html, /href="https:\/\/shop.example.com\/product\/anya-diamond-finger-ring"/);
+      assert.match(strapi.sent[0].text, /https:\/\/shop.example.com\/product\/anya-diamond-finger-ring/);
+    }
+    const { appointmentSourceUrl: resolve } = load('src/utils/appointment-source-url.ts');
+    assert.equal(resolve('https://other.example.com/product'), 'https://other.example.com/product');
+    assert.equal(resolve('/product?a=1&b=2#details'), 'https://shop.example.com/product?a=1&b=2#details');
+    for (const value of ['', 'javascript:alert(1)', '//other.example.com', '/\\other.example.com']) {
+      assert.equal(resolve(value), undefined);
+    }
+    delete process.env.WEB_BASE_URL;
+    assert.equal(resolve('/product'), undefined);
+    assert.equal(resolve('https://shop.example.com/product'), 'https://shop.example.com/product');
+  } finally {
+    if (previous === undefined) delete process.env.WEB_BASE_URL;
+    else process.env.WEB_BASE_URL = previous;
+  }
+});
+
 function mailMock(fail = false) {
   const sent = [], errors = [];
   return { sent, errors, log: { info() {}, error: message => errors.push(message) },

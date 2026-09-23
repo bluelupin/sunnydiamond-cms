@@ -1,4 +1,5 @@
 import type { Core } from '@strapi/strapi';
+import { appointmentSourceUrl } from './appointment-source-url';
 import { tryAtHomeRescheduledTemplate } from '../emails/try-at-home-rescheduled';
 import { tryAtHomeCancelledTemplate } from '../emails/try-at-home-cancelled';
 
@@ -10,11 +11,6 @@ export interface TryAtHomeChangeNotification {
   productNames: string[]; manageDocumentId?: string | null; sourcePage?: string | null;
 }
 
-const safeUrl = (value?: string | null) => {
-  if (!value?.trim()) return undefined;
-  try { const url = new URL(value); return ['http:', 'https:'].includes(url.protocol) ? url.toString() : undefined; }
-  catch { return undefined; }
-};
 const manageUrl = (documentId?: string | null) => {
   const configured = process.env.APPOINTMENT_MANAGE_URL?.trim();
   if (!configured || !documentId) return undefined;
@@ -49,7 +45,7 @@ export async function sendTryAtHomeCancelledEmail(strapi: Core.Strapi, data: Try
     await strapi.plugin('email').service('email').send({ to, ...tryAtHomeCancelledTemplate({
       appointmentId: data.appointmentReference || data.documentId, customerName: data.customerName, appointmentDate: data.requestedDate,
       appointmentTime: data.selectedTimeSlot, deliveryAddress: address(data), productNames: data.productNames,
-      bookAppointmentUrl: safeUrl(data.sourcePage),
+      bookAppointmentUrl: appointmentSourceUrl(data.sourcePage),
     }) });
     strapi.log.info(`Try at Home cancellation email accepted by the email provider for appointment ${data.documentId}.`);
   } catch { strapi.log.error(`Try at Home cancellation email failed for appointment ${data.documentId}; the cancellation remains saved.`); }
