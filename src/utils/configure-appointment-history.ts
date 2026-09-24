@@ -4,7 +4,7 @@ import type { Core } from '@strapi/strapi';
 export async function configureAppointmentHistory(strapi: Core.Strapi) {
   const service = strapi.plugin('content-manager').service('content-types');
   for (const [uid, mainField, readonlyFields] of [
-    ['api::appointment-group.appointment-group', 'documentId', ['submissions', 'mergedInto']],
+    ['api::appointment-group.appointment-group', 'appointmentReference', ['submissions', 'mergedInto']],
     ['api::appointment-change.appointment-change', 'eventType', ['sourceGroup', 'targetGroup', 'affectedSubmissions']],
   ] as const) {
     const model = strapi.contentTypes[uid];

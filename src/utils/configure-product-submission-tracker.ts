@@ -18,7 +18,7 @@ export async function configureProductSubmissionTracker(strapi: Core.Strapi) {
     },
     appointmentGroup: {
       ...configuration.metadatas?.appointmentGroup,
-      edit: { ...configuration.metadatas?.appointmentGroup?.edit, label: 'Appointment group', mainField: 'documentId', editable: false, visible: true },
+      edit: { ...configuration.metadatas?.appointmentGroup?.edit, label: 'Appointment group', mainField: 'appointmentReference', editable: false, visible: true },
     },
     appointmentChanges: {
       ...configuration.metadatas?.appointmentChanges,

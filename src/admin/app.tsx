@@ -3,6 +3,7 @@ import type { ComponentType } from 'react';
 import { PolicySlugInput } from './components/PolicySlugInput';
 import { AppointmentDetails } from './components/AppointmentDetails';
 import { GenericSubmissionField } from './components/GenericSubmissionField';
+import { AppointmentReferenceField } from './components/AppointmentReferenceField';
 import './styles/read-only-appointment-relations.css';
 
 const CHUNK_RELOAD_KEY = 'strapi-admin-chunk-reload';
@@ -23,8 +24,17 @@ export default {
     app.addFields({ type: 'policy-slug', Component: PolicySlugInput as ComponentType });
     app.addFields({ type: 'appointment-details', Component: AppointmentDetails as ComponentType });
     app.addFields({ type: 'generic-submission-field', Component: GenericSubmissionField as ComponentType });
+    app.addFields({ type: 'appointment-reference', Component: AppointmentReferenceField as ComponentType });
   },
   bootstrap(app: { registerHook: (name: string, handler: (args: any) => any) => void }) {
+    app.registerHook('Admin/CM/pages/EditView/mutate-edit-view-layout', (args) => {
+      if (args.layout.settings?.displayName !== 'Submissions: Product') return args;
+      return { ...args, layout: { ...args.layout,
+        layout: args.layout.layout.map((panel: any[][]) => panel.map(row => row.map(field =>
+          field.name === 'appointmentReference' ? { ...field, type: 'appointment-reference' } : field,
+        ))),
+      } };
+    });
     app.registerHook('Admin/CM/pages/EditView/mutate-edit-view-layout', (args) => {
       if (args.layout.settings?.displayName !== 'Submissions: Job Opening') return args;
       const editable = new Set(['workflowStatus', 'internalNotes']);
