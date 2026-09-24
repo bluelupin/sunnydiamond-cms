@@ -13,6 +13,7 @@ import { configureBlogTagForm } from './utils/configure-blog-tag-form';
 import { configureShowroomForm } from './utils/configure-showroom-form';
 import { configureProductSubmissionTracker } from './utils/configure-product-submission-tracker';
 import { configureAppointmentHistory } from './utils/configure-appointment-history';
+import { migrateCareerApplyCta } from './utils/migrate-career-apply-cta';
 import { migrateOccasionCta } from './utils/migrate-occasion-cta';
 import { migrateSupportContactSection } from './utils/migrate-support-contact-section';
 import { migrateHomeTrialAppointments } from './utils/migrate-home-trial-appointments';
@@ -45,6 +46,7 @@ export default {
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {
     await backfillAppointmentReferences(strapi);
     await migrateOccasionCta(strapi);
+    await migrateCareerApplyCta(strapi);
     await migrateSupportContactSection(strapi);
     await configureBlogPostList(strapi);
     await configureBlogTagForm(strapi);

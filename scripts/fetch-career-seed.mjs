@@ -102,7 +102,7 @@ function structureDescription(description = '') {
 }
 
 function cleanOpening(opening) {
-  const { id, documentId, createdAt, updatedAt, publishedAt, ...data } = opening;
+  const { id, documentId, createdAt, updatedAt, publishedAt, slug, ...data } = opening;
   return {
     ...data,
     description: opening.description || null,
@@ -110,7 +110,6 @@ function cleanOpening(opening) {
     applyCta: opening.applyCta
       ? {
           label: opening.applyCta.label,
-          url: opening.applyCta.url,
           targetType: opening.applyCta.targetType,
           openInNewTab: opening.applyCta.openInNewTab,
         }
@@ -138,7 +137,7 @@ if (!response.ok) {
 const payload = await response.json();
 const openings = (payload.data || []).map(cleanOpening).sort(
   (left, right) =>
-    (left.sortOrder ?? 0) - (right.sortOrder ?? 0) || left.slug.localeCompare(right.slug)
+    (left.sortOrder ?? 0) - (right.sortOrder ?? 0) || left.jobID.localeCompare(right.jobID)
 );
 await mkdir(dirname(OUTPUT_PATH), { recursive: true });
 await writeFile(OUTPUT_PATH, `${JSON.stringify(openings, null, 2)}\n`, 'utf8');

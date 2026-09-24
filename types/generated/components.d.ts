@@ -1,5 +1,19 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
+export interface CareerApplyCta extends Struct.ComponentSchema {
+  collectionName: 'components_career_apply_ctas';
+  info: {
+    description: 'Career application button';
+    displayName: 'Apply CTA';
+  };
+  attributes: {
+    label: Schema.Attribute.String;
+    openInNewTab: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    targetType: Schema.Attribute.Enumeration<['internal', 'external', 'magento']> &
+      Schema.Attribute.DefaultTo<'internal'>;
+  };
+}
+
 export interface CareerCareerDiscoverSection extends Struct.ComponentSchema {
   collectionName: 'components_career_career_discover_sections';
   info: {
@@ -1865,6 +1879,7 @@ export interface SupportContactSection extends Struct.ComponentSchema {
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
+      'career.apply-cta': CareerApplyCta;
       'career.career-discover-section': CareerCareerDiscoverSection;
       'career.job-description': CareerJobDescription;
       'career.job-description-section': CareerJobDescriptionSection;

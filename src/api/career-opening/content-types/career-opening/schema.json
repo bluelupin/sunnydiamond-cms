@@ -15,11 +15,6 @@
     }
   },
   "attributes": {
-    "slug": {
-      "type": "uid",
-      "targetField": "title",
-      "required": true
-    },
     "title": {
       "type": "string",
       "pluginOptions": {
@@ -88,7 +83,7 @@
           "localized": true
         }
       },
-      "component": "shared.cta",
+      "component": "career.apply-cta",
       "repeatable": false
     },
     "linkedinCta": {

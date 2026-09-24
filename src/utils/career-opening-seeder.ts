@@ -30,9 +30,9 @@ export async function seedCareerOpenings(strapi: Core.Strapi) {
         : await documents.create({ locale, data } as any);
 
       await documents.publish({ documentId: document.documentId, locale } as any);
-      strapi.log.info(`${existing ? 'Updated' : 'Created'} career opening: ${opening.slug}`);
+      strapi.log.info(`${existing ? 'Updated' : 'Created'} career opening: ${opening.jobID}`);
     } catch (error) {
-      strapi.log.error(`Failed to seed career opening ${opening.slug}`, error);
+      strapi.log.error(`Failed to seed career opening ${opening.jobID}`, error);
     }
   }
 }

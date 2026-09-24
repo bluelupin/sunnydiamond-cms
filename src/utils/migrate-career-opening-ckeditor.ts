@@ -12,7 +12,7 @@ const markdown = new MarkdownIt({
 
 type CareerOpening = {
   documentId: string;
-  slug?: string | null;
+  jobID?: string | null;
   description?: string | null;
 };
 
@@ -35,13 +35,13 @@ export async function migrateCareerOpeningCkeditor(strapi: Core.Strapi) {
     const drafts = (await documents.findMany({
       locale,
       status: 'draft',
-      fields: ['slug', 'description'],
+      fields: ['jobID', 'description'],
       limit: 1000,
     } as any)) as CareerOpening[];
     const published = (await documents.findMany({
       locale,
       status: 'published',
-      fields: ['slug', 'description'],
+      fields: ['jobID', 'description'],
       limit: 1000,
     } as any)) as CareerOpening[];
     const publishedIds = new Set(published.map((opening) => opening.documentId));
@@ -59,7 +59,7 @@ export async function migrateCareerOpeningCkeditor(strapi: Core.Strapi) {
 
       const description = toCkeditorHtml(source);
       if (dryRun) {
-        strapi.log.info(`[career CKEditor dry-run] ${locale}: ${opening.slug || opening.documentId}`);
+        strapi.log.info(`[career CKEditor dry-run] ${locale}: ${opening.jobID || opening.documentId}`);
         converted += 1;
         continue;
       }
@@ -78,7 +78,7 @@ export async function migrateCareerOpeningCkeditor(strapi: Core.Strapi) {
       }
 
       converted += 1;
-      strapi.log.info(`[career CKEditor migrated] ${locale}: ${opening.slug || opening.documentId}`);
+      strapi.log.info(`[career CKEditor migrated] ${locale}: ${opening.jobID || opening.documentId}`);
     }
   }
 

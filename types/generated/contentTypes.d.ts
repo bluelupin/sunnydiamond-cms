@@ -1112,7 +1112,7 @@ export interface ApiCareerOpeningCareerOpening
     };
   };
   attributes: {
-    applyCta: Schema.Attribute.Component<'shared.cta', false> &
+    applyCta: Schema.Attribute.Component<'career.apply-cta', false> &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -1179,7 +1179,6 @@ export interface ApiCareerOpeningCareerOpening
           localized: true;
         };
       }>;
-    slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
     summary: Schema.Attribute.Text &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
