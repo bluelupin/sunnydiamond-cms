@@ -21,6 +21,28 @@ const { careerOpeningSlug, registerCareerOpeningSlug } = load('src/utils/career-
 const UID = 'api::career-opening.career-opening';
 const opening = { jobID: 'SD001', title: 'Assistant Showroom Manager', department: 'Sales', location: 'Chennai' };
 
+test('Content Manager Regenerate uses current form values and stays stable on repeated clicks', async () => {
+  const extend = load('src/extensions/content-manager/strapi-server.ts').default;
+  const service = extend({ services: { uid: () => ({ generateUIDField: async () => 'career-opening' }) } })
+    .services.uid({});
+  const params = { contentTypeUID: UID, field: 'slug', data: { ...opening, slug: 'career-opening' } };
+  assert.equal(await service.generateUIDField(params), 'sd001-assistant-showroom-manager-sales-chennai');
+  params.data.slug = await service.generateUIDField(params);
+  assert.equal(await service.generateUIDField(params), params.data.slug);
+  params.data.location = 'Mumbai';
+  assert.equal(await service.generateUIDField(params), 'sd001-assistant-showroom-manager-sales-mumbai');
+});
+
+test('Content Manager retains the original generator and service context for other UID fields', async () => {
+  const extend = load('src/extensions/content-manager/strapi-server.ts').default;
+  const service = extend({ services: { uid: () => ({
+    marker: 'original',
+    async generateUIDField(params) { return this.marker + ':' + params.field; },
+  }) } }).services.uid({});
+  assert.equal(await service.generateUIDField({ contentTypeUID: 'api::blog-post.blog-post', field: 'slug' }), 'original:slug');
+  assert.equal(await service.generateUIDField({ contentTypeUID: UID, field: 'anotherField' }), 'original:anotherField');
+});
+
 function harness(current = opening) {
   let middleware;
   const queries = [];

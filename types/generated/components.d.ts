@@ -9,7 +9,9 @@ export interface CareerApplyCta extends Struct.ComponentSchema {
   attributes: {
     label: Schema.Attribute.String;
     openInNewTab: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
-    targetType: Schema.Attribute.Enumeration<['internal', 'external', 'magento']> &
+    targetType: Schema.Attribute.Enumeration<
+      ['internal', 'external', 'magento']
+    > &
       Schema.Attribute.DefaultTo<'internal'>;
   };
 }
