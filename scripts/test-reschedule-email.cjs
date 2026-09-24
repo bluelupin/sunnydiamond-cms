@@ -125,9 +125,9 @@ test('group appointment changes register exactly one email after updating multip
     const rows = [1, 2].map(id => ({ id, documentId: `product-${id}`, magentoCustomerId: 7,
       formTag: 'try-at-home', customerEmail: data.customerEmail, customerName: data.customerName,
       workflowStatus: 'Scheduled', appointmentGroup: { documentId: 'group-1' } }));
-    const group = { documentId: 'group-1', magentoCustomerId: 7, workflowStatus: 'Scheduled',
+    const group = { documentId: 'group-1', appointmentReference: 'TAH-2026-000034', magentoCustomerId: 7, workflowStatus: 'Scheduled',
       requestedDate: data.previousDate, selectedTimeSlot: data.previousTimeSlot };
-    const target = { ...group, documentId: 'group-2', requestedDate: data.requestedDate, selectedTimeSlot: data.selectedTimeSlot,
+    const target = { ...group, documentId: 'group-2', appointmentReference: 'TAH-2026-000035', requestedDate: data.requestedDate, selectedTimeSlot: data.selectedTimeSlot,
       activeScheduleKey: load('src/utils/home-trial-group-key.ts').homeTrialScheduleKey(
         7, data.requestedDate, data.selectedTimeSlot, group) };
     const updates = [];
@@ -156,7 +156,15 @@ test('group appointment changes register exactly one email after updating multip
     assert.equal(harness.callbacks.length, shouldSend ? 1 : 0, scenario);
     await harness.commit();
     assert.equal(strapi.sent.length, shouldSend ? 1 : 0, scenario);
-    if (shouldSend) assert.equal(updates.filter(update => update.uid.includes('product-submission')).length, 2);
+    if (shouldSend) {
+      const products = updates.filter(update => update.uid.includes('product-submission'));
+      assert.equal(products.length, 2);
+      const expected = scenario === 'merge' ? target : group;
+      assert.ok(strapi.sent[0].html.includes(expected.appointmentReference));
+      for (const product of products) {
+        assert.equal(product.data.appointmentReference, expected.appointmentReference ?? expected.documentId);
+      }
+    }
   }
 });
 

@@ -2481,8 +2481,7 @@ export interface ApiProductSubmissionProductSubmission
     > &
       Schema.Attribute.Private;
     appointmentReference: Schema.Attribute.String &
-      Schema.Attribute.Private &
-      Schema.Attribute.Unique;
+      Schema.Attribute.Private;
     city: Schema.Attribute.String;
     consentAccepted: Schema.Attribute.Boolean &
       Schema.Attribute.DefaultTo<false>;

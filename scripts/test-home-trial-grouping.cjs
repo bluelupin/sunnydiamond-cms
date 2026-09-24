@@ -56,6 +56,10 @@ test('matching addresses join; every different address field creates a separate 
   const first = await submit(strapi, input);
   const same = await submit(strapi, { ...input, addressLine1: '  12  MAIN road ', city: 'KOCHI' });
   assert.equal(same.groupDocumentId, first.groupDocumentId);
+  assert.match(first.appointmentReference, /^TAH-\d{4}-\d{6}$/);
+  assert.equal(first.entity.appointmentReference, first.appointmentReference);
+  assert.equal(same.entity.appointmentReference, first.appointmentReference);
+  assert.equal(same.entity.appointmentReference, same.appointmentReference);
   for (const field of ['addressLine1', 'addressLine2', 'city', 'pincode', 'state']) {
     const different = await submit(strapi, { ...input, [field]: 'different' });
     assert.notEqual(different.groupDocumentId, first.groupDocumentId, field);

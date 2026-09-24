@@ -45,6 +45,7 @@ export async function createHomeTrialSubmission(strapi: any, data: any) {
           ...data,
           ...(firstProduct ? customerContactDetails(firstProduct) : {}),
           appointmentGroup: group.documentId,
+          appointmentReference: group.appointmentReference ?? group.documentId,
           requestedDate: group.requestedDate, selectedTimeSlot: group.selectedTimeSlot,
           workflowStatus: group.workflowStatus,
           addressLine1: group.addressLine1 ?? null, addressLine2: group.addressLine2 ?? null,

@@ -116,8 +116,9 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
         }
         for (const row of affected) {
           await strapi.documents(PRODUCT).update({ documentId: row.documentId, data:
-            action === 'cancel' ? { workflowStatus: 'Cancelled' }
-              : { ...canonical(target), appointmentGroup: target.documentId, ...groupCustomerDetails, ...noteChanges },
+            action === 'cancel' ? { workflowStatus: 'Cancelled', appointmentReference: target.appointmentReference ?? target.documentId }
+              : { ...canonical(target), appointmentGroup: target.documentId, ...groupCustomerDetails, ...noteChanges,
+                appointmentReference: target.appointmentReference ?? target.documentId },
           });
         }
         await strapi.documents(CHANGE).create({ data: {

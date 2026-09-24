@@ -29,4 +29,22 @@ export async function backfillAppointmentReferences(strapi: Core.Strapi) {
   if (groups.length || storeVisits.length) {
     strapi.log.info(`Appointment references backfilled: ${groups.length} Try at Home, ${storeVisits.length} showroom visits.`);
   }
+  await syncHomeTrialSubmissionReferences(strapi);
+}
+
+/** Repair the display copy from the canonical group; do not regenerate IDs already sent by email. */
+export async function syncHomeTrialSubmissionReferences(strapi: Core.Strapi) {
+  const submissions = await strapi.db.query(PRODUCT).findMany({
+    where: { formTag: { $in: ['try-at-home', 'try-at-home-form'] } },
+    select: ['id', 'appointmentReference'],
+    populate: { appointmentGroup: { select: ['documentId', 'appointmentReference'] } },
+  });
+  for (const submission of submissions) {
+    const group = submission.appointmentGroup;
+    if (!group) continue;
+    const appointmentReference = group.appointmentReference ?? group.documentId;
+    if (submission.appointmentReference === appointmentReference) continue;
+    // A reference-only repair must not send notifications or alter scheduling/history.
+    await strapi.db.query(PRODUCT).update({ where: { id: submission.id }, data: { appointmentReference } });
+  }
 }

@@ -44,7 +44,6 @@
     },
     "appointmentReference": {
       "type": "string",
-      "unique": true,
       "private": true
     },
     "rescheduleHistory": {
