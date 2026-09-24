@@ -1179,6 +1179,7 @@ export interface ApiCareerOpeningCareerOpening
           localized: true;
         };
       }>;
+    slug: Schema.Attribute.UID;
     summary: Schema.Attribute.Text &
       Schema.Attribute.SetPluginOptions<{
         i18n: {

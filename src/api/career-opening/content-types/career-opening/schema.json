@@ -15,6 +15,9 @@
     }
   },
   "attributes": {
+    "slug": {
+      "type": "uid"
+    },
     "title": {
       "type": "string",
       "pluginOptions": {

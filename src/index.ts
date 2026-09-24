@@ -21,6 +21,7 @@ import { registerReachOutSubmissionProtection } from './utils/protect-reach-out-
 import { registerAdminRescheduleEmail } from './utils/appointment-reschedule-email';
 import { registerCareerSubmissionProtection } from './utils/protect-career-submissions';
 import { backfillAppointmentReferences } from './utils/appointment-reference';
+import { registerCareerOpeningSlug } from './utils/career-opening-slug';
 // import { cleanStaleAdminPermissions } from './utils/clean-stale-admin-permissions';
 
 export default {
@@ -31,6 +32,7 @@ export default {
    * This gives you an opportunity to extend code.
    */
   register({ strapi }: { strapi: Core.Strapi }) {
+    registerCareerOpeningSlug(strapi);
     registerReachOutSubmissionProtection(strapi);
     registerAdminRescheduleEmail(strapi);
     registerCareerSubmissionProtection(strapi);
