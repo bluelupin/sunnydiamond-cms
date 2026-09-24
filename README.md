@@ -52,6 +52,41 @@ CDN_URL=https://your-cloudfront-domain.cloudfront.net
 CDN_ROOT_PATH=uploads
 ```
 
+## Resume autofill API
+
+Set `RESUME_PARSER_ENABLED=true` and `OPENAI_API_KEY` on the server. Optional
+`OPENAI_RESUME_MODEL` defaults to `gpt-4.1-mini`. Use Node 22.13+ and the
+installed `@napi-rs/canvas` native package. OCR uses bundled English data.
+Allow two minutes for this route at the reverse proxy; measure memory with
+large sample resumes before enabling in production.
+
+`POST /api/careers/parse-resume` accepts `multipart/form-data`
+with exactly one `resume` file (PDF, DOCX, JPEG or PNG; maximum 5 MiB). It
+returns suggested application fields in `data`, with `meta.ocrUsed`,
+`meta.warnings`, and `meta.missingFields`. Unknown scalar fields are `null`.
+Applicants should review suggestions before submitting the existing job form.
+Parsing creates no application record and sends only extracted text to OpenAI.
+The parsed `data` contains `fullName`, `phoneNo`, `emailId`,
+`educationDetails: [{ institutionName, degree, areaOfStudy, completionYear }]` (newest year first),
+`workExperience: { relevantWorkExp, currentCompany, currentJobTitle, positions }`, and
+`skillsAndLanguages`. The submit endpoint uses different legacy field names,
+so the form must map reviewed suggestions into its submit payload.
+For resumes with dated roles, `currentCompany` and `currentJobTitle` contain the
+most recent listed role. `positions` contains every listed role, newest first,
+as `{ company, jobTitle, startDate, endDate }`. `relevantWorkExp` can be calculated
+from non-overlapping listed date ranges. Future dates are preserved and flagged in `meta.warnings`
+for applicant review. Education titles are returned as printed beneath their
+institutions, even if the source uses an unusual label.
+If a listed job is absent from the model response, the parser reviews the work
+section once more. It then recovers roles from readable source text when possible
+and adds a warning; unresolved omissions appear in `meta.missingFields`.
+
+```bash
+curl -F "resume=@resume.pdf" https://your-cms.example/api/careers/parse-resume
+```
+
+Run OCR smoke tests: `node --test scripts/resume-extract.test.mjs`.
+
 ## Scripts
 
 Start Strapi in development:

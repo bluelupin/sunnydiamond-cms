@@ -30,6 +30,7 @@ const config: Core.Config.Middlewares = [
   'strapi::cors',
   'strapi::poweredBy',
   'strapi::query',
+  'global::resume-parser-admission',
   {
     name: 'strapi::body',
     config: {
