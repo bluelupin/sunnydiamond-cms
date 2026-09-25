@@ -2728,6 +2728,37 @@ export interface ApiSizeGuideSizeGuide extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiSkillAndLanguageSkillAndLanguage
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'skills_and_languages';
+  info: {
+    displayName: 'Skills and Language';
+    pluralName: 'skills-and-languages';
+    singularName: 'skill-and-language';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    label: Schema.Attribute.String & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::skill-and-language.skill-and-language'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    type: Schema.Attribute.Enumeration<['Skill', 'Language']> &
+      Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiStateState extends Struct.CollectionTypeSchema {
   collectionName: 'states';
   info: {
@@ -3493,6 +3524,7 @@ declare module '@strapi/strapi' {
       'api::saved-creation.saved-creation': ApiSavedCreationSavedCreation;
       'api::showroom.showroom': ApiShowroomShowroom;
       'api::size-guide.size-guide': ApiSizeGuideSizeGuide;
+      'api::skill-and-language.skill-and-language': ApiSkillAndLanguageSkillAndLanguage;
       'api::state.state': ApiStateState;
       'api::store-locator-page.store-locator-page': ApiStoreLocatorPageStoreLocatorPage;
       'api::submissions-job-opening.submissions-job-opening': ApiSubmissionsJobOpeningSubmissionsJobOpening;
