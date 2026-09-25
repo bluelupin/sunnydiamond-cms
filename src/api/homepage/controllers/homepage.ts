@@ -89,7 +89,7 @@ const processStepPopulate = {
 };
 
 const occasionSectionPopulate = {
-  fields: ['sectionTitle'],
+  fields: ['sectionTitle', 'showField'],
   populate: {
     occasions: occasionPopulate,
   },
