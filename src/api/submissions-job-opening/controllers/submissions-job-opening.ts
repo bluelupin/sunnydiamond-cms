@@ -9,15 +9,11 @@ import { sendCareerApplicationReceivedEmail } from '../../../utils/career-applic
 const UID = 'api::submissions-job-opening.submissions-job-opening';
 const CAREER_OPENING_UID = 'api::career-opening.career-opening';
 const MAX_RESUME_BYTES = 5 * 1024 * 1024;
-const ALLOWED_RESUME_MIME_TYPES = new Set([
-  'application/pdf',
-  'application/msword',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'application/zip',
-  'application/x-zip-compressed',
-  'image/jpeg',
-  'image/png',
-]);
+const ALLOWED_RESUME_MIME_TYPES: Record<string, readonly string[]> = {
+  pdf: ['application/pdf'],
+  doc: ['application/msword'],
+  docx: ['application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/zip', 'application/x-zip-compressed'],
+};
 
 const stringOrUndefined = (value: unknown) => {
   if (typeof value !== 'string') return undefined;
@@ -156,9 +152,10 @@ export default factories.createCoreController(UID, ({ strapi }) => ({
     if (!resume) return ctx.badRequest('resume is required.');
 
     const mime = resume.mimetype ?? resume.type;
-    if (!ALLOWED_RESUME_MIME_TYPES.has(mime)) {
+    const extension = String(resume.originalFilename ?? '').split('.').pop()?.toLowerCase() ?? '';
+    if (!ALLOWED_RESUME_MIME_TYPES[extension]?.includes(mime)) {
       return ctx.badRequest(
-        'resume must be PDF, ZIP, JPEG, or PNG.'
+        'resume must be PDF, DOC, or DOCX.'
       );
     }
     if (resume.size && resume.size > MAX_RESUME_BYTES) {
