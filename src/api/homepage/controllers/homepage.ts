@@ -362,6 +362,22 @@ const attachOccasionsAndShowrooms = async (
 };
 
 export default factories.createCoreController(HOMEPAGE_UID as any, ({ strapi }) => ({
+  async find(ctx) {
+    // Expand the shallow wildcard while preserving explicitly requested populates.
+    if (ctx.query.populate === '*') {
+      ctx.query = {
+        ...ctx.query,
+        populate: {
+          ...homepageShellPopulate,
+          ...homepageSectionsPopulate,
+          localizations: true,
+        },
+      };
+    }
+
+    return super.find(ctx);
+  },
+
   async shell(ctx) {
     const locale = requestLocale(ctx);
     const [globalConfig, homepage] = await Promise.all([
