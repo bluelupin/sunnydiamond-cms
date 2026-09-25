@@ -1,0 +1,21 @@
+{
+  "kind": "collectionType",
+  "collectionName": "skills_and_languages",
+  "info": {
+    "singularName": "skill-and-language",
+    "pluralName": "skills-and-languages",
+    "displayName": "Skills and Language"
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": ["Skill", "Language"],
+      "required": true
+    }
+  }
+}
