@@ -53,6 +53,36 @@
     },
     "cancelButtonLabel": {
       "type": "string"
+    },
+    "minMonthly": {
+      "type": "integer",
+      "min": 1,
+      "max": 1000000
+    },
+    "maxMonthly": {
+      "type": "integer",
+      "min": 1,
+      "max": 1000000
+    },
+    "step": {
+      "type": "integer",
+      "min": 1,
+      "max": 1000000
+    },
+    "defaultMonthly": {
+      "type": "integer",
+      "min": 1,
+      "max": 1000000
+    },
+    "monthsPaid": {
+      "type": "integer",
+      "min": 1,
+      "max": 36
+    },
+    "totalMonths": {
+      "type": "integer",
+      "min": 1,
+      "max": 36
     }
   }
 }

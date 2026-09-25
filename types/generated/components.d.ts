@@ -131,16 +131,64 @@ export interface DiamondsForEveryoneInvestmentPlannerSection
     backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
     buttonLabel: Schema.Attribute.String;
     cancelButtonLabel: Schema.Attribute.String;
+    defaultMonthly: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 1000000;
+          min: 1;
+        },
+        number
+      >;
     description: Schema.Attribute.Text;
     image: Schema.Attribute.Component<'shared.image-asset', false>;
+    maxMonthly: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 1000000;
+          min: 1;
+        },
+        number
+      >;
+    minMonthly: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 1000000;
+          min: 1;
+        },
+        number
+      >;
     monthlySummary: Schema.Attribute.Text;
+    monthsPaid: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 36;
+          min: 1;
+        },
+        number
+      >;
     openAccountButtonLabel: Schema.Attribute.String;
     showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    step: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 1000000;
+          min: 1;
+        },
+        number
+      >;
     stepperSteps: Schema.Attribute.Component<
       'diamonds-for-everyone.stepper-step',
       true
     >;
     title: Schema.Attribute.String & Schema.Attribute.Required;
+    totalMonths: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 36;
+          min: 1;
+        },
+        number
+      >;
   };
 }
 
