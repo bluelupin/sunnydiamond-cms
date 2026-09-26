@@ -1,0 +1,86 @@
+{
+  "kind": "collectionType",
+  "collectionName": "showrooms",
+  "info": {
+    "singularName": "showroom",
+    "pluralName": "showrooms",
+    "displayName": "Showroom"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "slug": {
+      "type": "uid",
+      "targetField": "city",
+      "required": true
+    },
+    "address": {
+      "type": "richtext",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "city": {
+      "type": "string",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "state": {
+      "type": "string",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "pincode": {
+      "type": "string",
+      "required": true
+    },
+    "phone": {
+      "type": "string"
+    },
+    "email": {
+      "type": "email"
+    },
+    "mapUrl": {
+      "type": "string",
+      "required": true
+    },
+    "openingHours": {
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "image": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

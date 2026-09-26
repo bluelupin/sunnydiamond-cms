@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_shared_openings_career_sections",
+  "info": {
+    "displayName": "Openings Career Section"
+  },
+  "options": {},
+  "attributes": {
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
+    "OpeningTitle": {
+      "type": "string"
+    },
+    "OpeningDescription": {
+      "type": "string"
+    },
+    "career_openings": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::career-opening.career-opening"
+    },
+    "CtaLable": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

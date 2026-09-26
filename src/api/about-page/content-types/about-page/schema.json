@@ -1,0 +1,119 @@
+{
+  "kind": "singleType",
+  "collectionName": "about_pages",
+  "info": {
+    "singularName": "about-page",
+    "pluralName": "about-pages",
+    "displayName": "About Page"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "hero": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.hero-section",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "brillianceSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.brilliance-section",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "legacySection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.legacy-section",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "teamSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.team-section",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "craftSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.craft-section",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "craftMosaicSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.craft-mosaic-section",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "timelineSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.timeline-section",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "trustBadgesSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.trust-badges-section",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "brandTaglineSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.brand-tagline-section",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    }
+  }
+}

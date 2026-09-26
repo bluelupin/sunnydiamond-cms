@@ -122,10 +122,17 @@ coverage
 ############################
 
 .env
+google_mailer_token.json
+google_mailer_credentials.json
 license.txt
 exports
+build
 .strapi
 dist
-build
 .strapi-updater.json
 .strapi-cloud.json
+crawled.md
+docs/adr/ADR-001-programmatic-seeding-strategy.md
+docs/adr/0001-responsive-image-assets.md
+AGENTS.md
+docs/adr/0002-homepage-section-components.md

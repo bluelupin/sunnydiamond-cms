@@ -1,0 +1,29 @@
+{
+  "collectionName": "components_shared_cert_lab_card_subs",
+  "info": {
+    "displayName": "Cert Lab Card",
+    "description": "Individual grading laboratory information block"
+  },
+  "options": {},
+  "attributes": {
+    "labName": {
+      "type": "string",
+      "required": true
+    },
+    "labLogo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset"
+    },
+    "labDescription": {
+      "type": "text",
+      "required": true
+    },
+    "ctaButtonLabel": {
+      "type": "string"
+    },
+    "ctaButtonUrl": {
+      "type": "string"
+    }
+  }
+}

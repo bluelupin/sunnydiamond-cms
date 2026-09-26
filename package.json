@@ -3,8 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "description": "A Strapi application",
+  "workspaces": [
+    "./src/plugins/strapi-plugin-ckeditor"
+  ],
   "scripts": {
-    "build": "strapi build",
+    "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
+    "build": "npm run clean && strapi build",
+    "generate:blog-seed": "node scripts/fetch-blog-seed.mjs",
+    "generate:career-seed": "node scripts/fetch-career-seed.mjs",
     "console": "strapi console",
     "deploy": "strapi deploy",
     "dev": "strapi develop",
@@ -15,23 +21,39 @@
     "upgrade:dry": "npx @strapi/upgrade latest --dry"
   },
   "dependencies": {
+    "@ckeditor/strapi-plugin-ckeditor": "^1.1.2",
+    "@napi-rs/canvas": "^1.0.9",
+    "@sindresorhus/slugify": "1.1.0",
     "@strapi/plugin-cloud": "5.46.0",
     "@strapi/plugin-users-permissions": "5.46.0",
+    "@strapi/provider-upload-aws-s3": "5.46.0",
     "@strapi/strapi": "5.46.0",
+    "@tesseract.js-data/eng": "^1.0.0",
+    "googleapis": "^181.0.0",
+    "image-size": "^2.0.4",
+    "mammoth": "^1.12.3",
+    "markdown-it": "14.1.1",
     "mysql2": "3.20.0",
+    "nodemailer": "^10.0.10",
+    "openai": "^7.23.0",
+    "pdfjs-dist": "^6.3.289",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.0.0",
-    "styled-components": "^6.0.0"
+    "strapi-provider-email-google-mail": "file:providers/gmail",
+    "styled-components": "^6.0.0",
+    "tesseract.js": "^7.0.0",
+    "yauzl": "^3.4.0"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "jszip": "^3.10.2",
     "typescript": "^5"
   },
   "engines": {
-    "node": ">=20.0.0 <=24.x.x",
+    "node": ">=22.13.0 <=24.x.x",
     "npm": ">=6.0.0"
   },
   "strapi": {

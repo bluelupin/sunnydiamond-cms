@@ -440,6 +440,2547 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiAboutPageAboutPage extends Struct.SingleTypeSchema {
+  collectionName: 'about_pages';
+  info: {
+    displayName: 'About Page';
+    pluralName: 'about-pages';
+    singularName: 'about-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    brandTaglineSection: Schema.Attribute.Component<
+      'shared.brand-tagline-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    brillianceSection: Schema.Attribute.Component<
+      'shared.brilliance-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    craftMosaicSection: Schema.Attribute.Component<
+      'shared.craft-mosaic-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    craftSection: Schema.Attribute.Component<'shared.craft-section', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    hero: Schema.Attribute.Component<'shared.hero-section', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    legacySection: Schema.Attribute.Component<'shared.legacy-section', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::about-page.about-page'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    teamSection: Schema.Attribute.Component<'shared.team-section', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    timelineSection: Schema.Attribute.Component<
+      'shared.timeline-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    trustBadgesSection: Schema.Attribute.Component<
+      'shared.trust-badges-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiAppointmentChangeAppointmentChange
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'appointment_changes';
+  info: {
+    displayName: 'Appointment Change Logs';
+    pluralName: 'appointment-changes';
+    singularName: 'appointment-change';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    actorType: Schema.Attribute.Enumeration<
+      ['Customer', 'Admin', 'Migration']
+    > &
+      Schema.Attribute.DefaultTo<'Customer'>;
+    affectedSubmissions: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::product-submission.product-submission'
+    >;
+    changedAt: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    eventType: Schema.Attribute.Enumeration<['Rescheduled', 'Cancelled']> &
+      Schema.Attribute.Required;
+    legacyMigrationKey: Schema.Attribute.String &
+      Schema.Attribute.Private &
+      Schema.Attribute.Unique &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 64;
+      }>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::appointment-change.appointment-change'
+    > &
+      Schema.Attribute.Private;
+    magentoCustomerId: Schema.Attribute.Integer & Schema.Attribute.Private;
+    newData: Schema.Attribute.JSON & Schema.Attribute.Required;
+    previousData: Schema.Attribute.JSON & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    sourceGroup: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::appointment-group.appointment-group'
+    >;
+    targetGroup: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::appointment-group.appointment-group'
+    >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiAppointmentGroupAppointmentGroup
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'appointment_groups';
+  info: {
+    displayName: 'Appointment Groups';
+    pluralName: 'appointment-groups';
+    singularName: 'appointment-group';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: false;
+    };
+  };
+  attributes: {
+    activeScheduleKey: Schema.Attribute.String &
+      Schema.Attribute.Private &
+      Schema.Attribute.Unique &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 64;
+      }>;
+    addressLine1: Schema.Attribute.String;
+    addressLine2: Schema.Attribute.String;
+    appointmentReference: Schema.Attribute.String &
+      Schema.Attribute.Private &
+      Schema.Attribute.Unique;
+    city: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::appointment-group.appointment-group'
+    > &
+      Schema.Attribute.Private;
+    magentoCustomerId: Schema.Attribute.Integer & Schema.Attribute.Private;
+    mergedInto: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::appointment-group.appointment-group'
+    >;
+    pincode: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    reminderSentForDate: Schema.Attribute.Date & Schema.Attribute.Private;
+    requestedDate: Schema.Attribute.Date;
+    selectedTimeSlot: Schema.Attribute.String;
+    state: Schema.Attribute.Relation<'manyToOne', 'api::state.state'>;
+    submissions: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::product-submission.product-submission'
+    >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    workflowStatus: Schema.Attribute.Enumeration<
+      ['New', 'Contacted', 'Scheduled', 'Visited', 'Closed', 'Cancelled']
+    > &
+      Schema.Attribute.DefaultTo<'New'>;
+  };
+}
+
+export interface ApiBespokeSubmissionBespokeSubmission
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'bespoke_submissions';
+  info: {
+    displayName: 'Submissions: Bespoke Custom Design';
+    pluralName: 'bespoke-submissions';
+    singularName: 'bespoke-submission';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    designVision: Schema.Attribute.Text & Schema.Attribute.Required;
+    email: Schema.Attribute.Email & Schema.Attribute.Required;
+    fullName: Schema.Attribute.String & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::bespoke-submission.bespoke-submission'
+    > &
+      Schema.Attribute.Private;
+    phone: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    referenceImage: Schema.Attribute.Media<'images'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiBlogCategoryBlogCategory
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'blog_categories';
+  info: {
+    displayName: 'Blog category';
+    pluralName: 'blog-categories';
+    singularName: 'blog-category';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::blog-category.blog-category'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    Value: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+  };
+}
+
+export interface ApiBlogLandingPageBlogLandingPage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'blog_landing_pages';
+  info: {
+    displayName: 'Blogs Landing Page';
+    pluralName: 'blog-landing-pages';
+    singularName: 'blog-landing-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    featuredBlogSection: Schema.Attribute.Component<
+      'shared.featured-blog-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    heroSection: Schema.Attribute.Component<'shared.blog-page-hero', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::blog-landing-page.blog-landing-page'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiBlogPostBlogPost extends Struct.CollectionTypeSchema {
+  collectionName: 'blog_posts';
+  info: {
+    displayName: 'Blog Post';
+    pluralName: 'blog-posts';
+    singularName: 'blog-post';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    authorName: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    blog_category: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::blog-category.blog-category'
+    >;
+    blogTags: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::blog-tag.blog-tag'
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    body: Schema.Attribute.RichText &
+      Schema.Attribute.CustomField<
+        'plugin::ckeditor.CKEditor',
+        {
+          blogEditing: true;
+          helpText: 'Table of content should be in h2 tag.';
+          output: 'HTML';
+          preset: 'standard';
+        }
+      > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    coverImage: Schema.Attribute.Component<'shared.image-asset', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    cutoutImage: Schema.Attribute.Component<'shared.image-asset', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    excerpt: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    heroImage: Schema.Attribute.Component<'shared.image-asset', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::blog-post.blog-post'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    publishedDate: Schema.Attribute.Date;
+    seo: Schema.Attribute.Component<'shared.seo', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
+    tags: Schema.Attribute.Component<'shared.tag', true> &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
+        i18n: {
+          localized: true;
+        };
+      }>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiBlogTagBlogTag extends Struct.CollectionTypeSchema {
+  collectionName: 'blog_tags';
+  info: {
+    description: 'Reusable tags for finding related blogs';
+    displayName: 'Blog Tag';
+    pluralName: 'blog-tags';
+    singularName: 'blog-tag';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    label: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 255;
+      }>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::blog-tag.blog-tag'
+    > &
+      Schema.Attribute.Private;
+    normalizedLabel: Schema.Attribute.String &
+      Schema.Attribute.Private &
+      Schema.Attribute.Unique &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
+        'content-type-builder': {
+          visible: false;
+        };
+      }>;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiCareerLandingPageCareerLandingPage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'job_landing_pages';
+  info: {
+    displayName: 'Career Landing Page';
+    pluralName: 'career-landing-pages';
+    singularName: 'career-landing-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    discoverSection: Schema.Attribute.Component<
+      'career.career-discover-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    FAQs: Schema.Attribute.Component<'shared.faq-section', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    heroSection: Schema.Attribute.Component<
+      'shared.career-hero-section',
+      false
+    >;
+    investingSection: Schema.Attribute.Component<
+      'shared.investing-career-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::career-landing-page.career-landing-page'
+    >;
+    moreThanSection: Schema.Attribute.Component<
+      'shared.more-than-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    openingsSection: Schema.Attribute.Component<
+      'shared.openings-career-section',
+      false
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    SEO: Schema.Attribute.Component<'shared.seo', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiCareerListingPageCareerListingPage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'career_listing_pages';
+  info: {
+    displayName: 'Career Listing Page';
+    pluralName: 'career-listing-pages';
+    singularName: 'career-listing-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    featuredTitle: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    filterSection: Schema.Attribute.Component<
+      'shared.listing-filter-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    heroSection: Schema.Attribute.Component<
+      'shared.listing-hero-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::career-listing-page.career-listing-page'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    SEO: Schema.Attribute.Component<'shared.seo', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiCareerOpeningCareerOpening
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'career_openings';
+  info: {
+    displayName: 'Career Openings';
+    pluralName: 'career-openings';
+    singularName: 'career-opening';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    applyCta: Schema.Attribute.Component<'career.apply-cta', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    department: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    employmentType: Schema.Attribute.Enumeration<
+      ['Full Time', 'Part Time', 'Contract', 'Internship']
+    > &
+      Schema.Attribute.DefaultTo<'Full Time'>;
+    experience: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    jobDescription: Schema.Attribute.Component<
+      'career.job-description',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    jobID: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    linkedinCta: Schema.Attribute.Component<'shared.cta', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::career-opening.career-opening'
+    >;
+    location: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    slug: Schema.Attribute.UID;
+    summary: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiContactBespokePageContactBespokePage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'contact_bespoke_pages';
+  info: {
+    displayName: 'Bespoke Page';
+    pluralName: 'contact-bespoke-pages';
+    singularName: 'contact-bespoke-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    customDesignForm: Schema.Attribute.Component<
+      'shared.bespoke-custom-design-form',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    featuredStoriesSection: Schema.Attribute.Component<
+      'shared.featured-stories-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    getInTouchSection: Schema.Attribute.Component<
+      'shared.bespoke-get-in-touch-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    hero: Schema.Attribute.Component<'shared.bespoke-hero', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::contact-bespoke-page.contact-bespoke-page'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    serviceHighlights: Schema.Attribute.Component<
+      'shared.bespoke-service-highlight',
+      true
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    visionSection: Schema.Attribute.Component<
+      'shared.bespoke-vision-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+  };
+}
+
+export interface ApiContactPageContactPage extends Struct.SingleTypeSchema {
+  collectionName: 'contact_pages';
+  info: {
+    description: 'Section-wise content for the Contact Us page';
+    displayName: 'Contact Us Page';
+    pluralName: 'contact-pages';
+    singularName: 'contact-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    contactSection: Schema.Attribute.Component<
+      'shared.contact-support-section',
+      false
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    formSection: Schema.Attribute.Component<
+      'shared.generic-form-section',
+      false
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    heroSection: Schema.Attribute.Component<'shared.hero-section', false> &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    introText: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::contact-page.contact-page'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    visitSection: Schema.Attribute.Component<'shared.showroom-section', false> &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+  };
+}
+
+export interface ApiDiamondsForEveryonePageDiamondsForEveryonePage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'diamonds_for_everyone_pages';
+  info: {
+    description: 'Section-wise content for the Diamonds for Everyone landing page';
+    displayName: 'Diamonds for Everyone Page';
+    pluralName: 'diamonds-for-everyone-pages';
+    singularName: 'diamonds-for-everyone-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    benefitsSection: Schema.Attribute.Component<
+      'shared.diamonds-for-everyone-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    faqSection: Schema.Attribute.Component<'shared.faq-section', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    heroSection: Schema.Attribute.Component<
+      'diamonds-for-everyone.hero-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    investmentPlannerSection: Schema.Attribute.Component<
+      'diamonds-for-everyone.investment-planner-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::diamonds-for-everyone-page.diamonds-for-everyone-page'
+    >;
+    planIntroSection: Schema.Attribute.Component<
+      'diamonds-for-everyone.plan-intro-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    successScreen: Schema.Attribute.Component<
+      'diamonds-for-everyone.success-screen',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiEditorialCollectionEditorialCollection
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'editorial_collections';
+  info: {
+    displayName: 'Editorial Collection';
+    pluralName: 'editorial-collections';
+    singularName: 'editorial-collection';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    cta: Schema.Attribute.Component<'shared.cta', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    description: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    featuredProductSku: Schema.Attribute.String;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::editorial-collection.editorial-collection'
+    >;
+    productSkus: Schema.Attribute.Component<'shared.product-sku', true>;
+    publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiFeaturedStoryFeaturedStory
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'featured_stories';
+  info: {
+    description: 'Story detail pages referenced by Featured Stories sections';
+    displayName: 'Featured Story';
+    pluralName: 'featured-stories';
+    singularName: 'featured-story';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    coverImage: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    cta: Schema.Attribute.Component<'shared.cta', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    description: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    gallery: Schema.Attribute.Media<'images', true>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::featured-story.featured-story'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiGenericFormGenericForm extends Struct.CollectionTypeSchema {
+  collectionName: 'generic_forms';
+  info: {
+    displayName: 'Builder: Generic Forms';
+    pluralName: 'generic-forms';
+    singularName: 'generic-form';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    availableTimeSlots: Schema.Attribute.Component<'shared.time-slot', true>;
+    consentLabel: Schema.Attribute.RichText &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    dynamicFields: Schema.Attribute.Component<'shared.form-field', true> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    formName: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    formTag: Schema.Attribute.UID<'formName'> & Schema.Attribute.Required;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::generic-form.generic-form'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    requiresConsent: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
+    showrooms: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::showroom.showroom'
+    >;
+    submitButtonText: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Schema.Attribute.DefaultTo<'SUBMIT'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiGenericSubmissionGenericSubmission
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'generic_submissions';
+  info: {
+    displayName: 'Submissions: Generic';
+    pluralName: 'generic-submissions';
+    singularName: 'generic-submission';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    consentAccepted: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    email: Schema.Attribute.Email;
+    formTag: Schema.Attribute.String & Schema.Attribute.Required;
+    fullName: Schema.Attribute.String & Schema.Attribute.Required;
+    internalNotes: Schema.Attribute.Text;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::generic-submission.generic-submission'
+    > &
+      Schema.Attribute.Private;
+    notes: Schema.Attribute.Text;
+    phone: Schema.Attribute.String;
+    preferredDate: Schema.Attribute.Date;
+    preferredShowroom: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::showroom.showroom'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    reasonForContact: Schema.Attribute.String;
+    selectedTimeSlot: Schema.Attribute.String;
+    sourcePage: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    workflowStatus: Schema.Attribute.Enumeration<
+      ['New', 'Contacted', 'Closed']
+    > &
+      Schema.Attribute.DefaultTo<'New'>;
+  };
+}
+
+export interface ApiGiftingPageGiftingPage extends Struct.SingleTypeSchema {
+  collectionName: 'gifting_pages';
+  info: {
+    description: 'Section-wise content for the gifting landing page';
+    displayName: 'Gifting Page';
+    pluralName: 'gifting-pages';
+    singularName: 'gifting-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    finishingTouchSection: Schema.Attribute.Component<
+      'gifting.finishing-touch-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    giftCardSection: Schema.Attribute.Component<
+      'gifting.gift-card-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    giftFinderSection: Schema.Attribute.Component<
+      'gifting.gift-finder-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    heroSection: Schema.Attribute.Component<'gifting.hero-section', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    introSection: Schema.Attribute.Component<'gifting.intro-section', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::gifting-page.gifting-page'
+    >;
+    occasionGridSection: Schema.Attribute.Component<
+      'gifting.occasion-grid-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    perfectGiftSection: Schema.Attribute.Component<
+      'gifting.perfect-gift-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    trustBadgesSection: Schema.Attribute.Component<
+      'shared.trust-badges-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiGlobalConfigGlobalConfig extends Struct.SingleTypeSchema {
+  collectionName: 'global_configs';
+  info: {
+    displayName: 'Global Config';
+    pluralName: 'global-configs';
+    singularName: 'global-config';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    brandIdentity: Schema.Attribute.Component<
+      'shared.brand-tagline-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    defaultSeo: Schema.Attribute.Component<'shared.seo', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    footerCopyright: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    footerLinkGroups: Schema.Attribute.Component<
+      'shared.footer-link-group',
+      true
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    footerTickerItems: Schema.Attribute.Component<
+      'shared.footer-ticker-item',
+      true
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    headerNavigationLinks: Schema.Attribute.Component<
+      'shared.link-item',
+      true
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::global-config.global-config'
+    >;
+    paymentMethodLogos: Schema.Attribute.Media<undefined, true>;
+    publishedAt: Schema.Attribute.DateTime;
+    sidebarNavigation: Schema.Attribute.Component<
+      'shared.sidebar-navigation-item',
+      true
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    socialLinks: Schema.Attribute.Component<'shared.link-item', true> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiHomepageHomepage extends Struct.SingleTypeSchema {
+  collectionName: 'homepages';
+  info: {
+    displayName: 'Homepage';
+    pluralName: 'homepages';
+    singularName: 'homepage';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    bespokeForYou: Schema.Attribute.Component<
+      'shared.bespoke-for-you-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    categoryCards: Schema.Attribute.Component<'shared.category-card', true> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    craftingBrillianceSection: Schema.Attribute.Component<
+      'shared.crafting-brilliance-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    craftsmanshipSection: Schema.Attribute.Component<
+      'shared.process-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    diamondsForEveryone: Schema.Attribute.Component<
+      'shared.diamonds-for-everyone-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    diamondSourcingSection: Schema.Attribute.Component<
+      'shared.diamond-sourcing-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    featuredCollection: Schema.Attribute.Component<
+      'shared.collection-showcase-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    featuredProducts: Schema.Attribute.Component<
+      'shared.featured-products-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    giftingBanner: Schema.Attribute.Component<'shared.gifting-banner', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    hero: Schema.Attribute.Component<'shared.homepage-hero', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::homepage.homepage'
+    >;
+    occasionSection: Schema.Attribute.Component<
+      'shared.occasion-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    showroom: Schema.Attribute.Component<'shared.showroom-section', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    sunnyPromise: Schema.Attribute.Component<
+      'shared.sunny-promise-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    trustBadges: Schema.Attribute.Component<'shared.trust-badge', true> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiLearnAboutDiamondsPageLearnAboutDiamondsPage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'learn_about_diamonds_pages';
+  info: {
+    displayName: 'Learn About Diamonds';
+    pluralName: 'learn-about-diamonds-pages';
+    singularName: 'learn-about-diamonds-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    certificateSection: Schema.Attribute.Component<
+      'shared.certificate-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    discoverSection: Schema.Attribute.Component<'shared.cta-banner', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    faqSection: Schema.Attribute.Component<'shared.faq-section', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    fourCsIntro: Schema.Attribute.Component<'shared.page-intro', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    fourCsSection: Schema.Attribute.Component<'shared.four-cs-section', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    hero: Schema.Attribute.Component<'shared.hero-section', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    learnMoreSection: Schema.Attribute.Component<
+      'shared.learn-more-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::learn-about-diamonds-page.learn-about-diamonds-page'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiOccasionOccasion extends Struct.CollectionTypeSchema {
+  collectionName: 'occasions';
+  info: {
+    displayName: 'Occasion';
+    pluralName: 'occasions';
+    singularName: 'occasion';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    cta: Schema.Attribute.Component<'gifting.occasion-cta', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    description: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    filterSlug: Schema.Attribute.String;
+    image: Schema.Attribute.Component<'shared.image-asset', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::occasion.occasion'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiPolicyCertificationsPagePolicyCertificationsPage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'policy_certifications_pages';
+  info: {
+    description: 'Section-wise content for the searchable policy and certifications page';
+    displayName: 'Policy & Certifications Page';
+    pluralName: 'policy-certifications-pages';
+    singularName: 'policy-certifications-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    contactSection: Schema.Attribute.Component<
+      'shared.contact-support-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    headerSection: Schema.Attribute.Component<
+      'shared.policy-page-header',
+      false
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::policy-certifications-page.policy-certifications-page'
+    >;
+    policyCategories: Schema.Attribute.Component<
+      'shared.policy-category',
+      true
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiProductDisplayPageProductDisplayPage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'product_display_page';
+  info: {
+    displayName: 'Product Display Page';
+    pluralName: 'product-display-pages';
+    singularName: 'product-display-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    findYourSize: Schema.Attribute.Component<'shared.modal-cta', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    hereForYouCard: Schema.Attribute.Component<'shared.info-card', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::product-display-page.product-display-page'
+    >;
+    moreForYouTitle: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Schema.Attribute.DefaultTo<'More for You'>;
+    pairItWith: Schema.Attribute.Component<
+      'shared.collection-showcase-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    personaliseCard: Schema.Attribute.Component<'shared.info-card', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    publishedAt: Schema.Attribute.DateTime;
+    stripItems: Schema.Attribute.Component<'shared.process-step', true> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    stripTitle: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Schema.Attribute.DefaultTo<'With Sunny, you get'>;
+    stripTnc: Schema.Attribute.Component<'shared.cta', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    visitUsSection: Schema.Attribute.Component<
+      'shared.showroom-section',
+      false
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+  };
+}
+
+export interface ApiProductFormProductForm extends Struct.CollectionTypeSchema {
+  collectionName: 'product_forms';
+  info: {
+    displayName: 'Builder: Product Forms';
+    pluralName: 'product-forms';
+    singularName: 'product-form';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    allowImageUpload: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
+    availableTimeSlots: Schema.Attribute.Component<'shared.time-slot', true>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    dynamicFields: Schema.Attribute.Component<'shared.form-field', true> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    formName: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    formTag: Schema.Attribute.UID<'formName'> & Schema.Attribute.Required;
+    isMultiStep: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::product-form.product-form'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    showroomOptions: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::showroom.showroom'
+    >;
+    stateOptions: Schema.Attribute.Relation<'manyToMany', 'api::state.state'>;
+    stepOneButtonText: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Schema.Attribute.DefaultTo<'ADD ADDRESS'>;
+    submitButtonText: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Schema.Attribute.DefaultTo<'SUBMIT'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiProductLandingPageProductLandingPage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'product_landing_pages';
+  info: {
+    displayName: 'Product Landing Page';
+    pluralName: 'product-landing-pages';
+    singularName: 'product-landing-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    hero: Schema.Attribute.Component<'shared.hero-section', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::product-landing-page.product-landing-page'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    trustBadges: Schema.Attribute.Component<'shared.process-step', true> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiProductSubmissionProductSubmission
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'product_submissions';
+  info: {
+    displayName: 'Submissions: Product';
+    pluralName: 'product-submissions';
+    singularName: 'product-submission';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    addressLine1: Schema.Attribute.String;
+    addressLine2: Schema.Attribute.String;
+    appointmentChanges: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::appointment-change.appointment-change'
+    > &
+      Schema.Attribute.Private;
+    appointmentGroup: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::appointment-group.appointment-group'
+    > &
+      Schema.Attribute.Private;
+    appointmentReference: Schema.Attribute.String & Schema.Attribute.Private;
+    city: Schema.Attribute.String;
+    consentAccepted: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    customerEmail: Schema.Attribute.Email;
+    customerName: Schema.Attribute.String & Schema.Attribute.Required;
+    customerPhone: Schema.Attribute.String & Schema.Attribute.Required;
+    formTag: Schema.Attribute.String & Schema.Attribute.Required;
+    internalNotes: Schema.Attribute.Text;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::product-submission.product-submission'
+    > &
+      Schema.Attribute.Private;
+    magentoCustomerId: Schema.Attribute.Integer & Schema.Attribute.Private;
+    pincode: Schema.Attribute.String;
+    preferredShowroom: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::showroom.showroom'
+    >;
+    productId: Schema.Attribute.String;
+    productName: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    reminderSentForDate: Schema.Attribute.Date & Schema.Attribute.Private;
+    requestDetails: Schema.Attribute.Text;
+    requestedDate: Schema.Attribute.Date;
+    rescheduleHistory: Schema.Attribute.JSON & Schema.Attribute.Private;
+    selectedTimeSlot: Schema.Attribute.String;
+    sourcePage: Schema.Attribute.String;
+    state: Schema.Attribute.Relation<'manyToOne', 'api::state.state'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    uploadedImage: Schema.Attribute.Media<'images'>;
+    workflowStatus: Schema.Attribute.Enumeration<
+      ['New', 'Contacted', 'Scheduled', 'Visited', 'Closed', 'Cancelled']
+    > &
+      Schema.Attribute.DefaultTo<'New'>;
+  };
+}
+
+export interface ApiProfilePageProfilePage extends Struct.SingleTypeSchema {
+  collectionName: 'profile_pages';
+  info: {
+    description: 'Editorial configuration for the customer profile page';
+    displayName: 'Profile Page';
+    pluralName: 'profile-pages';
+    singularName: 'profile-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::profile-page.profile-page'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    sideTabs: Schema.Attribute.Component<'shared.profile-side-tab', true> &
+      Schema.Attribute.Required;
+    trustBadgeSection: Schema.Attribute.Component<
+      'shared.profile-trust-badge-section',
+      true
+    >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiSavedCreationSavedCreation
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'saved_creations';
+  info: {
+    displayName: 'Saved Creations';
+    pluralName: 'saved-creations';
+    singularName: 'saved-creation';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    creation: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::featured-story.featured-story'
+    > &
+      Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::saved-creation.saved-creation'
+    > &
+      Schema.Attribute.Private;
+    magentoCustomerId: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    saveKey: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Private &
+      Schema.Attribute.Unique &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 64;
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiShowroomShowroom extends Struct.CollectionTypeSchema {
+  collectionName: 'showrooms';
+  info: {
+    displayName: 'Showroom';
+    pluralName: 'showrooms';
+    singularName: 'showroom';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    address: Schema.Attribute.RichText &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    city: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    email: Schema.Attribute.Email;
+    image: Schema.Attribute.Component<'shared.image-asset', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::showroom.showroom'
+    >;
+    mapUrl: Schema.Attribute.String & Schema.Attribute.Required;
+    openingHours: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    phone: Schema.Attribute.String;
+    pincode: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID<'city'> & Schema.Attribute.Required;
+    state: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiSizeGuideSizeGuide extends Struct.CollectionTypeSchema {
+  collectionName: 'size_guides';
+  info: {
+    displayName: 'Size Guides';
+    pluralName: 'size-guides';
+    singularName: 'size-guide';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    chartRows: Schema.Attribute.Component<'shared.size-row', true>;
+    circumferenceHeaderImage: Schema.Attribute.Media<'images'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    diameterHeaderImage: Schema.Attribute.Media<'images'>;
+    drawerSubtitle: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Schema.Attribute.DefaultTo<'Measure Dimensions in millimeters'>;
+    drawerTitle: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Schema.Attribute.DefaultTo<'Ring Size Diamond'>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::size-guide.size-guide'
+    >;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    publishedAt: Schema.Attribute.DateTime;
+    tutorialVideo: Schema.Attribute.Media<'videos'> & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiSkillAndLanguageSkillAndLanguage
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'skills_and_languages';
+  info: {
+    displayName: 'Skills and Language';
+    pluralName: 'skills-and-languages';
+    singularName: 'skill-and-language';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    label: Schema.Attribute.String & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::skill-and-language.skill-and-language'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    type: Schema.Attribute.Enumeration<['Skill', 'Language']> &
+      Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiStateState extends Struct.CollectionTypeSchema {
+  collectionName: 'states';
+  info: {
+    displayName: 'Indian States';
+    pluralName: 'states';
+    singularName: 'state';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    code: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::state.state'> &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiStoreLocatorPageStoreLocatorPage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'store_locator_pages';
+  info: {
+    description: 'Page content and showroom records for the store locator';
+    displayName: 'Store Locator Page';
+    pluralName: 'store-locator-pages';
+    singularName: 'store-locator-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    getDirectionsLabel: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Schema.Attribute.DefaultTo<'Get Directions'>;
+    hero: Schema.Attribute.Component<'shared.hero-section', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::store-locator-page.store-locator-page'
+    >;
+    locationFilters: Schema.Attribute.Component<
+      'shared.store-location-filter',
+      true
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    noResultsMessage: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Schema.Attribute.DefaultTo<'No stores found for this location.'>;
+    publishedAt: Schema.Attribute.DateTime;
+    searchPlaceholder: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Schema.Attribute.DefaultTo<'Enter a location or pincode'>;
+    seo: Schema.Attribute.Component<'shared.seo', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    showrooms: Schema.Attribute.Relation<'oneToMany', 'api::showroom.showroom'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    useCurrentLocationLabel: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Schema.Attribute.DefaultTo<'Use Current Location'>;
+  };
+}
+
+export interface ApiSubmissionsJobOpeningSubmissionsJobOpening
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'submissions_job_openings';
+  info: {
+    displayName: 'Submissions: Job Opening';
+    pluralName: 'submissions-job-openings';
+    singularName: 'submissions-job-opening';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    addInfo: Schema.Attribute.Component<'shared.job-additional-info', false> &
+      Schema.Attribute.Required;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    department: Schema.Attribute.String;
+    educationDetails: Schema.Attribute.Component<
+      'shared.job-education-details',
+      false
+    > &
+      Schema.Attribute.Required;
+    experience: Schema.Attribute.String;
+    internalNotes: Schema.Attribute.Text;
+    jobID: Schema.Attribute.String & Schema.Attribute.Required;
+    jobTitle: Schema.Attribute.String & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::submissions-job-opening.submissions-job-opening'
+    > &
+      Schema.Attribute.Private;
+    location: Schema.Attribute.String;
+    personalDetails: Schema.Attribute.Component<
+      'shared.job-personal-details',
+      false
+    > &
+      Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    resume: Schema.Attribute.Media<'files' | 'images'>;
+    skillsAndLanguages: Schema.Attribute.Component<'shared.job-skills', false>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    workExperience: Schema.Attribute.Component<
+      'shared.job-work-experience',
+      false
+    > &
+      Schema.Attribute.Required;
+    workflowStatus: Schema.Attribute.Enumeration<
+      ['new', 'reviewing', 'shortlisted', 'rejected', 'hired']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'new'>;
+  };
+}
+
+export interface ApiSupportPageSupportPage extends Struct.SingleTypeSchema {
+  collectionName: 'support_pages';
+  info: {
+    description: 'Section-wise content for the Help & Support page';
+    displayName: 'Help & Support Page';
+    pluralName: 'support-pages';
+    singularName: 'support-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    contactSection: Schema.Attribute.Component<
+      'support.contact-section',
+      false
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    faqSection: Schema.Attribute.Component<'shared.faq-section', false> &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::support-page.support-page'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface PluginContentReleasesRelease
   extends Struct.CollectionTypeSchema {
   collectionName: 'strapi_releases';
@@ -951,6 +3492,43 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::about-page.about-page': ApiAboutPageAboutPage;
+      'api::appointment-change.appointment-change': ApiAppointmentChangeAppointmentChange;
+      'api::appointment-group.appointment-group': ApiAppointmentGroupAppointmentGroup;
+      'api::bespoke-submission.bespoke-submission': ApiBespokeSubmissionBespokeSubmission;
+      'api::blog-category.blog-category': ApiBlogCategoryBlogCategory;
+      'api::blog-landing-page.blog-landing-page': ApiBlogLandingPageBlogLandingPage;
+      'api::blog-post.blog-post': ApiBlogPostBlogPost;
+      'api::blog-tag.blog-tag': ApiBlogTagBlogTag;
+      'api::career-landing-page.career-landing-page': ApiCareerLandingPageCareerLandingPage;
+      'api::career-listing-page.career-listing-page': ApiCareerListingPageCareerListingPage;
+      'api::career-opening.career-opening': ApiCareerOpeningCareerOpening;
+      'api::contact-bespoke-page.contact-bespoke-page': ApiContactBespokePageContactBespokePage;
+      'api::contact-page.contact-page': ApiContactPageContactPage;
+      'api::diamonds-for-everyone-page.diamonds-for-everyone-page': ApiDiamondsForEveryonePageDiamondsForEveryonePage;
+      'api::editorial-collection.editorial-collection': ApiEditorialCollectionEditorialCollection;
+      'api::featured-story.featured-story': ApiFeaturedStoryFeaturedStory;
+      'api::generic-form.generic-form': ApiGenericFormGenericForm;
+      'api::generic-submission.generic-submission': ApiGenericSubmissionGenericSubmission;
+      'api::gifting-page.gifting-page': ApiGiftingPageGiftingPage;
+      'api::global-config.global-config': ApiGlobalConfigGlobalConfig;
+      'api::homepage.homepage': ApiHomepageHomepage;
+      'api::learn-about-diamonds-page.learn-about-diamonds-page': ApiLearnAboutDiamondsPageLearnAboutDiamondsPage;
+      'api::occasion.occasion': ApiOccasionOccasion;
+      'api::policy-certifications-page.policy-certifications-page': ApiPolicyCertificationsPagePolicyCertificationsPage;
+      'api::product-display-page.product-display-page': ApiProductDisplayPageProductDisplayPage;
+      'api::product-form.product-form': ApiProductFormProductForm;
+      'api::product-landing-page.product-landing-page': ApiProductLandingPageProductLandingPage;
+      'api::product-submission.product-submission': ApiProductSubmissionProductSubmission;
+      'api::profile-page.profile-page': ApiProfilePageProfilePage;
+      'api::saved-creation.saved-creation': ApiSavedCreationSavedCreation;
+      'api::showroom.showroom': ApiShowroomShowroom;
+      'api::size-guide.size-guide': ApiSizeGuideSizeGuide;
+      'api::skill-and-language.skill-and-language': ApiSkillAndLanguageSkillAndLanguage;
+      'api::state.state': ApiStateState;
+      'api::store-locator-page.store-locator-page': ApiStoreLocatorPageStoreLocatorPage;
+      'api::submissions-job-opening.submissions-job-opening': ApiSubmissionsJobOpeningSubmissionsJobOpening;
+      'api::support-page.support-page': ApiSupportPageSupportPage;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

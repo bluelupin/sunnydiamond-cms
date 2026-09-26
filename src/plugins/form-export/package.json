@@ -1,0 +1,21 @@
+{
+  "name": "form-export",
+  "version": "0.1.0",
+  "private": true,
+  "strapi": {
+    "kind": "plugin",
+    "name": "form-export",
+    "displayName": "Form Export"
+  },
+  "exports": {
+    "./strapi-admin": {
+      "import": "./admin/src/index.tsx",
+      "source": "./admin/src/index.tsx"
+    },
+    "./strapi-server": {
+      "source": "./server/index.js",
+      "default": "./strapi-server.js"
+    },
+    "./package.json": "./package.json"
+  }
+}

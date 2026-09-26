@@ -1,0 +1,29 @@
+{
+  "collectionName": "components_shared_grade_stop_image_assets",
+  "info": {
+    "displayName": "Grade Stop Image Asset",
+    "description": "Responsive image asset for grade stops"
+  },
+  "attributes": {
+    "desktopImage": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "mobileImage": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "altText": {
+      "type": "string"
+    },
+    "caption": {
+      "type": "string"
+    }
+  }
+}

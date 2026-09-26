@@ -1,0 +1,62 @@
+{
+  "kind": "singleType",
+  "collectionName": "policy_certifications_pages",
+  "info": {
+    "singularName": "policy-certifications-page",
+    "pluralName": "policy-certifications-pages",
+    "displayName": "Policy & Certifications Page",
+    "description": "Section-wise content for the searchable policy and certifications page"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "headerSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.policy-page-header",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "policyCategories": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.policy-category",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "contactSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.contact-support-section",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    }
+  }
+}

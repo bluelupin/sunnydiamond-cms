@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_shared_carousel_images",
+  "info": {
+    "displayName": "Carousel Image"
+  },
+  "options": {},
+  "attributes": {
+    "image": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "ctaButton": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": false
+    }
+  },
+  "config": {}
+}

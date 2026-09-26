@@ -1,0 +1,52 @@
+{
+  "collectionName": "components_shared_hero_sections",
+  "info": {
+    "displayName": "Hero Section",
+    "description": "Page hero content"
+  },
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "eyebrow": {
+      "type": "string"
+    },
+    "subtitle": {
+      "type": "text"
+    },
+    "primaryCta": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": false
+    },
+    "secondaryCta": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": false
+    },
+    "bgImage": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "image": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "heroVideo": {
+      "type": "component",
+      "component": "shared.video-asset",
+      "repeatable": false
+    },
+    "backgroundVideo": {
+      "type": "component",
+      "component": "shared.video-asset",
+      "repeatable": false
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

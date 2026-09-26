@@ -1,0 +1,24 @@
+{
+  "collectionName": "components_shared_featured_blog_sections",
+  "info": {
+    "displayName": "featuredBlogSection"
+  },
+  "options": {},
+  "attributes": {
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
+    "featuredBlog": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::blog-post.blog-post"
+    },
+    "backgroundImage": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    }
+  },
+  "config": {}
+}

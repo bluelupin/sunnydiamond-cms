@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_shared_trust_badge_items",
+  "info": {
+    "displayName": "Trust Badge Item",
+    "description": "Individual badge block"
+  },
+  "options": {},
+  "attributes": {
+    "icon": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset"
+    },
+    "label": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_shared_timeline_milestones",
+  "info": {
+    "displayName": "Timeline Milestone",
+    "description": "Key milestone event card"
+  },
+  "options": {},
+  "attributes": {
+    "year": {
+      "type": "integer",
+      "required": true
+    },
+    "icon": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset"
+    },
+    "heading": {
+      "type": "string",
+      "required": true
+    },
+    "body": {
+      "type": "text",
+      "required": true
+    }
+  }
+}

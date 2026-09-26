@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_shared_investing_career_sections",
+  "info": {
+    "displayName": "Investing Career Section"
+  },
+  "options": {},
+  "attributes": {
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
+    "InvestingTitle": {
+      "type": "string"
+    },
+    "InvestingFeatures": {
+      "type": "component",
+      "component": "shared.features-career-section",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

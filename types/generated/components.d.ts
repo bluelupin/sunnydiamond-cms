@@ -1,3 +1,2058 @@
-/*
- * The app doesn't have any components yet.
- */
+import type { Schema, Struct } from '@strapi/strapi';
+
+export interface CareerApplyCta extends Struct.ComponentSchema {
+  collectionName: 'components_career_apply_ctas';
+  info: {
+    description: 'Career application button';
+    displayName: 'Apply CTA';
+  };
+  attributes: {
+    label: Schema.Attribute.String;
+    openInNewTab: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    targetType: Schema.Attribute.Enumeration<
+      ['internal', 'external', 'magento']
+    > &
+      Schema.Attribute.DefaultTo<'internal'>;
+  };
+}
+
+export interface CareerCareerDiscoverSection extends Struct.ComponentSchema {
+  collectionName: 'components_career_career_discover_sections';
+  info: {
+    displayName: 'Career Discover Section';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface CareerJobDescription extends Struct.ComponentSchema {
+  collectionName: 'components_career_job_descriptions';
+  info: {
+    description: 'Predefined sections for a career opening';
+    displayName: 'Job Description';
+  };
+  attributes: {
+    additionalInfo: Schema.Attribute.Component<
+      'career.job-description-section',
+      false
+    >;
+    jobSummary: Schema.Attribute.Component<
+      'career.job-description-section',
+      false
+    >;
+    qualificationsAndExperience: Schema.Attribute.Component<
+      'career.qualifications-and-experience',
+      false
+    >;
+    rolesAndResponsibilities: Schema.Attribute.Component<
+      'career.job-description-section',
+      false
+    >;
+    skills: Schema.Attribute.Component<'career.job-description-section', false>;
+    whatWeAreLookingFor: Schema.Attribute.Component<
+      'career.job-description-section',
+      false
+    >;
+    whyJoinUs: Schema.Attribute.Component<
+      'career.job-description-section',
+      false
+    >;
+  };
+}
+
+export interface CareerJobDescriptionSection extends Struct.ComponentSchema {
+  collectionName: 'components_career_job_description_sections';
+  info: {
+    description: 'A titled section with CKEditor content';
+    displayName: 'Job Description Section';
+  };
+  attributes: {
+    sectionContent: Schema.Attribute.RichText &
+      Schema.Attribute.CustomField<
+        'plugin::ckeditor.CKEditor',
+        {
+          output: 'HTML';
+          preset: 'standard';
+        }
+      >;
+    sectionTitle: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface CareerQualificationsAndExperience
+  extends Struct.ComponentSchema {
+  collectionName: 'components_career_qualifications_and_experiences';
+  info: {
+    description: 'A titled section containing Education and Experience subsections';
+    displayName: 'Qualifications and Experience';
+  };
+  attributes: {
+    education: Schema.Attribute.Component<
+      'career.job-description-section',
+      false
+    >;
+    experience: Schema.Attribute.Component<
+      'career.job-description-section',
+      false
+    >;
+    sectionTitle: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface DiamondsForEveryoneHeroSection extends Struct.ComponentSchema {
+  collectionName: 'components_dfe_hero_sections';
+  info: {
+    description: 'Full-width hero for the Diamonds for Everyone page';
+    displayName: 'Diamonds for Everyone Hero';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    eyebrow: Schema.Attribute.String;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface DiamondsForEveryoneInvestmentPlannerSection
+  extends Struct.ComponentSchema {
+  collectionName: 'components_dfe_investment_planner_sections';
+  info: {
+    description: 'Investment plan content with foreground and background imagery';
+    displayName: 'Plan Your Investment Section';
+  };
+  attributes: {
+    accountSetupDescription: Schema.Attribute.Text;
+    accountSetupHeading: Schema.Attribute.String;
+    accountSetupSteps: Schema.Attribute.Component<'shared.diamonds-step', true>;
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    buttonLabel: Schema.Attribute.String;
+    cancelButtonLabel: Schema.Attribute.String;
+    defaultMonthly: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 1000000;
+          min: 1;
+        },
+        number
+      >;
+    description: Schema.Attribute.Text;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
+    maxMonthly: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 1000000;
+          min: 1;
+        },
+        number
+      >;
+    minMonthly: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 1000000;
+          min: 1;
+        },
+        number
+      >;
+    monthlySummary: Schema.Attribute.Text;
+    monthsPaid: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 36;
+          min: 1;
+        },
+        number
+      >;
+    openAccountButtonLabel: Schema.Attribute.String;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    step: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 1000000;
+          min: 1;
+        },
+        number
+      >;
+    stepperSteps: Schema.Attribute.Component<
+      'diamonds-for-everyone.stepper-step',
+      true
+    >;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    totalMonths: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 36;
+          min: 1;
+        },
+        number
+      >;
+  };
+}
+
+export interface DiamondsForEveryonePlanIntroSection
+  extends Struct.ComponentSchema {
+  collectionName: 'components_dfe_plan_intro_sections';
+  info: {
+    description: 'Introductory copy explaining the investment plan';
+    displayName: '11+1 Plan Intro Section';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    description: Schema.Attribute.Text;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    textureImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface DiamondsForEveryoneStepperStep extends Struct.ComponentSchema {
+  collectionName: 'components_dfe_stepper_steps';
+  info: {
+    description: 'Ordered step label for the investment account stepper';
+    displayName: 'Stepper Step';
+  };
+  attributes: {
+    label: Schema.Attribute.String & Schema.Attribute.Required;
+    stepId: Schema.Attribute.String;
+  };
+}
+
+export interface DiamondsForEveryoneSuccessScreen
+  extends Struct.ComponentSchema {
+  collectionName: 'components_dfe_success_screens';
+  info: {
+    description: 'Confirmation content after opening an investment account';
+    displayName: 'Success Screen';
+  };
+  attributes: {
+    description: Schema.Attribute.Text;
+    heading: Schema.Attribute.String;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
+    managePaymentsButtonLabel: Schema.Attribute.String;
+    managePaymentsUrl: Schema.Attribute.String;
+    shoppingLinkLabel: Schema.Attribute.String;
+    shoppingUrl: Schema.Attribute.String;
+    successIcon: Schema.Attribute.Media<'images'>;
+  };
+}
+
+export interface GiftingFinishingTouchSection extends Struct.ComponentSchema {
+  collectionName: 'components_gifting_finishing_touch_sections';
+  info: {
+    description: 'Grid of value-added gifting services';
+    displayName: 'Finishing Touch Section';
+  };
+  attributes: {
+    description: Schema.Attribute.Text;
+    services: Schema.Attribute.Component<'gifting.service-card', true>;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface GiftingGiftCardSection extends Struct.ComponentSchema {
+  collectionName: 'components_gifting_gift_card_sections';
+  info: {
+    description: 'Gift-card promotional banner';
+    displayName: 'Gift Card Section';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    buttonLabel: Schema.Attribute.String;
+    cutOutImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    description: Schema.Attribute.Text;
+    eyebrow: Schema.Attribute.String;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface GiftingGiftFinderSection extends Struct.ComponentSchema {
+  collectionName: 'components_gifting_gift_finder_sections';
+  info: {
+    description: 'Editorial content for the frontend-owned gift finder';
+    displayName: 'Ideal Gift Finder Section';
+  };
+  attributes: {
+    description: Schema.Attribute.Text;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
+    resultsUrl: Schema.Attribute.String;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    submitLabel: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Discover'>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface GiftingHeroSection extends Struct.ComponentSchema {
+  collectionName: 'components_gifting_hero_sections';
+  info: {
+    description: 'Full-width gifting page hero';
+    displayName: 'Gifting Hero Section';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    eyebrow: Schema.Attribute.String;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface GiftingIntroSection extends Struct.ComponentSchema {
+  collectionName: 'components_gifting_intro_sections';
+  info: {
+    description: 'Centered introductory copy below the hero';
+    displayName: 'Gifting Intro Section';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    description: Schema.Attribute.Text;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface GiftingOccasionCta extends Struct.ComponentSchema {
+  collectionName: 'components_gifting_occasion_ctas';
+  info: {
+    description: 'Occasion button or link with an additional label';
+    displayName: 'Occasion CTA';
+  };
+  attributes: {
+    additionalLabel: Schema.Attribute.String;
+    label: Schema.Attribute.String;
+    openInNewTab: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    targetType: Schema.Attribute.Enumeration<
+      ['internal', 'external', 'magento']
+    > &
+      Schema.Attribute.DefaultTo<'internal'>;
+    url: Schema.Attribute.String;
+  };
+}
+
+export interface GiftingOccasionGridSection extends Struct.ComponentSchema {
+  collectionName: 'components_gifting_occasion_grid_sections';
+  info: {
+    description: 'Mosaic sourced from Occasion collection records';
+    displayName: 'Gifting Occasion Grid Section';
+  };
+  attributes: {
+    occasions: Schema.Attribute.Relation<'oneToMany', 'api::occasion.occasion'>;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+  };
+}
+
+export interface GiftingPerfectGiftSection extends Struct.ComponentSchema {
+  collectionName: 'components_gifting_perfect_gift_sections';
+  info: {
+    description: 'Editorial heading above the frontend-owned product carousel';
+    displayName: 'Your Perfect Gift Section';
+  };
+  attributes: {
+    description: Schema.Attribute.Text;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface GiftingServiceCard extends Struct.ComponentSchema {
+  collectionName: 'components_gifting_service_cards';
+  info: {
+    description: 'Service card such as ring sizing, gift wrap, or personalization';
+    displayName: 'Finishing Touch Card';
+  };
+  attributes: {
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    description: Schema.Attribute.Text;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedBespokeCustomDesignForm extends Struct.ComponentSchema {
+  collectionName: 'components_shared_bespoke_custom_design_forms';
+  info: {
+    description: 'Content and labels for the bespoke custom-design modal';
+    displayName: 'Bespoke Custom Design Form';
+  };
+  attributes: {
+    emailLabel: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Email ID'>;
+    fullNameLabel: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Full Name'>;
+    helperText: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Our representative will get in touch with you soon'>;
+    phoneLabel: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Phone No.'>;
+    referenceImageButtonText: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'ATTACH IMAGE'>;
+    referenceImagePrompt: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Do you have any reference image? (Optional)'>;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    submitButtonText: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'CONFIRM VISIT'>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Start your Custom Creation'>;
+    visionLabel: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Describe your vision'>;
+  };
+}
+
+export interface SharedBespokeForYouSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_bespoke_for_you_sections';
+  info: {
+    description: 'Bespoke For You Section with Title, Description, Primary CTA, and Secondary CTA';
+    displayName: 'Bespoke For You Section';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    description: Schema.Attribute.Text;
+    primaryCta: Schema.Attribute.Component<'shared.cta', false>;
+    secondaryCta: Schema.Attribute.Component<'shared.cta', false>;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String;
+  };
+}
+
+export interface SharedBespokeGetInTouchSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_bespoke_get_in_touch_sections';
+  info: {
+    description: 'Bottom consultation call-to-action banner';
+    displayName: 'Bespoke Get In Touch Section';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false> &
+      Schema.Attribute.Required;
+    cta: Schema.Attribute.Component<'shared.cta', false> &
+      Schema.Attribute.Required;
+    description: Schema.Attribute.Text;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedBespokeHero extends Struct.ComponentSchema {
+  collectionName: 'components_shared_bespoke_heroes';
+  info: {
+    description: 'Bespoke Jewellery page hero';
+    displayName: 'Bespoke Hero';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false> &
+      Schema.Attribute.Required;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedBespokeServiceHighlight extends Struct.ComponentSchema {
+  collectionName: 'components_shared_bespoke_service_highlights';
+  info: {
+    description: 'Icon and label shown below Featured Stories';
+    displayName: 'Bespoke Service Highlight';
+  };
+  attributes: {
+    icon: Schema.Attribute.Media<'images'>;
+    iconAltText: Schema.Attribute.String & Schema.Attribute.Required;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    label: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedBespokeVisionCard extends Struct.ComponentSchema {
+  collectionName: 'components_shared_bespoke_vision_cards';
+  info: {
+    description: 'Image or video story card in the vision carousel';
+    displayName: 'Bespoke Vision Card';
+  };
+  attributes: {
+    description: Schema.Attribute.Text;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    stepLabel: Schema.Attribute.String & Schema.Attribute.Required;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    video: Schema.Attribute.Component<'shared.video-asset', false>;
+  };
+}
+
+export interface SharedBespokeVisionSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_bespoke_vision_sections';
+  info: {
+    description: 'Designed around your story introduction and vision cards';
+    displayName: 'Bespoke Vision Section';
+  };
+  attributes: {
+    cards: Schema.Attribute.Component<'shared.bespoke-vision-card', true> &
+      Schema.Attribute.Required;
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    description: Schema.Attribute.Text;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedBlogPageFilter extends Struct.ComponentSchema {
+  collectionName: 'components_shared_blog_page_filters';
+  info: {
+    displayName: 'Blog page filter';
+  };
+  attributes: {
+    label: Schema.Attribute.String;
+    value: Schema.Attribute.String;
+  };
+}
+
+export interface SharedBlogPageHero extends Struct.ComponentSchema {
+  collectionName: 'components_shared_blog_page_heroes';
+  info: {
+    displayName: 'Blog Landing Page Hero Section';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String;
+  };
+}
+
+export interface SharedBrandTaglineSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_brand_tagline_sections';
+  info: {
+    description: 'Footer brand statement accompanied by a logo mark';
+    displayName: 'Brand Tagline Section';
+  };
+  attributes: {
+    icon: Schema.Attribute.Component<'shared.image-asset', false>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    tagline: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedBrillianceSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_brilliance_sections';
+  info: {
+    description: 'Pinned/sticky scroll section with feature slides';
+    displayName: 'Brilliance Section';
+  };
+  attributes: {
+    featureSlide: Schema.Attribute.Component<'shared.feature-slide', true>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    pinnedImage: Schema.Attribute.Component<'shared.image-asset', false>;
+  };
+}
+
+export interface SharedCInfoPanel extends Struct.ComponentSchema {
+  collectionName: 'components_shared_c_info_panel_subs';
+  info: {
+    description: 'Right side metrics copy and editorial dynamic callouts';
+    displayName: 'C Info Panel';
+  };
+  attributes: {
+    activeGradeCode: Schema.Attribute.String;
+    activeGradeFullName: Schema.Attribute.String;
+    brandNote: Schema.Attribute.String;
+    description: Schema.Attribute.Text;
+    displayTag: Schema.Attribute.String;
+    sectionLabel: Schema.Attribute.String;
+  };
+}
+
+export interface SharedCVisualPanel extends Struct.ComponentSchema {
+  collectionName: 'components_shared_c_visual_panel_subs';
+  info: {
+    description: 'Left panel layout containing images and interactive slider stop points';
+    displayName: 'C Visual Panel';
+  };
+  attributes: {
+    gradeStops: Schema.Attribute.Component<'shared.grade-stop', true>;
+    subTitle: Schema.Attribute.Text;
+    visualImage: Schema.Attribute.Component<'shared.image-asset', false>;
+  };
+}
+
+export interface SharedCareerHeroSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_career_hero_sections';
+  info: {
+    displayName: 'Career Hero Section';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    CtaLable: Schema.Attribute.String;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String;
+  };
+}
+
+export interface SharedCarouselImage extends Struct.ComponentSchema {
+  collectionName: 'components_shared_carousel_images';
+  info: {
+    displayName: 'Carousel Image';
+  };
+  attributes: {
+    ctaButton: Schema.Attribute.Component<'shared.cta', false>;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
+  };
+}
+
+export interface SharedCategoryCard extends Struct.ComponentSchema {
+  collectionName: 'components_shared_category_cards';
+  info: {
+    description: 'Homepage category navigation card';
+    displayName: 'Category Card';
+  };
+  attributes: {
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    cutoutImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    hoverImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedCategoryItems extends Struct.ComponentSchema {
+  collectionName: 'components_shared_category_items';
+  info: {
+    displayName: 'Category Items';
+  };
+  attributes: {
+    ItemName: Schema.Attribute.String;
+  };
+}
+
+export interface SharedCertLabCard extends Struct.ComponentSchema {
+  collectionName: 'components_shared_cert_lab_card_subs';
+  info: {
+    description: 'Individual grading laboratory information block';
+    displayName: 'Cert Lab Card';
+  };
+  attributes: {
+    ctaButtonLabel: Schema.Attribute.String;
+    ctaButtonUrl: Schema.Attribute.String;
+    labDescription: Schema.Attribute.Text & Schema.Attribute.Required;
+    labLogo: Schema.Attribute.Component<'shared.image-asset', false>;
+    labName: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedCertificateSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_certificate_section_roots';
+  info: {
+    description: 'Trust validation panel displaying analytical verification institutes';
+    displayName: 'Certificate Section';
+  };
+  attributes: {
+    bgImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    certificationLabs: Schema.Attribute.Component<'shared.cert-lab-card', true>;
+    cutoutImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    sectionDescription: Schema.Attribute.RichText;
+    sectionHeading: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedCollectionShowcaseSection
+  extends Struct.ComponentSchema {
+  collectionName: 'components_shared_collection_showcase_sections';
+  info: {
+    description: 'Homepage heading and editorial collection reference';
+    displayName: 'Collection Showcase Section';
+  };
+  attributes: {
+    collections: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::editorial-collection.editorial-collection'
+    >;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+  };
+}
+
+export interface SharedContactOption extends Struct.ComponentSchema {
+  collectionName: 'components_shared_contact_options';
+  info: {
+    description: 'A call, email, or link action displayed in a contact section';
+    displayName: 'Contact Option';
+  };
+  attributes: {
+    availability: Schema.Attribute.Text;
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    description: Schema.Attribute.Text;
+    heading: Schema.Attribute.String & Schema.Attribute.Required;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    type: Schema.Attribute.Enumeration<['phone', 'email', 'link']> &
+      Schema.Attribute.Required;
+  };
+}
+
+export interface SharedContactSupportSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_contact_support_sections';
+  info: {
+    description: 'Contact strip displayed below the policy content';
+    displayName: 'Contact Support Section';
+  };
+  attributes: {
+    contactOptions: Schema.Attribute.Component<'shared.contact-option', true> &
+      Schema.Attribute.Required;
+    heading: Schema.Attribute.String;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+  };
+}
+
+export interface SharedContentSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_content_sections';
+  info: {
+    description: 'Reusable editorial content section with optional responsive image and CTA';
+    displayName: 'Content Section';
+  };
+  attributes: {
+    body: Schema.Attribute.RichText;
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    eyebrow: Schema.Attribute.String;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    layout: Schema.Attribute.Enumeration<
+      ['text_only', 'image_left', 'image_right', 'full_bleed']
+    > &
+      Schema.Attribute.DefaultTo<'text_only'>;
+    title: Schema.Attribute.String;
+  };
+}
+
+export interface SharedCraftMosaicSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_craft_mosaic_sections';
+  info: {
+    description: 'Grid mosaic displaying image layouts and textual elements';
+    displayName: 'Craft Mosaic Section';
+  };
+  attributes: {
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    tile: Schema.Attribute.Component<'shared.mosaic-tile', true>;
+  };
+}
+
+export interface SharedCraftSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_craft_sections';
+  info: {
+    description: 'Editorial section highlighting craft features with an video-asset option';
+    displayName: 'Craft Section';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    heading: Schema.Attribute.String & Schema.Attribute.Required;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    overlayOpacity: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 1;
+          min: 0;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<0.5>;
+    subheading: Schema.Attribute.String;
+    videoUrl: Schema.Attribute.Component<'shared.video-asset', false>;
+  };
+}
+
+export interface SharedCraftingBrillianceSection
+  extends Struct.ComponentSchema {
+  collectionName: 'components_shared_crafting_brilliances';
+  info: {
+    description: 'Crafting Brilliance Section with background, cutout image, title, and CTA';
+    displayName: 'Crafting Brilliance Section';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    cutoutImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String;
+  };
+}
+
+export interface SharedCta extends Struct.ComponentSchema {
+  collectionName: 'components_shared_ctas';
+  info: {
+    description: 'Button or link target';
+    displayName: 'CTA';
+  };
+  attributes: {
+    label: Schema.Attribute.String;
+    openInNewTab: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    targetType: Schema.Attribute.Enumeration<
+      ['internal', 'external', 'magento']
+    > &
+      Schema.Attribute.DefaultTo<'internal'>;
+    url: Schema.Attribute.String;
+  };
+}
+
+export interface SharedCtaBanner extends Struct.ComponentSchema {
+  collectionName: 'components_shared_cta_banner_roots';
+  info: {
+    description: 'Action banner with deep call to action redirection';
+    displayName: 'CTA Banner';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    ctaButtonLabel: Schema.Attribute.String & Schema.Attribute.Required;
+    ctaButtonUrl: Schema.Attribute.String & Schema.Attribute.Required;
+    heading: Schema.Attribute.String & Schema.Attribute.Required;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    steps: Schema.Attribute.Component<'shared.process-step', true>;
+    subheading: Schema.Attribute.String;
+  };
+}
+
+export interface SharedDiamondSourcingSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_diamond_sourcings';
+  info: {
+    description: 'Diamond Sourcing Section with GIF/Image, title, cutout, and background';
+    displayName: 'Diamond Sourcing Section';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    cutoutImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    gifOrImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String;
+  };
+}
+
+export interface SharedDiamondsForEveryoneSection
+  extends Struct.ComponentSchema {
+  collectionName: 'components_shared_diamonds_for_everyones';
+  info: {
+    description: 'Diamonds for Everyone Section with eyebrow, title, subtitle, repeatable steps, and CTA';
+    displayName: 'Diamonds for Everyone Section';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    eyebrow: Schema.Attribute.String;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    steps: Schema.Attribute.Component<'shared.diamonds-step', true>;
+    subtitle: Schema.Attribute.String;
+    title: Schema.Attribute.String;
+  };
+}
+
+export interface SharedDiamondsStep extends Struct.ComponentSchema {
+  collectionName: 'components_shared_diamonds_steps';
+  info: {
+    description: 'Helper component for repeatable step list in Diamonds 4 Everyone';
+    displayName: 'Diamonds Step';
+  };
+  attributes: {
+    description: Schema.Attribute.Text;
+    label: Schema.Attribute.String;
+  };
+}
+
+export interface SharedDropdownOption extends Struct.ComponentSchema {
+  collectionName: 'components_shared_dropdown_options';
+  info: {
+    description: 'A single select option for dropdown fields';
+    displayName: 'Dropdown Option';
+  };
+  attributes: {
+    optionValue: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedEditorialSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_editorial_sections';
+  info: {
+    description: 'Editorial wrapper for product or content sections';
+    displayName: 'Editorial Section';
+  };
+  attributes: {
+    bgImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    cutoutImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    description: Schema.Attribute.Text;
+    image: Schema.Attribute.Media<'images'>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    sectionTitle: Schema.Attribute.String;
+    video: Schema.Attribute.Component<'shared.video-asset', false>;
+  };
+}
+
+export interface SharedFaqItem extends Struct.ComponentSchema {
+  collectionName: 'components_shared_faq_item_subs';
+  info: {
+    description: 'Accordion raw data entry mapping structural answers';
+    displayName: 'FAQ Item';
+  };
+  attributes: {
+    answer: Schema.Attribute.RichText & Schema.Attribute.Required;
+    question: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedFaqSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_faq_section_roots';
+  info: {
+    description: 'Collapsible Accordion layout answering buyer questions';
+    displayName: 'FAQ Section';
+  };
+  attributes: {
+    faqItems: Schema.Attribute.Component<'shared.faq-item', true>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    sectionHeading: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedFeatureSlide extends Struct.ComponentSchema {
+  collectionName: 'components_shared_feature_slides';
+  info: {
+    description: 'Slide entry for Brilliance Section';
+    displayName: 'Feature Slide';
+  };
+  attributes: {
+    body: Schema.Attribute.Text & Schema.Attribute.Required;
+    heading: Schema.Attribute.String & Schema.Attribute.Required;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
+  };
+}
+
+export interface SharedFeaturedBlogSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_featured_blog_sections';
+  info: {
+    displayName: 'featuredBlogSection';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    featuredBlog: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::blog-post.blog-post'
+    >;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+  };
+}
+
+export interface SharedFeaturedProductsCta extends Struct.ComponentSchema {
+  collectionName: 'components_shared_featured_products_ctas';
+  info: {
+    description: 'CTA configuration for the Featured Products Section';
+    displayName: 'Featured Products CTA';
+  };
+  attributes: {
+    label: Schema.Attribute.String;
+    openInNewTab: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    targetType: Schema.Attribute.Enumeration<
+      ['internal', 'external', 'magento']
+    > &
+      Schema.Attribute.DefaultTo<'internal'>;
+    url: Schema.Attribute.String;
+  };
+}
+
+export interface SharedFeaturedProductsSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_featured_products_sections';
+  info: {
+    description: 'Featured Products Section with Title, Subtitle, and CTA';
+    displayName: 'Featured Products Section';
+  };
+  attributes: {
+    cta: Schema.Attribute.Component<'shared.featured-products-cta', false>;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    subtitle: Schema.Attribute.String;
+    title: Schema.Attribute.String;
+  };
+}
+
+export interface SharedFeaturedStoriesSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_featured_stories_sections';
+  info: {
+    description: 'Editorial story cards over a background image';
+    displayName: 'Featured Stories Section';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    cards: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::featured-story.featured-story'
+    >;
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    secondaryCta: Schema.Attribute.Component<'shared.cta', false>;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedFeaturedStoryCard extends Struct.ComponentSchema {
+  collectionName: 'components_shared_featured_story_cards';
+  info: {
+    description: 'Image card in the Featured Stories section';
+    displayName: 'Featured Story Card';
+  };
+  attributes: {
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    image: Schema.Attribute.Component<'shared.image-asset', false> &
+      Schema.Attribute.Required;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String;
+  };
+}
+
+export interface SharedFeaturesCareerSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_features_career_sections';
+  info: {
+    displayName: 'Features Career Section';
+  };
+  attributes: {
+    FeatureDescription: Schema.Attribute.Text;
+    featureImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    FeatureTitle: Schema.Attribute.String;
+  };
+}
+
+export interface SharedFilterCategory extends Struct.ComponentSchema {
+  collectionName: 'components_shared_filter_categories';
+  info: {
+    displayName: 'Filter Category';
+  };
+  attributes: {
+    FeaturedTitle: Schema.Attribute.String;
+    Items: Schema.Attribute.Component<'shared.category-items', true>;
+  };
+}
+
+export interface SharedFooterLinkGroup extends Struct.ComponentSchema {
+  collectionName: 'components_shared_footer_link_groups';
+  info: {
+    description: 'Grouped footer links';
+    displayName: 'Footer Link Group';
+  };
+  attributes: {
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    links: Schema.Attribute.Component<'shared.link-item', true>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedFooterTickerItem extends Struct.ComponentSchema {
+  collectionName: 'components_shared_footer_ticker_items';
+  info: {
+    description: 'Short trust or service message shown in the footer ticker';
+    displayName: 'Footer Ticker Item';
+  };
+  attributes: {
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    label: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedFormField extends Struct.ComponentSchema {
+  collectionName: 'components_shared_form_fields';
+  info: {
+    description: 'Dynamic inputs for the frontend to render';
+    displayName: 'Form Field';
+  };
+  attributes: {
+    dropdownOptions: Schema.Attribute.Component<'shared.dropdown-option', true>;
+    fieldType: Schema.Attribute.Enumeration<
+      ['text', 'email', 'phone', 'date', 'dropdown', 'textarea']
+    > &
+      Schema.Attribute.DefaultTo<'text'>;
+    formStep: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<1>;
+    isRequired: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    label: Schema.Attribute.String & Schema.Attribute.Required;
+    placeholder: Schema.Attribute.String;
+  };
+}
+
+export interface SharedFourCsSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_four_cs_section_roots';
+  info: {
+    description: 'Interactive layout featuring left visual panels and right information tracks';
+    displayName: 'Four Cs Section';
+  };
+  attributes: {
+    cInfoPanel: Schema.Attribute.Component<'shared.c-info-panel', true>;
+    cVisualPanel: Schema.Attribute.Component<'shared.c-visual-panel', true>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+  };
+}
+
+export interface SharedGenericFormSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_generic_form_sections';
+  info: {
+    description: 'Page section that renders a configured generic form';
+    displayName: 'Generic Form Section';
+  };
+  attributes: {
+    form: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::generic-form.generic-form'
+    > &
+      Schema.Attribute.Required;
+    heading: Schema.Attribute.String & Schema.Attribute.Required;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    successMessage: Schema.Attribute.Text;
+  };
+}
+
+export interface SharedGiftingBanner extends Struct.ComponentSchema {
+  collectionName: 'components_shared_gifting_banners';
+  info: {
+    description: 'Gifting banner with background, cutout image, title, description, and primary/secondary CTAs';
+    displayName: 'Gifting Banner';
+  };
+  attributes: {
+    backgroundColor: Schema.Attribute.String;
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    backgroundVideo: Schema.Attribute.Component<'shared.video-asset', false>;
+    cutoutImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    description: Schema.Attribute.Text;
+    primaryCta: Schema.Attribute.Component<'shared.cta', false>;
+    secondaryCta: Schema.Attribute.Component<'shared.cta', false>;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String;
+  };
+}
+
+export interface SharedGradeStop extends Struct.ComponentSchema {
+  collectionName: 'components_shared_grade_stop_nodes';
+  info: {
+    description: 'Specific slider metrics coordinates for diamond scales';
+    displayName: 'Grade Stop';
+  };
+  attributes: {
+    gradeCode: Schema.Attribute.String;
+    gradeImage: Schema.Attribute.Component<
+      'shared.grade-stop-image-asset',
+      false
+    >;
+    gradeLongLabel: Schema.Attribute.String;
+  };
+}
+
+export interface SharedGradeStopImageAsset extends Struct.ComponentSchema {
+  collectionName: 'components_shared_grade_stop_image_assets';
+  info: {
+    description: 'Responsive image asset for grade stops';
+    displayName: 'Grade Stop Image Asset';
+  };
+  attributes: {
+    altText: Schema.Attribute.String;
+    caption: Schema.Attribute.String;
+    desktopImage: Schema.Attribute.Media<'images', true>;
+    mobileImage: Schema.Attribute.Media<'images', true>;
+  };
+}
+
+export interface SharedHeroSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_hero_sections';
+  info: {
+    description: 'Page hero content';
+    displayName: 'Hero Section';
+  };
+  attributes: {
+    backgroundVideo: Schema.Attribute.Component<'shared.video-asset', false>;
+    bgImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    eyebrow: Schema.Attribute.String;
+    heroVideo: Schema.Attribute.Component<'shared.video-asset', false>;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    primaryCta: Schema.Attribute.Component<'shared.cta', false>;
+    secondaryCta: Schema.Attribute.Component<'shared.cta', false>;
+    subtitle: Schema.Attribute.Text;
+    title: Schema.Attribute.String;
+  };
+}
+
+export interface SharedHomepageHero extends Struct.ComponentSchema {
+  collectionName: 'components_shared_homepage_heroes';
+  info: {
+    description: 'Hero section with video, image background, eyebrow, main title, and cta button';
+    displayName: 'Homepage Hero';
+  };
+  attributes: {
+    ctaButton: Schema.Attribute.Component<'shared.cta', false>;
+    eyebrow: Schema.Attribute.String;
+    imageBackground: Schema.Attribute.Component<'shared.image-asset', false>;
+    mainTitle: Schema.Attribute.String;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    videoBackground: Schema.Attribute.Component<'shared.video-asset', false>;
+  };
+}
+
+export interface SharedImageAsset extends Struct.ComponentSchema {
+  collectionName: 'components_shared_image_assets';
+  info: {
+    description: 'Responsive image asset';
+    displayName: 'Image Asset';
+  };
+  attributes: {
+    desktopImage: Schema.Attribute.Media<'images'>;
+    mobileImage: Schema.Attribute.Media<'images'>;
+  };
+}
+
+export interface SharedIndianState extends Struct.ComponentSchema {
+  collectionName: 'components_shared_indian_states';
+  info: {
+    displayName: 'Indian State';
+    icon: 'map-marker';
+  };
+  attributes: {
+    code: Schema.Attribute.String;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedInfoCard extends Struct.ComponentSchema {
+  collectionName: 'components_shared_info_cards';
+  info: {
+    description: 'Title, subtitle, optional image and form trigger buttons';
+    displayName: 'Info Card';
+  };
+  attributes: {
+    buttons: Schema.Attribute.Component<'shared.modal-cta', true>;
+    image: Schema.Attribute.Media<'images'>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    subtitle: Schema.Attribute.String;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedInvestingCareerSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_investing_career_sections';
+  info: {
+    displayName: 'Investing Career Section';
+  };
+  attributes: {
+    InvestingFeatures: Schema.Attribute.Component<
+      'shared.features-career-section',
+      true
+    >;
+    InvestingTitle: Schema.Attribute.String;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+  };
+}
+
+export interface SharedJobAdditionalInfo extends Struct.ComponentSchema {
+  collectionName: 'components_shared_job_additional_infos';
+  info: {
+    displayName: 'job Additional Info';
+  };
+  attributes: {
+    EmpJobTitle: Schema.Attribute.String;
+    EmpName: Schema.Attribute.String;
+    relation: Schema.Attribute.Boolean &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<false>;
+  };
+}
+
+export interface SharedJobEducationDetails extends Struct.ComponentSchema {
+  collectionName: 'components_shared_job_education_details';
+  info: {
+    displayName: 'Job Education Details';
+  };
+  attributes: {
+    AreaOfStudy: Schema.Attribute.String & Schema.Attribute.Required;
+    Degree: Schema.Attribute.String & Schema.Attribute.Required;
+    Year: Schema.Attribute.BigInteger & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedJobPersonalDetails extends Struct.ComponentSchema {
+  collectionName: 'components_shared_job_personal_details';
+  info: {
+    displayName: 'Job Personal Details';
+  };
+  attributes: {
+    DOB: Schema.Attribute.Date & Schema.Attribute.Required;
+    EmailId: Schema.Attribute.Email & Schema.Attribute.Required;
+    Gender: Schema.Attribute.String & Schema.Attribute.Required;
+    Name: Schema.Attribute.String & Schema.Attribute.Required;
+    PhoneNo: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedJobSkills extends Struct.ComponentSchema {
+  collectionName: 'components_shared_job_skills';
+  info: {
+    displayName: 'Job Skills';
+  };
+  attributes: {
+    Languages: Schema.Attribute.Component<'shared.skill-items', true>;
+    Skills: Schema.Attribute.Component<'shared.skill-items', true>;
+  };
+}
+
+export interface SharedJobWorkExperience extends Struct.ComponentSchema {
+  collectionName: 'components_shared_job_work_experiences';
+  info: {
+    displayName: 'Job Work Experience';
+  };
+  attributes: {
+    CurrCompName: Schema.Attribute.String;
+    CurrCtc: Schema.Attribute.BigInteger;
+    CurrJobTitle: Schema.Attribute.String;
+    ExpecCtc: Schema.Attribute.BigInteger & Schema.Attribute.Required;
+    NoticePerd: Schema.Attribute.Integer;
+    RelvWorkExp: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedLearnMoreFeatureGroup extends Struct.ComponentSchema {
+  collectionName: 'components_shared_learn_more_feature_groups';
+  info: {
+    description: 'Grouped feature subtitle and trust badge items';
+    displayName: 'Learn More Feature Group';
+  };
+  attributes: {
+    featureItems: Schema.Attribute.Component<'shared.trust-badge-item', true>;
+    featureSubtitle: Schema.Attribute.Text;
+  };
+}
+
+export interface SharedLearnMoreSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_learn_more_section_roots';
+  info: {
+    description: 'Multi-tab modular container explaining technical elements';
+    displayName: 'Learn More Section';
+  };
+  attributes: {
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    sectionHeading: Schema.Attribute.String & Schema.Attribute.Required;
+    tabs: Schema.Attribute.Component<'shared.learn-more-tab', true>;
+  };
+}
+
+export interface SharedLearnMoreTab extends Struct.ComponentSchema {
+  collectionName: 'components_shared_learn_more_tab_subs';
+  info: {
+    description: 'Individual contextual tab details with item carousels';
+    displayName: 'Learn More Tab';
+  };
+  attributes: {
+    carouselImage: Schema.Attribute.Component<'shared.carousel-image', true>;
+    featureGroups: Schema.Attribute.Component<
+      'shared.learn-more-feature-group',
+      true
+    >;
+    featureImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    layoutType: Schema.Attribute.Enumeration<
+      ['Carousel', 'Image Feature List', 'Feature List']
+    >;
+    tabDescription: Schema.Attribute.Text & Schema.Attribute.Required;
+    tabLabel: Schema.Attribute.Enumeration<
+      ['SHAPE', 'FANCY_COLOUR', 'DIAMOND_ANATOMY', 'DIAMOND_CARE']
+    > &
+      Schema.Attribute.DefaultTo<'SHAPE'>;
+  };
+}
+
+export interface SharedLegacyImageBlock extends Struct.ComponentSchema {
+  collectionName: 'components_shared_legacy_child_blocks';
+  info: {
+    description: 'Individual block for the legacy section';
+    displayName: 'Legacy Image Block';
+  };
+  attributes: {
+    caption: Schema.Attribute.String;
+    description: Schema.Attribute.Text & Schema.Attribute.Required;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
+  };
+}
+
+export interface SharedLegacySection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_legacy_sections';
+  info: {
+    description: 'Legacy gallery with descriptions and images';
+    displayName: 'Legacy Section';
+  };
+  attributes: {
+    heading: Schema.Attribute.String & Schema.Attribute.Required;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    legacyImageBlock: Schema.Attribute.Component<
+      'shared.legacy-image-block',
+      true
+    >;
+  };
+}
+
+export interface SharedLinkItem extends Struct.ComponentSchema {
+  collectionName: 'components_shared_link_items';
+  info: {
+    description: 'Navigation or footer link';
+    displayName: 'Link Item';
+  };
+  attributes: {
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    label: Schema.Attribute.String & Schema.Attribute.Required;
+    targetType: Schema.Attribute.Enumeration<
+      ['internal', 'external', 'magento']
+    > &
+      Schema.Attribute.DefaultTo<'internal'>;
+    url: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedListingFilterSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_listing_filter_sections';
+  info: {
+    displayName: 'Listing Filter Section';
+  };
+  attributes: {
+    Department: Schema.Attribute.Component<'shared.filter-category', false>;
+    Experience: Schema.Attribute.Component<'shared.filter-category', false>;
+    fiterTitle: Schema.Attribute.String;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    Location: Schema.Attribute.Component<'shared.filter-category', false>;
+  };
+}
+
+export interface SharedListingHeroSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_listing_hero_sections';
+  info: {
+    displayName: 'Listing Hero Section';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String;
+  };
+}
+
+export interface SharedModalCta extends Struct.ComponentSchema {
+  collectionName: 'components_shared_form_ctas';
+  info: {
+    description: 'Button or link that triggers a form modal';
+    displayName: 'Modal CTA';
+  };
+  attributes: {
+    label: Schema.Attribute.String & Schema.Attribute.Required;
+    modalTag: Schema.Attribute.String & Schema.Attribute.Required;
+    style: Schema.Attribute.Enumeration<['primary', 'link']> &
+      Schema.Attribute.DefaultTo<'primary'>;
+  };
+}
+
+export interface SharedMoreThanSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_more_than_sections';
+  info: {
+    displayName: 'More than Section';
+  };
+  attributes: {
+    additionalFeatureBody: Schema.Attribute.Text;
+    featuredBody: Schema.Attribute.Text;
+    featuredDescription: Schema.Attribute.String;
+    featuredImage1: Schema.Attribute.Component<'shared.image-asset', false>;
+    featuredImage2: Schema.Attribute.Component<'shared.image-asset', false>;
+    featuredTitle: Schema.Attribute.String;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+  };
+}
+
+export interface SharedMosaicTile extends Struct.ComponentSchema {
+  collectionName: 'components_shared_mosaic_tiles';
+  info: {
+    description: 'Individual cell within the craft mosaic grid';
+    displayName: 'Mosaic Tile';
+  };
+  attributes: {
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
+    title: Schema.Attribute.String;
+    type: Schema.Attribute.Enumeration<['image', 'textCard']> &
+      Schema.Attribute.DefaultTo<'image'>;
+  };
+}
+
+export interface SharedOccasionSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_occasion_sections';
+  info: {
+    description: 'Homepage occasion block with reusable occasion records';
+    displayName: 'Occasion Section';
+  };
+  attributes: {
+    occasions: Schema.Attribute.Relation<'oneToMany', 'api::occasion.occasion'>;
+    sectionTitle: Schema.Attribute.String;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+  };
+}
+
+export interface SharedOpeningsCareerSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_openings_career_sections';
+  info: {
+    displayName: 'Openings Career Section';
+  };
+  attributes: {
+    career_openings: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::career-opening.career-opening'
+    >;
+    CtaLable: Schema.Attribute.String;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    OpeningDescription: Schema.Attribute.String;
+    OpeningTitle: Schema.Attribute.String;
+  };
+}
+
+export interface SharedPageIntro extends Struct.ComponentSchema {
+  collectionName: 'components_shared_page_intro_roots';
+  info: {
+    description: 'Intro heading, body description, and decorative asset';
+    displayName: 'Page Intro';
+  };
+  attributes: {
+    body: Schema.Attribute.Text & Schema.Attribute.Required;
+    decorativeImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    fourCsTags: Schema.Attribute.Component<'shared.trust-badge', true>;
+    heading: Schema.Attribute.String & Schema.Attribute.Required;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+  };
+}
+
+export interface SharedPolicyAccordionItem extends Struct.ComponentSchema {
+  collectionName: 'components_shared_policy_accordion_items';
+  info: {
+    description: 'A collapsible question and answer within a policy';
+    displayName: 'Policy Accordion Item';
+  };
+  attributes: {
+    answer: Schema.Attribute.RichText & Schema.Attribute.Required;
+    isOpenByDefault: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
+    question: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedPolicyCategory extends Struct.ComponentSchema {
+  collectionName: 'components_shared_policy_categories';
+  info: {
+    description: 'A sidebar group containing an ordered set of policies';
+    displayName: 'Policy Category';
+  };
+  attributes: {
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    policies: Schema.Attribute.Component<'shared.policy-entry', true> &
+      Schema.Attribute.Required;
+    slug: Schema.Attribute.String & Schema.Attribute.Required;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedPolicyEntry extends Struct.ComponentSchema {
+  collectionName: 'components_shared_policy_entries';
+  info: {
+    description: 'A searchable policy containing ordered accordion items';
+    displayName: 'Policy Entry';
+  };
+  attributes: {
+    accordionItems: Schema.Attribute.Component<
+      'shared.policy-accordion-item',
+      true
+    >;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    slug: Schema.Attribute.String & Schema.Attribute.Required;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedPolicyPageHeader extends Struct.ComponentSchema {
+  collectionName: 'components_shared_policy_page_headers';
+  info: {
+    description: 'Heading and search configuration for the policy and certifications page';
+    displayName: 'Policy Page Header';
+  };
+  attributes: {
+    emptySearchMessage: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'No matching policies found.'>;
+    heading: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Policy & Certifications'>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    searchPlaceholder: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Search keywords'>;
+  };
+}
+
+export interface SharedProcessSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_process_sections';
+  info: {
+    description: 'Editorial process block with repeatable steps';
+    displayName: 'Process Section';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    description: Schema.Attribute.Text;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
+    sectionTitle: Schema.Attribute.String;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    steps: Schema.Attribute.Component<'shared.process-step', true>;
+  };
+}
+
+export interface SharedProcessStep extends Struct.ComponentSchema {
+  collectionName: 'components_shared_process_steps';
+  info: {
+    description: 'Craftsmanship or process step';
+    displayName: 'Process Step';
+  };
+  attributes: {
+    description: Schema.Attribute.Text;
+    icon: Schema.Attribute.Media;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedProductSku extends Struct.ComponentSchema {
+  collectionName: 'components_shared_product_skus';
+  info: {
+    description: 'Commerce product reference used by editorial collections';
+    displayName: 'Product SKU';
+  };
+  attributes: {
+    sku: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedProfileSideTab extends Struct.ComponentSchema {
+  collectionName: 'components_shared_profile_side_tabs';
+  info: {
+    description: 'One navigation tab displayed in the profile page sidebar';
+    displayName: 'Profile Side Tab';
+  };
+  attributes: {
+    tabLabel: Schema.Attribute.String & Schema.Attribute.Required;
+    tabValue: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedProfileTrustBadgeSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_profile_trust_badge_sections';
+  info: {
+    description: 'Trust message and related actions displayed on the profile page';
+    displayName: 'Profile Trust Badge Section';
+  };
+  attributes: {
+    callsToAction: Schema.Attribute.Component<'shared.cta', true>;
+    description: Schema.Attribute.Text;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedPromoCard extends Struct.ComponentSchema {
+  collectionName: 'components_shared_promo_cards';
+  info: {
+    description: 'Editorial promotional card';
+    displayName: 'Promo Card';
+  };
+  attributes: {
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    description: Schema.Attribute.Text;
+    eyebrowText: Schema.Attribute.String;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    steps: Schema.Attribute.Component<'shared.process-step', true>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    video: Schema.Attribute.Component<'shared.video-asset', false>;
+  };
+}
+
+export interface SharedSeo extends Struct.ComponentSchema {
+  collectionName: 'components_shared_seos';
+  info: {
+    description: 'Search and social metadata';
+    displayName: 'SEO';
+  };
+  attributes: {
+    metaDescription: Schema.Attribute.Text;
+    metaKeywords: Schema.Attribute.String;
+    metaTitle: Schema.Attribute.String;
+    ogImage: Schema.Attribute.Media<'images'>;
+    structuredData: Schema.Attribute.JSON;
+  };
+}
+
+export interface SharedShowroomSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_showroom_sections';
+  info: {
+    description: 'Homepage showroom block with reusable showroom records';
+    displayName: 'Showroom Section';
+  };
+  attributes: {
+    appointmentLabel: Schema.Attribute.String;
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    description: Schema.Attribute.Text;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
+    sectionTitle: Schema.Attribute.String;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    showrooms: Schema.Attribute.Relation<'oneToMany', 'api::showroom.showroom'>;
+    welcomeNote: Schema.Attribute.Text;
+  };
+}
+
+export interface SharedSidebarNavigationItem extends Struct.ComponentSchema {
+  collectionName: 'components_shared_sidebar_navigation_items';
+  info: {
+    description: 'Link displayed in the sidebar navigation';
+    displayName: 'Sidebar Navigation Item';
+  };
+  attributes: {
+    label: Schema.Attribute.String & Schema.Attribute.Required;
+    sectionId: Schema.Attribute.String & Schema.Attribute.Required;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+  };
+}
+
+export interface SharedSizeRow extends Struct.ComponentSchema {
+  collectionName: 'components_shared_size_rows';
+  info: {
+    displayName: 'Size Row';
+    icon: 'align-justify';
+  };
+  attributes: {
+    circumference: Schema.Attribute.String;
+    diameter: Schema.Attribute.String;
+    groupLabel: Schema.Attribute.String;
+    sizeLabel: Schema.Attribute.String;
+  };
+}
+
+export interface SharedSkillItems extends Struct.ComponentSchema {
+  collectionName: 'components_shared_skill_items';
+  info: {
+    displayName: 'Skill items';
+  };
+  attributes: {
+    SkillName: Schema.Attribute.String;
+  };
+}
+
+export interface SharedStoreLocationFilter extends Struct.ComponentSchema {
+  collectionName: 'components_shared_store_location_filters';
+  info: {
+    description: 'A selectable state or city displayed below the store search';
+    displayName: 'Store Location Filter';
+  };
+  attributes: {
+    icon: Schema.Attribute.Component<'shared.image-asset', false>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    label: Schema.Attribute.String & Schema.Attribute.Required;
+    value: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedSunnyPromiseSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_sunny_promise_sections';
+  info: {
+    description: 'Sunny Promise Section with Title, Video, Description, and CTA';
+    displayName: 'Sunny Promise Section';
+  };
+  attributes: {
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    description: Schema.Attribute.Text;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String;
+    video: Schema.Attribute.Component<'shared.video-asset', false>;
+  };
+}
+
+export interface SharedTag extends Struct.ComponentSchema {
+  collectionName: 'components_shared_tags';
+  info: {
+    displayName: 'Tag';
+    icon: 'tag';
+  };
+  attributes: {
+    label: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedTeamMember extends Struct.ComponentSchema {
+  collectionName: 'components_shared_team_members';
+  info: {
+    description: 'Profile card details for a team member';
+    displayName: 'Team Member';
+  };
+  attributes: {
+    bio: Schema.Attribute.Text;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    role: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedTeamSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_team_sections';
+  info: {
+    description: 'Displays team members in grid, list, or carousel layouts';
+    displayName: 'Team Section';
+  };
+  attributes: {
+    displayStyle: Schema.Attribute.Enumeration<['grid', 'list', 'carousel']> &
+      Schema.Attribute.DefaultTo<'grid'>;
+    heading: Schema.Attribute.String & Schema.Attribute.Required;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    subheading: Schema.Attribute.Text;
+    teamMember: Schema.Attribute.Component<'shared.team-member', true>;
+  };
+}
+
+export interface SharedTimeSlot extends Struct.ComponentSchema {
+  collectionName: 'components_shared_time_slots';
+  info: {
+    displayName: 'Time Slot';
+  };
+  attributes: {
+    timeString: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedTimelineMilestone extends Struct.ComponentSchema {
+  collectionName: 'components_shared_timeline_milestones';
+  info: {
+    description: 'Key milestone event card';
+    displayName: 'Timeline Milestone';
+  };
+  attributes: {
+    body: Schema.Attribute.Text & Schema.Attribute.Required;
+    heading: Schema.Attribute.String & Schema.Attribute.Required;
+    icon: Schema.Attribute.Component<'shared.image-asset', false>;
+    year: Schema.Attribute.Integer & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedTimelineSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_timeline_sections';
+  info: {
+    description: 'Historical context milestone engine';
+    displayName: 'Timeline Section';
+  };
+  attributes: {
+    backgroundImage: Schema.Attribute.Component<'shared.image-asset', false>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    timelineMilestone: Schema.Attribute.Component<
+      'shared.timeline-milestone',
+      true
+    >;
+  };
+}
+
+export interface SharedTrustBadge extends Struct.ComponentSchema {
+  collectionName: 'components_shared_trust_badges';
+  info: {
+    description: 'Homepage trust strip item';
+    displayName: 'Trust Badge';
+  };
+  attributes: {
+    label: Schema.Attribute.String & Schema.Attribute.Required;
+    showField: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+  };
+}
+
+export interface SharedTrustBadgeItem extends Struct.ComponentSchema {
+  collectionName: 'components_shared_trust_badge_items';
+  info: {
+    description: 'Individual badge block';
+    displayName: 'Trust Badge Item';
+  };
+  attributes: {
+    icon: Schema.Attribute.Component<'shared.image-asset', false>;
+    label: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedTrustBadgesSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_trust_badges_sections';
+  info: {
+    description: 'Grid panel of certificates, badges or security icons';
+    displayName: 'Trust Badges Section';
+  };
+  attributes: {
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    trustBadge: Schema.Attribute.Component<'shared.trust-badge-item', true>;
+  };
+}
+
+export interface SharedVideoAsset extends Struct.ComponentSchema {
+  collectionName: 'components_shared_video_assets';
+  info: {
+    description: 'Video component with fallback alternative text';
+    displayName: 'Video Asset';
+  };
+  attributes: {
+    heroVideo: Schema.Attribute.Media<'videos'>;
+  };
+}
+
+export interface SupportContactOption extends Struct.ComponentSchema {
+  collectionName: 'components_support_contact_options';
+  info: {
+    description: 'A call, email, or link action displayed in a contact section';
+    displayName: 'Support Contact Option';
+  };
+  attributes: {
+    buttonLabel: Schema.Attribute.String;
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    description: Schema.Attribute.Text;
+    heading: Schema.Attribute.String & Schema.Attribute.Required;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    type: Schema.Attribute.Enumeration<['phone', 'email', 'link']> &
+      Schema.Attribute.Required;
+  };
+}
+
+export interface SupportContactSection extends Struct.ComponentSchema {
+  collectionName: 'components_support_contact_sections';
+  info: {
+    description: 'Contact options for the Help & Support page';
+    displayName: 'Support Contact Section';
+  };
+  attributes: {
+    contactOptions: Schema.Attribute.Component<'support.contact-option', true> &
+      Schema.Attribute.Required;
+    heading: Schema.Attribute.String;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+  };
+}
+
+declare module '@strapi/strapi' {
+  export module Public {
+    export interface ComponentSchemas {
+      'career.apply-cta': CareerApplyCta;
+      'career.career-discover-section': CareerCareerDiscoverSection;
+      'career.job-description': CareerJobDescription;
+      'career.job-description-section': CareerJobDescriptionSection;
+      'career.qualifications-and-experience': CareerQualificationsAndExperience;
+      'diamonds-for-everyone.hero-section': DiamondsForEveryoneHeroSection;
+      'diamonds-for-everyone.investment-planner-section': DiamondsForEveryoneInvestmentPlannerSection;
+      'diamonds-for-everyone.plan-intro-section': DiamondsForEveryonePlanIntroSection;
+      'diamonds-for-everyone.stepper-step': DiamondsForEveryoneStepperStep;
+      'diamonds-for-everyone.success-screen': DiamondsForEveryoneSuccessScreen;
+      'gifting.finishing-touch-section': GiftingFinishingTouchSection;
+      'gifting.gift-card-section': GiftingGiftCardSection;
+      'gifting.gift-finder-section': GiftingGiftFinderSection;
+      'gifting.hero-section': GiftingHeroSection;
+      'gifting.intro-section': GiftingIntroSection;
+      'gifting.occasion-cta': GiftingOccasionCta;
+      'gifting.occasion-grid-section': GiftingOccasionGridSection;
+      'gifting.perfect-gift-section': GiftingPerfectGiftSection;
+      'gifting.service-card': GiftingServiceCard;
+      'shared.bespoke-custom-design-form': SharedBespokeCustomDesignForm;
+      'shared.bespoke-for-you-section': SharedBespokeForYouSection;
+      'shared.bespoke-get-in-touch-section': SharedBespokeGetInTouchSection;
+      'shared.bespoke-hero': SharedBespokeHero;
+      'shared.bespoke-service-highlight': SharedBespokeServiceHighlight;
+      'shared.bespoke-vision-card': SharedBespokeVisionCard;
+      'shared.bespoke-vision-section': SharedBespokeVisionSection;
+      'shared.blog-page-filter': SharedBlogPageFilter;
+      'shared.blog-page-hero': SharedBlogPageHero;
+      'shared.brand-tagline-section': SharedBrandTaglineSection;
+      'shared.brilliance-section': SharedBrillianceSection;
+      'shared.c-info-panel': SharedCInfoPanel;
+      'shared.c-visual-panel': SharedCVisualPanel;
+      'shared.career-hero-section': SharedCareerHeroSection;
+      'shared.carousel-image': SharedCarouselImage;
+      'shared.category-card': SharedCategoryCard;
+      'shared.category-items': SharedCategoryItems;
+      'shared.cert-lab-card': SharedCertLabCard;
+      'shared.certificate-section': SharedCertificateSection;
+      'shared.collection-showcase-section': SharedCollectionShowcaseSection;
+      'shared.contact-option': SharedContactOption;
+      'shared.contact-support-section': SharedContactSupportSection;
+      'shared.content-section': SharedContentSection;
+      'shared.craft-mosaic-section': SharedCraftMosaicSection;
+      'shared.craft-section': SharedCraftSection;
+      'shared.crafting-brilliance-section': SharedCraftingBrillianceSection;
+      'shared.cta': SharedCta;
+      'shared.cta-banner': SharedCtaBanner;
+      'shared.diamond-sourcing-section': SharedDiamondSourcingSection;
+      'shared.diamonds-for-everyone-section': SharedDiamondsForEveryoneSection;
+      'shared.diamonds-step': SharedDiamondsStep;
+      'shared.dropdown-option': SharedDropdownOption;
+      'shared.editorial-section': SharedEditorialSection;
+      'shared.faq-item': SharedFaqItem;
+      'shared.faq-section': SharedFaqSection;
+      'shared.feature-slide': SharedFeatureSlide;
+      'shared.featured-blog-section': SharedFeaturedBlogSection;
+      'shared.featured-products-cta': SharedFeaturedProductsCta;
+      'shared.featured-products-section': SharedFeaturedProductsSection;
+      'shared.featured-stories-section': SharedFeaturedStoriesSection;
+      'shared.featured-story-card': SharedFeaturedStoryCard;
+      'shared.features-career-section': SharedFeaturesCareerSection;
+      'shared.filter-category': SharedFilterCategory;
+      'shared.footer-link-group': SharedFooterLinkGroup;
+      'shared.footer-ticker-item': SharedFooterTickerItem;
+      'shared.form-field': SharedFormField;
+      'shared.four-cs-section': SharedFourCsSection;
+      'shared.generic-form-section': SharedGenericFormSection;
+      'shared.gifting-banner': SharedGiftingBanner;
+      'shared.grade-stop': SharedGradeStop;
+      'shared.grade-stop-image-asset': SharedGradeStopImageAsset;
+      'shared.hero-section': SharedHeroSection;
+      'shared.homepage-hero': SharedHomepageHero;
+      'shared.image-asset': SharedImageAsset;
+      'shared.indian-state': SharedIndianState;
+      'shared.info-card': SharedInfoCard;
+      'shared.investing-career-section': SharedInvestingCareerSection;
+      'shared.job-additional-info': SharedJobAdditionalInfo;
+      'shared.job-education-details': SharedJobEducationDetails;
+      'shared.job-personal-details': SharedJobPersonalDetails;
+      'shared.job-skills': SharedJobSkills;
+      'shared.job-work-experience': SharedJobWorkExperience;
+      'shared.learn-more-feature-group': SharedLearnMoreFeatureGroup;
+      'shared.learn-more-section': SharedLearnMoreSection;
+      'shared.learn-more-tab': SharedLearnMoreTab;
+      'shared.legacy-image-block': SharedLegacyImageBlock;
+      'shared.legacy-section': SharedLegacySection;
+      'shared.link-item': SharedLinkItem;
+      'shared.listing-filter-section': SharedListingFilterSection;
+      'shared.listing-hero-section': SharedListingHeroSection;
+      'shared.modal-cta': SharedModalCta;
+      'shared.more-than-section': SharedMoreThanSection;
+      'shared.mosaic-tile': SharedMosaicTile;
+      'shared.occasion-section': SharedOccasionSection;
+      'shared.openings-career-section': SharedOpeningsCareerSection;
+      'shared.page-intro': SharedPageIntro;
+      'shared.policy-accordion-item': SharedPolicyAccordionItem;
+      'shared.policy-category': SharedPolicyCategory;
+      'shared.policy-entry': SharedPolicyEntry;
+      'shared.policy-page-header': SharedPolicyPageHeader;
+      'shared.process-section': SharedProcessSection;
+      'shared.process-step': SharedProcessStep;
+      'shared.product-sku': SharedProductSku;
+      'shared.profile-side-tab': SharedProfileSideTab;
+      'shared.profile-trust-badge-section': SharedProfileTrustBadgeSection;
+      'shared.promo-card': SharedPromoCard;
+      'shared.seo': SharedSeo;
+      'shared.showroom-section': SharedShowroomSection;
+      'shared.sidebar-navigation-item': SharedSidebarNavigationItem;
+      'shared.size-row': SharedSizeRow;
+      'shared.skill-items': SharedSkillItems;
+      'shared.store-location-filter': SharedStoreLocationFilter;
+      'shared.sunny-promise-section': SharedSunnyPromiseSection;
+      'shared.tag': SharedTag;
+      'shared.team-member': SharedTeamMember;
+      'shared.team-section': SharedTeamSection;
+      'shared.time-slot': SharedTimeSlot;
+      'shared.timeline-milestone': SharedTimelineMilestone;
+      'shared.timeline-section': SharedTimelineSection;
+      'shared.trust-badge': SharedTrustBadge;
+      'shared.trust-badge-item': SharedTrustBadgeItem;
+      'shared.trust-badges-section': SharedTrustBadgesSection;
+      'shared.video-asset': SharedVideoAsset;
+      'support.contact-option': SupportContactOption;
+      'support.contact-section': SupportContactSection;
+    }
+  }
+}

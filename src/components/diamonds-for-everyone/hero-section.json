@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_dfe_hero_sections",
+  "info": {
+    "displayName": "Diamonds for Everyone Hero",
+    "description": "Full-width hero for the Diamonds for Everyone page"
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "eyebrow": {
+      "type": "string"
+    },
+    "backgroundImage": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "showField": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

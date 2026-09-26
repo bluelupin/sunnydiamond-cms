@@ -1,0 +1,8 @@
+{
+  "collectionName": "components_gifting_occasion_grid_sections",
+  "info": { "displayName": "Gifting Occasion Grid Section", "description": "Mosaic sourced from Occasion collection records" },
+  "attributes": {
+    "occasions": { "type": "relation", "relation": "oneToMany", "target": "api::occasion.occasion" },
+    "showField": { "type": "boolean", "default": true }
+  }
+}

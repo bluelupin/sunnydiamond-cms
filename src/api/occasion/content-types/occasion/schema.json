@@ -1,0 +1,63 @@
+{
+  "kind": "collectionType",
+  "collectionName": "occasions",
+  "info": {
+    "displayName": "Occasion",
+    "singularName": "occasion",
+    "pluralName": "occasions"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "filterSlug": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "image": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "cta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "gifting.occasion-cta",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "showField": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

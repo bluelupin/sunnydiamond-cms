@@ -1,0 +1,39 @@
+{
+  "collectionName": "components_shared_process_sections",
+  "info": {
+    "displayName": "Process Section",
+    "description": "Editorial process block with repeatable steps"
+  },
+  "attributes": {
+    "sectionTitle": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "image": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "backgroundImage": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "steps": {
+      "type": "component",
+      "component": "shared.process-step",
+      "repeatable": true
+    },
+    "cta": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": false
+    },
+    "showField": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

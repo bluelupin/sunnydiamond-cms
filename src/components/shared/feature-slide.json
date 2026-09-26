@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_shared_feature_slides",
+  "info": {
+    "displayName": "Feature Slide",
+    "description": "Slide entry for Brilliance Section"
+  },
+  "options": {},
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "required": true
+    },
+    "body": {
+      "type": "text",
+      "required": true
+    },
+    "image": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset"
+    }
+  }
+}

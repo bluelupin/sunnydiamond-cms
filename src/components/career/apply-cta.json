@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_career_apply_ctas",
+  "info": {
+    "displayName": "Apply CTA",
+    "description": "Career application button"
+  },
+  "attributes": {
+    "label": {
+      "type": "string"
+    },
+    "targetType": {
+      "type": "enumeration",
+      "enum": [
+        "internal",
+        "external",
+        "magento"
+      ],
+      "default": "internal"
+    },
+    "openInNewTab": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

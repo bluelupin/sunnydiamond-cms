@@ -1,0 +1,49 @@
+{
+  "kind": "singleType",
+  "collectionName": "product_landing_pages",
+  "info": {
+    "singularName": "product-landing-page",
+    "pluralName": "product-landing-pages",
+    "displayName": "Product Landing Page"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "hero": {
+      "type": "component",
+      "component": "shared.hero-section",
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "trustBadges": {
+      "type": "component",
+      "component": "shared.process-step",
+      "repeatable": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "seo": {
+      "type": "component",
+      "component": "shared.seo",
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_shared_blog_page_filters",
+  "info": {
+    "displayName": "Blog page filter"
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string"
+    },
+    "value": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

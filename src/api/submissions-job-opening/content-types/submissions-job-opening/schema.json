@@ -1,0 +1,83 @@
+{
+  "kind": "collectionType",
+  "collectionName": "submissions_job_openings",
+  "info": {
+    "singularName": "submissions-job-opening",
+    "pluralName": "submissions-job-openings",
+    "displayName": "Submissions: Job Opening"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "jobID": {
+      "type": "string",
+      "required": true
+    },
+    "jobTitle": {
+      "type": "string",
+      "required": true
+    },
+    "experience": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "personalDetails": {
+      "type": "component",
+      "component": "shared.job-personal-details",
+      "repeatable": false,
+      "required": true
+    },
+    "educationDetails": {
+      "type": "component",
+      "component": "shared.job-education-details",
+      "repeatable": false,
+      "required": true
+    },
+    "workExperience": {
+      "type": "component",
+      "component": "shared.job-work-experience",
+      "repeatable": false,
+      "required": true
+    },
+    "skillsAndLanguages": {
+      "type": "component",
+      "component": "shared.job-skills",
+      "repeatable": false
+    },
+    "addInfo": {
+      "type": "component",
+      "component": "shared.job-additional-info",
+      "repeatable": false,
+      "required": true
+    },
+    "department": {
+      "type": "string"
+    },
+    "resume": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "files",
+        "images"
+      ]
+    },
+    "workflowStatus": {
+      "type": "enumeration",
+      "enum": [
+        "new",
+        "reviewing",
+        "shortlisted",
+        "rejected",
+        "hired"
+      ],
+      "default": "new",
+      "required": true
+    },
+    "internalNotes": {
+      "type": "text"
+    }
+  }
+}

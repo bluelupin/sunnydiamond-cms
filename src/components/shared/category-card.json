@@ -1,0 +1,32 @@
+{
+  "collectionName": "components_shared_category_cards",
+  "info": {
+    "displayName": "Category Card",
+    "description": "Homepage category navigation card"
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "hoverImage": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "cutoutImage": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "cta": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": false
+    },
+    "showField": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

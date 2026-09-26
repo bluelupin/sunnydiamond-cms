@@ -1,4 +1,28 @@
-// import type { Core } from '@strapi/strapi';
+import type { Core } from '@strapi/strapi';
+import { seedCms } from './utils/seeder';
+// import { repairHomepageSections } from './utils/repair-homepage-sections';
+import { registerFrontendRevalidation } from './utils/frontend-revalidation';
+import { migrateHomepage } from './utils/migrate-homepage';
+import { migrateGradeStopImages } from './utils/migrate-grade-stop-images';
+import { seedBlogPosts } from './utils/blog-seeder';
+import { seedBlogCategories } from './utils/seed-blog-categories';
+import { migrateCareerOpeningCkeditor } from './utils/migrate-career-opening-ckeditor';
+import { seedCareerOpenings } from './utils/career-opening-seeder';
+import { configureBlogPostList } from './utils/configure-blog-post-list';
+import { configureBlogTagForm } from './utils/configure-blog-tag-form';
+import { configureShowroomForm } from './utils/configure-showroom-form';
+import { configureProductSubmissionTracker } from './utils/configure-product-submission-tracker';
+import { configureAppointmentHistory } from './utils/configure-appointment-history';
+import { migrateCareerApplyCta } from './utils/migrate-career-apply-cta';
+import { migrateOccasionCta } from './utils/migrate-occasion-cta';
+import { migrateSupportContactSection } from './utils/migrate-support-contact-section';
+import { migrateHomeTrialAppointments } from './utils/migrate-home-trial-appointments';
+import { registerReachOutSubmissionProtection } from './utils/protect-reach-out-submissions';
+import { registerAdminRescheduleEmail } from './utils/appointment-reschedule-email';
+import { registerCareerSubmissionProtection } from './utils/protect-career-submissions';
+import { backfillAppointmentReferences } from './utils/appointment-reference';
+import { registerCareerOpeningSlug } from './utils/career-opening-slug';
+// import { cleanStaleAdminPermissions } from './utils/clean-stale-admin-permissions';
 
 export default {
   /**
@@ -7,7 +31,12 @@ export default {
    *
    * This gives you an opportunity to extend code.
    */
-  register(/* { strapi }: { strapi: Core.Strapi } */) {},
+  register({ strapi }: { strapi: Core.Strapi }) {
+    registerCareerOpeningSlug(strapi);
+    registerReachOutSubmissionProtection(strapi);
+    registerAdminRescheduleEmail(strapi);
+    registerCareerSubmissionProtection(strapi);
+  },
 
   /**
    * An asynchronous bootstrap function that runs before
@@ -16,5 +45,44 @@ export default {
    * This gives you an opportunity to set up your data model,
    * run jobs, or perform some special logic.
    */
-  bootstrap(/* { strapi }: { strapi: Core.Strapi } */) {},
+  async bootstrap({ strapi }: { strapi: Core.Strapi }) {
+    await backfillAppointmentReferences(strapi);
+    await migrateOccasionCta(strapi);
+    await migrateCareerApplyCta(strapi);
+    await migrateSupportContactSection(strapi);
+    await configureBlogPostList(strapi);
+    await configureBlogTagForm(strapi);
+    await configureShowroomForm(strapi);
+    await configureProductSubmissionTracker(strapi);
+    await configureAppointmentHistory(strapi);
+    if (process.env.MIGRATE_HOME_TRIAL_APPOINTMENTS === 'true') {
+      const report = await migrateHomeTrialAppointments(strapi, {
+        dryRun: process.env.MIGRATE_HOME_TRIAL_APPOINTMENTS_DRY_RUN !== 'false',
+      });
+      strapi.log.info(`Home-trial appointment migration: ${JSON.stringify(report)}`);
+    }
+    // await cleanStaleAdminPermissions(strapi);
+    registerFrontendRevalidation(strapi);
+    if (process.env.CMS_SEED_ENABLED === 'true') {
+      await seedCms(strapi);
+    }
+    if (process.env.MIGRATE_HOMEPAGE && process.env.MIGRATE_HOMEPAGE === 'true') {
+      await migrateHomepage(strapi);
+    }
+    if (process.env.MIGRATE_GRADE_STOP_IMAGES === 'true') {
+      await migrateGradeStopImages(strapi);
+    }
+    if (process.env.BLOG_SEED_ENABLED === 'true') {
+      await seedBlogPosts(strapi);
+    }
+    if (process.env.BLOG_CATEGORY_SEED_ENABLED === 'true') {
+      await seedBlogCategories(strapi);
+    }
+    if (process.env.MIGRATE_CAREER_OPENING_CKEDITOR === 'true') {
+      await migrateCareerOpeningCkeditor(strapi);
+    }
+    if (process.env.CAREER_OPENING_SEED_ENABLED === 'true') {
+      await seedCareerOpenings(strapi);
+    }
+  },
 };

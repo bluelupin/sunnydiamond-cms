@@ -1,0 +1,32 @@
+{
+  "collectionName": "components_shared_diamond_sourcings",
+  "info": {
+    "displayName": "Diamond Sourcing Section",
+    "description": "Diamond Sourcing Section with GIF/Image, title, cutout, and background"
+  },
+  "options": {},
+  "attributes": {
+    "gifOrImage": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset"
+    },
+    "title": {
+      "type": "string"
+    },
+    "cutoutImage": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset"
+    },
+    "backgroundImage": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset"
+    },
+    "showField": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_shared_legacy_sections",
+  "info": {
+    "displayName": "Legacy Section",
+    "description": "Legacy gallery with descriptions and images"
+  },
+  "options": {},
+  "attributes": {
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
+    "heading": {
+      "type": "string",
+      "required": true
+    },
+    "legacyImageBlock": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.legacy-image-block"
+    }
+  }
+}

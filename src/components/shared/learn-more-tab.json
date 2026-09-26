@@ -1,0 +1,47 @@
+{
+  "collectionName": "components_shared_learn_more_tab_subs",
+  "info": {
+    "displayName": "Learn More Tab",
+    "description": "Individual contextual tab details with item carousels"
+  },
+  "options": {},
+  "attributes": {
+    "tabLabel": {
+      "type": "enumeration",
+      "default": "SHAPE",
+      "enum": [
+        "SHAPE",
+        "FANCY_COLOUR",
+        "DIAMOND_ANATOMY",
+        "DIAMOND_CARE"
+      ]
+    },
+    "layoutType": {
+      "type": "enumeration",
+      "enum": [
+        "Carousel",
+        "Image Feature List",
+        "Feature List"
+      ]
+    },
+    "tabDescription": {
+      "type": "text",
+      "required": true
+    },
+    "carouselImage": {
+      "type": "component",
+      "component": "shared.carousel-image",
+      "repeatable": true
+    },
+    "featureImage": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "featureGroups": {
+      "type": "component",
+      "component": "shared.learn-more-feature-group",
+      "repeatable": true
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "collectionName": "components_shared_page_intro_roots",
+  "info": {
+    "displayName": "Page Intro",
+    "description": "Intro heading, body description, and decorative asset"
+  },
+  "options": {},
+  "attributes": {
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
+    "heading": {
+      "type": "string",
+      "required": true
+    },
+    "body": {
+      "type": "text",
+      "required": true
+    },
+    "decorativeImage": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "fourCsTags": {
+      "type": "component",
+      "component": "shared.trust-badge",
+      "repeatable": true
+    }
+  }
+}

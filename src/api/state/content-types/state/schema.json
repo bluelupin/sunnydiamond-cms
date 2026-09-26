@@ -1,0 +1,18 @@
+{
+  "kind": "collectionType",
+  "collectionName": "states",
+  "info": {
+    "singularName": "state",
+    "pluralName": "states",
+    "displayName": "Indian States"
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "code": {
+      "type": "string"
+    }
+  }
+}

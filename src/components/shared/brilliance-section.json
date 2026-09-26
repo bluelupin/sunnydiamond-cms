@@ -1,0 +1,24 @@
+{
+  "collectionName": "components_shared_brilliance_sections",
+  "info": {
+    "displayName": "Brilliance Section",
+    "description": "Pinned/sticky scroll section with feature slides"
+  },
+  "options": {},
+  "attributes": {
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
+    "pinnedImage": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset"
+    },
+    "featureSlide": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.feature-slide"
+    }
+  }
+}

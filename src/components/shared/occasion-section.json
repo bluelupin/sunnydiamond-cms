@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_shared_occasion_sections",
+  "info": {
+    "displayName": "Occasion Section",
+    "description": "Homepage occasion block with reusable occasion records"
+  },
+  "attributes": {
+    "sectionTitle": {
+      "type": "string"
+    },
+    "occasions": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::occasion.occasion"
+    },
+    "showField": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

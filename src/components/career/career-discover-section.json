@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_career_career_discover_sections",
+  "info": {
+    "displayName": "Career Discover Section"
+  },
+  "options": {},
+  "attributes": {
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "backgroundImage": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "cta": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": false
+    }
+  },
+  "config": {}
+}

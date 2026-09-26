@@ -1,0 +1,39 @@
+{
+  "collectionName": "components_shared_cta_banner_roots",
+  "info": {
+    "displayName": "CTA Banner",
+    "description": "Action banner with deep call to action redirection"
+  },
+  "options": {},
+  "attributes": {
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
+    "backgroundImage": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "heading": {
+      "type": "string",
+      "required": true
+    },
+    "subheading": {
+      "type": "string"
+    },
+    "steps": {
+      "type": "component",
+      "component": "shared.process-step",
+      "repeatable": true
+    },
+    "ctaButtonLabel": {
+      "type": "string",
+      "required": true
+    },
+    "ctaButtonUrl": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

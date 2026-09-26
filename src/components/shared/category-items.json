@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_shared_category_items",
+  "info": {
+    "displayName": "Category Items"
+  },
+  "options": {},
+  "attributes": {
+    "ItemName": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

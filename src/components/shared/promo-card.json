@@ -1,0 +1,43 @@
+{
+  "collectionName": "components_shared_promo_cards",
+  "info": {
+    "displayName": "Promo Card",
+    "description": "Editorial promotional card"
+  },
+  "attributes": {
+    "eyebrowText": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "video": {
+      "type": "component",
+      "component": "shared.video-asset",
+      "repeatable": false
+    },
+    "image": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "cta": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": false
+    },
+    "steps": {
+      "type": "component",
+      "component": "shared.process-step",
+      "repeatable": true
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

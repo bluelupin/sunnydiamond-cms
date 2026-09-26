@@ -1,0 +1,38 @@
+{
+  "collectionName": "components_shared_diamonds_for_everyones",
+  "info": {
+    "displayName": "Diamonds for Everyone Section",
+    "description": "Diamonds for Everyone Section with eyebrow, title, subtitle, repeatable steps, and CTA"
+  },
+  "options": {},
+  "attributes": {
+    "eyebrow": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "subtitle": {
+      "type": "string"
+    },
+    "steps": {
+      "type": "component",
+      "component": "shared.diamonds-step",
+      "repeatable": true
+    },
+    "cta": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": false
+    },
+    "showField": {
+      "type": "boolean",
+      "default": true
+    },
+    "backgroundImage": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    }
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "kind": "singleType",
+  "collectionName": "global_configs",
+  "info": {
+    "singularName": "global-config",
+    "pluralName": "global-configs",
+    "displayName": "Global Config"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "brandIdentity": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.brand-tagline-section",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "headerNavigationLinks": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.link-item",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "sidebarNavigation": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.sidebar-navigation-item",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "footerLinkGroups": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.footer-link-group",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "footerTickerItems": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.footer-ticker-item",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "socialLinks": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.link-item",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "paymentMethodLogos": {
+      "type": "media",
+      "multiple": true
+    },
+    "footerCopyright": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "defaultSeo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    }
+  }
+}

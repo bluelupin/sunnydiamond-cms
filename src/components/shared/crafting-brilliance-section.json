@@ -1,0 +1,32 @@
+{
+  "collectionName": "components_shared_crafting_brilliances",
+  "info": {
+    "displayName": "Crafting Brilliance Section",
+    "description": "Crafting Brilliance Section with background, cutout image, title, and CTA"
+  },
+  "options": {},
+  "attributes": {
+    "backgroundImage": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset"
+    },
+    "cutoutImage": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset"
+    },
+    "title": {
+      "type": "string"
+    },
+    "cta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
+    },
+    "showField": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

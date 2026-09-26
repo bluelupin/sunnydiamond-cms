@@ -1,0 +1,20 @@
+{
+  "kind": "collectionType",
+  "collectionName": "blog_tags",
+  "info": {
+    "singularName": "blog-tag",
+    "pluralName": "blog-tags",
+    "displayName": "Blog Tag",
+    "description": "Reusable tags for finding related blogs"
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "label": { "type": "string", "required": true, "maxLength": 255 },
+    "normalizedLabel": {
+      "type": "string",
+      "unique": true,
+      "private": true,
+      "pluginOptions": { "content-manager": { "visible": false }, "content-type-builder": { "visible": false } }
+    }
+  }
+}

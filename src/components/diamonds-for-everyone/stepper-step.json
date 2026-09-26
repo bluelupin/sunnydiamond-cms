@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_dfe_stepper_steps",
+  "info": {
+    "displayName": "Stepper Step",
+    "description": "Ordered step label for the investment account stepper"
+  },
+  "attributes": {
+    "stepId": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

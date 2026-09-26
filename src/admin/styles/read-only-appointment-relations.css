@@ -1,0 +1,29 @@
+/* Keep native relation links and pagination, but omit the disabled disconnect
+   action on product appointment fields and history's affected products.
+   The relation widget has two children:
+   its input block and its virtualized list. Target that list's trailing action
+   box, without relying on translated labels or affecting other relation fields. */
+div:has(> div:first-child input[name="appointmentGroup"], > div:first-child input[name="appointmentChanges"], > div:first-child input[name="affectedSubmissions"])
+  > div:nth-child(2):last-child > div > ol > li > div > div:last-child:has(button[aria-disabled="true"], button:disabled) {
+  display: none;
+}
+
+/* Submitted showroom selections are displayed without relation edit actions. */
+div:has(> div:first-child input[name="preferredShowroom"][aria-disabled="true"], > div:first-child input[name="preferredShowroom"]:disabled)
+  > div:nth-child(2):last-child > div > ol > li > div > div:last-child:has(button[aria-disabled="true"], button:disabled) {
+  display: none;
+}
+
+div:has(> div:first-child input[name="preferredShowroom"][aria-disabled="true"], > div:first-child input[name="preferredShowroom"]:disabled)
+  > div:first-child > div:has(> div > label)
+  > div:has(input[name="preferredShowroom"]) {
+  display: none;
+}
+
+/* Omit the relation picker, including its Add/Create actions, while keeping
+   the field label, existing relation links and Load More control visible. */
+div:has(> div:first-child input[name="appointmentGroup"], > div:first-child input[name="appointmentChanges"], > div:first-child input[name="affectedSubmissions"])
+  > div:first-child > div:has(> div > label)
+  > div:has(input[name="appointmentGroup"], input[name="appointmentChanges"], input[name="affectedSubmissions"]) {
+  display: none;
+}

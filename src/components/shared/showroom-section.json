@@ -1,0 +1,45 @@
+{
+  "collectionName": "components_shared_showroom_sections",
+  "info": {
+    "displayName": "Showroom Section",
+    "description": "Homepage showroom block with reusable showroom records"
+  },
+  "attributes": {
+    "sectionTitle": {
+      "type": "string"
+    },
+    "welcomeNote": {
+      "type": "text"
+    },
+    "description": {
+      "type": "text"
+    },
+    "image": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "backgroundImage": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "appointmentLabel": {
+      "type": "string"
+    },
+    "cta": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": false
+    },
+    "showrooms": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::showroom.showroom"
+    },
+    "showField": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

@@ -1,0 +1,153 @@
+{
+  "kind": "collectionType",
+  "collectionName": "product_submissions",
+  "info": {
+    "singularName": "product-submission",
+    "pluralName": "product-submissions",
+    "displayName": "Submissions: Product"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "formTag": {
+      "type": "string",
+      "required": true
+    },
+    "productName": {
+      "type": "string",
+      "required": true
+    },
+    "productId": {
+      "type": "string"
+    },
+    "customerName": {
+      "type": "string",
+      "required": true
+    },
+    "customerPhone": {
+      "type": "string",
+      "required": true
+    },
+    "customerEmail": {
+      "type": "email"
+    },
+    "magentoCustomerId": {
+      "type": "integer",
+      "private": true
+    },
+    "requestedDate": {
+      "type": "date"
+    },
+    "selectedTimeSlot": {
+      "type": "string"
+    },
+    "appointmentReference": {
+      "type": "string",
+      "private": true
+    },
+    "rescheduleHistory": {
+      "type": "json",
+      "private": true
+    },
+    "addedPieces": {
+      "type": "json",
+      "private": true
+    },
+    "reminderSentForDate": {
+      "type": "date",
+      "private": true
+    },
+    "requestDetails": {
+      "type": "text"
+    },
+    "addressLine1": {
+      "type": "string"
+    },
+    "addressLine2": {
+      "type": "string"
+    },
+    "pincode": {
+      "type": "string"
+    },
+    "city": {
+      "type": "string"
+    },
+    "state": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::state.state"
+    },
+    "preferredShowroom": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::showroom.showroom"
+    },
+    "sourcePage": {
+      "type": "string"
+    },
+    "consentAccepted": {
+      "type": "boolean",
+      "default": false
+    },
+    "internalNotes": {
+      "type": "text"
+    },
+    "uploadedImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "workflowStatus": {
+      "type": "enumeration",
+      "default": "New",
+      "enum": [
+        "New",
+        "Contacted",
+        "Scheduled",
+        "Visited",
+        "Closed",
+        "Cancelled"
+      ]
+    },
+    "appointmentGroup": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::appointment-group.appointment-group",
+      "inversedBy": "submissions",
+      "private": true
+    },
+    "appointmentChanges": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::appointment-change.appointment-change",
+      "mappedBy": "affectedSubmissions",
+      "private": true
+    }
+  },
+  "indexes": [
+    {
+      "name": "product_subs_customer_idx",
+      "columns": [
+        "magento_customer_id"
+      ]
+    },
+    {
+      "name": "product_subs_schedule_idx",
+      "columns": [
+        "requested_date",
+        "selected_time_slot"
+      ]
+    },
+    {
+      "name": "product_subs_customer_schedule_idx",
+      "columns": [
+        "magento_customer_id",
+        "requested_date",
+        "selected_time_slot"
+      ]
+    }
+  ]
+}

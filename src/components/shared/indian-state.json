@@ -1,0 +1,11 @@
+{
+  "collectionName": "components_shared_indian_states",
+  "info": {
+    "displayName": "Indian State",
+    "icon": "map-marker"
+  },
+  "attributes": {
+    "name": { "type": "string", "required": true },
+    "code": { "type": "string" }
+  }
+}

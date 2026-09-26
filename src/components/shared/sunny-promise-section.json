@@ -1,0 +1,35 @@
+{
+  "collectionName": "components_shared_sunny_promise_sections",
+  "info": {
+    "displayName": "Sunny Promise Section",
+    "description": "Sunny Promise Section with Title, Video, Description, and CTA"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "video": {
+      "type": "component",
+      "component": "shared.video-asset",
+      "repeatable": false
+    },
+    "description": {
+      "type": "text"
+    },
+    "cta": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": false
+    },
+    "showField": {
+      "type": "boolean",
+      "default": true
+    },
+    "image": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "collectionName": "components_shared_team_members",
+  "info": {
+    "displayName": "Team Member",
+    "description": "Profile card details for a team member"
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "role": {
+      "type": "string",
+      "required": true
+    },
+    "image": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset"
+    },
+    "bio": {
+      "type": "text"
+    }
+  }
+}

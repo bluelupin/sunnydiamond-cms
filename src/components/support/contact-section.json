@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_support_contact_sections",
+  "info": {
+    "displayName": "Support Contact Section",
+    "description": "Contact options for the Help & Support page"
+  },
+  "options": {},
+  "attributes": {
+    "heading": {
+      "type": "string"
+    },
+    "contactOptions": {
+      "type": "component",
+      "repeatable": true,
+      "component": "support.contact-option",
+      "required": true
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

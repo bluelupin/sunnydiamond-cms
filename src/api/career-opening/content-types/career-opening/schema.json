@@ -1,0 +1,127 @@
+{
+  "kind": "collectionType",
+  "collectionName": "career_openings",
+  "info": {
+    "singularName": "career-opening",
+    "pluralName": "career-openings",
+    "displayName": "Career Openings"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "slug": {
+      "type": "uid"
+    },
+    "title": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "required": true
+    },
+    "jobID": {
+      "type": "string",
+      "unique": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "required": true
+    },
+    "experience": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "location": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "department": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "employmentType": {
+      "type": "enumeration",
+      "default": "Full Time",
+      "enum": [
+        "Full Time",
+        "Part Time",
+        "Contract",
+        "Internship"
+      ]
+    },
+    "summary": {
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "applyCta": {
+      "type": "component",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "component": "career.apply-cta",
+      "repeatable": false
+    },
+    "linkedinCta": {
+      "type": "component",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "component": "shared.cta",
+      "repeatable": false
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
+    "seo": {
+      "type": "component",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "component": "shared.seo",
+      "repeatable": false
+    },
+    "jobDescription": {
+      "type": "component",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "component": "career.job-description",
+      "repeatable": false
+    }
+  }
+}

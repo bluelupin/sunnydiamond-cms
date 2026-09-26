@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_shared_learn_more_feature_groups",
+  "info": {
+    "displayName": "Learn More Feature Group",
+    "description": "Grouped feature subtitle and trust badge items"
+  },
+  "options": {},
+  "attributes": {
+    "featureSubtitle": {
+      "type": "text"
+    },
+    "featureItems": {
+      "type": "component",
+      "component": "shared.trust-badge-item",
+      "repeatable": true
+    }
+  }
+}

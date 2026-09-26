@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_shared_bespoke_heroes",
+  "info": {
+    "displayName": "Bespoke Hero",
+    "description": "Bespoke Jewellery page hero"
+  },
+  "options": {},
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "backgroundImage": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.image-asset",
+      "required": true
+    },
+    "showField": { "type": "boolean", "default": true }
+  }
+}

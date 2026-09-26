@@ -1,0 +1,41 @@
+{
+  "kind": "collectionType",
+  "collectionName": "appointment_groups",
+  "info": {
+    "singularName": "appointment-group",
+    "pluralName": "appointment-groups",
+    "displayName": "Appointment Groups"
+  },
+  "options": { "draftAndPublish": false },
+  "pluginOptions": {
+    "content-manager": { "visible": false }
+  },
+  "indexes": [
+    { "name": "appt_groups_customer_idx", "columns": ["magento_customer_id"] },
+    { "name": "appt_groups_schedule_idx", "columns": ["requested_date", "selected_time_slot"] },
+    { "name": "appt_groups_customer_schedule_idx", "columns": ["magento_customer_id", "requested_date", "selected_time_slot"] }
+  ],
+  "attributes": {
+    "magentoCustomerId": { "type": "integer", "private": true },
+    "requestedDate": { "type": "date" },
+    "selectedTimeSlot": { "type": "string" },
+    "appointmentReference": { "type": "string", "unique": true, "private": true },
+    "reminderSentForDate": { "type": "date", "private": true },
+    "activeScheduleKey": { "type": "string", "maxLength": 64, "unique": true, "private": true },
+    "workflowStatus": {
+      "type": "enumeration",
+      "enum": ["New", "Contacted", "Scheduled", "Visited", "Closed", "Cancelled"],
+      "default": "New"
+    },
+    "addressLine1": { "type": "string" },
+    "addressLine2": { "type": "string" },
+    "city": { "type": "string" },
+    "pincode": { "type": "string" },
+    "state": { "type": "relation", "relation": "manyToOne", "target": "api::state.state" },
+    "submissions": {
+      "type": "relation", "relation": "oneToMany",
+      "target": "api::product-submission.product-submission", "mappedBy": "appointmentGroup"
+    },
+    "mergedInto": { "type": "relation", "relation": "manyToOne", "target": "api::appointment-group.appointment-group" }
+  }
+}

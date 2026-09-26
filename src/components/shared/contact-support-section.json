@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_shared_contact_support_sections",
+  "info": {
+    "displayName": "Contact Support Section",
+    "description": "Contact strip displayed below the policy content"
+  },
+  "options": {},
+  "attributes": {
+    "heading": {
+      "type": "string"
+    },
+    "contactOptions": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.contact-option",
+      "required": true
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_shared_skill_items",
+  "info": {
+    "displayName": "Skill items"
+  },
+  "options": {},
+  "attributes": {
+    "SkillName": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

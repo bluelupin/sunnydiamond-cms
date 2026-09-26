@@ -1,15 +1,50 @@
 import type { Core } from '@strapi/strapi';
 
+const uploadMaxFileSize = Number(process.env.UPLOAD_MAX_FILE_SIZE || 25 * 1024 * 1024);
+const cdnHost = (process.env.CDN_URL || '').replace(/^https?:\/\//, '').split('/')[0];
+
 const config: Core.Config.Middlewares = [
   'strapi::logger',
   'strapi::errors',
-  'strapi::security',
+  {
+    name: 'strapi::security',
+    config: {
+      contentSecurityPolicy: {
+        useDefaults: true,
+        directives: {
+          'script-src': ["'self'", "'unsafe-inline'", 'https://cdn.ckeditor.com'],
+          'connect-src': ["'self'", 'https:', 'https://proxy-event.ckeditor.com'],
+          'frame-src': [
+            "'self'",
+            'https://www.youtube.com',
+            'https://www.youtube-nocookie.com',
+            'https://player.vimeo.com',
+            'https://open.spotify.com',
+          ],
+          'img-src': ["'self'", 'data:', 'blob:', 'market-assets.strapi.io', ...(cdnHost ? [cdnHost] : [])],
+          'media-src': ["'self'", 'data:', 'blob:', 'https:', 'market-assets.strapi.io', ...(cdnHost ? [cdnHost] : [])],
+        },
+      },
+    },
+  },
   'strapi::cors',
   'strapi::poweredBy',
   'strapi::query',
-  'strapi::body',
+  'global::resume-parser-admission',
+  {
+    name: 'strapi::body',
+    config: {
+      jsonLimit: '25mb',
+      formLimit: '25mb',
+      textLimit: '25mb',
+      formidable: {
+        maxFileSize: uploadMaxFileSize,
+      },
+    },
+  },
   'strapi::session',
   'strapi::favicon',
+  'global::admin-cache-control',
   'strapi::public',
 ];
 

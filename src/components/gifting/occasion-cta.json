@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_gifting_occasion_ctas",
+  "info": {
+    "displayName": "Occasion CTA",
+    "description": "Occasion button or link with an additional label"
+  },
+  "attributes": {
+    "label": { "type": "string" },
+    "additionalLabel": { "type": "string" },
+    "url": { "type": "string" },
+    "targetType": {
+      "type": "enumeration",
+      "enum": ["internal", "external", "magento"],
+      "default": "internal"
+    },
+    "openInNewTab": { "type": "boolean", "default": false }
+  }
+}

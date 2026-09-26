@@ -1,0 +1,38 @@
+{
+  "collectionName": "components_support_contact_options",
+  "info": {
+    "displayName": "Support Contact Option",
+    "description": "A call, email, or link action displayed in a contact section"
+  },
+  "options": {},
+  "attributes": {
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "phone",
+        "email",
+        "link"
+      ],
+      "required": true
+    },
+    "heading": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "buttonLabel": {
+      "type": "string"
+    },
+    "cta": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": false
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

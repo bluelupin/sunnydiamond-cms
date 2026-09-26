@@ -1,0 +1,45 @@
+{
+  "collectionName": "components_shared_editorial_sections",
+  "info": {
+    "displayName": "Editorial Section",
+    "description": "Editorial wrapper for product or content sections"
+  },
+  "attributes": {
+    "sectionTitle": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "video": {
+      "type": "component",
+      "component": "shared.video-asset",
+      "repeatable": false
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "bgImage": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "cutoutImage": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "cta": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": false
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

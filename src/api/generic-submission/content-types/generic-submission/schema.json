@@ -1,0 +1,65 @@
+{
+  "kind": "collectionType",
+  "collectionName": "generic_submissions",
+  "info": {
+    "singularName": "generic-submission",
+    "pluralName": "generic-submissions",
+    "displayName": "Submissions: Generic"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "formTag": {
+      "type": "string",
+      "required": true
+    },
+    "fullName": {
+      "type": "string",
+      "required": true
+    },
+    "email": {
+      "type": "email"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "preferredShowroom": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::showroom.showroom"
+    },
+    "preferredDate": {
+      "type": "date"
+    },
+    "selectedTimeSlot": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "text"
+    },
+    "reasonForContact": {
+      "type": "string"
+    },
+    "sourcePage": {
+      "type": "string"
+    },
+    "consentAccepted": {
+      "type": "boolean",
+      "default": false
+    },
+    "internalNotes": {
+      "type": "text"
+    },
+    "workflowStatus": {
+      "type": "enumeration",
+      "default": "New",
+      "enum": [
+        "New",
+        "Contacted",
+        "Closed"
+      ]
+    }
+  }
+}

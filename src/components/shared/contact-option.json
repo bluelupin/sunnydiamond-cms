@@ -1,0 +1,38 @@
+{
+  "collectionName": "components_shared_contact_options",
+  "info": {
+    "displayName": "Contact Option",
+    "description": "A call, email, or link action displayed in a contact section"
+  },
+  "options": {},
+  "attributes": {
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "phone",
+        "email",
+        "link"
+      ],
+      "required": true
+    },
+    "heading": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "availability": {
+      "type": "text"
+    },
+    "cta": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": false
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "name": "@ckeditor/strapi-plugin-ckeditor",
+  "version": "1.1.2",
+  "description": "CKEditor 5 - Official Integration for Strapi",
+  "strapi": {
+    "name": "ckeditor",
+    "description": "The rich text editor for every use case",
+    "kind": "plugin",
+    "displayName": "CKEditor"
+  },
+  "keywords": [
+    "strapi",
+    "ckeditor",
+    "ckeditor5",
+    "ckeditor 5",
+    "wysiwyg",
+    "rich text",
+    "editor"
+  ],
+  "files": [
+    "admin",
+    "server",
+    "strapi-admin.js",
+    "strapi-server.js"
+  ],
+  "peerDependencies": {
+    "@strapi/strapi": "^5.0.0 || ^5.0.0-beta || ^5.0.0-alpha || ^5.0.0-rc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/strapi-plugin-ckeditor.git"
+  },
+  "author": "CKSource (http://cksource.com/)",
+  "homepage": "https://market.strapi.io/plugins/@ckeditor-strapi-plugin-ckeditor",
+  "engines": {
+    "npm": ">=6.0.0"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@ckeditor/ckeditor5-react": "^9.3.0"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_shared_blog_page_heroes",
+  "info": {
+    "displayName": "Blog Landing Page Hero Section"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "backgroundImage": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "config": {}
+}

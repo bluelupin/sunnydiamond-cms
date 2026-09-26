@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_shared_product_skus",
+  "info": {
+    "displayName": "Product SKU",
+    "description": "Commerce product reference used by editorial collections"
+  },
+  "attributes": {
+    "sku": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

@@ -1,0 +1,169 @@
+{
+  "kind": "singleType",
+  "collectionName": "homepages",
+  "info": {
+    "singularName": "homepage",
+    "pluralName": "homepages",
+    "displayName": "Homepage"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "seo": {
+      "type": "component",
+      "component": "shared.seo",
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "hero": {
+      "type": "component",
+      "component": "shared.homepage-hero",
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "trustBadges": {
+      "type": "component",
+      "component": "shared.trust-badge",
+      "repeatable": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "craftingBrillianceSection": {
+      "type": "component",
+      "component": "shared.crafting-brilliance-section",
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "categoryCards": {
+      "type": "component",
+      "component": "shared.category-card",
+      "repeatable": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "diamondSourcingSection": {
+      "type": "component",
+      "component": "shared.diamond-sourcing-section",
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "featuredCollection": {
+      "type": "component",
+      "component": "shared.collection-showcase-section",
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "occasionSection": {
+      "type": "component",
+      "component": "shared.occasion-section",
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "featuredProducts": {
+      "type": "component",
+      "component": "shared.featured-products-section",
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "giftingBanner": {
+      "type": "component",
+      "component": "shared.gifting-banner",
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "sunnyPromise": {
+      "type": "component",
+      "component": "shared.sunny-promise-section",
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "bespokeForYou": {
+      "type": "component",
+      "component": "shared.bespoke-for-you-section",
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "diamondsForEveryone": {
+      "type": "component",
+      "component": "shared.diamonds-for-everyone-section",
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "craftsmanshipSection": {
+      "type": "component",
+      "component": "shared.process-section",
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "showroom": {
+      "type": "component",
+      "component": "shared.showroom-section",
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    }
+  }
+}
