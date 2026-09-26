@@ -1,5 +1,5 @@
 import { rm } from 'node:fs/promises';
-import { checkFormSubmissionRateLimit } from '../utils/form-submission-rate-limit';
+import { checkFormSubmissionRateLimit, clientIp } from '../utils/form-submission-rate-limit';
 
 const MAX_BODY_BYTES = 5 * 1024 * 1024 + 16 * 1024;
 let busy = false;
@@ -20,7 +20,7 @@ export default () => async (ctx: any, next: () => Promise<unknown>) => {
   }
   if (busy) ctx.throw(503, 'Resume parser is busy.');
 
-  const limit = checkFormSubmissionRateLimit(['resume-parser', ctx.ip]);
+  const limit = checkFormSubmissionRateLimit(['resume-parser', clientIp(ctx)]);
   if (!limit.allowed) {
     ctx.set('Retry-After', String(limit.retryAfterSeconds));
     ctx.throw(429, 'Too many resume parses. Try again later.');

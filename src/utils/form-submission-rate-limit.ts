@@ -1,3 +1,6 @@
+import { timingSafeEqual } from 'node:crypto';
+import { isIP } from 'node:net';
+
 type RateLimitEntry = {
   count: number;
   resetAt: number;
@@ -43,4 +46,26 @@ export const checkFormSubmissionRateLimit = (keyParts: Array<string | undefined>
 
   existing.count += 1;
   return { allowed: true, retryAfterSeconds: 0 };
+};
+
+const sameSecret = (given: string, expected: string) => {
+  const a = Buffer.from(given), b = Buffer.from(expected);
+  return a.length === b.length && timingSafeEqual(a, b);
+};
+
+/**
+ * The shopper's IP for rate limits. Every form reaches the CMS through the website server,
+ * so its forwarded IP counts, but only with the shared secret: the form routes are public
+ * and anyone could otherwise rotate a made-up IP past the limit. Otherwise nginx's
+ * X-Real-IP (port 1337 is not public), then the socket address.
+ */
+export const clientIp = (ctx: any): string => {
+  const header = (name: string) => {
+    const value = ctx.get?.(name)?.trim();
+    return value && isIP(value) ? value : undefined;
+  };
+  const secret = process.env.CMS_FORWARDED_IP_SECRET?.trim();
+  const given = ctx.get?.('x-sunny-forwarded-secret')?.trim();
+  const forwarded = secret && given && sameSecret(given, secret) ? header('x-sunny-client-ip') : undefined;
+  return forwarded ?? header('x-real-ip') ?? ctx.ip;
 };

@@ -1,5 +1,5 @@
 import { factories } from '@strapi/strapi';
-import { checkFormSubmissionRateLimit } from '../../../utils/form-submission-rate-limit';
+import { checkFormSubmissionRateLimit, clientIp } from '../../../utils/form-submission-rate-limit';
 import { requestLocale } from '../../../utils/request-locale';
 import { sendCustomCreationReceivedEmail } from '../../../utils/custom-creation-email';
 
@@ -39,7 +39,7 @@ export default factories.createCoreController(BESPOKE_SUBMISSION_UID as any, ({ 
     const email = stringOrUndefined(input.email)?.toLowerCase();
     const designVision = stringOrUndefined(input.designVision);
     const upload = firstFile(ctx.request.files);
-    const rateLimit = checkFormSubmissionRateLimit(['bespoke', ctx.ip]);
+    const rateLimit = checkFormSubmissionRateLimit(['bespoke', clientIp(ctx)]);
 
     if (!rateLimit.allowed) {
       ctx.set('Retry-After', String(rateLimit.retryAfterSeconds));

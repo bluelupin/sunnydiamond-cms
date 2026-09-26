@@ -97,6 +97,15 @@ const listed = find(await list(), b.documentId);
 check('AP-4 My Account lists both pieces', listed?.products?.map(p => p.productId).join() === 'C3-QA-RING,C3-QA-PENDANT');
 await reschedule(b.documentId, istDay(11), slot(visitForm));
 check('AP-4 reschedule keeps the pieces', find(await list(), b.documentId)?.products?.length === 2);
+const CLASH = /already have a store visit booked at this showroom/;
+const duplicate = await call('POST', '/product-submissions/submit', { ...asCustomer(), ...contact, formTag: 'product-store-visit',
+  preferredShowroom: kochi, requestedDate: istDay(11), selectedTimeSlot: slot(visitForm), productName: 'C3 QA ring', productId: 'C3-QA-RING2', sourcePage: '/jewellery' });
+check('Duplicate store visit at the same showroom and time refused', duplicate.status === 400 && CLASH.test(duplicate.message), `${duplicate.status} ${duplicate.message}`);
+const c = await book('product-store-visit', istDay(10), slot(visitForm), { preferredShowroom: kochi });
+const intoClash = await reschedule(c.documentId, istDay(11), slot(visitForm));
+check('Reschedule into another visit at the same showroom and time refused', intoClash.status === 400 &&
+  CLASH.test(intoClash.message), `${intoClash.status} ${intoClash.message}`);
+await cancel(c.documentId);
 const stranger = await addPiece(b.documentId, 'C3-QA-EARRING', customerId + 1);
 check('AP-4 another customer cannot add', stranger.status === 404, String(stranger.status));
 const badPath = await addPiece(b.documentId, 'C3-QA-EARRING', customerId, 'https://example.com/x');

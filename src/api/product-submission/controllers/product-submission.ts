@@ -1,6 +1,6 @@
 import { factories } from '@strapi/strapi';
 import { recordVideoCallChange } from '../../../utils/video-call-change-log';
-import { checkFormSubmissionRateLimit } from '../../../utils/form-submission-rate-limit';
+import { checkFormSubmissionRateLimit, clientIp } from '../../../utils/form-submission-rate-limit';
 import { requestLocale } from '../../../utils/request-locale';
 import { RESCHEDULABLE_FORM_TAGS, validateAppointmentSchedule, validateReschedulingWindow, appointmentToday, appointmentStartsAt,
   countScheduleChanges, MAX_RESCHEDULES, RESCHEDULE_LIMIT_MESSAGE, validAppointmentDate } from '../../../utils/appointment-schedule';
@@ -18,6 +18,7 @@ import { assignAppointmentReference } from '../../../utils/appointment-reference
 import { sendVideoCallConfirmationEmail, notifyVideoCallCancellationAfterCommit } from '../../../utils/video-call-appointment-email';
 import { sendProductPersonalisationConfirmationEmail } from '../../../utils/product-personalisation-confirmation-email';
 import { notifyPieceAddedAfterCommit } from '../../../utils/appointment-piece-email';
+import { storeVisitClash, STORE_VISIT_CLASH_MESSAGE } from '../../../utils/store-visit-clash';
 
 const PRODUCT_SUBMISSION_UID = 'api::product-submission.product-submission';
 const PRODUCT_FORM_UID = 'api::product-form.product-form';
@@ -93,7 +94,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     const customerPhone = phoneOrUndefined(input.customerPhone);
     const customerEmail = emailOrUndefined(input.customerEmail);
     const requestedDate = dateOrUndefined(input.requestedDate);
-    const rateLimit = checkFormSubmissionRateLimit(['product', ctx.ip, formTag]);
+    const rateLimit = checkFormSubmissionRateLimit(['product', clientIp(ctx), formTag]);
 
     if (!rateLimit.allowed) {
       ctx.set('Retry-After', String(rateLimit.retryAfterSeconds));
@@ -219,7 +220,14 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     const grouped = HOME_TRIAL_FORM_TAGS.includes(formTag)
       ? await createHomeTrialSubmission(strapi, submissionData)
       : undefined;
-    const entity = grouped?.entity ?? await strapi.documents(PRODUCT_SUBMISSION_UID as any).create({ data: submissionData } as any);
+    const entity = grouped?.entity ?? await strapi.db.transaction(async ({ trx }) => {
+      if (formTag === 'product-store-visit' && await storeVisitClash(strapi, trx, {
+        magentoCustomerId, showroom: preferredShowroomRef,
+        requestedDate, selectedTimeSlot: submissionData.selectedTimeSlot,
+      })) return undefined;
+      return strapi.documents(PRODUCT_SUBMISSION_UID as any).create({ data: submissionData } as any);
+    });
+    if (!entity) return ctx.badRequest(STORE_VISIT_CLASH_MESSAGE);
 
     if (upload) {
       await strapi.plugin('upload').service('upload').upload({
@@ -300,7 +308,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     const noteChanges = appointmentNoteChanges(input);
     if (noteChanges.error) return ctx.badRequest(noteChanges.error);
     if (!documentId) return ctx.badRequest('Appointment documentId is required.');
-    const rateLimit = checkFormSubmissionRateLimit(['reschedule', ctx.ip, documentId]);
+    const rateLimit = checkFormSubmissionRateLimit(['reschedule', clientIp(ctx), documentId]);
     if (!rateLimit.allowed) {
       ctx.set('Retry-After', String(rateLimit.retryAfterSeconds));
       return ctx.tooManyRequests('Too many rescheduling requests. Please try again later.');
@@ -345,6 +353,10 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       if (scheduleChanged && countScheduleChanges(appointment.rescheduleHistory) >= MAX_RESCHEDULES) {
         return { error: RESCHEDULE_LIMIT_MESSAGE, status: 400 };
       }
+      if (scheduleChanged && appointment.formTag === 'product-store-visit' && await storeVisitClash(strapi, trx, {
+        documentId, magentoCustomerId: ctx.state.magentoCustomer.id,
+        showroom: appointment.preferredShowroom?.documentId, requestedDate, selectedTimeSlot,
+      })) return { error: STORE_VISIT_CLASH_MESSAGE, status: 400 };
       if (scheduleChanged) {
         const form = await strapi.documents(PRODUCT_FORM_UID as any).findFirst({
           status: 'published', locale: requestLocale(ctx, input),
@@ -395,7 +407,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
   async cancel(ctx) {
     const documentId = stringOrUndefined(ctx.params.documentId);
     if (!documentId) return ctx.badRequest('Appointment documentId is required.');
-    const rateLimit = checkFormSubmissionRateLimit(['cancel', ctx.ip, documentId]);
+    const rateLimit = checkFormSubmissionRateLimit(['cancel', clientIp(ctx), documentId]);
     if (!rateLimit.allowed) {
       ctx.set('Retry-After', String(rateLimit.retryAfterSeconds));
       return ctx.tooManyRequests('Too many cancellation requests. Please try again later.');
@@ -498,7 +510,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     if (!productPath || !productPath.startsWith('/') || productPath.startsWith('//') || productPath.includes('\\') || productPath.length > 500) {
       return ctx.badRequest('productPath must be a path on the website.');
     }
-    const rateLimit = checkFormSubmissionRateLimit(['piece', ctx.ip, documentId]);
+    const rateLimit = checkFormSubmissionRateLimit(['piece', clientIp(ctx), documentId]);
     if (!rateLimit.allowed) {
       ctx.set('Retry-After', String(rateLimit.retryAfterSeconds));
       return ctx.tooManyRequests('Too many requests. Please try again later.');

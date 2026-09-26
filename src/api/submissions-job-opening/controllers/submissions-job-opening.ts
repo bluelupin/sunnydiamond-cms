@@ -3,7 +3,7 @@
  */
 
 import { factories } from '@strapi/strapi';
-import { checkFormSubmissionRateLimit } from '../../../utils/form-submission-rate-limit';
+import { checkFormSubmissionRateLimit, clientIp } from '../../../utils/form-submission-rate-limit';
 import { sendCareerApplicationReceivedEmail } from '../../../utils/career-application-email';
 
 const UID = 'api::submissions-job-opening.submissions-job-opening';
@@ -81,7 +81,7 @@ export default factories.createCoreController(UID, ({ strapi }) => ({
     const email = stringOrUndefined(personalDetails.EmailId)?.toLowerCase();
     const rateLimit = checkFormSubmissionRateLimit([
       'job-opening',
-      ctx.ip,
+      clientIp(ctx),
       email,
     ]);
 

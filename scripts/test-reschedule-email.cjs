@@ -210,7 +210,7 @@ test('single-appointment API queues only committed schedule changes and uses upd
     const prefix = '../../../utils/';
     const controller = load('src/api/product-submission/controllers/product-submission.ts', {
       '@strapi/strapi': { factories: { createCoreController: (_uid, factory) => factory({ strapi }) } },
-      [prefix + 'form-submission-rate-limit']: { checkFormSubmissionRateLimit: () => ({ allowed: true }) },
+      [prefix + 'form-submission-rate-limit']: { checkFormSubmissionRateLimit: () => ({ allowed: true }), clientIp: () => '127.0.0.1' },
       [prefix + 'request-locale']: { requestLocale: () => 'en' },
       [prefix + 'appointment-schedule']: { RESCHEDULABLE_FORM_TAGS: [], validateReschedulingWindow: () => undefined,
         validateAppointmentSchedule: () => scenario === 'invalid' ? 'Invalid schedule' : undefined,

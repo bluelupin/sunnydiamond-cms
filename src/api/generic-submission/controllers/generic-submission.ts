@@ -1,5 +1,5 @@
 import { factories } from '@strapi/strapi';
-import { checkFormSubmissionRateLimit } from '../../../utils/form-submission-rate-limit';
+import { checkFormSubmissionRateLimit, clientIp } from '../../../utils/form-submission-rate-limit';
 import { requestLocale } from '../../../utils/request-locale';
 import { sendReachOutConfirmationEmail } from '../../../utils/reach-out-confirmation-email';
 
@@ -82,7 +82,7 @@ export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ 
     const email = emailOrUndefined(input.email);
     const preferredDate = dateOrUndefined(input.preferredDate);
     const consentAccepted = booleanValue(input.consentAccepted);
-    const rateLimit = checkFormSubmissionRateLimit(['generic', ctx.ip, formTag]);
+    const rateLimit = checkFormSubmissionRateLimit(['generic', clientIp(ctx), formTag]);
 
     if (!rateLimit.allowed) {
       ctx.set('Retry-After', String(rateLimit.retryAfterSeconds));

@@ -70,7 +70,7 @@ test('submission emails only after saving and optional upload; provider errors p
     };
     const controller = load('src/api/bespoke-submission/controllers/bespoke-submission.ts', {
       '@strapi/strapi': { factories: { createCoreController: (_, factory) => factory({ strapi }) } },
-      '../../../utils/form-submission-rate-limit': { checkFormSubmissionRateLimit: () => ({ allowed: true }) },
+      '../../../utils/form-submission-rate-limit': { checkFormSubmissionRateLimit: () => ({ allowed: true }), clientIp: () => '127.0.0.1' },
       '../../../utils/request-locale': { requestLocale: () => 'en' },
     }).default;
     const ctx = { ip: '127.0.0.1', badRequest: error => ({ error }), request: {
