@@ -62,8 +62,8 @@ const visitForm = await form('product-store-visit');
 const videoForm = await form('product-video-call');
 const homeForm = (await form('try-at-home-form')) ?? (await form('try-at-home'));
 const slot = f => f.availableTimeSlots[0].timeString;
-const kochi = visitForm.showroomOptions?.find(s => /kochi/i.test(s.city))?.documentId ??
-  (await call('GET', '/showrooms?filters[city][$eq]=Kochi')).json.data?.[0]?.documentId;
+// The submit route accepts a showroom documentId, slug or city.
+const kochi = visitForm.showroomOptions?.find(s => /kochi/i.test(s.city))?.documentId ?? 'Kochi';
 
 // AP-3: single booking
 const a = await book('product-store-visit', istDay(10), slot(visitForm), { preferredShowroom: kochi });
