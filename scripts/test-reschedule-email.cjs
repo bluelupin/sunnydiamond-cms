@@ -141,7 +141,8 @@ test('group appointment changes register exactly one email after updating multip
       './find-home-trial-group': { findHomeTrialGroup: async () => scenario === 'merge' ? target : undefined },
       './create-home-trial-submission': { retryableGroupRace: () => false },
       './appointment-schedule': { validateAppointmentSchedule: () => undefined, validateReschedulingWindow: () => undefined,
-        validAppointmentDate: value => /^\d{4}-\d{2}-\d{2}$/.test(value) },
+        validAppointmentDate: value => /^\d{4}-\d{2}-\d{2}$/.test(value),
+        countScheduleChanges: () => 0, MAX_RESCHEDULES: 2 },
     });
     const same = ['unchanged', 'notes'].includes(scenario);
     const request = { documentId: 'product-1', customerId: 7, action: scenario === 'cancel' ? 'cancel' : 'reschedule',
@@ -212,14 +213,15 @@ test('single-appointment API queues only committed schedule changes and uses upd
       [prefix + 'form-submission-rate-limit']: { checkFormSubmissionRateLimit: () => ({ allowed: true }) },
       [prefix + 'request-locale']: { requestLocale: () => 'en' },
       [prefix + 'appointment-schedule']: { RESCHEDULABLE_FORM_TAGS: [], validateReschedulingWindow: () => undefined,
-        validateAppointmentSchedule: () => scenario === 'invalid' ? 'Invalid schedule' : undefined },
+        validateAppointmentSchedule: () => scenario === 'invalid' ? 'Invalid schedule' : undefined,
+        countScheduleChanges: () => 0, MAX_RESCHEDULES: 2 },
       [prefix + 'create-home-trial-submission']: {},
-      [prefix + 'mutate-home-trial-group']: {},
+      [prefix + 'mutate-home-trial-group']: { mutateHomeTrialGroup: async () => undefined },
       [prefix + 'list-customer-appointments']: {},
     }).default;
     const same = ['unchanged', 'contact'].includes(scenario);
     const ctx = {
-      params: { documentId: data.documentId }, state: {}, ip: '127.0.0.1',
+      params: { documentId: data.documentId }, state: { magentoCustomer: { id: 7 } }, ip: '127.0.0.1',
       request: { body: {
         requestedDate: same ? data.previousDate : data.requestedDate,
         selectedTimeSlot: same ? data.previousTimeSlot : data.selectedTimeSlot,

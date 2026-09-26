@@ -50,6 +50,10 @@
       "type": "json",
       "private": true
     },
+    "addedPieces": {
+      "type": "json",
+      "private": true
+    },
     "reminderSentForDate": {
       "type": "date",
       "private": true

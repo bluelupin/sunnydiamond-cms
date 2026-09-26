@@ -2,7 +2,8 @@ import { factories } from '@strapi/strapi';
 import { recordVideoCallChange } from '../../../utils/video-call-change-log';
 import { checkFormSubmissionRateLimit } from '../../../utils/form-submission-rate-limit';
 import { requestLocale } from '../../../utils/request-locale';
-import { RESCHEDULABLE_FORM_TAGS, validateAppointmentSchedule, validateReschedulingWindow } from '../../../utils/appointment-schedule';
+import { RESCHEDULABLE_FORM_TAGS, validateAppointmentSchedule, validateReschedulingWindow, appointmentToday, appointmentStartsAt,
+  countScheduleChanges, MAX_RESCHEDULES, RESCHEDULE_LIMIT_MESSAGE, validAppointmentDate } from '../../../utils/appointment-schedule';
 import { HOME_TRIAL_FORM_TAGS } from '../../../utils/home-trial-group-key';
 import { createHomeTrialSubmission } from '../../../utils/create-home-trial-submission';
 import { mutateHomeTrialGroup } from '../../../utils/mutate-home-trial-group';
@@ -16,10 +17,15 @@ import { sendTryAtHomeConfirmationEmail } from '../../../utils/try-at-home-confi
 import { assignAppointmentReference } from '../../../utils/appointment-reference';
 import { sendVideoCallConfirmationEmail, notifyVideoCallCancellationAfterCommit } from '../../../utils/video-call-appointment-email';
 import { sendProductPersonalisationConfirmationEmail } from '../../../utils/product-personalisation-confirmation-email';
+import { notifyPieceAddedAfterCommit } from '../../../utils/appointment-piece-email';
 
 const PRODUCT_SUBMISSION_UID = 'api::product-submission.product-submission';
 const PRODUCT_FORM_UID = 'api::product-form.product-form';
 const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
+// Appointments a customer can add pieces to (R-AP-8/R-AP-10); try-at-home groups by booking instead.
+const PIECE_FORM_TAGS = ['product-store-visit', 'product-video-call'];
+const OPEN_STATUSES = ['New', 'Contacted', 'Scheduled'];
+const MAX_ADDED_PIECES = 10;
 const APPOINTMENT_FORM_TAGS = [
 ...RESCHEDULABLE_FORM_TAGS,
 'product-video-call',
@@ -300,12 +306,12 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       return ctx.tooManyRequests('Too many rescheduling requests. Please try again later.');
     }
 
-    const grouped = ctx.state.magentoCustomer ? await mutateHomeTrialGroup(strapi, {
-      documentId, customerId: ctx.state.magentoCustomer?.id, action: 'reschedule',
+    const grouped = await mutateHomeTrialGroup(strapi, {
+      documentId, customerId: ctx.state.magentoCustomer.id, action: 'reschedule',
       requestedDate, selectedTimeSlot, locale: requestLocale(ctx, input),
       customerChanges: customerChanges.data,
       noteChanges: noteChanges.data,
-    }) : undefined;
+    });
     if (grouped) {
       if (grouped.error) return grouped.status === 404 ? ctx.notFound(grouped.error) : ctx.badRequest(grouped.error);
       return { data: grouped.data, meta: { changed: grouped.changed } };
@@ -314,11 +320,8 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     const result = await strapi.db.transaction(async ({ trx, onCommit }) => {
       const table = strapi.db.metadata.get(PRODUCT_SUBMISSION_UID).tableName;
       const locked = await strapi.db.connection(table).transacting(trx)
-        .where({ document_id: documentId })
-        .modify(query => {
-          if (ctx.state.magentoCustomer) query.where({ magento_customer_id: ctx.state.magentoCustomer.id });
-          else query.where({ form_tag: 'product-store-visit' });
-        }).forUpdate().first();
+        .where({ document_id: documentId, magento_customer_id: ctx.state.magentoCustomer.id })
+        .forUpdate().first();
       if (!locked) return { error: 'Appointment not found.', status: 404 };
       const appointment = await strapi.db.query(PRODUCT_SUBMISSION_UID).findOne({
         where: { id: locked.id }, populate: { appointmentGroup: true, preferredShowroom: true },
@@ -338,6 +341,9 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       if (!scheduleChanged && !customerDetailsChanged([appointment], { ...customerChanges.data, ...noteChanges.data })) {
         return { data: { documentId, appointmentId: appointment.appointmentReference ?? documentId,
           requestedDate, selectedTimeSlot }, changed: false };
+      }
+      if (scheduleChanged && countScheduleChanges(appointment.rescheduleHistory) >= MAX_RESCHEDULES) {
+        return { error: RESCHEDULE_LIMIT_MESSAGE, status: 400 };
       }
       if (scheduleChanged) {
         const form = await strapi.documents(PRODUCT_FORM_UID as any).findFirst({
@@ -394,9 +400,9 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       ctx.set('Retry-After', String(rateLimit.retryAfterSeconds));
       return ctx.tooManyRequests('Too many cancellation requests. Please try again later.');
     }
-    const grouped = ctx.state.magentoCustomer ? await mutateHomeTrialGroup(strapi, {
-      documentId, customerId: ctx.state.magentoCustomer?.id, action: 'cancel',
-    }) : undefined;
+    const grouped = await mutateHomeTrialGroup(strapi, {
+      documentId, customerId: ctx.state.magentoCustomer.id, action: 'cancel',
+    });
     if (grouped) {
       if (grouped.error) return grouped.status === 404 ? ctx.notFound(grouped.error) : ctx.badRequest(grouped.error);
       return { data: grouped.data, meta: { changed: grouped.changed } };
@@ -404,11 +410,8 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     const result = await strapi.db.transaction(async ({ trx, onCommit }) => {
       const table = strapi.db.metadata.get(PRODUCT_SUBMISSION_UID).tableName;
       const locked = await strapi.db.connection(table).transacting(trx)
-        .where({ document_id: documentId })
-        .modify(query => {
-          if (ctx.state.magentoCustomer) query.where({ magento_customer_id: ctx.state.magentoCustomer.id });
-          else query.where({ form_tag: 'product-store-visit' });
-        }).forUpdate().first();
+        .where({ document_id: documentId, magento_customer_id: ctx.state.magentoCustomer.id })
+        .forUpdate().first();
       if (!locked) return { error: 'Appointment not found.', status: 404 };
       const appointment = await strapi.db.query(PRODUCT_SUBMISSION_UID).findOne({
         where: { id: locked.id }, populate: { appointmentGroup: true, preferredShowroom: true },
@@ -455,7 +458,85 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     return listCustomerAppointments(strapi, {
       customerId: ctx.state.magentoCustomer?.id, page, pageSize, locale,
       formTags: APPOINTMENT_FORM_TAGS,
-      guestDocumentId: stringOrUndefined(ctx.query.documentId),
     });
+  },
+
+  /** Upcoming store visits and video calls that can still take a piece (at most 5, soonest first). */
+  async openAppointments(ctx) {
+    const rows = await strapi.db.query(PRODUCT_SUBMISSION_UID).findMany({
+      where: { magentoCustomerId: ctx.state.magentoCustomer.id, formTag: { $in: PIECE_FORM_TAGS },
+        workflowStatus: { $in: OPEN_STATUSES }, requestedDate: { $gte: appointmentToday() } },
+      select: ['documentId', 'appointmentReference', 'formTag', 'requestedDate', 'selectedTimeSlot', 'productId', 'addedPieces'],
+      populate: { preferredShowroom: { select: ['city'] } },
+      orderBy: [{ requestedDate: 'asc' }, { id: 'asc' }], limit: 5,
+    });
+    const now = new Date();
+    return { data: rows.filter((row: any) => appointmentStartsAt(row.requestedDate, row.selectedTimeSlot) > now)
+      .map((row: any) => ({
+        documentId: row.documentId, appointmentId: row.appointmentReference ?? row.documentId, formTag: row.formTag,
+        requestedDate: row.requestedDate, selectedTimeSlot: row.selectedTimeSlot,
+        showroomCity: row.preferredShowroom?.city ?? null,
+        productIds: [row.productId, ...(Array.isArray(row.addedPieces) ? row.addedPieces : []).map((piece: any) => piece?.productId)]
+          .filter(Boolean),
+      })) };
+  },
+
+  /** R-AP-8/R-AP-10: add a piece to a booked store visit or video call; date, time and showroom stay. */
+  async addPiece(ctx) {
+    const input = requestData(ctx);
+    const documentId = stringOrUndefined(ctx.params.documentId);
+    const productId = stringOrUndefined(input.productId);
+    const productName = stringOrUndefined(input.productName);
+    const productPath = stringOrUndefined(input.productPath);
+    if (!documentId) return ctx.badRequest('Appointment documentId is required.');
+    // Control characters are refused: the name goes into email subjects.
+    if (!productId || productId.length > 64 || !productName || productName.length > 200 ||
+      /[\u0000-\u001f\u007f]/.test(productId + productName)) {
+      return ctx.badRequest('productId and productName are required.');
+    }
+    // Only a path: the website origin is added when the staff email is built.
+    if (!productPath || !productPath.startsWith('/') || productPath.startsWith('//') || productPath.includes('\\') || productPath.length > 500) {
+      return ctx.badRequest('productPath must be a path on the website.');
+    }
+    const rateLimit = checkFormSubmissionRateLimit(['piece', ctx.ip, documentId]);
+    if (!rateLimit.allowed) {
+      ctx.set('Retry-After', String(rateLimit.retryAfterSeconds));
+      return ctx.tooManyRequests('Too many requests. Please try again later.');
+    }
+    const result = await strapi.db.transaction(async ({ trx, onCommit }) => {
+      const table = strapi.db.metadata.get(PRODUCT_SUBMISSION_UID).tableName;
+      const locked = await strapi.db.connection(table).transacting(trx)
+        .where({ document_id: documentId, magento_customer_id: ctx.state.magentoCustomer.id })
+        .forUpdate().first();
+      if (!locked) return { error: 'Appointment not found.', status: 404 };
+      const appointment = await strapi.db.query(PRODUCT_SUBMISSION_UID).findOne({
+        where: { id: locked.id }, populate: { preferredShowroom: true },
+      });
+      if (!PIECE_FORM_TAGS.includes(appointment.formTag)) {
+        return { error: 'Pieces can be added only to store visits and video calls.', status: 400 };
+      }
+      if (!OPEN_STATUSES.includes(appointment.workflowStatus)) {
+        return { error: 'Pieces cannot be added to a completed, closed or cancelled appointment.', status: 400 };
+      }
+      if (!validAppointmentDate(appointment.requestedDate) ||
+        appointmentStartsAt(appointment.requestedDate, appointment.selectedTimeSlot) <= new Date()) {
+        return { error: 'Pieces cannot be added once the appointment has started.', status: 400 };
+      }
+      const pieces = Array.isArray(appointment.addedPieces) ? appointment.addedPieces : [];
+      const productIds = [appointment.productId, ...pieces.map((piece: any) => piece?.productId)].filter(Boolean);
+      const data = { documentId, appointmentId: appointment.appointmentReference ?? documentId, productIds };
+      if (productIds.includes(productId)) return { data, changed: false };
+      if (pieces.length >= MAX_ADDED_PIECES) {
+        return { error: 'An appointment can have up to 10 added pieces. Please contact us to add more.', status: 400 };
+      }
+      const piece = { productId, productName, productPath, addedAt: new Date().toISOString() };
+      await strapi.documents(PRODUCT_SUBMISSION_UID as any).update({
+        documentId, data: { addedPieces: [...pieces, piece] },
+      } as any);
+      notifyPieceAddedAfterCommit(strapi, onCommit, { ...appointment, addedPieces: [...pieces, piece] }, piece);
+      return { data: { ...data, productIds: [...productIds, productId] }, changed: true };
+    });
+    if (result.error) return result.status === 404 ? ctx.notFound(result.error) : ctx.badRequest(result.error);
+    return { data: result.data, meta: { changed: result.changed } };
   },
 }));

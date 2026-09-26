@@ -1,7 +1,9 @@
 import { HOME_TRIAL_FORM_TAGS } from './home-trial-group-key';
+import { countScheduleChanges, MAX_RESCHEDULES } from './appointment-schedule';
 
 const GROUP = 'api::appointment-group.appointment-group';
 const PRODUCT = 'api::product-submission.product-submission';
+const CHANGE = 'api::appointment-change.appointment-change';
 const fields = ['documentId', 'appointmentReference', 'formTag', 'productName', 'productId', 'customerName',
   'customerPhone', 'customerEmail', 'requestedDate', 'requestDetails', 'selectedTimeSlot',
   'workflowStatus', 'addressLine1', 'addressLine2', 'pincode', 'city', 'createdAt', 'updatedAt'];
@@ -11,11 +13,8 @@ const populate = {
 };
 
 export async function listCustomerAppointments(strapi: any, options: any) {
-  const { customerId, page, pageSize, locale, formTags, guestDocumentId } = options;
-  const guest = customerId === undefined;
-  const productScope = guest
-    ? { formTag: 'product-store-visit', documentId: guestDocumentId }
-    : { magentoCustomerId: customerId, formTag: { $in: formTags } };
+  const { customerId, page, pageSize, locale, formTags } = options;
+  const productScope = { magentoCustomerId: customerId, formTag: { $in: formTags } };
   const groupWhere = { magentoCustomerId: customerId, mergedInto: { $null: true },
     submissions: { magentoCustomerId: customerId, formTag: { $in: HOME_TRIAL_FORM_TAGS } } };
   // Until the explicit migration, historical rows remain individual appointments.
@@ -23,11 +22,11 @@ export async function listCustomerAppointments(strapi: any, options: any) {
     appointmentGroup: { $null: true } };
   const prefix = page * pageSize;
   const [groupIds, legacyIds, groupCount, legacyCount] = await Promise.all([
-    guest ? [] : strapi.db.query(GROUP).findMany({ where: groupWhere, select: ['id', 'documentId', 'createdAt'],
+    strapi.db.query(GROUP).findMany({ where: groupWhere, select: ['id', 'documentId', 'createdAt'],
       orderBy: [{ createdAt: 'desc' }, { id: 'desc' }], limit: prefix }),
     strapi.db.query(PRODUCT).findMany({ where: legacyWhere, select: ['id', 'documentId', 'createdAt'],
       orderBy: [{ createdAt: 'desc' }, { id: 'desc' }], limit: prefix }),
-    guest ? 0 : strapi.db.query(GROUP).count({ where: groupWhere }),
+    strapi.db.query(GROUP).count({ where: groupWhere }),
     strapi.db.query(PRODUCT).count({ where: legacyWhere }),
   ]);
   // Merge two bounded ID-only prefixes, paginate appointment identities, then load products.
@@ -38,7 +37,7 @@ export async function listCustomerAppointments(strapi: any, options: any) {
     .slice((page - 1) * pageSize, prefix);
   const selectedGroupIds = units.filter(row => row.grouped).map(row => row.documentId);
   const selectedLegacyIds = units.filter(row => !row.grouped).map(row => row.documentId);
-  const [groups, products] = await Promise.all([
+  const [groups, products, groupChanges] = await Promise.all([
     selectedGroupIds.length ? strapi.db.query(GROUP).findMany({
       where: { ...groupWhere, documentId: { $in: selectedGroupIds } },
       select: ['documentId', 'appointmentReference', 'requestedDate', 'selectedTimeSlot', 'workflowStatus',
@@ -49,10 +48,17 @@ export async function listCustomerAppointments(strapi: any, options: any) {
       where: { ...productScope, $or: [
         { appointmentGroup: { documentId: { $in: selectedGroupIds } } },
         { documentId: { $in: selectedLegacyIds }, appointmentGroup: { $null: true } },
-      ] }, select: fields, populate: { ...populate, appointmentGroup: { select: ['documentId'] } },
+      ] }, select: [...fields, 'rescheduleHistory', 'addedPieces'],
+      populate: { ...populate, appointmentGroup: { select: ['documentId'] } },
       orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
     }) : [],
+    selectedGroupIds.length ? strapi.db.query(CHANGE).findMany({
+      where: { sourceGroup: { documentId: { $in: selectedGroupIds } }, eventType: 'Rescheduled',
+        actorType: { $in: ['Customer', 'Migration'] } },
+      select: ['previousData', 'newData'], populate: { sourceGroup: { select: ['documentId'] } },
+    }) : [],
   ]);
+  const reschedulesLeft = (entries: unknown) => Math.max(0, MAX_RESCHEDULES - countScheduleChanges(entries));
   const localizedProducts = await Promise.all(products.map(async (product: any) => {
     const { appointmentGroup } = product;
     const safe: any = Object.fromEntries(fields.map(field => [field, product[field]]));
@@ -65,19 +71,29 @@ export async function listCustomerAppointments(strapi: any, options: any) {
         fields: ['documentId', 'slug', 'city', 'state'],
       }) ?? safe.preferredShowroom;
     }
-    return { safe, groupId: appointmentGroup?.documentId };
+    return { safe, groupId: appointmentGroup?.documentId, history: product.rescheduleHistory,
+      pieces: Array.isArray(product.addedPieces) ? product.addedPieces : [] };
   }));
   const data = units.flatMap(unit => {
-    const members = localizedProducts.filter(product => unit.grouped
-      ? product.groupId === unit.documentId : product.safe.documentId === unit.documentId).map(product => product.safe);
+    const matched = localizedProducts.filter(product => unit.grouped
+      ? product.groupId === unit.documentId : product.safe.documentId === unit.documentId);
+    const members = matched.map(product => product.safe);
     if (!members.length) return [];
-    if (!unit.grouped) return [{ ...members[0], appointmentId: members[0].appointmentReference ?? members[0].documentId,
-      appointmentGroupId: null, products: members }];
+    if (!unit.grouped) {
+      // Pieces added after booking (R-AP-8) are listed like the booked product.
+      const added = matched[0].pieces.filter((piece: any) => piece?.productId).map((piece: any) => ({
+        ...members[0], documentId: `${members[0].documentId}:piece:${piece.productId}`,
+        productId: piece.productId, productName: piece.productName ?? null,
+      }));
+      return [{ ...members[0], appointmentId: members[0].appointmentReference ?? members[0].documentId,
+        appointmentGroupId: null, products: [...members, ...added], reschedulesLeft: reschedulesLeft(matched[0].history) }];
+    }
     const group = groups.find((row: any) => row.documentId === unit.documentId);
     if (!group) return [];
     return [{ ...members[0], ...group, documentId: members[0].documentId,
       appointmentId: group.appointmentReference ?? group.documentId,
-      appointmentGroupId: group.documentId, products: members }];
+      appointmentGroupId: group.documentId, products: members,
+      reschedulesLeft: reschedulesLeft(groupChanges.filter((change: any) => change.sourceGroup?.documentId === group.documentId)) }];
   });
   const total = groupCount + legacyCount;
   return { data, meta: { pagination: { page, pageSize, total, pageCount: Math.ceil(total / pageSize) } } };

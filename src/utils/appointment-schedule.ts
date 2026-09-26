@@ -32,3 +32,20 @@ export const validateAppointmentSchedule = (date: unknown, slot: unknown, form: 
   }
   return undefined;
 };
+
+export const MAX_RESCHEDULES = 2;
+export const RESCHEDULE_LIMIT_MESSAGE = 'You have already rescheduled this appointment twice. Please contact us.';
+
+/** History and change rows also record contact/note-only edits; only a new date or time counts. */
+export const countScheduleChanges = (entries: unknown) => (Array.isArray(entries) ? entries : [])
+  .filter((entry: any) => entry?.previousData?.requestedDate !== entry?.newData?.requestedDate ||
+    entry?.previousData?.selectedTimeSlot !== entry?.newData?.selectedTimeSlot).length;
+
+/** "11:00 AM - 12:00 PM" starts at 11:00 IST; an unreadable slot counts from midnight. */
+export const appointmentStartsAt = (date: string, slot?: string | null) => {
+  const match = slot?.trim().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+  const minutes = match
+    ? ((Number(match[1]) % 12) + (match[3].toUpperCase() === 'PM' ? 12 : 0)) * 60 + Number(match[2])
+    : 0;
+  return new Date(Date.parse(`${date}T00:00:00+05:30`) + minutes * 60_000);
+};

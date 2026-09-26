@@ -1,5 +1,5 @@
 import { HOME_TRIAL_FORM_TAGS, homeTrialScheduleKey } from './home-trial-group-key';
-import { validateAppointmentSchedule, validateReschedulingWindow } from './appointment-schedule';
+import { validateAppointmentSchedule, validateReschedulingWindow, countScheduleChanges, MAX_RESCHEDULES, RESCHEDULE_LIMIT_MESSAGE } from './appointment-schedule';
 import { retryableGroupRace } from './create-home-trial-submission';
 import { customerContactDetails, customerDetailsChanged, customerDetailsSnapshot } from './appointment-customer-details';
 import { notifyTryAtHomeChangeAfterCommit } from './try-at-home-change-email';
@@ -83,6 +83,11 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
           if (windowError) return { error: windowError, status: 400 };
           scheduleChanged = group.requestedDate !== requestedDate || group.selectedTimeSlot !== selectedTimeSlot;
           if (!scheduleChanged && !customerDetailsChanged(rows, { ...customerChanges, ...noteChanges })) return response(group, false);
+          // ponytail: counts this group's own moves; a group merged into another does not carry its count over.
+          if (scheduleChanged && countScheduleChanges(await strapi.db.query(CHANGE).findMany({
+            where: { sourceGroup: { documentId: groupId }, eventType: 'Rescheduled', actorType: { $in: ['Customer', 'Migration'] } },
+            select: ['previousData', 'newData'],
+          })) >= MAX_RESCHEDULES) return { error: RESCHEDULE_LIMIT_MESSAGE, status: 400 };
           if (scheduleChanged) {
             for (const formTag of new Set(rows.map((row: any) => row.formTag))) {
               const form = await strapi.documents('api::product-form.product-form').findFirst({
