@@ -47,7 +47,7 @@
       }
     },
     "latitude": {
-      "type": "decimal",
+      "type": "float",
       "min": -90,
       "max": 90,
       "pluginOptions": {
@@ -57,7 +57,7 @@
       }
     },
     "longitude": {
-      "type": "decimal",
+      "type": "float",
       "min": -180,
       "max": 180,
       "pluginOptions": {
