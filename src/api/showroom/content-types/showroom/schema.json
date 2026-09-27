@@ -46,6 +46,26 @@
         }
       }
     },
+    "latitude": {
+      "type": "decimal",
+      "min": -90,
+      "max": 90,
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "longitude": {
+      "type": "decimal",
+      "min": -180,
+      "max": 180,
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
     "pincode": {
       "type": "string",
       "required": true
