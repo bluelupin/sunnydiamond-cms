@@ -54,11 +54,11 @@
     "location": {
       "type": "enumeration",
       "enum": [
-        "COCHIN",
-        "COIMBATORE",
-        "THRISSUR",
-        "CHENNAI",
-        "NEW DELHI"
+        "Cochin",
+        "Coimbatore",
+        "Thirssur",
+        "Chennai",
+        "New Delhi"
       ],
       "pluginOptions": {
         "i18n": {
