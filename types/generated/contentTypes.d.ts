@@ -669,7 +669,7 @@ export interface ApiBespokeSubmissionBespokeSubmission
   extends Struct.CollectionTypeSchema {
   collectionName: 'bespoke_submissions';
   info: {
-    displayName: 'Bespoke Design Submissions';
+    displayName: 'Submissions: Bespoke Design';
     pluralName: 'bespoke-submissions';
     singularName: 'bespoke-submission';
   };
@@ -1121,7 +1121,21 @@ export interface ApiCareerOpeningCareerOpening
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    department: Schema.Attribute.String &
+    department: Schema.Attribute.Enumeration<
+      [
+        'Logistics',
+        'Customer Service',
+        'Finance and Accounts',
+        'HR & Administration',
+        'Inventory & Barcoding',
+        'Sales',
+        'Stock',
+        'Studio',
+        'Digital Lab',
+        'Marketing Communication',
+        'Production',
+      ]
+    > &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -1131,7 +1145,9 @@ export interface ApiCareerOpeningCareerOpening
       ['Full Time', 'Part Time', 'Contract', 'Internship']
     > &
       Schema.Attribute.DefaultTo<'Full Time'>;
-    experience: Schema.Attribute.String &
+    experience: Schema.Attribute.Enumeration<
+      ['Years 0-2', 'Years 2-4', 'Years 4-6', 'Years 6+']
+    > &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -1166,7 +1182,9 @@ export interface ApiCareerOpeningCareerOpening
       'oneToMany',
       'api::career-opening.career-opening'
     >;
-    location: Schema.Attribute.String &
+    location: Schema.Attribute.Enumeration<
+      ['COCHIN', 'COIMBATORE', 'THRISSUR', 'CHENNAI', 'NEW DELHI']
+    > &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -1641,7 +1659,7 @@ export interface ApiGenericSubmissionGenericSubmission
   extends Struct.CollectionTypeSchema {
   collectionName: 'generic_submissions';
   info: {
-    displayName: 'General Queries Submissions';
+    displayName: 'Submissions: General Queries';
     pluralName: 'generic-submissions';
     singularName: 'generic-submission';
   };
@@ -2460,7 +2478,7 @@ export interface ApiProductSubmissionProductSubmission
   extends Struct.CollectionTypeSchema {
   collectionName: 'product_submissions';
   info: {
-    displayName: 'Product Enquiries Submissions';
+    displayName: 'Submissions: Product Enquiries';
     pluralName: 'product-submissions';
     singularName: 'product-submission';
   };
@@ -2468,6 +2486,7 @@ export interface ApiProductSubmissionProductSubmission
     draftAndPublish: false;
   };
   attributes: {
+    addedPieces: Schema.Attribute.JSON & Schema.Attribute.Private;
     addressLine1: Schema.Attribute.String;
     addressLine2: Schema.Attribute.String;
     appointmentChanges: Schema.Attribute.Relation<
@@ -2643,11 +2662,37 @@ export interface ApiShowroomShowroom extends Struct.CollectionTypeSchema {
         };
       }>;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    latitude: Schema.Attribute.Float &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: false;
+        };
+      }> &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 90;
+          min: -90;
+        },
+        number
+      >;
     locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::showroom.showroom'
     >;
+    longitude: Schema.Attribute.Float &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: false;
+        };
+      }> &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 180;
+          min: -180;
+        },
+        number
+      >;
     mapUrl: Schema.Attribute.String & Schema.Attribute.Required;
     openingHours: Schema.Attribute.Text &
       Schema.Attribute.SetPluginOptions<{
@@ -2833,6 +2878,20 @@ export interface ApiStoreLocatorPageStoreLocatorPage
           localized: true;
         };
       }>;
+    nearestStoreRadiusKm: Schema.Attribute.Integer &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: false;
+        };
+      }> &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 1000;
+          min: 1;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<50>;
     noResultsMessage: Schema.Attribute.Text &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
@@ -2872,7 +2931,7 @@ export interface ApiSubmissionsJobOpeningSubmissionsJobOpening
   extends Struct.CollectionTypeSchema {
   collectionName: 'submissions_job_openings';
   info: {
-    displayName: 'Job Application Submissions';
+    displayName: 'Submissions: Job Applications';
     pluralName: 'submissions-job-openings';
     singularName: 'submissions-job-opening';
   };
