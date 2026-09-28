@@ -4,7 +4,7 @@
   "info": {
     "singularName": "product-submission",
     "pluralName": "product-submissions",
-    "displayName": "Submissions: Product"
+    "displayName": "Product Enquiries Submissions"
   },
   "options": {
     "draftAndPublish": false

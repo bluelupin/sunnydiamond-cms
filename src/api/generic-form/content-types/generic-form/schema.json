@@ -4,7 +4,7 @@
   "info": {
     "singularName": "generic-form",
     "pluralName": "generic-forms",
-    "displayName": "Builder: Generic Forms"
+    "displayName": "Builder: General Queries Forms"
   },
   "options": {
     "draftAndPublish": true

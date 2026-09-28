@@ -669,7 +669,7 @@ export interface ApiBespokeSubmissionBespokeSubmission
   extends Struct.CollectionTypeSchema {
   collectionName: 'bespoke_submissions';
   info: {
-    displayName: 'Submissions: Bespoke Custom Design';
+    displayName: 'Bespoke Design Submissions';
     pluralName: 'bespoke-submissions';
     singularName: 'bespoke-submission';
   };
@@ -1575,7 +1575,7 @@ export interface ApiFeaturedStoryFeaturedStory
 export interface ApiGenericFormGenericForm extends Struct.CollectionTypeSchema {
   collectionName: 'generic_forms';
   info: {
-    displayName: 'Builder: Generic Forms';
+    displayName: 'Builder: General Queries Forms';
     pluralName: 'generic-forms';
     singularName: 'generic-form';
   };
@@ -1641,7 +1641,7 @@ export interface ApiGenericSubmissionGenericSubmission
   extends Struct.CollectionTypeSchema {
   collectionName: 'generic_submissions';
   info: {
-    displayName: 'Submissions: Generic';
+    displayName: 'General Queries Submissions';
     pluralName: 'generic-submissions';
     singularName: 'generic-submission';
   };
@@ -2341,7 +2341,7 @@ export interface ApiProductDisplayPageProductDisplayPage
 export interface ApiProductFormProductForm extends Struct.CollectionTypeSchema {
   collectionName: 'product_forms';
   info: {
-    displayName: 'Builder: Product Forms';
+    displayName: 'Builder: Product Enquiry Forms';
     pluralName: 'product-forms';
     singularName: 'product-form';
   };
@@ -2460,7 +2460,7 @@ export interface ApiProductSubmissionProductSubmission
   extends Struct.CollectionTypeSchema {
   collectionName: 'product_submissions';
   info: {
-    displayName: 'Submissions: Product';
+    displayName: 'Product Enquiries Submissions';
     pluralName: 'product-submissions';
     singularName: 'product-submission';
   };
@@ -2872,7 +2872,7 @@ export interface ApiSubmissionsJobOpeningSubmissionsJobOpening
   extends Struct.CollectionTypeSchema {
   collectionName: 'submissions_job_openings';
   info: {
-    displayName: 'Submissions: Job Opening';
+    displayName: 'Job Application Submissions';
     pluralName: 'submissions-job-openings';
     singularName: 'submissions-job-opening';
   };

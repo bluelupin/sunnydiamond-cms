@@ -4,7 +4,7 @@
   "info": {
     "singularName": "product-form",
     "pluralName": "product-forms",
-    "displayName": "Builder: Product Forms"
+    "displayName": "Builder: Product Enquiry Forms"
   },
   "options": {
     "draftAndPublish": true

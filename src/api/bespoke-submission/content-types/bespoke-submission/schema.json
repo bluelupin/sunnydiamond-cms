@@ -4,7 +4,7 @@
   "info": {
     "singularName": "bespoke-submission",
     "pluralName": "bespoke-submissions",
-    "displayName": "Submissions: Bespoke Custom Design"
+    "displayName": "Bespoke Design Submissions"
   },
   "options": { "draftAndPublish": false },
   "attributes": {
