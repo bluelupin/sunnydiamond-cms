@@ -11,7 +11,7 @@
     },
     "collections": {
       "type": "relation",
-      "relation": "manyToMany",
+      "relation": "oneToOne",
       "target": "api::editorial-collection.editorial-collection"
     }
   }
