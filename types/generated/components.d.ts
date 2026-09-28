@@ -667,7 +667,7 @@ export interface SharedCollectionShowcaseSection
   };
   attributes: {
     collections: Schema.Attribute.Relation<
-      'manyToMany',
+      'oneToOne',
       'api::editorial-collection.editorial-collection'
     >;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
