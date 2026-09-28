@@ -38,7 +38,8 @@
       "required": true
     },
     "experience": {
-      "type": "string",
+      "type": "enumeration",
+      "enum": ["Freshers", "2-4 years", "4+ years", "5+ years", "6+ years"],
       "pluginOptions": {
         "i18n": {
           "localized": true
@@ -46,7 +47,8 @@
       }
     },
     "location": {
-      "type": "string",
+      "type": "enumeration",
+      "enum": ["Coimbatore", "Kochi, Kerala", "New Delhi, India"],
       "pluginOptions": {
         "i18n": {
           "localized": true
@@ -54,7 +56,8 @@
       }
     },
     "department": {
-      "type": "string",
+      "type": "enumeration",
+      "enum": ["Studio", "Retail", "Jewellery", "Finance"],
       "pluginOptions": {
         "i18n": {
           "localized": true
