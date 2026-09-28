@@ -50,6 +50,22 @@ function checkText(text) {
   return text.trim();
 }
 
+export function normalizeExtractedText(text) {
+  // Repair tracking inserted by PDF fonts only for known dates/headings. Never
+  // collapse arbitrary spaced capitals: they can be names or qualifications.
+  const words = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August',
+    'September', 'October', 'November', 'December', 'Present', 'Current',
+    'Employment History', 'Work Experience', 'Education', 'Skills', 'Languages',
+  ];
+  let result = text.normalize('NFKC');
+  for (const word of words) {
+    const pattern = word.replace(/ /g, '').split('').join('[ \\t]*');
+    result = result.replace(new RegExp(`\\b${pattern}\\b`, 'gi'), word);
+  }
+  return result.replace(/\b([12])[ \t]+([09])[ \t]+(\d)[ \t]+(\d)\b/g, '$1$2$3$4')
+    .replace(/[ \t]+/g, ' ').trim();
+}
+
 export function layoutText(items) {
   const rows = [];
   for (const item of items) {
@@ -63,7 +79,8 @@ export function layoutText(items) {
     }
     row.parts.push({ x, end: x + (item.width ?? 0), text: item.str });
   }
-  return rows.sort((a, b) => b.y - a.y).map(row => {
+  rows.sort((a, b) => b.y - a.y);
+  const renderRow = row => {
     row.parts.sort((a, b) => a.x - b.x);
     let line = '';
     let previousEnd = null;
@@ -74,8 +91,49 @@ export function layoutText(items) {
       line += part.text;
       previousEnd = Math.max(previousEnd ?? part.end, part.end);
     }
-    return line.trim();
-  }).join('\n');
+    return normalizeExtractedText(line);
+  };
+  const readColumns = (region, depth = 0) => {
+    if (depth >= 2 || region.length < 6) return region.map(renderRow).join('\n');
+    // A repeated vertical gutter distinguishes a sidebar from ordinary word
+    // spacing. Crossing rows remain full-width separators (headers/footers).
+    const candidates = [...new Set(region.flatMap(row => row.parts.map(part => Math.round(part.x))))];
+    let best;
+    for (const x of candidates) {
+      const left = region.filter(row => row.parts.some(part => part.end <= x - 12));
+      const right = region.filter(row => row.parts.some(part => part.x >= x));
+      const crossing = region.filter(row => row.parts.some(part => part.x < x && part.end > x - 12));
+      const starts = region.filter(row => row.parts.some(part => Math.abs(part.x - x) < 2));
+      if (left.length < 3 || right.length < 3 || starts.length < 3 || crossing.length > region.length * 0.2) continue;
+      const rightText = right.map(row => renderRow({ parts: row.parts.filter(part => part.x >= x) }));
+      // Right-aligned dates belong to the job/education row, not a new column.
+      if (rightText.filter(text => /^(?:(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s*)?\d{4}\b|^\d{1,2}[/.]\d{4}\b/i.test(text)).length > right.length * 0.5) continue;
+      const overlap = left.filter(row => right.includes(row)).length;
+      const score = Math.min(left.length, right.length) + overlap - crossing.length * 2;
+      if (!best || score > best.score) best = { x, score };
+    }
+    if (!best) return region.map(renderRow).join('\n');
+    const output = [];
+    let band = [];
+    const flush = () => {
+      if (!band.length) return;
+      for (const isLeft of [true, false]) {
+        const column = band.map(row => ({ y: row.y, parts: row.parts.filter(part => isLeft ? part.x < best.x : part.x >= best.x) }))
+          .filter(row => row.parts.length);
+        if (column.length) output.push(readColumns(column, depth + 1));
+      }
+      band = [];
+    };
+    for (const row of region) {
+      if (row.parts.some(part => part.x < best.x && part.end > best.x - 12)) {
+        flush();
+        output.push(renderRow(row));
+      } else band.push(row);
+    }
+    flush();
+    return output.join('\n');
+  };
+  return readColumns(rows);
 }
 
 async function pdfText(buffer) {
@@ -99,7 +157,7 @@ async function pdfText(buffer) {
         if (viewport.width * viewport.height > MAX_PIXELS) fail('TOO_MANY_PIXELS');
         const canvas = createCanvas(Math.ceil(viewport.width), Math.ceil(viewport.height));
         await page.render({ canvasContext: canvas.getContext('2d'), viewport, canvas }).promise;
-        text = await recognize(canvas.toBuffer('image/png'));
+        text = normalizeExtractedText(await recognize(canvas.toBuffer('image/png')));
         ocrUsed = true;
       }
       parts.push(text);
@@ -148,7 +206,7 @@ async function extract({ path, kind }) {
     if (buffer.subarray(0, 2).toString() !== 'PK') fail('INVALID_FILE');
     await inspectDocx(path);
     const result = await mammoth.extractRawText({ path });
-    return { text: checkText(result.value), ocrUsed: false };
+    return { text: checkText(normalizeExtractedText(result.value)), ocrUsed: false };
   }
   if (kind === 'png' || kind === 'jpeg') {
     const size = imageSize(buffer);

@@ -23,9 +23,13 @@ import { registerAdminRescheduleEmail } from './utils/appointment-reschedule-ema
 import { registerCareerSubmissionProtection } from './utils/protect-career-submissions';
 import { backfillAppointmentReferences } from './utils/appointment-reference';
 import { registerCareerOpeningSlug } from './utils/career-opening-slug';
+import { closeResumeRateLimitRedis } from './utils/resume-parser-rate-limit';
 // import { cleanStaleAdminPermissions } from './utils/clean-stale-admin-permissions';
 
 export default {
+  destroy() {
+    closeResumeRateLimitRedis();
+  },
   /**
    * An asynchronous register function that runs before
    * your application is initialized.
