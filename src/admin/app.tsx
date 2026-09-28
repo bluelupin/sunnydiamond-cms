@@ -28,7 +28,7 @@ export default {
   },
   bootstrap(app: { registerHook: (name: string, handler: (args: any) => any) => void }) {
     app.registerHook('Admin/CM/pages/EditView/mutate-edit-view-layout', (args) => {
-      if (args.layout.settings?.displayName !== 'Submissions: Product Enquiries') return args;
+      if (args.layout.settings?.displayName !== 'Product Enquiries Submissions') return args;
       return { ...args, layout: { ...args.layout,
         layout: args.layout.layout.map((panel: any[][]) => panel.map(row => row.map(field =>
           field.name === 'appointmentReference' ? { ...field, type: 'appointment-reference' } : field,
@@ -36,7 +36,7 @@ export default {
       } };
     });
     app.registerHook('Admin/CM/pages/EditView/mutate-edit-view-layout', (args) => {
-      if (args.layout.settings?.displayName !== 'Submissions: Job Applications') return args;
+      if (args.layout.settings?.displayName !== 'Job Application Submissions') return args;
       const editable = new Set(['workflowStatus', 'internalNotes']);
       const components = Object.fromEntries(Object.entries(args.layout.components ?? {}).map(([uid, component]: [string, any]) => [
         uid,
@@ -49,7 +49,7 @@ export default {
       } };
     });
     app.registerHook('Admin/CM/pages/EditView/mutate-edit-view-layout', (args) => {
-      if (args.layout.settings?.displayName !== 'Submissions: General Queries') return args;
+      if (args.layout.settings?.displayName !== 'General Queries Submissions') return args;
       return { ...args, layout: { ...args.layout,
         layout: args.layout.layout.map((panel: any[][]) => panel.map(row => row.map(field =>
           field.name === 'preferredShowroom'

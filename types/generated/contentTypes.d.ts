@@ -669,7 +669,7 @@ export interface ApiBespokeSubmissionBespokeSubmission
   extends Struct.CollectionTypeSchema {
   collectionName: 'bespoke_submissions';
   info: {
-    displayName: 'Submissions: Bespoke Design';
+    displayName: 'Bespoke Design Submissions';
     pluralName: 'bespoke-submissions';
     singularName: 'bespoke-submission';
   };
@@ -1121,9 +1121,7 @@ export interface ApiCareerOpeningCareerOpening
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    department: Schema.Attribute.Enumeration<
-      ['Studio', 'Retail', 'Jewellery', 'Finance']
-    > &
+    department: Schema.Attribute.String &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -1133,9 +1131,7 @@ export interface ApiCareerOpeningCareerOpening
       ['Full Time', 'Part Time', 'Contract', 'Internship']
     > &
       Schema.Attribute.DefaultTo<'Full Time'>;
-    experience: Schema.Attribute.Enumeration<
-      ['Freshers', '2-4 years', '4+ years', '5+ years', '6+ years']
-    > &
+    experience: Schema.Attribute.String &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -1170,9 +1166,7 @@ export interface ApiCareerOpeningCareerOpening
       'oneToMany',
       'api::career-opening.career-opening'
     >;
-    location: Schema.Attribute.Enumeration<
-      ['Coimbatore', 'Kochi, Kerala', 'New Delhi, India']
-    > &
+    location: Schema.Attribute.String &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -1647,7 +1641,7 @@ export interface ApiGenericSubmissionGenericSubmission
   extends Struct.CollectionTypeSchema {
   collectionName: 'generic_submissions';
   info: {
-    displayName: 'Submissions: General Queries';
+    displayName: 'General Queries Submissions';
     pluralName: 'generic-submissions';
     singularName: 'generic-submission';
   };
@@ -2466,7 +2460,7 @@ export interface ApiProductSubmissionProductSubmission
   extends Struct.CollectionTypeSchema {
   collectionName: 'product_submissions';
   info: {
-    displayName: 'Submissions: Product Enquiries';
+    displayName: 'Product Enquiries Submissions';
     pluralName: 'product-submissions';
     singularName: 'product-submission';
   };
@@ -2878,7 +2872,7 @@ export interface ApiSubmissionsJobOpeningSubmissionsJobOpening
   extends Struct.CollectionTypeSchema {
   collectionName: 'submissions_job_openings';
   info: {
-    displayName: 'Submissions: Job Applications';
+    displayName: 'Job Application Submissions';
     pluralName: 'submissions-job-openings';
     singularName: 'submissions-job-opening';
   };

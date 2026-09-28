@@ -4,7 +4,7 @@
   "info": {
     "singularName": "generic-submission",
     "pluralName": "generic-submissions",
-    "displayName": "Submissions: General Queries"
+    "displayName": "General Queries Submissions"
   },
   "options": {
     "draftAndPublish": false

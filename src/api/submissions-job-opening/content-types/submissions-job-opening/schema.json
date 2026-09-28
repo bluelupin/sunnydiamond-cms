@@ -4,7 +4,7 @@
   "info": {
     "singularName": "submissions-job-opening",
     "pluralName": "submissions-job-openings",
-    "displayName": "Submissions: Job Applications"
+    "displayName": "Job Application Submissions"
   },
   "options": {
     "draftAndPublish": false
