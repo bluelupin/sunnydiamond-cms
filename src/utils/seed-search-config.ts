@@ -28,6 +28,7 @@ const READ_ACTION = 'api::search-config.search-config.find';
 /** Creates and publishes the search config once; an existing one (edited by staff) is never touched. */
 export async function seedSearchConfig(strapi: Core.Strapi) {
   await grantPublicRead(strapi);
+  await grantEditorAccess(strapi);
   const documents = strapi.documents('api::search-config.search-config' as any);
   if (await documents.findFirst({ status: 'draft' })) {
     strapi.log.info('Search config seed skipped: already exists.');
@@ -45,4 +46,30 @@ async function grantPublicRead(strapi: Core.Strapi) {
   if (await permissions.findOne({ where: { action: READ_ACTION, role: publicRole.id } } as any)) return;
   await permissions.create({ data: { action: READ_ACTION, role: publicRole.id } } as any);
   strapi.log.info('Search config: public read access granted.');
+}
+
+const SUBJECT = 'api::search-config.search-config';
+const LINK_FIELDS = ['label', 'href', 'keywords'];
+const FIELDS = ['popularSearches', 'serviceShortcuts', 'educationLinks'].flatMap((list) =>
+  LINK_FIELDS.map((field) => `${list}.${field}`),
+);
+
+/**
+ * Staff with the Editor role curate the search dropdown (PS-10). Strapi gives new content types
+ * to Super Admin only, so the Editor role gets the same content-manager rights it has on the
+ * other page types. Existing rights are left as they are.
+ */
+async function grantEditorAccess(strapi: Core.Strapi) {
+  const editor = await strapi.db.query('admin::role').findOne({ where: { code: 'strapi-editor' } } as any);
+  if (!editor) return;
+  const permissions = strapi.db.query('admin::permission');
+  let granted = 0;
+  for (const verb of ['read', 'create', 'update', 'delete', 'publish']) {
+    const action = `plugin::content-manager.explorer.${verb}`;
+    if (await permissions.findOne({ where: { action, subject: SUBJECT, role: editor.id } } as any)) continue;
+    const properties = ['read', 'create', 'update'].includes(verb) ? { fields: FIELDS } : {};
+    await permissions.create({ data: { action, subject: SUBJECT, properties, conditions: [], role: editor.id } } as any);
+    granted += 1;
+  }
+  if (granted) strapi.log.info(`Search config: ${granted} Editor permission(s) granted.`);
 }
