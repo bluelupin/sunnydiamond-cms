@@ -14,6 +14,7 @@ const publicReadActions = [
   'api::featured-story.featured-story.find',
   'api::featured-story.featured-story.findOne',
   'api::global-config.global-config.find',
+  'api::search-config.search-config.find',
   'api::homepage.homepage.find',
   'api::homepage.homepage.shell',
   'api::homepage.homepage.sections',

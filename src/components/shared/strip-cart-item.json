@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_shared_strip_cart_items",
+  "info": {
+    "displayName": "Strip Cart Item"
+  },
+  "attributes": {
+    "badgeTitle": {
+      "type": "string"
+    },
+    "icon": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "showBadge": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

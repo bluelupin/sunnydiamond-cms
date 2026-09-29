@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_shared_search_links",
+  "info": {
+    "displayName": "Search Link",
+    "description": "A link the search dropdown can show. Keywords (comma separated) decide when a shortcut or education link appears; popular searches ignore them."
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true,
+      "maxLength": 80
+    },
+    "href": {
+      "type": "string",
+      "required": true,
+      "maxLength": 300
+    },
+    "keywords": {
+      "type": "text"
+    }
+  }
+}

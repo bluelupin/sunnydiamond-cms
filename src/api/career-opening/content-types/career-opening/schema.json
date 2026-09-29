@@ -38,7 +38,13 @@
       "required": true
     },
     "experience": {
-      "type": "string",
+      "type": "enumeration",
+      "enum": [
+        "Years 0-2",
+        "Years 2-4",
+        "Years 4-6",
+        "Years 6+"
+      ],
       "pluginOptions": {
         "i18n": {
           "localized": true
@@ -46,7 +52,14 @@
       }
     },
     "location": {
-      "type": "string",
+      "type": "enumeration",
+      "enum": [
+        "Cochin",
+        "Coimbatore",
+        "Thrissur",
+        "Chennai",
+        "New Delhi"
+      ],
       "pluginOptions": {
         "i18n": {
           "localized": true
@@ -54,7 +67,20 @@
       }
     },
     "department": {
-      "type": "string",
+      "type": "enumeration",
+      "enum": [
+        "Logistics",
+        "Customer Service",
+        "Finance and Accounts",
+        "HR & Administration",
+        "Inventory & Barcoding",
+        "Sales",
+        "Stock",
+        "Studio",
+        "Digital Lab",
+        "Marketing Communication",
+        "Production"
+      ],
       "pluginOptions": {
         "i18n": {
           "localized": true

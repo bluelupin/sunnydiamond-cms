@@ -17,14 +17,20 @@ import { migrateCareerApplyCta } from './utils/migrate-career-apply-cta';
 import { migrateOccasionCta } from './utils/migrate-occasion-cta';
 import { migrateSupportContactSection } from './utils/migrate-support-contact-section';
 import { migrateHomeTrialAppointments } from './utils/migrate-home-trial-appointments';
+import { seedShowroomCoordinates } from './utils/seed-showroom-coordinates';
+import { seedSearchConfig } from './utils/seed-search-config';
 import { registerReachOutSubmissionProtection } from './utils/protect-reach-out-submissions';
 import { registerAdminRescheduleEmail } from './utils/appointment-reschedule-email';
 import { registerCareerSubmissionProtection } from './utils/protect-career-submissions';
 import { backfillAppointmentReferences } from './utils/appointment-reference';
 import { registerCareerOpeningSlug } from './utils/career-opening-slug';
+import { closeResumeRateLimitRedis } from './utils/resume-parser-rate-limit';
 // import { cleanStaleAdminPermissions } from './utils/clean-stale-admin-permissions';
 
 export default {
+  destroy() {
+    closeResumeRateLimitRedis();
+  },
   /**
    * An asynchronous register function that runs before
    * your application is initialized.
@@ -83,6 +89,12 @@ export default {
     }
     if (process.env.CAREER_OPENING_SEED_ENABLED === 'true') {
       await seedCareerOpenings(strapi);
+    }
+    if (process.env.SEED_SHOWROOM_COORDINATES === 'true') {
+      await seedShowroomCoordinates(strapi);
+    }
+    if (process.env.SEED_SEARCH_CONFIG === 'true') {
+      await seedSearchConfig(strapi);
     }
   },
 };

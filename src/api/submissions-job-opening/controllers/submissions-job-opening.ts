@@ -176,7 +176,7 @@ export default factories.createCoreController(UID, ({ strapi }) => ({
       data: {
         jobID: careerOpening.jobID,
         jobTitle: careerOpening.title,
-        experience: careerOpening.experience,
+        experience: relevantWorkExperience,
         location: careerOpening.location,
         department: careerOpening.department,
         personalDetails: {

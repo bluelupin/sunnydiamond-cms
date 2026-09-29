@@ -9,6 +9,8 @@
   "scripts": {
     "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
     "build": "npm run clean && strapi build",
+    "test:resume": "node --test scripts/test-resume-parser.cjs scripts/test-resume-extraction.mjs scripts/test-resume-rate-limit.cjs",
+    "test:resume:redis": "node --test scripts/test-resume-redis.cjs",
     "generate:blog-seed": "node scripts/fetch-blog-seed.mjs",
     "generate:career-seed": "node scripts/fetch-career-seed.mjs",
     "console": "strapi console",
@@ -40,6 +42,7 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.0.0",
+    "redis": "6.2.1",
     "strapi-provider-email-google-mail": "file:providers/gmail",
     "styled-components": "^6.0.0",
     "tesseract.js": "^7.0.0",

@@ -35,6 +35,17 @@
         }
       }
     },
+    "nearestStoreRadiusKm": {
+      "type": "integer",
+      "default": 50,
+      "min": 1,
+      "max": 1000,
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
     "useCurrentLocationLabel": {
       "type": "string",
       "default": "Use Current Location",
