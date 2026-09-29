@@ -27,6 +27,16 @@ const wildcardPopulate = {
     },
   },
   stripTnc: true,
+  stripCartItems: {
+    populate: {
+      tncCta: true,
+      items: {
+        populate: {
+          icon: true,
+        },
+      },
+    },
+  },
   hereForYouCard: infoCardPopulate,
   personaliseCard: infoCardPopulate,
   pairItWith: {

@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_shared_strip_cart_sections",
+  "info": {
+    "displayName": "Strip Cart Items"
+  },
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "tncCta": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": false
+    },
+    "items": {
+      "type": "component",
+      "component": "shared.strip-cart-item",
+      "repeatable": true
+    }
+  }
+}

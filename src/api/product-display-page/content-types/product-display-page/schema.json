@@ -54,6 +54,16 @@
         }
       }
     },
+    "stripCartItems": {
+      "type": "component",
+      "component": "shared.strip-cart-items-section",
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
     "hereForYouCard": {
       "type": "component",
       "component": "shared.info-card",

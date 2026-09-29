@@ -1848,6 +1848,30 @@ export interface SharedTimelineSection extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedStripCartItem extends Struct.ComponentSchema {
+  collectionName: 'components_shared_strip_cart_items';
+  info: {
+    displayName: 'Strip Cart Item';
+  };
+  attributes: {
+    badgeTitle: Schema.Attribute.String;
+    icon: Schema.Attribute.Media<'images'>;
+    showBadge: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+  };
+}
+
+export interface SharedStripCartItemsSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_strip_cart_sections';
+  info: {
+    displayName: 'Strip Cart Items';
+  };
+  attributes: {
+    items: Schema.Attribute.Component<'shared.strip-cart-item', true>;
+    title: Schema.Attribute.String;
+    tncCta: Schema.Attribute.Component<'shared.cta', false>;
+  };
+}
+
 export interface SharedTrustBadge extends Struct.ComponentSchema {
   collectionName: 'components_shared_trust_badges';
   info: {
@@ -2040,6 +2064,8 @@ declare module '@strapi/strapi' {
       'shared.size-row': SharedSizeRow;
       'shared.skill-items': SharedSkillItems;
       'shared.store-location-filter': SharedStoreLocationFilter;
+      'shared.strip-cart-item': SharedStripCartItem;
+      'shared.strip-cart-items-section': SharedStripCartItemsSection;
       'shared.sunny-promise-section': SharedSunnyPromiseSection;
       'shared.tag': SharedTag;
       'shared.team-member': SharedTeamMember;

@@ -2322,6 +2322,12 @@ export interface ApiProductDisplayPageProductDisplayPage
         };
       }>;
     publishedAt: Schema.Attribute.DateTime;
+    stripCartItems: Schema.Attribute.Component<'shared.strip-cart-items-section', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     stripItems: Schema.Attribute.Component<'shared.process-step', true> &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
