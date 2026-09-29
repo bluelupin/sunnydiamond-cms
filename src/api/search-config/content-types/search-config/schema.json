@@ -1,0 +1,30 @@
+{
+  "kind": "singleType",
+  "collectionName": "search_configs",
+  "info": {
+    "singularName": "search-config",
+    "pluralName": "search-configs",
+    "displayName": "Search Config",
+    "description": "What the website search dropdown offers besides products: popular searches, service shortcuts and education links."
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "popularSearches": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.search-link"
+    },
+    "serviceShortcuts": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.search-link"
+    },
+    "educationLinks": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.search-link"
+    }
+  }
+}

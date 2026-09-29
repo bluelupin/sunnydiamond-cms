@@ -18,6 +18,7 @@ import { migrateOccasionCta } from './utils/migrate-occasion-cta';
 import { migrateSupportContactSection } from './utils/migrate-support-contact-section';
 import { migrateHomeTrialAppointments } from './utils/migrate-home-trial-appointments';
 import { seedShowroomCoordinates } from './utils/seed-showroom-coordinates';
+import { seedSearchConfig } from './utils/seed-search-config';
 import { registerReachOutSubmissionProtection } from './utils/protect-reach-out-submissions';
 import { registerAdminRescheduleEmail } from './utils/appointment-reschedule-email';
 import { registerCareerSubmissionProtection } from './utils/protect-career-submissions';
@@ -91,6 +92,9 @@ export default {
     }
     if (process.env.SEED_SHOWROOM_COORDINATES === 'true') {
       await seedShowroomCoordinates(strapi);
+    }
+    if (process.env.SEED_SEARCH_CONFIG === 'true') {
+      await seedSearchConfig(strapi);
     }
   },
 };
