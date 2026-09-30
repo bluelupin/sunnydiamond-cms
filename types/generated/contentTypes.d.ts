@@ -1191,6 +1191,7 @@ export interface ApiCareerOpeningCareerOpening
         };
       }>;
     postedDate: Schema.Attribute.Date &
+      Schema.Attribute.Required &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
