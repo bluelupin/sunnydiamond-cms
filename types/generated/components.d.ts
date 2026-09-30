@@ -379,6 +379,7 @@ export interface SharedBespokeCustomDesignForm extends Struct.ComponentSchema {
     displayName: 'Bespoke Custom Design Form';
   };
   attributes: {
+    description: Schema.Attribute.Text;
     emailLabel: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'Email ID'>;

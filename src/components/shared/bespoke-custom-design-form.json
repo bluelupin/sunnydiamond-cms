@@ -8,6 +8,7 @@
   "attributes": {
     "showField": { "type": "boolean", "default": true },
     "title": { "type": "string", "default": "Start your Custom Creation", "required": true },
+    "description": { "type": "text" },
     "fullNameLabel": { "type": "string", "default": "Full Name", "required": true },
     "phoneLabel": { "type": "string", "default": "Phone No.", "required": true },
     "emailLabel": { "type": "string", "default": "Email ID", "required": true },
