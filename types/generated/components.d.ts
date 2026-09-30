@@ -1194,8 +1194,8 @@ export interface SharedImageAsset extends Struct.ComponentSchema {
     displayName: 'Image Asset';
   };
   attributes: {
-    desktopImage: Schema.Attribute.Media<'images'>;
-    mobileImage: Schema.Attribute.Media<'images'>;
+    desktopImage: Schema.Attribute.Media<'images' | 'videos'>;
+    mobileImage: Schema.Attribute.Media<'images' | 'videos'>;
   };
 }
 
