@@ -8,6 +8,7 @@ import { HOME_TRIAL_FORM_TAGS } from '../../../utils/home-trial-group-key';
 import { createHomeTrialSubmission } from '../../../utils/create-home-trial-submission';
 import { mutateHomeTrialGroup } from '../../../utils/mutate-home-trial-group';
 import { listCustomerAppointments } from '../../../utils/list-customer-appointments';
+import { linkGuestStoreVisits } from '../../../utils/link-guest-store-visits';
 import { appointmentCustomerChanges, customerDetailsChanged, customerDetailsSnapshot } from '../../../utils/appointment-customer-details';
 import { appointmentNoteChanges } from '../../../utils/appointment-note';
 import { notifyRescheduleAfterCommit } from '../../../utils/appointment-reschedule-email';
@@ -106,6 +107,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     if (!customerName) return ctx.badRequest('customerName is required.');
     if (!customerPhone) return ctx.badRequest('customerPhone must be a valid phone number.');
     if (customerEmail === null) return ctx.badRequest('customerEmail must be a valid email address.');
+    if (formTag === 'product-store-visit' && !customerEmail) return ctx.badRequest('customerEmail is required for store visits.');
     if (requestedDate === null) return ctx.badRequest('requestedDate must use YYYY-MM-DD format.');
 
     const form = await strapi.documents(PRODUCT_FORM_UID as any).findFirst({
@@ -459,6 +461,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
   },
 
   async customerAppointments(ctx) {
+    await linkGuestStoreVisits(strapi, ctx.state.magentoCustomer);
     const locale = requestLocale(ctx);
     const requestedPage = Number(ctx.query.page);
     const requestedPageSize = Number(ctx.query.pageSize);
@@ -475,6 +478,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
 
   /** Upcoming store visits and video calls that can still take a piece (at most 5, soonest first). */
   async openAppointments(ctx) {
+    await linkGuestStoreVisits(strapi, ctx.state.magentoCustomer);
     const rows = await strapi.db.query(PRODUCT_SUBMISSION_UID).findMany({
       where: { magentoCustomerId: ctx.state.magentoCustomer.id, formTag: { $in: PIECE_FORM_TAGS },
         workflowStatus: { $in: OPEN_STATUSES }, requestedDate: { $gte: appointmentToday() } },

@@ -1,7 +1,7 @@
 import { errors } from '@strapi/utils';
 
 /** Customer identity asserted by the authenticated website server. */
-export default async (ctx: any, config: { allowGuestFormTags?: string[] } = {}) => {
+export default async (ctx: any, config: { allowGuestFormTags?: string[]; acceptVerifiedEmail?: boolean } = {}) => {
   if (ctx.state.auth?.strategy?.name !== 'content-api-token') {
     throw new errors.UnauthorizedError('A CMS API token is required.');
   }
@@ -24,6 +24,14 @@ export default async (ctx: any, config: { allowGuestFormTags?: string[] } = {}) 
   if (!['string', 'number'].includes(typeof value) || !/^[1-9]\d*$/.test(String(value)) || !Number.isSafeInteger(Number(value))) {
     throw new errors.ValidationError('magentoCustomerId must be a positive integer verified by the website server.');
   }
-  ctx.state.magentoCustomer = { id: Number(value) };
+  const rawEmail = config.acceptVerifiedEmail ? ctx.request.query?.magentoCustomerEmail : undefined;
+  let email: string | undefined;
+  if (rawEmail !== undefined) {
+    if (typeof rawEmail !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(rawEmail.trim())) {
+      throw new errors.ValidationError('magentoCustomerEmail must be a verified email supplied by the website server.');
+    }
+    email = rawEmail.trim().toLowerCase();
+  }
+  ctx.state.magentoCustomer = { id: Number(value), ...(email ? { email } : {}) };
   return true;
 };
