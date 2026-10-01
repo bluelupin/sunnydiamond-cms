@@ -1,6 +1,6 @@
 import type { Core } from '@strapi/strapi';
 
-const videoTags = ['schedule-video-call', 'product-video-call'];
+const loggedFormTags = ['schedule-video-call', 'product-video-call', 'product-store-visit'];
 const snapshot = (row: any) => ({
   documentId: row.documentId, appointmentReference: row.appointmentReference ?? null,
   formTag: row.formTag, productId: row.productId ?? null, productName: row.productName ?? null,
@@ -13,7 +13,7 @@ const snapshot = (row: any) => ({
 /** Must run in the same transaction as the appointment update. No-op saves produce no log. */
 export async function recordVideoCallChange(strapi: Core.Strapi, before: any, after: any,
   actorType: 'Customer' | 'Admin') {
-  if (!before || !after || !videoTags.includes(before.formTag)) return;
+  if (!before || !after || !loggedFormTags.includes(before.formTag)) return;
   const cancelled = before.workflowStatus !== 'Cancelled' && after.workflowStatus === 'Cancelled';
   const rescheduled = !['Cancelled', 'Closed', 'Visited'].includes(after.workflowStatus) &&
     (before.requestedDate !== after.requestedDate || before.selectedTimeSlot !== after.selectedTimeSlot);

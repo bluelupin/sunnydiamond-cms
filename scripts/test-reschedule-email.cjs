@@ -26,9 +26,9 @@ const data = {
 };
 const flush = () => new Promise(resolve => setImmediate(resolve));
 
-test('both video-call forms record linked reschedule and cancellation history with before/after snapshots', async () => {
+test('video-call and store-visit forms record linked reschedule and cancellation history with before/after snapshots', async () => {
   const { recordVideoCallChange } = load('src/utils/video-call-change-log.ts');
-  for (const formTag of ['schedule-video-call', 'product-video-call']) {
+  for (const formTag of ['schedule-video-call', 'product-video-call', 'product-store-visit']) {
     for (const actorType of ['Customer', 'Admin']) {
       const logs = [];
       const strapi = { documents: uid => {
@@ -174,7 +174,9 @@ test('CMS schedule save sends only after commit; API requests and cancelled appo
     const strapi = mailMock();
     const harness = transactionHarness(strapi);
     let middleware, reads = 0;
-    strapi.documents = { use: fn => { middleware = fn; } };
+    const logs = [];
+    strapi.documents = () => ({ create: async ({ data }) => { logs.push(data); } });
+    strapi.documents.use = fn => { middleware = fn; };
     strapi.requestContext = { get: () => ({ state: { user: { id: 1 } }, request: {
       url: scenario === 'api' ? '/api/product-submissions/reschedule' : '/content-manager/collection-types/product',
     } }) };
@@ -190,6 +192,8 @@ test('CMS schedule save sends only after commit; API requests and cancelled appo
     });
     if (scenario === 'failure') await assert.rejects(run(), /save failed/);
     else await run();
+    assert.equal(logs.length, scenario === 'changed' ? 1 : 0, scenario);
+    if (logs.length) assert.equal(logs[0].actorType, 'Admin');
     assert.equal(strapi.sent.length, 0);
     await harness.commit();
     assert.equal(strapi.sent.length, scenario === 'changed' ? 1 : 0, scenario);
@@ -206,7 +210,9 @@ test('single-appointment API queues only committed schedule changes and uses upd
       : key === 'first' ? async () => ({ id: 1 }) : () => chain });
     strapi.db.connection = () => chain;
     strapi.db.query = () => ({ findOne: async () => appointment });
-    strapi.documents = () => ({ findFirst: async () => ({}), update: async () => ({}) });
+    const logs = [];
+    strapi.documents = () => ({ findFirst: async () => ({}), update: async () => ({}),
+      create: async ({ data }) => { logs.push(data); } });
     const prefix = '../../../utils/';
     const controller = load('src/api/product-submission/controllers/product-submission.ts', {
       '@strapi/strapi': { factories: { createCoreController: (_uid, factory) => factory({ strapi }) } },
@@ -231,6 +237,8 @@ test('single-appointment API queues only committed schedule changes and uses upd
     };
     if (scenario === 'rollback') await assert.rejects(controller.reschedule(ctx), /rollback/);
     else await controller.reschedule(ctx);
+    assert.equal(logs.length, ['changed', 'rollback'].includes(scenario) ? 1 : 0, scenario);
+    if (logs.length) assert.equal(logs[0].actorType, 'Customer');
     assert.equal(strapi.sent.length, 0);
     await harness.commit();
     assert.equal(strapi.sent.length, scenario === 'changed' ? 1 : 0, scenario);
