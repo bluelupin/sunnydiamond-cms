@@ -4,6 +4,7 @@ import { PolicySlugInput } from './components/PolicySlugInput';
 import { AppointmentDetails } from './components/AppointmentDetails';
 import { GenericSubmissionField } from './components/GenericSubmissionField';
 import { AppointmentReferenceField } from './components/AppointmentReferenceField';
+import { AddedPiecesField } from './components/AddedPiecesField';
 import './styles/read-only-appointment-relations.css';
 
 const CHUNK_RELOAD_KEY = 'strapi-admin-chunk-reload';
@@ -25,13 +26,15 @@ export default {
     app.addFields({ type: 'appointment-details', Component: AppointmentDetails as ComponentType });
     app.addFields({ type: 'generic-submission-field', Component: GenericSubmissionField as ComponentType });
     app.addFields({ type: 'appointment-reference', Component: AppointmentReferenceField as ComponentType });
+    app.addFields({ type: 'added-pieces', Component: AddedPiecesField as ComponentType });
   },
   bootstrap(app: { registerHook: (name: string, handler: (args: any) => any) => void }) {
     app.registerHook('Admin/CM/pages/EditView/mutate-edit-view-layout', (args) => {
       if (args.layout.settings?.displayName !== 'Submissions: Product Enquiries') return args;
       return { ...args, layout: { ...args.layout,
         layout: args.layout.layout.map((panel: any[][]) => panel.map(row => row.map(field =>
-          field.name === 'appointmentReference' ? { ...field, type: 'appointment-reference' } : field,
+          field.name === 'appointmentReference' ? { ...field, type: 'appointment-reference' }
+            : field.name === 'addedPieces' ? { ...field, type: 'added-pieces', size: 12 } : field,
         ))),
       } };
     });
