@@ -158,7 +158,10 @@ test('store visit submission saves purposeOfVisit separately from requestDetails
   assert.equal(saved.purposeOfVisit, 'Bridal jewellery');
   assert.equal(saved.requestDetails, input.requestDetails);
   assert.equal((await controller.submit(ctx({ ...input, purposeOfVisit: {} }))).message,
-    'purposeOfVisit must be text with at most 255 characters.');
+    'purposeOfVisit must be text.');
+  const longPurpose = 'a'.repeat(1000);
+  await controller.submit(ctx({ ...input, purposeOfVisit: longPurpose }));
+  assert.equal(saved.purposeOfVisit, longPurpose);
   await controller.submit(ctx({ ...input, purposeOfVisit: undefined }));
   assert.equal(saved.purposeOfVisit, undefined);
 });

@@ -109,8 +109,8 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     if (customerEmail === null) return ctx.badRequest('customerEmail must be a valid email address.');
     if (formTag === 'product-store-visit' && !customerEmail) return ctx.badRequest('customerEmail is required for store visits.');
     if (requestedDate === null) return ctx.badRequest('requestedDate must use YYYY-MM-DD format.');
-    if (input.purposeOfVisit != null && (typeof input.purposeOfVisit !== 'string' || input.purposeOfVisit.trim().length > 255)) {
-      return ctx.badRequest('purposeOfVisit must be text with at most 255 characters.');
+    if (input.purposeOfVisit != null && typeof input.purposeOfVisit !== 'string') {
+      return ctx.badRequest('purposeOfVisit must be text.');
     }
 
     const form = await strapi.documents(PRODUCT_FORM_UID as any).findFirst({

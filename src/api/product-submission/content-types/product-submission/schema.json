@@ -62,8 +62,7 @@
       "type": "text"
     },
     "purposeOfVisit": {
-      "type": "string",
-      "maxLength": 255
+      "type": "text"
     },
     "addressLine1": {
       "type": "string"
