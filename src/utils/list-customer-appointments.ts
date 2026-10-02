@@ -37,7 +37,7 @@ export async function listCustomerAppointments(strapi: any, options: any) {
     .slice((page - 1) * pageSize, prefix);
   const selectedGroupIds = units.filter(row => row.grouped).map(row => row.documentId);
   const selectedLegacyIds = units.filter(row => !row.grouped).map(row => row.documentId);
-  const [groups, products, groupChanges] = await Promise.all([
+  const [groups, products, groupChanges, cancellations] = await Promise.all([
     selectedGroupIds.length ? strapi.db.query(GROUP).findMany({
       where: { ...groupWhere, documentId: { $in: selectedGroupIds } },
       select: ['documentId', 'appointmentReference', 'requestedDate', 'selectedTimeSlot', 'workflowStatus',
@@ -57,10 +57,29 @@ export async function listCustomerAppointments(strapi: any, options: any) {
         actorType: { $in: ['Customer', 'Migration'] } },
       select: ['previousData', 'newData'], populate: { sourceGroup: { select: ['documentId'] } },
     }) : [],
+    units.length ? strapi.db.query(CHANGE).findMany({
+      where: { eventType: 'Cancelled', $or: [
+        { sourceGroup: { documentId: { $in: selectedGroupIds } } },
+        { affectedSubmissions: { documentId: { $in: selectedLegacyIds } } },
+      ] },
+      select: ['changedAt'],
+      populate: { sourceGroup: { select: ['documentId'] }, affectedSubmissions: { select: ['documentId'] } },
+      orderBy: { changedAt: 'desc' },
+    }) : [],
   ]);
   const rescheduleDetails = (entries: unknown) => {
     const rescheduleCount = countScheduleChanges(entries);
     return { rescheduleCount, reschedulesLeft: Math.max(0, MAX_RESCHEDULES - rescheduleCount) };
+  };
+  const cancellationDetails = (appointment: any, grouped: boolean, history?: unknown) => {
+    if (appointment.workflowStatus !== 'Cancelled') return {};
+    const change = cancellations.find((entry: any) => grouped
+      ? entry.sourceGroup?.documentId === appointment.documentId
+      : entry.affectedSubmissions?.some((submission: any) => submission.documentId === appointment.documentId));
+    const historicalCancellation = (Array.isArray(history) ? history : [])
+      .filter((entry: any) => entry?.eventType === 'Cancelled')
+      .sort((a: any, b: any) => new Date(b.changedAt).getTime() - new Date(a.changedAt).getTime())[0];
+    return { cancelledAt: change?.changedAt ?? historicalCancellation?.changedAt ?? null };
   };
   const localizedProducts = await Promise.all(products.map(async (product: any) => {
     const { appointmentGroup } = product;
@@ -89,13 +108,15 @@ export async function listCustomerAppointments(strapi: any, options: any) {
         productId: piece.productId, productName: piece.productName ?? null,
       }));
       return [{ ...members[0], appointmentId: members[0].appointmentReference ?? members[0].documentId,
-        appointmentGroupId: null, products: [...members, ...added], ...rescheduleDetails(matched[0].history) }];
+        appointmentGroupId: null, products: [...members, ...added], ...rescheduleDetails(matched[0].history),
+        ...cancellationDetails(members[0], false, matched[0].history) }];
     }
     const group = groups.find((row: any) => row.documentId === unit.documentId);
     if (!group) return [];
     return [{ ...members[0], ...group, documentId: members[0].documentId,
       appointmentId: group.appointmentReference ?? group.documentId,
       appointmentGroupId: group.documentId, products: members,
+      ...cancellationDetails(group, true),
       ...rescheduleDetails(groupChanges.filter((change: any) => change.sourceGroup?.documentId === group.documentId)) }];
   });
   const total = groupCount + legacyCount;
