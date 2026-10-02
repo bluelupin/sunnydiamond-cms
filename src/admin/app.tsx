@@ -105,7 +105,7 @@ export default {
 
       const isVisitSection = args.layout.layout.some((panel: any[][]) =>
         panel.some((row) => row.some((field) =>
-          field.name === 'visitSection' &&
+          ['visitSection', 'visitUsSection'].includes(field.name) &&
           field.attribute?.component === 'shared.showroom-section'
         ))
       );
