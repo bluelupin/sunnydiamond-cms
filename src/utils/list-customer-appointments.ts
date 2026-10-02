@@ -58,7 +58,10 @@ export async function listCustomerAppointments(strapi: any, options: any) {
       select: ['previousData', 'newData'], populate: { sourceGroup: { select: ['documentId'] } },
     }) : [],
   ]);
-  const reschedulesLeft = (entries: unknown) => Math.max(0, MAX_RESCHEDULES - countScheduleChanges(entries));
+  const rescheduleDetails = (entries: unknown) => {
+    const rescheduleCount = countScheduleChanges(entries);
+    return { rescheduleCount, reschedulesLeft: Math.max(0, MAX_RESCHEDULES - rescheduleCount) };
+  };
   const localizedProducts = await Promise.all(products.map(async (product: any) => {
     const { appointmentGroup } = product;
     const safe: any = Object.fromEntries(fields.map(field => [field, product[field]]));
@@ -86,14 +89,14 @@ export async function listCustomerAppointments(strapi: any, options: any) {
         productId: piece.productId, productName: piece.productName ?? null,
       }));
       return [{ ...members[0], appointmentId: members[0].appointmentReference ?? members[0].documentId,
-        appointmentGroupId: null, products: [...members, ...added], reschedulesLeft: reschedulesLeft(matched[0].history) }];
+        appointmentGroupId: null, products: [...members, ...added], ...rescheduleDetails(matched[0].history) }];
     }
     const group = groups.find((row: any) => row.documentId === unit.documentId);
     if (!group) return [];
     return [{ ...members[0], ...group, documentId: members[0].documentId,
       appointmentId: group.appointmentReference ?? group.documentId,
       appointmentGroupId: group.documentId, products: members,
-      reschedulesLeft: reschedulesLeft(groupChanges.filter((change: any) => change.sourceGroup?.documentId === group.documentId)) }];
+      ...rescheduleDetails(groupChanges.filter((change: any) => change.sourceGroup?.documentId === group.documentId)) }];
   });
   const total = groupCount + legacyCount;
   return { data, meta: { pagination: { page, pageSize, total, pageCount: Math.ceil(total / pageSize) } } };

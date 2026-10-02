@@ -1183,7 +1183,7 @@ export interface ApiCareerOpeningCareerOpening
       'api::career-opening.career-opening'
     >;
     location: Schema.Attribute.Enumeration<
-      ['COCHIN', 'COIMBATORE', 'THRISSUR', 'CHENNAI', 'NEW DELHI']
+      ['Cochin', 'Coimbatore', 'Thrissur', 'Chennai', 'New Delhi']
     > &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
@@ -2329,7 +2329,10 @@ export interface ApiProductDisplayPageProductDisplayPage
         };
       }>;
     publishedAt: Schema.Attribute.DateTime;
-    stripCartItems: Schema.Attribute.Component<'shared.strip-cart-items-section', false> &
+    stripCartItems: Schema.Attribute.Component<
+      'shared.strip-cart-items-section',
+      false
+    > &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -2629,6 +2632,37 @@ export interface ApiSavedCreationSavedCreation
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 64;
       }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiSearchConfigSearchConfig extends Struct.SingleTypeSchema {
+  collectionName: 'search_configs';
+  info: {
+    description: 'What the website search dropdown offers besides products: popular searches, service shortcuts and education links.';
+    displayName: 'Search Config';
+    pluralName: 'search-configs';
+    singularName: 'search-config';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    educationLinks: Schema.Attribute.Component<'shared.search-link', true>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::search-config.search-config'
+    > &
+      Schema.Attribute.Private;
+    popularSearches: Schema.Attribute.Component<'shared.search-link', true>;
+    publishedAt: Schema.Attribute.DateTime;
+    serviceShortcuts: Schema.Attribute.Component<'shared.search-link', true>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -3594,6 +3628,7 @@ declare module '@strapi/strapi' {
       'api::product-submission.product-submission': ApiProductSubmissionProductSubmission;
       'api::profile-page.profile-page': ApiProfilePageProfilePage;
       'api::saved-creation.saved-creation': ApiSavedCreationSavedCreation;
+      'api::search-config.search-config': ApiSearchConfigSearchConfig;
       'api::showroom.showroom': ApiShowroomShowroom;
       'api::size-guide.size-guide': ApiSizeGuideSizeGuide;
       'api::skill-and-language.skill-and-language': ApiSkillAndLanguageSkillAndLanguage;

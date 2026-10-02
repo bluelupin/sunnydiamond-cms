@@ -1667,6 +1667,27 @@ export interface SharedPromoCard extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedSearchLink extends Struct.ComponentSchema {
+  collectionName: 'components_shared_search_links';
+  info: {
+    description: 'A link the search dropdown can show. Keywords (comma separated) decide when a shortcut or education link appears; popular searches ignore them.';
+    displayName: 'Search Link';
+  };
+  attributes: {
+    href: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 300;
+      }>;
+    keywords: Schema.Attribute.Text;
+    label: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 80;
+      }>;
+  };
+}
+
 export interface SharedSeo extends Struct.ComponentSchema {
   collectionName: 'components_shared_seos';
   info: {
@@ -1749,6 +1770,30 @@ export interface SharedStoreLocationFilter extends Struct.ComponentSchema {
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     label: Schema.Attribute.String & Schema.Attribute.Required;
     value: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedStripCartItem extends Struct.ComponentSchema {
+  collectionName: 'components_shared_strip_cart_items';
+  info: {
+    displayName: 'Strip Cart Item';
+  };
+  attributes: {
+    badgeTitle: Schema.Attribute.String;
+    icon: Schema.Attribute.Media<'images'>;
+    showBadge: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+  };
+}
+
+export interface SharedStripCartItemsSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_strip_cart_sections';
+  info: {
+    displayName: 'Strip Cart Items';
+  };
+  attributes: {
+    items: Schema.Attribute.Component<'shared.strip-cart-item', true>;
+    title: Schema.Attribute.String;
+    tncCta: Schema.Attribute.Component<'shared.cta', false>;
   };
 }
 
@@ -1846,30 +1891,6 @@ export interface SharedTimelineSection extends Struct.ComponentSchema {
       'shared.timeline-milestone',
       true
     >;
-  };
-}
-
-export interface SharedStripCartItem extends Struct.ComponentSchema {
-  collectionName: 'components_shared_strip_cart_items';
-  info: {
-    displayName: 'Strip Cart Item';
-  };
-  attributes: {
-    badgeTitle: Schema.Attribute.String;
-    icon: Schema.Attribute.Media<'images'>;
-    showBadge: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
-  };
-}
-
-export interface SharedStripCartItemsSection extends Struct.ComponentSchema {
-  collectionName: 'components_shared_strip_cart_sections';
-  info: {
-    displayName: 'Strip Cart Items';
-  };
-  attributes: {
-    items: Schema.Attribute.Component<'shared.strip-cart-item', true>;
-    title: Schema.Attribute.String;
-    tncCta: Schema.Attribute.Component<'shared.cta', false>;
   };
 }
 
@@ -2059,6 +2080,7 @@ declare module '@strapi/strapi' {
       'shared.profile-side-tab': SharedProfileSideTab;
       'shared.profile-trust-badge-section': SharedProfileTrustBadgeSection;
       'shared.promo-card': SharedPromoCard;
+      'shared.search-link': SharedSearchLink;
       'shared.seo': SharedSeo;
       'shared.showroom-section': SharedShowroomSection;
       'shared.sidebar-navigation-item': SharedSidebarNavigationItem;
