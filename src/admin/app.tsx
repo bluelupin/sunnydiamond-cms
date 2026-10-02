@@ -36,7 +36,10 @@ export default {
       } };
     });
     app.registerHook('Admin/CM/pages/EditView/mutate-edit-view-layout', (args) => {
-      if (args.layout.settings?.displayName !== 'Submissions: Job Applications') return args;
+      if (![
+        'Submissions: Product Enquiries', 'Submissions: General Queries',
+        'Submissions: Bespoke Design', 'Submissions: Job Applications',
+      ].includes(args.layout.settings?.displayName)) return args;
       const editable = new Set(['workflowStatus', 'internalNotes']);
       const components = Object.fromEntries(Object.entries(args.layout.components ?? {}).map(([uid, component]: [string, any]) => [
         uid,

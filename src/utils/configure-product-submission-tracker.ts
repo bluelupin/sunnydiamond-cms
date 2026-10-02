@@ -8,10 +8,17 @@ export async function configureProductSubmissionTracker(strapi: Core.Strapi) {
   const edit = (configuration.layouts?.edit ?? [])
     .map((row: { name: string; size: number }[]) => row.filter((field) => !readonlyFields.includes(field.name)))
     .filter((row: { name: string }[]) => row.length > 0);
+  if (!edit.some((row: { name: string }[]) => row.some(field => field.name === 'purposeOfVisit'))) {
+    edit.push([{ name: 'purposeOfVisit', size: 6 }]);
+  }
   edit.push([{ name: 'appointmentGroup', size: 12 }], [{ name: 'appointmentChanges', size: 12 }]);
   const metadata = configuration.metadatas?.rescheduleHistory ?? {};
   const metadatas = {
     ...configuration.metadatas,
+    purposeOfVisit: {
+      ...configuration.metadatas?.purposeOfVisit,
+      edit: { ...configuration.metadatas?.purposeOfVisit?.edit, label: 'Purpose of Visit', editable: false, visible: true },
+    },
     rescheduleHistory: {
       ...metadata,
       edit: { ...metadata.edit, editable: false, visible: false },

@@ -126,3 +126,39 @@ test('store visit submission requires email before saving the booking', async ()
   });
   assert.equal(result.message, 'customerEmail is required for store visits.');
 });
+
+test('store visit submission saves purposeOfVisit separately from requestDetails', async () => {
+  let saved;
+  const strapi = {
+    documents: uid => uid.includes('product-form') ? { findFirst: async () => ({ showroomOptions: [] }) }
+      : uid.includes('showroom') ? { findFirst: async () => ({ documentId: 'showroom', city: 'Kochi' }) }
+      : { create: async ({ data }) => { saved = data; return { ...data, id: 1, documentId: 'booking' }; } },
+    db: { transaction: async callback => callback({ trx: {} }) },
+  };
+  const controller = load('src/api/product-submission/controllers/product-submission.ts', name => {
+    if (name === '@strapi/strapi') return { factories: { createCoreController: (_, factory) => factory({ strapi }) } };
+    if (name.endsWith('/request-locale')) return { requestLocale: () => 'en' };
+    if (name.endsWith('/appointment-schedule')) return { RESCHEDULABLE_FORM_TAGS: [] };
+    if (name.endsWith('/home-trial-group-key')) return { HOME_TRIAL_FORM_TAGS: [] };
+    if (name.endsWith('/form-submission-rate-limit')) return {
+      checkFormSubmissionRateLimit: () => ({ allowed: true }), clientIp: () => '127.0.0.1',
+    };
+    if (name.endsWith('/store-visit-clash')) return { storeVisitClash: async () => false };
+    if (name.endsWith('/appointment-reference')) return { assignAppointmentReference: async () => 'SV-1' };
+    if (name.endsWith('/appointment-confirmation-email')) return { sendStoreVisitConfirmationEmail: async () => {} };
+    return {};
+  }).default;
+  const input = {
+    formTag: 'product-store-visit', productName: 'Store visit', customerName: 'Guest',
+    customerPhone: '9876543210', customerEmail: 'guest@example.com', preferredShowroom: 'showroom',
+    purposeOfVisit: ' Bridal jewellery ', requestDetails: 'Looking for an engagement ring',
+  };
+  const ctx = value => ({ state: {}, request: { body: { data: value } }, badRequest: message => ({ message }) });
+  await controller.submit(ctx(input));
+  assert.equal(saved.purposeOfVisit, 'Bridal jewellery');
+  assert.equal(saved.requestDetails, input.requestDetails);
+  assert.equal((await controller.submit(ctx({ ...input, purposeOfVisit: {} }))).message,
+    'purposeOfVisit must be text with at most 255 characters.');
+  await controller.submit(ctx({ ...input, purposeOfVisit: undefined }));
+  assert.equal(saved.purposeOfVisit, undefined);
+});

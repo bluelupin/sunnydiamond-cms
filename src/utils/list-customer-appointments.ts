@@ -5,7 +5,7 @@ const GROUP = 'api::appointment-group.appointment-group';
 const PRODUCT = 'api::product-submission.product-submission';
 const CHANGE = 'api::appointment-change.appointment-change';
 const fields = ['documentId', 'appointmentReference', 'formTag', 'productName', 'productId', 'customerName',
-  'customerPhone', 'customerEmail', 'requestedDate', 'requestDetails', 'selectedTimeSlot',
+  'customerPhone', 'customerEmail', 'requestedDate', 'requestDetails', 'purposeOfVisit', 'selectedTimeSlot',
   'workflowStatus', 'addressLine1', 'addressLine2', 'pincode', 'city', 'createdAt', 'updatedAt'];
 const populate = {
   state: { select: ['documentId', 'name', 'code'] },

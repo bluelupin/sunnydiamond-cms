@@ -61,6 +61,10 @@
     "requestDetails": {
       "type": "text"
     },
+    "purposeOfVisit": {
+      "type": "string",
+      "maxLength": 255
+    },
     "addressLine1": {
       "type": "string"
     },
