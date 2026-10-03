@@ -6,12 +6,14 @@ const ts = require('typescript');
 function load(file) {
   const filename = path.resolve(__dirname, '..', file), module = { exports: {} };
   const code = ts.transpileModule(fs.readFileSync(filename, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
-  new Function('require', 'module', 'exports', code)(require, module, module.exports);
+  new Function('require', 'module', 'exports', code)(name => name.startsWith('.')
+    ? load(path.relative(path.resolve(__dirname, '..'), path.resolve(path.dirname(filename), name + '.ts')))
+    : require(name), module, module.exports);
   return module.exports;
 }
 const { countScheduleChanges, appointmentStartsAt } = load('src/utils/appointment-schedule.ts');
 
-test('only a new date or time counts towards the reschedule limit', () => {
+test('date, time and address changes count towards the reschedule limit', () => {
   const move = (from, to) => ({ previousData: { requestedDate: from, selectedTimeSlot: '10:00 AM - 11:00 AM' },
     newData: { requestedDate: to, selectedTimeSlot: '10:00 AM - 11:00 AM' } });
   const contactOnly = { previousData: { requestedDate: '2026-10-12', selectedTimeSlot: 'x', customerDetails: [{}] },
@@ -20,6 +22,13 @@ test('only a new date or time counts towards the reschedule limit', () => {
   assert.equal(countScheduleChanges(undefined), 0);
   assert.equal(countScheduleChanges([contactOnly]), 0);
   assert.equal(countScheduleChanges([move('2026-10-12', '2026-10-14'), contactOnly, slotOnly]), 2);
+  for (const field of ['addressLine1', 'addressLine2', 'city', 'pincode', 'state']) {
+    const addressOnly = { previousData: { ...contactOnly.previousData, [field]: 'old' },
+      newData: { ...contactOnly.newData, [field]: 'new' } };
+    assert.equal(countScheduleChanges([addressOnly]), 1, field);
+    assert.equal(countScheduleChanges([{ ...addressOnly, newData: addressOnly.previousData }]), 0, field);
+  }
+  assert.equal(countScheduleChanges([{ previousData: { addressLine2: null }, newData: { addressLine2: '' } }]), 0);
 });
 
 test('slot start is read in IST; an unreadable slot starts at midnight', () => {

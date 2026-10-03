@@ -20,7 +20,8 @@ test('listing exposes cancellation timestamps for groups and individuals only wh
   const products = [
     { id: 2, documentId: 'member', appointmentGroup: { documentId: 'group' }, createdAt: changedAt },
     { id: 3, documentId: 'individual', workflowStatus: 'Cancelled', createdAt: changedAt },
-    { id: 4, documentId: 'active', workflowStatus: 'Scheduled', createdAt: changedAt },
+    { id: 4, documentId: 'active', workflowStatus: 'Scheduled', createdAt: changedAt,
+      rescheduleHistory: [{ previousData: { addressLine1: 'Old road' }, newData: { addressLine1: 'New road' } }] },
     { id: 5, documentId: 'historical', workflowStatus: 'Cancelled', createdAt: changedAt,
       rescheduleHistory: [{ eventType: 'Cancelled', changedAt }] },
     { id: 6, documentId: 'unlogged', workflowStatus: 'Cancelled', createdAt: changedAt },
@@ -47,4 +48,6 @@ test('listing exposes cancellation timestamps for groups and individuals only wh
   assert.equal(Object.hasOwn(find('active'), 'cancelledAt'), false);
   assert.equal(find('member').rescheduleCount, 0);
   assert.equal(find('member').reschedulesLeft, 2);
+  assert.equal(find('active').rescheduleCount, 1);
+  assert.equal(find('active').reschedulesLeft, 1);
 });

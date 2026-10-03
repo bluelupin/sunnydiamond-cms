@@ -4,6 +4,7 @@ import { retryableGroupRace } from './create-home-trial-submission';
 import { customerContactDetails, customerDetailsChanged, customerDetailsSnapshot } from './appointment-customer-details';
 import { notifyTryAtHomeChangeAfterCommit } from './try-at-home-change-email';
 import { findHomeTrialGroup } from './find-home-trial-group';
+import { appointmentAddressChanged } from './appointment-address';
 
 const GROUP = 'api::appointment-group.appointment-group';
 const PRODUCT = 'api::product-submission.product-submission';
@@ -14,14 +15,15 @@ const canonical = (group: any) => ({
   workflowStatus: group.workflowStatus,
   addressLine1: group.addressLine1 ?? null, addressLine2: group.addressLine2 ?? null,
   city: group.city ?? null, pincode: group.pincode ?? null,
-  state: group.state?.documentId ?? null,
+  state: (typeof group.state === 'string' ? group.state : group.state?.documentId) ?? null,
 });
 
 /** Undefined means a legacy/ungrouped submission; its existing handler remains responsible. */
 export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any> {
-  const { documentId, customerId, action, requestedDate, selectedTimeSlot, locale } = input;
+  const { documentId, customerId, action, locale } = input;
   const customerChanges = action === 'reschedule' ? input.customerChanges ?? {} : {};
   const noteChanges = action === 'reschedule' ? input.noteChanges ?? {} : {};
+  const addressChanges = action === 'reschedule' ? input.addressChanges ?? {} : {};
   const lookup = () => strapi.db.query(PRODUCT).findOne({
     where: { documentId, magentoCustomerId: customerId }, populate: { appointmentGroup: true },
   });
@@ -42,6 +44,8 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
         const groups = strapi.documents(GROUP);
         const group = await groups.findOne({ documentId: groupId, populate: { state: true } });
         if (!group || group.magentoCustomerId !== customerId) return { error: 'Appointment not found.', status: 404 };
+        const requestedDate = input.requestedDate ?? group.requestedDate;
+        const selectedTimeSlot = input.selectedTimeSlot ?? group.selectedTimeSlot;
         const rows = await strapi.db.query(PRODUCT).findMany({
           where: { appointmentGroup: { documentId: groupId } }, orderBy: { id: 'asc' },
         });
@@ -57,6 +61,7 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
             workflowStatus: value.workflowStatus,
             ...customerChanges,
             ...noteChanges,
+            ...addressChanges,
             affectedProductDocumentIds: affected.map((row: any) => row.documentId) }, changed,
         });
         const contactAudit = Object.keys(customerChanges).length > 0;
@@ -82,9 +87,10 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
           const windowError = validateReschedulingWindow(group.requestedDate);
           if (windowError) return { error: windowError, status: 400 };
           scheduleChanged = group.requestedDate !== requestedDate || group.selectedTimeSlot !== selectedTimeSlot;
-          if (!scheduleChanged && !customerDetailsChanged(rows, { ...customerChanges, ...noteChanges })) return response(group, false);
+          const addressChanged = appointmentAddressChanged(group, { ...group, ...addressChanges });
+          if (!scheduleChanged && !addressChanged && !customerDetailsChanged(rows, { ...customerChanges, ...noteChanges })) return response(group, false);
           // ponytail: counts this group's own moves; a group merged into another does not carry its count over.
-          if (scheduleChanged && countScheduleChanges(await strapi.db.query(CHANGE).findMany({
+          if ((scheduleChanged || addressChanged) && countScheduleChanges(await strapi.db.query(CHANGE).findMany({
             where: { sourceGroup: { documentId: groupId }, eventType: 'Rescheduled', actorType: { $in: ['Customer', 'Migration'] } },
             select: ['previousData', 'newData'],
           })) >= MAX_RESCHEDULES) return { error: RESCHEDULE_LIMIT_MESSAGE, status: 400 };
@@ -96,9 +102,12 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
               const error = form ? validateAppointmentSchedule(requestedDate, selectedTimeSlot, form) : 'The appointment form is unavailable.';
               if (error) return { error, status: 400 };
             }
-            const key = homeTrialScheduleKey(customerId, requestedDate, selectedTimeSlot, group);
+          }
+          if (scheduleChanged || addressChanged) {
+            const updatedGroup = { ...group, ...addressChanges };
+            const key = homeTrialScheduleKey(customerId, requestedDate, selectedTimeSlot, updatedGroup);
             const occupied = await findHomeTrialGroup(strapi, trx, {
-              ...group, magentoCustomerId: customerId, requestedDate, selectedTimeSlot,
+              ...updatedGroup, magentoCustomerId: customerId, requestedDate, selectedTimeSlot,
             });
             if (occupied && (occupied.magentoCustomerId !== customerId || inactive(occupied) || occupied.requestedDate !== requestedDate || occupied.selectedTimeSlot !== selectedTimeSlot)) {
               throw new Error('Appointment group does not match its active schedule key.');
@@ -114,8 +123,8 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
               target = occupied;
               await groups.update({ documentId: groupId, data: { activeScheduleKey: null, mergedInto: target.documentId, workflowStatus: 'Closed' } });
             } else {
-              target = { ...group, requestedDate, selectedTimeSlot };
-              await groups.update({ documentId: groupId, data: { requestedDate, selectedTimeSlot, activeScheduleKey: key } });
+              target = { ...updatedGroup, requestedDate, selectedTimeSlot };
+              await groups.update({ documentId: groupId, data: { requestedDate, selectedTimeSlot, ...addressChanges, activeScheduleKey: key } });
             }
           }
         }

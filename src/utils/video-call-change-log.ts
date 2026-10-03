@@ -1,6 +1,7 @@
 import type { Core } from '@strapi/strapi';
+import { appointmentAddressChanged, appointmentAddressSnapshot } from './appointment-address';
 
-const loggedFormTags = ['schedule-video-call', 'product-video-call', 'product-store-visit'];
+const loggedFormTags = ['schedule-video-call', 'product-video-call', 'product-store-visit', 'store-visit', 'try-at-home', 'try-at-home-form'];
 const snapshot = (row: any) => ({
   documentId: row.documentId, appointmentReference: row.appointmentReference ?? null,
   formTag: row.formTag, productId: row.productId ?? null, productName: row.productName ?? null,
@@ -8,6 +9,7 @@ const snapshot = (row: any) => ({
   workflowStatus: row.workflowStatus ?? null, requestDetails: row.requestDetails ?? null,
   customerName: row.customerName ?? null, customerEmail: row.customerEmail ?? null,
   customerPhone: row.customerPhone ?? null,
+  ...appointmentAddressSnapshot(row),
 });
 
 /** Must run in the same transaction as the appointment update. No-op saves produce no log. */
@@ -16,7 +18,7 @@ export async function recordVideoCallChange(strapi: Core.Strapi, before: any, af
   if (!before || !after || !loggedFormTags.includes(before.formTag)) return;
   const cancelled = before.workflowStatus !== 'Cancelled' && after.workflowStatus === 'Cancelled';
   const rescheduled = !['Cancelled', 'Closed', 'Visited'].includes(after.workflowStatus) &&
-    (before.requestedDate !== after.requestedDate || before.selectedTimeSlot !== after.selectedTimeSlot);
+    (before.requestedDate !== after.requestedDate || before.selectedTimeSlot !== after.selectedTimeSlot || appointmentAddressChanged(before, after));
   if (!cancelled && !rescheduled) return;
   await strapi.documents('api::appointment-change.appointment-change').create({ data: {
     eventType: cancelled ? 'Cancelled' : 'Rescheduled', changedAt: new Date().toISOString(), actorType,

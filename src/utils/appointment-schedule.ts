@@ -1,3 +1,5 @@
+import { appointmentAddressChanged } from './appointment-address';
+
 export const RESCHEDULABLE_FORM_TAGS = [
   'try-at-home', 'schedule-video-call', 'try-at-home-form', 'product-video-call',
 ];
@@ -36,10 +38,11 @@ export const validateAppointmentSchedule = (date: unknown, slot: unknown, form: 
 export const MAX_RESCHEDULES = 2;
 export const RESCHEDULE_LIMIT_MESSAGE = 'You have already rescheduled this appointment twice. Please contact us.';
 
-/** History and change rows also record contact/note-only edits; only a new date or time counts. */
+/** Date, time and address changes count; contact/note-only edits do not. */
 export const countScheduleChanges = (entries: unknown) => (Array.isArray(entries) ? entries : [])
   .filter((entry: any) => entry?.previousData?.requestedDate !== entry?.newData?.requestedDate ||
-    entry?.previousData?.selectedTimeSlot !== entry?.newData?.selectedTimeSlot).length;
+    entry?.previousData?.selectedTimeSlot !== entry?.newData?.selectedTimeSlot ||
+    appointmentAddressChanged(entry?.previousData ?? {}, entry?.newData ?? {})).length;
 
 /** "11:00 AM - 12:00 PM" starts at 11:00 IST; an unreadable slot counts from midnight. */
 export const appointmentStartsAt = (date: string, slot?: string | null) => {
