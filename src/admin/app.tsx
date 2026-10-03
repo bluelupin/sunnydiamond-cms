@@ -4,6 +4,7 @@ import { PolicySlugInput } from './components/PolicySlugInput';
 import { AppointmentDetails } from './components/AppointmentDetails';
 import { GenericSubmissionField } from './components/GenericSubmissionField';
 import { AppointmentReferenceField } from './components/AppointmentReferenceField';
+import { AffectedAppointmentProducts } from './components/AffectedAppointmentProducts';
 import './styles/read-only-appointment-relations.css';
 
 const CHUNK_RELOAD_KEY = 'strapi-admin-chunk-reload';
@@ -25,6 +26,7 @@ export default {
     app.addFields({ type: 'appointment-details', Component: AppointmentDetails as ComponentType });
     app.addFields({ type: 'generic-submission-field', Component: GenericSubmissionField as ComponentType });
     app.addFields({ type: 'appointment-reference', Component: AppointmentReferenceField as ComponentType });
+    app.addFields({ type: 'affected-appointment-products', Component: AffectedAppointmentProducts as ComponentType });
   },
   bootstrap(app: { registerHook: (name: string, handler: (args: any) => any) => void }) {
     app.registerHook('Admin/CM/pages/EditView/mutate-edit-view-layout', (args) => {
@@ -70,6 +72,9 @@ export default {
         layout: args.layout.layout.map((panel: any[][]) => panel.map((row) => row
           .filter((field) => !['rescheduleHistory', 'addedPieces'].includes(field.name))
           .map((field) =>
+          args.layout.settings?.displayName === 'Appointment Change Logs' && field.name === 'affectedSubmissions'
+              ? { ...field, type: 'affected-appointment-products', size: 12 }
+              :
           ['previousData', 'newData'].includes(field.name) && field.attribute?.type === 'json'
               ? { ...field, type: 'appointment-details', size: 12 }
               : field
