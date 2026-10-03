@@ -1,4 +1,4 @@
-import { useField, type InputProps } from '@strapi/strapi/admin';
+import { useField, useForm, type InputProps } from '@strapi/strapi/admin';
 import { Box, Field, Typography } from '@strapi/design-system';
 
 const statuses: Record<string, string> = {
@@ -17,6 +17,13 @@ const dateText = (value: unknown) => {
 export const AppointmentDetails = (props: InputProps) => {
   const field = useField<Record<string, any>>(props.name);
   const data = field.value && typeof field.value === 'object' && !Array.isArray(field.value) ? field.value : {};
+  const hideAffectedProducts = useForm('AppointmentDetails', state => {
+    const snapshots = [state.values.previousData, state.values.newData].filter(Boolean);
+    const storeVisit = snapshots.some(snapshot => ['store-visit', 'product-store-visit'].includes(snapshot.formTag));
+    const hasProducts = snapshots.some(snapshot => [snapshot, ...(Array.isArray(snapshot.products) ? snapshot.products : [])]
+      .some(product => product?.productName?.trim() || product?.productId?.trim()));
+    return storeVisit && !hasProducts;
+  });
   const rows = [
     ['Date', dateText(data.requestedDate)],
     ['Time', data.selectedTimeSlot || 'Not recorded'],
@@ -29,6 +36,9 @@ export const AppointmentDetails = (props: InputProps) => {
   const customers = details.slice(0, 1);
   return (
     <Field.Root name={props.name}>
+      {props.name === 'previousData' && hideAffectedProducts && <style>{`
+        div:has(> div:first-child input[name="affectedSubmissions"]) { display: none; }
+      `}</style>}
       <Field.Label>{props.name === 'previousData' ? 'Previous appointment' : 'Updated appointment'}</Field.Label>
       <Box background="neutral0" borderColor="neutral150" hasRadius padding={4}>
         <dl style={{ margin: 0 }}>
