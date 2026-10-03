@@ -238,7 +238,7 @@ export async function seedCms(strapi: Core.Strapi) {
       },
       {
         formName: 'Product Store Visit',
-        formTag: 'product-store-visit',
+        formTag: 'store-visit',
         submitButtonText: 'Confirm Visit',
         allowImageUpload: false,
         availableTimeSlots: standardTimeSlots,

@@ -36,12 +36,12 @@ test('showroom reschedule template follows supplied copy and escapes dynamic val
   assert.ok(!message.html.includes('<Customer'));
 });
 
-test('product-store-visit dispatches the showroom template with location and manage link', async () => {
+test('store-visit dispatches the showroom template with location and manage link', async () => {
   const previous = process.env.APPOINTMENT_MANAGE_URL;
   process.env.APPOINTMENT_MANAGE_URL = 'https://example.com/manage';
   try {
     const strapi = mailMock();
-    await send(strapi, { documentId: 'appointment-1', formTag: 'product-store-visit', customerName: 'Customer',
+    await send(strapi, { documentId: 'appointment-1', formTag: 'store-visit', customerName: 'Customer',
       customerEmail: 'customer@example.com', previousDate: '2099-10-05', previousTimeSlot: '10:00 AM',
       requestedDate: '2099-10-06', selectedTimeSlot: '11:00 AM',
       preferredShowroom: { address: '<p>MG Road</p>', city: 'Kochi', state: 'Kerala', pincode: '123456' } });

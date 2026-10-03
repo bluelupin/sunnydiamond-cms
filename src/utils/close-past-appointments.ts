@@ -18,7 +18,7 @@ export async function closePastAppointments(strapi: Core.Strapi) {
       data: { workflowStatus: 'Closed', activeScheduleKey: null, updatedAt },
     });
     const submissions = await strapi.db.query('api::product-submission.product-submission').updateMany({
-      where: { ...where, formTag: { $in: [...RESCHEDULABLE_FORM_TAGS, 'product-store-visit'] } },
+      where: { ...where, formTag: { $in: [...RESCHEDULABLE_FORM_TAGS, 'store-visit', 'product-store-visit'] } },
       data: { workflowStatus: 'Closed', updatedAt },
     });
     return { groups: groups.count, submissions: submissions.count };

@@ -49,7 +49,7 @@ export async function sendShowroomAppointmentReminder(strapi: Core.Strapi, appoi
 export async function sendTomorrowShowroomAppointmentReminders(strapi: Core.Strapi, today?: string) {
   const appointmentDate = nextCalendarDate(today);
   const appointments = await strapi.documents(UID as any).findMany({
-    filters: { formTag: 'product-store-visit', requestedDate: appointmentDate },
+    filters: { formTag: { $in: ['store-visit', 'product-store-visit'] }, requestedDate: appointmentDate },
     populate: { preferredShowroom: true },
   } as any);
   let sent = 0;

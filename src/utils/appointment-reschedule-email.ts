@@ -34,7 +34,7 @@ export async function sendAppointmentRescheduleEmail(strapi: Core.Strapi, data: 
   if (!validAppointmentDate(data.requestedDate) || !data.selectedTimeSlot?.trim()) return;
   try {
     const showroom = data.preferredShowroom;
-    const template = data.formTag === 'product-store-visit'
+    const template = ['store-visit', 'product-store-visit'].includes(data.formTag)
       ? showroomAppointmentRescheduledTemplate({
           appointmentId: data.appointmentReference || data.documentId, customerName: data.customerName,
           newDate: data.requestedDate, newTime: data.selectedTimeSlot,
@@ -83,7 +83,7 @@ export function registerAdminRescheduleEmail(strapi: Core.Strapi) {
         .where({ document_id: context.params.documentId }).forUpdate().first();
       const before = await strapi.db.query(uid).findOne({ where: { documentId: context.params.documentId }, populate: { preferredShowroom: true } });
       const result = await next();
-      if (!before || ![...RESCHEDULABLE_FORM_TAGS, 'product-store-visit'].includes(before.formTag)) return result;
+      if (!before || ![...RESCHEDULABLE_FORM_TAGS, 'store-visit', 'product-store-visit'].includes(before.formTag)) return result;
       const after = await strapi.db.query(uid).findOne({ where: { documentId: context.params.documentId }, populate: { preferredShowroom: true } });
       await recordVideoCallChange(strapi, before, after, 'Admin');
       if (after && !['Cancelled', 'Closed', 'Visited'].includes(after.workflowStatus)) {

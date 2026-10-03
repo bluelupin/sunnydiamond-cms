@@ -109,7 +109,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     if (!customerName) return ctx.badRequest('customerName is required.');
     if (!customerPhone) return ctx.badRequest('customerPhone must be a valid phone number.');
     if (customerEmail === null) return ctx.badRequest('customerEmail must be a valid email address.');
-    if (formTag === 'product-store-visit' && !customerEmail) return ctx.badRequest('customerEmail is required for store visits.');
+    if (['store-visit', 'product-store-visit'].includes(formTag) && !customerEmail) return ctx.badRequest('customerEmail is required for store visits.');
     if (requestedDate === null) return ctx.badRequest('requestedDate must use YYYY-MM-DD format.');
     if (input.purposeOfVisit != null && typeof input.purposeOfVisit !== 'string') {
       return ctx.badRequest('purposeOfVisit must be text.');
@@ -173,8 +173,8 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       preferredShowroomDetails = preferredShowroom;
     }
 
-    if (formTag === 'product-store-visit' && !preferredShowroomRef) {
-      return ctx.badRequest('preferredShowroom is required for product-store-visit.');
+    if (['store-visit', 'product-store-visit'].includes(formTag) && !preferredShowroomRef) {
+      return ctx.badRequest(`preferredShowroom is required for ${formTag}.`);
     }
 
     if (ctx.request.files && Object.keys(ctx.request.files).length > 0 && !upload) {
@@ -229,7 +229,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       ? await createHomeTrialSubmission(strapi, submissionData)
       : undefined;
     const entity = grouped?.entity ?? await strapi.db.transaction(async ({ trx }) => {
-      if (formTag === 'product-store-visit' && await storeVisitClash(strapi, trx, {
+      if (['store-visit', 'product-store-visit'].includes(formTag) && await storeVisitClash(strapi, trx, {
         magentoCustomerId, showroom: preferredShowroomRef,
         requestedDate, selectedTimeSlot: submissionData.selectedTimeSlot,
       })) return undefined;
@@ -249,11 +249,11 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     }
 
     const appointmentReference = grouped?.appointmentReference ??
-      (formTag === 'product-store-visit' || formTag === 'product-video-call'
-        ? await assignAppointmentReference(strapi, PRODUCT_SUBMISSION_UID, entity, formTag === 'product-store-visit' ? 'SV' : 'VC')
+      (['store-visit', 'product-store-visit'].includes(formTag) || formTag === 'product-video-call'
+        ? await assignAppointmentReference(strapi, PRODUCT_SUBMISSION_UID, entity, ['store-visit', 'product-store-visit'].includes(formTag) ? 'SV' : 'VC')
         : undefined);
 
-    if (formTag === 'product-store-visit') {
+    if (['store-visit', 'product-store-visit'].includes(formTag)) {
       const showroom = preferredShowroomDetails;
       const location = [showroom?.address, showroom?.city, showroom?.state, showroom?.pincode]
         .map(value => stringOrUndefined(value))
@@ -374,7 +374,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       if ((scheduleChanged || addressChanged) && countScheduleChanges(appointment.rescheduleHistory) >= MAX_RESCHEDULES) {
         return { error: RESCHEDULE_LIMIT_MESSAGE, status: 400 };
       }
-      if (scheduleChanged && appointment.formTag === 'product-store-visit' && await storeVisitClash(strapi, trx, {
+      if (scheduleChanged && ['store-visit', 'product-store-visit'].includes(appointment.formTag) && await storeVisitClash(strapi, trx, {
         documentId, magentoCustomerId: ctx.state.magentoCustomer.id,
         showroom: appointment.preferredShowroom?.documentId, requestedDate, selectedTimeSlot,
       })) return { error: STORE_VISIT_CLASH_MESSAGE, status: 400 };
@@ -471,7 +471,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
         },
       } as any);
       await recordVideoCallChange(strapi, appointment, { ...appointment, workflowStatus: 'Cancelled' }, 'Customer');
-      if (appointment.formTag === 'product-store-visit') {
+      if (['store-visit', 'product-store-visit'].includes(appointment.formTag)) {
         notifyShowroomCancellationAfterCommit(strapi, onCommit, appointment);
       } else if (appointment.formTag === 'product-video-call') {
         notifyVideoCallCancellationAfterCommit(strapi, onCommit, appointment);

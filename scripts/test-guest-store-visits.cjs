@@ -140,6 +140,7 @@ test('store visit submission requires email before saving the booking', async ()
 
 test('store visit submission saves purposeOfVisit separately from requestDetails', async () => {
   let saved;
+  const confirmations = [];
   const strapi = {
     documents: uid => uid.includes('product-form') ? { findFirst: async () => ({ showroomOptions: [] }) }
       : uid.includes('showroom') ? { findFirst: async () => ({ documentId: 'showroom', city: 'Kochi' }) }
@@ -156,7 +157,7 @@ test('store visit submission saves purposeOfVisit separately from requestDetails
     };
     if (name.endsWith('/store-visit-clash')) return { storeVisitClash: async () => false };
     if (name.endsWith('/appointment-reference')) return { assignAppointmentReference: async () => 'SV-1' };
-    if (name.endsWith('/appointment-confirmation-email')) return { sendStoreVisitConfirmationEmail: async () => {} };
+    if (name.endsWith('/appointment-confirmation-email')) return { sendStoreVisitConfirmationEmail: async (_, data) => confirmations.push(data) };
     return {};
   }).default;
   const input = {
@@ -181,10 +182,16 @@ test('store visit submission saves purposeOfVisit separately from requestDetails
     assert.equal(saved.productName, undefined);
   }
   for (const productName of [undefined, '', '   ']) {
+    const confirmationCount = confirmations.length;
     const result = await controller.submit(ctx({ ...input, formTag: 'store-visit', productName }));
     assert.equal(result.data.documentId, 'booking');
     assert.equal(saved.formTag, 'store-visit');
     assert.equal(saved.productName, undefined);
+    assert.equal(result.data.appointmentId, 'SV-1');
+    assert.equal(confirmations.length, confirmationCount + 1);
+    assert.equal(confirmations.at(-1).customerEmail, input.customerEmail);
+    assert.equal(confirmations.at(-1).appointmentReference, 'SV-1');
+    assert.equal(confirmations.at(-1).location, 'Kochi');
   }
   for (const formTag of ['product-video-call', 'product-personalisation', 'try-at-home', 'try-at-home-form']) {
     const result = await controller.submit(ctx({ ...input, formTag, productName: undefined }));

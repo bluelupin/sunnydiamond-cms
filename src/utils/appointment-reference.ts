@@ -21,7 +21,7 @@ export async function assignAppointmentReference(strapi: Core.Strapi, uid: strin
 export async function backfillAppointmentReferences(strapi: Core.Strapi) {
   const [groups, storeVisits] = await Promise.all([
     strapi.db.query(GROUP).findMany({ where: { appointmentReference: { $null: true } }, select: ['id', 'documentId', 'createdAt'] }),
-    strapi.db.query(PRODUCT).findMany({ where: { formTag: 'product-store-visit', appointmentReference: { $null: true } },
+    strapi.db.query(PRODUCT).findMany({ where: { formTag: { $in: ['store-visit', 'product-store-visit'] }, appointmentReference: { $null: true } },
       select: ['id', 'documentId', 'createdAt'] }),
   ]);
   for (const group of groups) await assignAppointmentReference(strapi, GROUP, group, 'TAH');
