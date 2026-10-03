@@ -28,7 +28,7 @@ const flush = () => new Promise(resolve => setImmediate(resolve));
 
 test('video-call and store-visit forms record linked reschedule and cancellation history with before/after snapshots', async () => {
   const { recordVideoCallChange } = load('src/utils/video-call-change-log.ts');
-  for (const formTag of ['schedule-video-call', 'product-video-call', 'product-store-visit']) {
+  for (const formTag of ['schedule-video-call', 'product-video-call', 'product-store-visit', 'store-visit', 'try-at-home', 'try-at-home-form']) {
     for (const actorType of ['Customer', 'Admin']) {
       const logs = [];
       const strapi = { documents: uid => {
@@ -236,7 +236,7 @@ test('single-appointment API queues only committed schedule changes and uses upd
   for (const scenario of ['changed', 'unchanged', 'contact', 'address', 'invalid', 'rollback']) {
     const strapi = mailMock();
     const harness = transactionHarness(strapi, scenario === 'rollback');
-    const appointment = { ...data, id: 1, formTag: 'product-store-visit', workflowStatus: 'Scheduled',
+    const appointment = { ...data, id: 1, formTag: scenario === 'address' ? 'store-visit' : 'product-store-visit', workflowStatus: 'Scheduled',
       requestedDate: data.previousDate, selectedTimeSlot: data.previousTimeSlot };
     const chain = new Proxy({}, { get: (_, key) => key === 'then' ? undefined
       : key === 'first' ? async () => ({ id: 1 }) : () => chain });

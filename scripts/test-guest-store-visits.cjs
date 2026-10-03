@@ -29,6 +29,9 @@ test('links only matching unowned store visits, including historical email casin
     insert.run(4, 'product-video-call', 'person@example.com', null);
     insert.run(5, 'product-store-visit', null, null);
     insert.run(6, 'product-store-visit', 'person@example.com', null);
+    insert.run(7, 'store-visit', ' PERSON@example.com ', null);
+    insert.run(8, 'store-visit', 'other@example.com', null);
+    insert.run(9, 'store-visit', 'person@example.com', 99);
     let updates = 0;
     const strapi = { db: {
       metadata: { get: () => ({ tableName: 'product_submissions' }) },
@@ -46,15 +49,15 @@ test('links only matching unowned store visits, including historical email casin
     } };
     await linkGuestStoreVisits(strapi, { id: 7, email: ' PERSON@example.com ' });
     assert.deepEqual(db.prepare('SELECT magento_customer_id FROM product_submissions ORDER BY id').all()
-      .map(row => row.magento_customer_id), [7, null, 99, null, null, 7]);
+      .map(row => row.magento_customer_id), [7, null, 99, null, null, 7, 7, null, 99]);
     await Promise.all([
       linkGuestStoreVisits(strapi, { id: 7, email: 'person@example.com' }),
       linkGuestStoreVisits(strapi, { id: 8, email: 'person@example.com' }),
     ]);
-    assert.equal(updates, 2);
+    assert.equal(updates, 3);
     assert.equal(db.prepare('SELECT magento_customer_id FROM product_submissions WHERE id = 1').get().magento_customer_id, 7);
     await linkGuestStoreVisits(strapi, { id: 7 });
-    assert.equal(updates, 2);
+    assert.equal(updates, 3);
   } finally { db.close(); await builder.destroy(); }
 });
 
@@ -79,10 +82,15 @@ test('verified email is accepted only on configured routes with server authentic
 });
 
 test('guest store booking remains allowed without customer identity', async () => {
+  const route = load('src/api/product-submission/routes/product-submission-submit.ts').default.routes[0];
+  const config = route.config.policies[0].config;
   const ctx = context();
   ctx.request.method = 'POST';
   ctx.request.body = { data: { formTag: 'product-store-visit' } };
   assert.equal(await policy(ctx, { allowGuestFormTags: ['product-store-visit'] }), true);
+  assert.equal(ctx.state.magentoCustomer, undefined);
+  ctx.request.body = { data: { formTag: 'store-visit' } };
+  assert.equal(await policy(ctx, config), true);
   assert.equal(ctx.state.magentoCustomer, undefined);
   await assert.rejects(policy(ctx));
 });
@@ -90,14 +98,17 @@ test('guest store booking remains allowed without customer identity', async () =
 test('both list controllers await linking; pagination is applied afterwards', async () => {
   const calls = [];
   const identity = { id: 7, email: 'person@example.com' };
-  const strapi = { db: { query: () => ({ findMany: async () => { calls.push('open'); return []; } }) } };
+  const strapi = { db: { query: () => ({ findMany: async ({ where }) => {
+    assert.ok(where.formTag.$in.includes('store-visit')); calls.push('open'); return [];
+  } }) } };
   const controller = load('src/api/product-submission/controllers/product-submission.ts', name => {
     if (name === '@strapi/strapi') return { factories: { createCoreController: (_, factory) => factory({ strapi }) } };
     if (name.endsWith('/link-guest-store-visits')) return { linkGuestStoreVisits: async (_, customer) => {
       assert.deepEqual(customer, identity); await Promise.resolve(); calls.push('link');
     } };
     if (name.endsWith('/list-customer-appointments')) return { listCustomerAppointments: async (_, options) => {
-      calls.push('list'); assert.equal(options.customerId, 7); assert.equal(options.page, 2); return { data: [], meta: {} };
+      calls.push('list'); assert.equal(options.customerId, 7); assert.equal(options.page, 2);
+      assert.ok(options.formTags.includes('store-visit')); return { data: [], meta: {} };
     } };
     if (name.endsWith('/request-locale')) return { requestLocale: () => 'en' };
     if (name.endsWith('/appointment-schedule')) return { RESCHEDULABLE_FORM_TAGS: [], appointmentToday: () => '2026-01-01' };

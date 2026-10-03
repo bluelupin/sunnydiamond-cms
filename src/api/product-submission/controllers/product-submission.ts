@@ -26,13 +26,14 @@ const PRODUCT_SUBMISSION_UID = 'api::product-submission.product-submission';
 const PRODUCT_FORM_UID = 'api::product-form.product-form';
 const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
 // Appointments a customer can add pieces to (R-AP-8/R-AP-10); try-at-home groups by booking instead.
-const PIECE_FORM_TAGS = ['product-store-visit', 'product-video-call'];
+const PIECE_FORM_TAGS = ['store-visit', 'product-store-visit', 'product-video-call'];
 const OPEN_STATUSES = ['New', 'Contacted', 'Scheduled'];
 const MAX_ADDED_PIECES = 10;
 const APPOINTMENT_FORM_TAGS = [
 ...RESCHEDULABLE_FORM_TAGS,
 'product-video-call',
 'product-personalisation',
+'store-visit',
 'try-at-home-form',
 'product-store-visit'
 ];
@@ -354,7 +355,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       if (appointment.appointmentGroup && HOME_TRIAL_FORM_TAGS.includes(appointment.formTag)) {
         return { error: 'Appointment grouping changed. Please retry the request.', status: 409 };
       }
-      if (!RESCHEDULABLE_FORM_TAGS.includes(appointment.formTag) && appointment.formTag !== 'product-store-visit') {
+      if (!RESCHEDULABLE_FORM_TAGS.includes(appointment.formTag) && !['store-visit', 'product-store-visit'].includes(appointment.formTag)) {
         return { error: 'This appointment type cannot be rescheduled.', status: 400 };
       }
       if (['Visited', 'Closed', 'Cancelled'].includes(appointment.workflowStatus)) {

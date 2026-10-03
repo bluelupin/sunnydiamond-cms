@@ -7,7 +7,7 @@ export async function linkGuestStoreVisits(strapi: any, customer: { id: number; 
   // One conditional UPDATE prevents concurrent requests from replacing an owner.
   // Normalize historical emails too; do not change booking contact information.
   await strapi.db.connection(strapi.db.metadata.get(PRODUCT).tableName)
-    .where({ form_tag: 'product-store-visit' })
+    .whereIn('form_tag', ['store-visit', 'product-store-visit'])
     .whereNull('magento_customer_id')
     .whereRaw('LOWER(TRIM(??)) = ?', ['customer_email', customer.email.trim().toLowerCase()])
     .update({ magento_customer_id: customer.id });
