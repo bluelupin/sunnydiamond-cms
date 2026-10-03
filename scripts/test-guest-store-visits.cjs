@@ -164,4 +164,22 @@ test('store visit submission saves purposeOfVisit separately from requestDetails
   assert.equal(saved.purposeOfVisit, longPurpose);
   await controller.submit(ctx({ ...input, purposeOfVisit: undefined }));
   assert.equal(saved.purposeOfVisit, undefined);
+  for (const productName of [undefined, '', '   ']) {
+    const result = await controller.submit(ctx({ ...input, productName }));
+    assert.equal(result.data.documentId, 'booking');
+    assert.equal(saved.productName, undefined);
+  }
+  for (const productName of [undefined, '', '   ']) {
+    const result = await controller.submit(ctx({ ...input, formTag: 'store-visit', productName }));
+    assert.equal(result.data.documentId, 'booking');
+    assert.equal(saved.formTag, 'store-visit');
+    assert.equal(saved.productName, undefined);
+  }
+  for (const formTag of ['product-video-call', 'product-personalisation', 'try-at-home', 'try-at-home-form']) {
+    const result = await controller.submit(ctx({ ...input, formTag, productName: undefined }));
+    assert.equal(result.message, 'productName is required.');
+  }
+  const schema = JSON.parse(fs.readFileSync(path.resolve(__dirname,
+    '../src/api/product-submission/content-types/product-submission/schema.json'), 'utf8'));
+  assert.notEqual(schema.attributes.productName.required, true);
 });

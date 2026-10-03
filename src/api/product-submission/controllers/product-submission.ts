@@ -103,7 +103,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     }
 
     if (!formTag) return ctx.badRequest('formTag is required.');
-    if (!productName) return ctx.badRequest('productName is required.');
+    if (!['store-visit', 'product-store-visit'].includes(formTag) && !productName) return ctx.badRequest('productName is required.');
     if (!customerName) return ctx.badRequest('customerName is required.');
     if (!customerPhone) return ctx.badRequest('customerPhone must be a valid phone number.');
     if (customerEmail === null) return ctx.badRequest('customerEmail must be a valid email address.');
@@ -480,7 +480,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     });
   },
 
-  /** Upcoming store visits and video calls that can still take a piece (at most 5, soonest first). */
+  /** Upcoming store visits and video calls that can still take a piece (at most 5, newest first). */
   async openAppointments(ctx) {
     await linkGuestStoreVisits(strapi, ctx.state.magentoCustomer);
     const rows = await strapi.db.query(PRODUCT_SUBMISSION_UID).findMany({
@@ -488,7 +488,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
         workflowStatus: { $in: OPEN_STATUSES }, requestedDate: { $gte: appointmentToday() } },
       select: ['documentId', 'appointmentReference', 'formTag', 'requestedDate', 'selectedTimeSlot', 'productId', 'addedPieces'],
       populate: { preferredShowroom: { select: ['city'] } },
-      orderBy: [{ requestedDate: 'asc' }, { id: 'asc' }], limit: 5,
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }], limit: 5,
     });
     const now = new Date();
     return { data: rows.filter((row: any) => appointmentStartsAt(row.requestedDate, row.selectedTimeSlot) > now)

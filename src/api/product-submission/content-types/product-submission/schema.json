@@ -15,8 +15,7 @@
       "required": true
     },
     "productName": {
-      "type": "string",
-      "required": true
+      "type": "string"
     },
     "productId": {
       "type": "string"
