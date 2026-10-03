@@ -18,10 +18,12 @@ export const AppointmentDetails = (props: InputProps) => {
   const field = useField<Record<string, any>>(props.name);
   const data = field.value && typeof field.value === 'object' && !Array.isArray(field.value) ? field.value : {};
   const hideAffectedProducts = useForm('AppointmentDetails', state => {
-    const snapshots = [state.values.previousData, state.values.newData].filter(Boolean);
+    const snapshots = [state.values.previousData, state.values.newData]
+      .filter(snapshot => snapshot && typeof snapshot === 'object' && !Array.isArray(snapshot));
     const storeVisit = snapshots.some(snapshot => ['store-visit', 'product-store-visit'].includes(snapshot.formTag));
     const hasProducts = snapshots.some(snapshot => [snapshot, ...(Array.isArray(snapshot.products) ? snapshot.products : [])]
-      .some(product => product?.productName?.trim() || product?.productId?.trim()));
+      .some(product => [product?.productName, product?.productId]
+        .some(value => typeof value === 'string' ? value.trim().length > 0 : value != null)));
     return storeVisit && !hasProducts;
   });
   const rows = [
@@ -37,7 +39,10 @@ export const AppointmentDetails = (props: InputProps) => {
   return (
     <Field.Root name={props.name}>
       {props.name === 'previousData' && hideAffectedProducts && <style>{`
-        div:has(> div:first-child input[name="affectedSubmissions"]) { display: none; }
+        /* Match the relation control and its direct sibling list, never the edit-page container. */
+        div:has(input[name="affectedSubmissions"]):has(> div:nth-child(2):last-child > div > ol) {
+          display: none;
+        }
       `}</style>}
       <Field.Label>{props.name === 'previousData' ? 'Previous appointment' : 'Updated appointment'}</Field.Label>
       <Box background="neutral0" borderColor="neutral150" hasRadius padding={4}>
