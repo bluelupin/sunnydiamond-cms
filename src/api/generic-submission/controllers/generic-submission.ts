@@ -1,4 +1,4 @@
-import { validateGenericAppointmentSchedule } from '../../../utils/generic-appointment-schedule';
+import { validateGenericAppointmentSchedule, resolveGenericAppointmentSlot } from '../../../utils/generic-appointment-schedule';
 import { assignAppointmentReference } from '../../../utils/appointment-reference';
 import { fieldValue } from '../../../utils/generic-form-input';
 import { factories } from '@strapi/strapi';
@@ -72,6 +72,7 @@ export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ 
     const phone = phoneOrUndefined(input.phone);
     const email = emailOrUndefined(input.email);
     const preferredDate = dateOrUndefined(input.preferredDate);
+    let selectedTimeSlot = stringOrUndefined(input.selectedTimeSlot);
     const consentAccepted = booleanValue(input.consentAccepted);
     const rateLimit = checkFormSubmissionRateLimit(['generic', clientIp(ctx), formTag]);
 
@@ -100,6 +101,7 @@ export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ 
       if (!phone || !email) return ctx.badRequest('A valid phone and email are required for appointments.');
       const error = validateGenericAppointmentSchedule(preferredDate, stringOrUndefined(input.selectedTimeSlot), form);
       if (error) return ctx.badRequest(error);
+      selectedTimeSlot = resolveGenericAppointmentSlot(selectedTimeSlot, form) as string;
     }
 
     const missingField = (form.dynamicFields ?? []).find(
@@ -144,7 +146,7 @@ export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ 
         email,
         preferredShowroom: showroomRef,
         preferredDate,
-        selectedTimeSlot: stringOrUndefined(input.selectedTimeSlot),
+        selectedTimeSlot,
         notes: stringOrUndefined(input.notes) ?? stringOrUndefined(input.message),
         reasonForContact: stringOrUndefined(input.reasonForContact) ?? stringOrUndefined(input.reason),
         sourcePage: stringOrUndefined(input.sourcePage),
@@ -165,8 +167,8 @@ export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ 
         customerName: fullName,
         customerEmail: email,
         requestedDate: preferredDate,
-        selectedTimeSlot: stringOrUndefined(input.selectedTimeSlot),
-        location: location || 'Sunny Diamonds showroom',
+        selectedTimeSlot,
+        location,
       });
     }
     if (formTag === 'reach-out-to-us') {

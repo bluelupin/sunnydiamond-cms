@@ -57,12 +57,39 @@ test('customer-facing required field labels map to the generic submission keys',
   assert.equal(fieldValue({ 'Custom Field': 'value' }, 'Custom Field'), 'Custom Field');
 });
 
+test('generic slots accept equivalent hour formatting but still reject different or invalid times', () => {
+  const { validateGenericAppointmentSchedule: validate, resolveGenericAppointmentSlot: resolve } = load('src/utils/generic-appointment-schedule.ts');
+  const form = { availableTimeSlots: [{ timeString: '12:00 PM - 1:00 PM' }] };
+  for (const value of ['12:00 PM - 01:00 PM', '12:00 pm–01:00 pm']) {
+    assert.equal(validate('2099-12-01', value, form), undefined);
+    assert.equal(resolve(value, form), '12:00 PM - 1:00 PM');
+  }
+  for (const value of ['12:00 PM - 2:00 PM', '12:00 AM - 01:00 PM', '12:00 PM - 13:00 PM']) {
+    assert.match(validate('2099-12-01', value, form), /available time slot/);
+  }
+});
+
+test('all general appointment email templates omit showroom wording without a selected showroom', () => {
+  const cases = [
+    ['appointment-confirmed', 'appointmentConfirmedTemplate', { documentId: 'booking', requestedDate: '2099-12-01', selectedTimeSlot: '11:00 AM', location: '' }],
+    ['showroom-appointment-rescheduled', 'showroomAppointmentRescheduledTemplate', { appointmentId: 'BA-2099-000001', newDate: '2099-12-01', newTime: '11:00 AM' }],
+    ['showroom-appointment-cancelled', 'showroomAppointmentCancelledTemplate', { appointmentId: 'BA-2099-000001', appointmentDate: '2099-12-01', appointmentTime: '11:00 AM' }],
+    ['showroom-appointment-reminder', 'showroomAppointmentReminderTemplate', { appointmentDate: '2099-12-01', appointmentTime: '11:00 AM' }],
+  ];
+  for (const [file, fn, data] of cases) {
+    const message = load(`src/emails/${file}.ts`)[fn]({ ...data, generalAppointment: true });
+    assert.ok(!/showroom/i.test(message.subject + message.text + message.html), file);
+    assert.ok(!/Not specified/.test(message.text), file);
+    assert.match(message.html, /cid:sunny-diamonds-logo/);
+  }
+});
+
 test('standard create and submit endpoints save generic bookings and send confirmations', async () => {
   let created;
   const emails = [];
   const form = { requiresConsent: true, dynamicFields: [{ label: 'Your Name', isRequired: true },
     { label: 'Phone No.', isRequired: true }, { label: 'Email', isRequired: true }, { label: 'Date', isRequired: true },
-    { label: 'Time Slots', fieldType: 'dropdown', isRequired: true, dropdownOptions: [{ optionValue: '11:00 AM' }] },
+    { label: 'Time Slots', fieldType: 'dropdown', isRequired: true, dropdownOptions: [{ optionValue: '11:00 AM' }, { optionValue: '12:00 PM - 1:00 PM' }] },
     { label: 'Describe more about your visit', isRequired: true }],
     showrooms: [{ documentId: 'showroom' }] };
   const strapi = { documents: uid => {
@@ -111,10 +138,12 @@ test('standard create and submit endpoints save generic bookings and send confir
   assert.match((await controller.submit(ctx)).error, /consentAccepted/);
   assert.equal(emails.length, 2, 'Rejected submissions must not send confirmations');
   form.requiresConsent = false;
-  ctx.request.body = { ...input, showroom: undefined, consentAccepted: false };
+  ctx.request.body = { ...input, showroom: undefined, consentAccepted: false, selectedTimeSlot: '12:00 PM - 01:00 PM' };
   assert.ok((await controller.create(ctx)).data.documentId);
   assert.equal(created.preferredShowroom, undefined);
   assert.equal(created.consentAccepted, false);
+  assert.equal(created.selectedTimeSlot, '12:00 PM - 1:00 PM');
+  assert.equal(emails[2].selectedTimeSlot, '12:00 PM - 1:00 PM');
   assert.equal(emails.length, 3);
   ctx.request.body = { ...ctx.request.body, notes: '' };
   assert.equal((await controller.create(ctx)).error, 'Describe more about your visit is required.');
@@ -146,6 +175,23 @@ function mutationFixture(owner = 42) {
     badRequest: error => ({ error }), notFound: error => ({ error }) };
   return { strapi, ctx, record, logs, callbacks };
 }
+
+test('rescheduling stores the configured slot and formatting-only requests create no history or email', async () => {
+  const { mutateGenericAppointment } = load('src/utils/generic-appointments.ts');
+  const f = mutationFixture();
+  const documents = f.strapi.documents;
+  f.strapi.documents = uid => uid.includes('generic-form') ? { findFirst: async () => ({
+    dynamicFields: [{ label: 'Time Slots', fieldType: 'dropdown', dropdownOptions: [{ optionValue: '12:00 PM - 1:00 PM' }] }],
+  }) } : documents(uid);
+  const result = await mutateGenericAppointment(f.strapi, f.ctx, 'reschedule', { requestedDate: '2099-12-02', selectedTimeSlot: '12:00 PM - 01:00 PM' });
+  assert.equal(result.data.selectedTimeSlot, '12:00 PM - 1:00 PM');
+  assert.equal(f.record.selectedTimeSlot, '12:00 PM - 1:00 PM');
+  assert.equal(f.logs[0].newData.selectedTimeSlot, '12:00 PM - 1:00 PM');
+  assert.equal((await mutateGenericAppointment(f.strapi, f.ctx, 'reschedule', { selectedTimeSlot: '12:00 PM - 01:00 PM' })).meta.changed, false);
+  assert.equal(f.logs.length, 1);
+  assert.equal(f.callbacks.length, 1);
+  assert.equal(f.record.rescheduleHistory.length, 1);
+});
 
 test('customer change emails send after commit with generic contact, date and reference fields', async () => {
   const { mutateGenericAppointment } = load('src/utils/generic-appointments.ts');

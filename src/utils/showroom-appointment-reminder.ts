@@ -33,6 +33,7 @@ export async function sendShowroomAppointmentReminder(strapi: Core.Strapi, appoi
     await strapi.plugin('email').service('email').send({
       to,
       ...showroomAppointmentReminderTemplate({
+        generalAppointment: appointment.formTag === 'book-an-appointment',
         customerName: appointment.customerName, appointmentDate: appointment.requestedDate,
         appointmentTime: appointment.selectedTimeSlot, showroomName: showroom?.city,
         showroomAddress: location, manageUrl: manageUrl(appointment.documentId),

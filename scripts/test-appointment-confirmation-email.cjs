@@ -77,13 +77,15 @@ test('provider failures remain best-effort and do not leak provider details', as
   assert.ok(!strapi.errors[0].includes('secret-provider-details'));
 });
 
-test('General Enquiries appointments share the branded confirmation and preserve BA references', async () => {
+test('General Enquiries confirmations use general appointment copy and preserve BA references', async () => {
   const strapi = mailMock();
-  await sendBookAppointment(strapi, { ...data, appointmentReference: 'BA-2099-000001' });
+  await sendBookAppointment(strapi, { ...data, location: '', appointmentReference: 'BA-2099-000001' });
   assert.equal(strapi.sent.length, 1);
   assert.equal(strapi.sent[0].to, data.customerEmail);
   assert.match(strapi.sent[0].text, /Appointment ID: BA-2099-000001/);
-  assert.match(strapi.sent[0].text, /Appointment Type: Showroom Visit/);
+  assert.match(strapi.sent[0].text, /Appointment Type: Appointment/);
+  assert.ok(!/showroom/i.test(strapi.sent[0].text));
+  assert.ok(!/showroom/i.test(strapi.sent[0].html));
   assert.match(strapi.sent[0].html, /cid:sunny-diamonds-logo/);
   const failed = mailMock(true);
   await assert.doesNotReject(sendBookAppointment(failed, data));

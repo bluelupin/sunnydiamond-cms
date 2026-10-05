@@ -4,6 +4,7 @@ import { validAppointmentDate } from './appointment-schedule';
 
 interface StoreVisitConfirmation {
   documentId: string;
+  generalAppointment?: boolean;
   appointmentReference?: string | null;
   customerName?: string | null;
   customerEmail?: string | null;
@@ -34,6 +35,7 @@ export async function sendStoreVisitConfirmationEmail(strapi: Core.Strapi, data:
       to,
       ...appointmentConfirmedTemplate({
         documentId: data.documentId,
+        generalAppointment: data.generalAppointment,
         appointmentReference: data.appointmentReference,
         customerName: data.customerName,
         requestedDate: data.requestedDate,
@@ -49,4 +51,6 @@ export async function sendStoreVisitConfirmationEmail(strapi: Core.Strapi, data:
 }
 
 /** General Enquiries bookings use the same showroom appointment confirmation. */
-export const sendBookAppointmentConfirmationEmail = sendStoreVisitConfirmationEmail;
+export async function sendBookAppointmentConfirmationEmail(strapi: Core.Strapi, data: StoreVisitConfirmation) {
+  return sendStoreVisitConfirmationEmail(strapi, { ...data, generalAppointment: true });
+}

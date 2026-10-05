@@ -37,6 +37,7 @@ export async function sendAppointmentRescheduleEmail(strapi: Core.Strapi, data: 
     const template = ['store-visit', 'product-store-visit', 'book-an-appointment'].includes(data.formTag)
       ? showroomAppointmentRescheduledTemplate({
           appointmentId: data.appointmentReference || data.documentId, customerName: data.customerName,
+          generalAppointment: data.formTag === 'book-an-appointment',
           newDate: data.requestedDate, newTime: data.selectedTimeSlot,
           showroomName: showroom?.city,
           showroomAddress: [plainText(showroom?.address), showroom?.city, showroom?.state, showroom?.pincode]

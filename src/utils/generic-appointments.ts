@@ -1,6 +1,6 @@
 import { countScheduleChanges, MAX_RESCHEDULES, RESCHEDULE_LIMIT_MESSAGE,
   validateReschedulingWindow } from './appointment-schedule';
-import { validateGenericAppointmentSchedule } from './generic-appointment-schedule';
+import { validateGenericAppointmentSchedule, resolveGenericAppointmentSlot } from './generic-appointment-schedule';
 import { recordVideoCallChange } from './video-call-change-log';
 import { requestLocale } from './request-locale';
 import { notifyRescheduleAfterCommit } from './appointment-reschedule-email';
@@ -55,10 +55,6 @@ export async function mutateGenericAppointment(strapi: any, ctx: any, action: 'c
     if (action === 'reschedule') {
       const error = validateReschedulingWindow(before.preferredDate, before.selectedTimeSlot, before.formTag);
       if (error) return { error };
-      if (data.preferredDate === before.preferredDate && data.selectedTimeSlot === before.selectedTimeSlot) {
-        return { data: genericAppointmentView(before), meta: { changed: false } };
-      }
-      if (countScheduleChanges(before.rescheduleHistory) >= MAX_RESCHEDULES) return { error: RESCHEDULE_LIMIT_MESSAGE };
       const form = await strapi.documents('api::generic-form.generic-form').findFirst({
         status: 'published', locale: requestLocale(ctx, input), filters: { formTag: before.formTag },
         populate: { availableTimeSlots: true, dynamicFields: { populate: { dropdownOptions: true } } },
@@ -66,6 +62,12 @@ export async function mutateGenericAppointment(strapi: any, ctx: any, action: 'c
       if (!form) return { error: 'The appointment form is unavailable.' };
       const scheduleError = validateGenericAppointmentSchedule(data.preferredDate, data.selectedTimeSlot, form);
       if (scheduleError) return { error: scheduleError };
+      data.selectedTimeSlot = resolveGenericAppointmentSlot(data.selectedTimeSlot, form);
+      if (data.preferredDate === before.preferredDate &&
+          data.selectedTimeSlot === resolveGenericAppointmentSlot(before.selectedTimeSlot, form)) {
+        return { data: genericAppointmentView(before), meta: { changed: false } };
+      }
+      if (countScheduleChanges(before.rescheduleHistory) >= MAX_RESCHEDULES) return { error: RESCHEDULE_LIMIT_MESSAGE };
     }
     const after = { ...before, ...data };
     data.rescheduleHistory = [...(Array.isArray(before.rescheduleHistory) ? before.rescheduleHistory : []), {
