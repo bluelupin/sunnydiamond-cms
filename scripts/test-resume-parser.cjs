@@ -21,6 +21,14 @@ test('overlapping, adjacent and duplicate jobs are not double-counted', () => {
   assert.equal(result.positions[0].endDate, 'Present');
 });
 test('gaps are excluded', () => assert.equal(normalizeWorkDates([position('Jan 2020', 'Jan 2021'), position('Jan 2023', 'Jan 2024')], NOW).duration, '2 years'));
+
+test('successful resume autofill does not add unrelated work-experience commentary', () => {
+  const source = 'Alex Morgan\nalex@example.com\n+1 (202) 555-0123\nExperience\nEngineer, Acme\nJanuary 2020 - January 2022';
+  const result = normalizeResumeAutofill(raw([position('January 2020', 'January 2022')]), source, NOW);
+  assert.equal(result.data.workExperience.relevantWorkExp, '2 years');
+  assert.equal(result.data.workExperience.currentCompany, 'Acme');
+  assert.deepEqual(result.warnings, []);
+});
 test('future months excluded; scheduled roles retained', () => {
   const result = normalizeWorkDates([position('Jan 2026', 'Jan 2028'), position('Jan 2027', 'Jan 2029', 'Future')], NOW);
   assert.equal(result.duration, '8 months'); assert.equal(result.future, true);
