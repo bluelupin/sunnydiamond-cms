@@ -2,8 +2,24 @@ import { countScheduleChanges, MAX_RESCHEDULES, RESCHEDULE_LIMIT_MESSAGE,
   validateAppointmentSchedule, validateReschedulingWindow } from './appointment-schedule';
 import { recordVideoCallChange } from './video-call-change-log';
 import { requestLocale } from './request-locale';
+import { notifyRescheduleAfterCommit } from './appointment-reschedule-email';
+import { notifyShowroomCancellationAfterCommit } from './showroom-appointment-cancelled-email';
 
 export const GENERIC_APPOINTMENT_UID = 'api::generic-submission.generic-submission';
+const notificationData = (row: any) => ({
+  ...row, customerName: row.fullName, customerEmail: row.email, requestedDate: row.preferredDate,
+});
+
+function notifyGenericAppointmentChange(strapi: any, onCommit: any, before: any, after: any) {
+  if (!before || !after || before.formTag !== 'book-an-appointment') return;
+  if (before.workflowStatus !== 'Cancelled' && after.workflowStatus === 'Cancelled') {
+    notifyShowroomCancellationAfterCommit(strapi, onCommit, notificationData(after));
+  } else if (!['Cancelled', 'Closed', 'Visited'].includes(after.workflowStatus)) {
+    notifyRescheduleAfterCommit(strapi, onCommit, {
+      ...notificationData(after), previousDate: before.preferredDate, previousTimeSlot: before.selectedTimeSlot,
+    });
+  }
+}
 export const genericAppointmentView = (row: any) => ({
   documentId: row.documentId, appointmentReference: row.appointmentReference,
   appointmentId: row.appointmentReference ?? row.documentId, appointmentGroupId: null,
@@ -22,7 +38,7 @@ export async function mutateGenericAppointment(strapi: any, ctx: any, action: 'c
   const documentId = ctx.params.documentId;
   const where = { documentId, magentoCustomerId: ctx.state.magentoCustomer.id, formTag: 'book-an-appointment' };
   if (!await strapi.db.query(GENERIC_APPOINTMENT_UID).findOne({ where, select: ['id'] })) return undefined;
-  return strapi.db.transaction(async ({ trx }) => {
+  return strapi.db.transaction(async ({ trx, onCommit }) => {
     const table = strapi.db.metadata.get(GENERIC_APPOINTMENT_UID).tableName;
     const locked = await strapi.db.connection(table).transacting(trx)
       .where({ document_id: documentId, magento_customer_id: ctx.state.magentoCustomer.id }).forUpdate().first();
@@ -57,6 +73,7 @@ export async function mutateGenericAppointment(strapi: any, ctx: any, action: 'c
     }];
     await strapi.documents(GENERIC_APPOINTMENT_UID).update({ documentId, data });
     await recordVideoCallChange(strapi, before, after, 'Customer');
+    notifyGenericAppointmentChange(strapi, onCommit, before, after);
     return { data: genericAppointmentView({ ...after, rescheduleHistory: data.rescheduleHistory }), meta: { changed: true } };
   });
 }
@@ -74,13 +91,14 @@ export function registerGenericAppointmentHistory(strapi: any) {
     const request = strapi.requestContext.get();
     if (context.uid !== GENERIC_APPOINTMENT_UID || context.action !== 'update' ||
         !request?.state?.user || !request?.request?.url?.startsWith('/content-manager/')) return next();
-    return strapi.db.transaction(async ({ trx }: any) => {
+    return strapi.db.transaction(async ({ trx, onCommit }: any) => {
       await strapi.db.connection(strapi.db.metadata.get(GENERIC_APPOINTMENT_UID).tableName).transacting(trx)
         .where({ document_id: context.params.documentId }).forUpdate().first();
-      const before = await strapi.db.query(GENERIC_APPOINTMENT_UID).findOne({ where: { documentId: context.params.documentId } });
+      const before = await strapi.db.query(GENERIC_APPOINTMENT_UID).findOne({ where: { documentId: context.params.documentId }, populate: { preferredShowroom: true } });
       const result = await next();
-      const after = await strapi.db.query(GENERIC_APPOINTMENT_UID).findOne({ where: { documentId: context.params.documentId } });
+      const after = await strapi.db.query(GENERIC_APPOINTMENT_UID).findOne({ where: { documentId: context.params.documentId }, populate: { preferredShowroom: true } });
       await recordVideoCallChange(strapi, before, after, 'Admin');
+      notifyGenericAppointmentChange(strapi, onCommit, before, after);
       return result;
     });
   });

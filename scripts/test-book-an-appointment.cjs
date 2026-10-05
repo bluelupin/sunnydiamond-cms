@@ -33,12 +33,13 @@ test('appointment changes create linked cancellation and reschedule logs', async
 
 test('booking stays in General Enquiries and validates the configured generic form', async () => {
   let created;
+  const emails = [];
   const form = { requiresConsent: true, dynamicFields: [{ label: 'Full Name', isRequired: true }],
     availableTimeSlots: [{ timeString: '11:00 AM' }], showrooms: [{ documentId: 'showroom' }] };
   const strapi = { documents: uid => {
     assert.ok(['api::generic-form.generic-form', 'api::showroom.showroom', 'api::generic-submission.generic-submission'].includes(uid));
     return {
-      findFirst: async () => uid.includes('generic-form') ? form : { documentId: 'showroom' },
+      findFirst: async () => uid.includes('generic-form') ? form : { documentId: 'showroom', address: 'Main Road', city: 'Kochi' },
       create: async ({ data }) => {
         assert.equal(uid, 'api::generic-submission.generic-submission');
         created = data;
@@ -50,6 +51,10 @@ test('booking stays in General Enquiries and validates the configured generic fo
   const controller = load('src/api/generic-submission/controllers/generic-submission.ts', {
     '@strapi/strapi': { factories: { createCoreController: (_uid, factory) => factory({ strapi }) } },
     '../../../utils/reach-out-confirmation-email': {},
+    '../../../utils/appointment-confirmation-email': { sendBookAppointmentConfirmationEmail: async (_strapi, data) => {
+      assert.ok(created, 'The enquiry must be saved before sending its confirmation');
+      emails.push(data);
+    } },
     '../../../utils/form-submission-rate-limit': { checkFormSubmissionRateLimit: () => ({ allowed: true }), clientIp: () => 'test' },
     '../../../utils/request-locale': { requestLocale: () => 'en' },
   }).default;
@@ -61,6 +66,12 @@ test('booking stays in General Enquiries and validates the configured generic fo
   assert.equal(created.fullName, 'Customer');
   assert.equal(created.preferredDate, '2099-12-01');
   assert.equal(created.magentoCustomerId, undefined);
+  assert.equal(emails.length, 1);
+  assert.equal(emails[0].appointmentReference, result.data.appointmentId);
+  assert.equal(emails[0].customerEmail, input.email);
+  assert.equal(emails[0].requestedDate, input.preferredDate);
+  assert.equal(emails[0].selectedTimeSlot, input.selectedTimeSlot);
+  assert.equal(emails[0].location, 'Main Road, Kochi');
   ctx.state.magentoCustomer = { id: 42 };
   await controller.submit(ctx);
   assert.equal(created.magentoCustomerId, 42);
@@ -68,19 +79,21 @@ test('booking stays in General Enquiries and validates the configured generic fo
   assert.match((await controller.submit(ctx)).error, /available time slot/);
   ctx.request.body = { ...input, consentAccepted: false };
   assert.match((await controller.submit(ctx)).error, /consentAccepted/);
+  assert.equal(emails.length, 2, 'Rejected submissions must not send confirmations');
 });
 
 function mutationFixture(owner = 42) {
   const record = { id: 1, documentId: 'booking', formTag: 'book-an-appointment', magentoCustomerId: owner,
     fullName: 'Customer', preferredDate: '2099-12-01', selectedTimeSlot: '11:00 AM', workflowStatus: 'New', rescheduleHistory: [] };
   const logs = [];
+  const callbacks = [];
   const strapi = { db: {
     metadata: { get: () => ({ tableName: 'generic_submissions' }) },
     connection: () => { const chain = { transacting: () => chain, where: () => chain,
       forUpdate: () => chain, first: async () => ({ id: 1 }) }; return chain; },
-    transaction: async fn => fn({ trx: {} }),
+    transaction: async fn => fn({ trx: {}, onCommit: callback => callbacks.push(callback) }),
     query: uid => { assert.equal(uid, 'api::generic-submission.generic-submission'); return {
-      findOne: async ({ where }) => where.magentoCustomerId === owner ? { ...record } : null,
+      findOne: async ({ where }) => where.magentoCustomerId === undefined || where.magentoCustomerId === owner ? { ...record } : null,
     }; },
   }, documents: uid => ({
     findFirst: async () => ({ availableTimeSlots: [{ timeString: '11:00 AM' }] }),
@@ -89,8 +102,90 @@ function mutationFixture(owner = 42) {
   }) };
   const ctx = { params: { documentId: 'booking' }, state: { magentoCustomer: { id: 42 } }, request: { body: {} },
     badRequest: error => ({ error }), notFound: error => ({ error }) };
-  return { strapi, ctx, record, logs };
+  return { strapi, ctx, record, logs, callbacks };
 }
+
+test('customer change emails send after commit with generic contact, date and reference fields', async () => {
+  const { mutateGenericAppointment } = load('src/utils/generic-appointments.ts');
+  const f = mutationFixture();
+  const emails = [];
+  Object.assign(f.record, { email: 'customer@example.com', appointmentReference: 'BA-2099-000001',
+    preferredShowroom: { city: 'Kochi', address: 'Main Road' } });
+  f.strapi.log = { info() {}, error() {} };
+  f.strapi.plugin = () => ({ service: () => ({ send: async mail => emails.push(mail) }) });
+  await mutateGenericAppointment(f.strapi, f.ctx, 'reschedule', { requestedDate: '2099-12-02' });
+  assert.equal(emails.length, 0);
+  assert.equal(f.callbacks.length, 1);
+  f.callbacks.shift()();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(emails.length, 1);
+  assert.equal(emails[0].to, 'customer@example.com');
+  assert.match(emails[0].text, /BA-2099-000001/);
+  assert.match(emails[0].text, /Dec 2, 2099/);
+  await mutateGenericAppointment(f.strapi, f.ctx, 'cancel');
+  f.callbacks.shift()();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(emails.length, 2);
+  assert.match(emails[1].subject, /cancelled/i);
+  assert.match(emails[1].text, /Kochi/);
+  await mutateGenericAppointment(f.strapi, f.ctx, 'cancel');
+  assert.equal(f.callbacks.length, 0);
+});
+
+test('admin changes queue emails once and ignore unrelated or unchanged enquiries', async () => {
+  const { registerGenericAppointmentHistory } = load('src/utils/generic-appointments.ts');
+  const f = mutationFixture();
+  let middleware;
+  f.strapi.documents.use = fn => { middleware = fn; };
+  f.strapi.requestContext = { get: () => ({ state: { user: { id: 1 } }, request: { url: '/content-manager/collection-types/' } }) };
+  registerGenericAppointmentHistory(f.strapi);
+  const context = { uid: 'api::generic-submission.generic-submission', action: 'update', params: { documentId: 'booking' } };
+  await middleware(context, async () => { f.record.preferredDate = '2099-12-03'; });
+  assert.equal(f.callbacks.length, 1);
+  await middleware(context, async () => {});
+  assert.equal(f.callbacks.length, 1);
+  await middleware(context, async () => { f.record.workflowStatus = 'Cancelled'; });
+  assert.equal(f.callbacks.length, 2);
+  await middleware(context, async () => {});
+  assert.equal(f.callbacks.length, 2);
+  f.record.formTag = 'reach-out-to-us';
+  await middleware(context, async () => { f.record.preferredDate = '2099-12-04'; });
+  assert.equal(f.callbacks.length, 2);
+});
+
+test('generic reminders mark successful deliveries, skip completed bookings and retry failed sends', async () => {
+  const { sendTomorrowGenericAppointmentReminders } = load('src/utils/generic-appointment-reminder.ts');
+  const base = { formTag: 'book-an-appointment', fullName: 'Customer', email: 'customer@example.com',
+    preferredDate: '2099-12-02', selectedTimeSlot: '11:00 AM', workflowStatus: 'New', preferredShowroom: { city: 'Kochi' } };
+  const rows = [{ ...base, documentId: 'success' }, { ...base, documentId: 'failed', email: 'failed@example.com' },
+    ...['Cancelled', 'Closed', 'Visited'].map(workflowStatus => ({ ...base, workflowStatus, documentId: workflowStatus })),
+    { ...base, documentId: 'already-sent', reminderSentForDate: base.preferredDate }];
+  const sent = [], errors = [];
+  let failed = true;
+  const strapi = { log: { info() {}, error: message => errors.push(message) },
+    plugin: () => ({ service: () => ({ send: async mail => {
+      if (failed && mail.to === 'failed@example.com') throw new Error('provider-secret');
+      sent.push(mail);
+    } }) }), documents: uid => {
+      assert.equal(uid, 'api::generic-submission.generic-submission');
+      return { findMany: async ({ filters }) => {
+        assert.equal(filters.formTag, 'book-an-appointment');
+        assert.equal(filters.preferredDate, base.preferredDate);
+        return rows;
+      }, update: async ({ documentId, data }) => Object.assign(rows.find(row => row.documentId === documentId), data) };
+    } };
+  assert.equal((await sendTomorrowGenericAppointmentReminders(strapi, '2099-12-01')).sent, 1);
+  assert.equal(rows[0].reminderSentForDate, base.preferredDate);
+  assert.equal(rows[1].reminderSentForDate, undefined);
+  assert.equal(errors.length, 1);
+  assert.ok(!errors[0].includes('provider-secret'));
+  failed = false;
+  assert.equal((await sendTomorrowGenericAppointmentReminders(strapi, '2099-12-01')).sent, 1);
+  assert.equal((await sendTomorrowGenericAppointmentReminders(strapi, '2099-12-01')).sent, 0);
+  assert.equal(sent.length, 2);
+  assert.match(sent[0].subject, /Tomorrow/);
+  assert.match(sent[0].text, /Kochi/);
+});
 
 test('rescheduling and cancellation update only the generic record and create linked logs', async () => {
   const { mutateGenericAppointment } = load('src/utils/generic-appointments.ts');

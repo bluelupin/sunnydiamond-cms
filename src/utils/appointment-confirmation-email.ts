@@ -47,3 +47,6 @@ export async function sendStoreVisitConfirmationEmail(strapi: Core.Strapi, data:
     strapi.log.error(`Confirmation email failed for appointment ${data.documentId}; the appointment remains saved.`);
   }
 }
+
+/** General Enquiries bookings use the same showroom appointment confirmation. */
+export const sendBookAppointmentConfirmationEmail = sendStoreVisitConfirmationEmail;

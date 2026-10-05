@@ -5,6 +5,7 @@ import { factories } from '@strapi/strapi';
 import { checkFormSubmissionRateLimit, clientIp } from '../../../utils/form-submission-rate-limit';
 import { requestLocale } from '../../../utils/request-locale';
 import { sendReachOutConfirmationEmail } from '../../../utils/reach-out-confirmation-email';
+import { sendBookAppointmentConfirmationEmail } from '../../../utils/appointment-confirmation-email';
 
 const GENERIC_SUBMISSION_UID = 'api::generic-submission.generic-submission';
 const GENERIC_FORM_UID = 'api::generic-form.generic-form';
@@ -102,6 +103,7 @@ export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ 
     }
 
     let showroomRef = undefined;
+    let showroomDetails: any;
     const preferredShowroomVal = stringOrUndefined(input.showroom) ?? stringOrUndefined(input.preferredShowroom);
     if (preferredShowroomVal) {
       const showroom = await strapi.documents('api::showroom.showroom').findFirst({
@@ -121,6 +123,7 @@ export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ 
       }
       if (showroom) {
         showroomRef = showroom.documentId;
+        showroomDetails = showroom;
       }
     }
 
@@ -144,6 +147,21 @@ export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ 
 
     const appointmentId = formTag === 'book-an-appointment'
       ? await assignAppointmentReference(strapi, GENERIC_SUBMISSION_UID, entity, 'BA') : undefined;
+    if (formTag === 'book-an-appointment') {
+      const location = [showroomDetails?.address, showroomDetails?.city, showroomDetails?.state, showroomDetails?.pincode]
+        .map(value => stringOrUndefined(value))
+        .filter(Boolean)
+        .join(', ');
+      await sendBookAppointmentConfirmationEmail(strapi, {
+        documentId: entity.documentId,
+        appointmentReference: appointmentId,
+        customerName: fullName,
+        customerEmail: email,
+        requestedDate: preferredDate,
+        selectedTimeSlot: stringOrUndefined(input.selectedTimeSlot),
+        location: location || 'Sunny Diamonds showroom',
+      });
+    }
     if (formTag === 'reach-out-to-us') {
       await sendReachOutConfirmationEmail(strapi, {
         documentId: entity.documentId,

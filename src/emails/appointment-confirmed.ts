@@ -12,7 +12,7 @@ const escapeHtml = (value: string) => value.replace(/[&<>"']/g, char => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
 }[char]!));
 
-/** Copy and layout for the product-store-visit submission confirmation. */
+/** Shared confirmation for showroom visits, including book-an-appointment enquiries. */
 export function appointmentConfirmedTemplate(data: AppointmentConfirmedData) {
   const name = data.customerName?.trim() || 'there';
   const appointmentDate = formatEmailDate(data.requestedDate);

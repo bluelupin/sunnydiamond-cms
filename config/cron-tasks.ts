@@ -2,6 +2,7 @@ import { sendTomorrowShowroomAppointmentReminders } from '../src/utils/showroom-
 import { sendTomorrowTryAtHomeReminders } from '../src/utils/try-at-home-reminder';
 import { sendTomorrowVideoCallAppointmentReminders } from '../src/utils/video-call-appointment-reminder';
 import { closePastAppointments } from '../src/utils/close-past-appointments';
+import { sendTomorrowGenericAppointmentReminders } from '../src/utils/generic-appointment-reminder';
 
 export default {
   closePastAppointments: {
@@ -16,6 +17,7 @@ export default {
   showroomAppointmentReminder: {
     task: async ({ strapi }) => {
       await sendTomorrowShowroomAppointmentReminders(strapi);
+      await sendTomorrowGenericAppointmentReminders(strapi);
       await sendTomorrowTryAtHomeReminders(strapi);
       await sendTomorrowVideoCallAppointmentReminders(strapi);
     },
