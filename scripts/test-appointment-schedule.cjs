@@ -11,7 +11,31 @@ function load(file) {
     : require(name), module, module.exports);
   return module.exports;
 }
-const { countScheduleChanges, appointmentStartsAt } = load('src/utils/appointment-schedule.ts');
+const { countScheduleChanges, appointmentStartsAt, validateReschedulingWindow } = load('src/utils/appointment-schedule.ts');
+
+test('rescheduling requires 48 hours for home trials and 2 hours for store visits and video calls', () => {
+  const startsAt = new Date('2026-10-12T05:30:00.000Z'); // 11 AM IST
+  for (const [tag, hours] of [
+    ['try-at-home', 48], ['try-at-home-form', 48],
+    ['store-visit', 2], ['product-store-visit', 2],
+    ['schedule-video-call', 2], ['product-video-call', 2],
+  ]) {
+    const deadline = startsAt.getTime() - hours * 60 * 60_000;
+    const validate = now => validateReschedulingWindow('2026-10-12', '11:00 AM - 12:00 PM', tag, new Date(now));
+    assert.equal(validate(deadline - 1), undefined, `${tag}: before cutoff`);
+    assert.equal(validate(deadline), undefined, `${tag}: exact cutoff`);
+    assert.match(validate(deadline + 1), new RegExp(`at least ${hours} hours`), `${tag}: after cutoff`);
+    assert.ok(validate(startsAt.getTime()), `${tag}: appointment starting`);
+    assert.ok(validate(startsAt.getTime() + 1), `${tag}: past appointment`);
+  }
+});
+
+test('rescheduling rejects missing or invalid existing appointment dates', () => {
+  for (const date of [undefined, null, '2026-02-30', 'invalid']) {
+    assert.equal(validateReschedulingWindow(date, '11:00 AM', 'store-visit'),
+      'The current appointment date is missing or invalid.');
+  }
+});
 
 test('date, time and address changes count towards the reschedule limit', () => {
   const move = (from, to) => ({ previousData: { requestedDate: from, selectedTimeSlot: '10:00 AM - 11:00 AM' },

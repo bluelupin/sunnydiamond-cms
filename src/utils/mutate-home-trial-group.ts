@@ -84,7 +84,7 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
           await groups.update({ documentId: groupId, data: { workflowStatus: 'Cancelled', activeScheduleKey: null } });
         } else {
           if (inactive(group) || rows.some(inactive)) return { error: 'Completed, closed or cancelled appointments cannot be rescheduled.', status: 400 };
-          const windowError = validateReschedulingWindow(group.requestedDate);
+          const windowError = validateReschedulingWindow(group.requestedDate, group.selectedTimeSlot, 'try-at-home');
           if (windowError) return { error: windowError, status: 400 };
           scheduleChanged = group.requestedDate !== requestedDate || group.selectedTimeSlot !== selectedTimeSlot;
           const addressChanged = appointmentAddressChanged(group, { ...group, ...addressChanges });

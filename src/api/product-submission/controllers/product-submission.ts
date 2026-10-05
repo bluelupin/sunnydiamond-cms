@@ -361,7 +361,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       if (['Visited', 'Closed', 'Cancelled'].includes(appointment.workflowStatus)) {
         return { error: 'Completed, closed or cancelled appointments cannot be rescheduled.', status: 400 };
       }
-      const windowError = validateReschedulingWindow(appointment.requestedDate);
+      const windowError = validateReschedulingWindow(appointment.requestedDate, appointment.selectedTimeSlot, appointment.formTag);
       if (windowError) return { error: windowError, status: 400 };
       const requestedDate = stringOrUndefined(input.requestedDate) ?? appointment.requestedDate;
       const selectedTimeSlot = stringOrUndefined(input.selectedTimeSlot) ?? appointment.selectedTimeSlot;

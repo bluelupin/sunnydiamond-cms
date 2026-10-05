@@ -14,13 +14,18 @@ export const appointmentToday = () => new Intl.DateTimeFormat('en-CA', {
   timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit',
 }).format(new Date());
 
-/** Last permitted day is three calendar days before the existing appointment. */
-export const validateReschedulingWindow = (scheduledDate: unknown, today = appointmentToday()) => {
+/** Minimum notice before the existing appointment starts, measured in elapsed hours. */
+export const validateReschedulingWindow = (
+  scheduledDate: unknown,
+  selectedTimeSlot: string | null | undefined,
+  formTag: string,
+  now = new Date(),
+) => {
   if (!validAppointmentDate(scheduledDate)) return 'The current appointment date is missing or invalid.';
-  const deadline = new Date(`${scheduledDate}T00:00:00Z`);
-  deadline.setUTCDate(deadline.getUTCDate() - 3);
-  if (today > deadline.toISOString().slice(0, 10)) {
-    return 'You cannot reschedule as it is outside the 3-day rescheduling window period.';
+  const noticeHours = ['try-at-home', 'try-at-home-form'].includes(formTag) ? 48 : 2;
+  const startsAt = appointmentStartsAt(scheduledDate, selectedTimeSlot);
+  if (startsAt.getTime() - now.getTime() < noticeHours * 60 * 60_000) {
+    return `You cannot reschedule as at least ${noticeHours} hours' notice is required before the appointment.`;
   }
   return undefined;
 };
