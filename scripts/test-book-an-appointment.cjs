@@ -31,7 +31,7 @@ test('appointment changes create linked cancellation and reschedule logs', async
   assert.equal(logs[1].actorType, 'Admin');
 });
 
-test('booking stays in General Enquiries and validates the configured generic form', async () => {
+test('standard create and submit endpoints save generic bookings and send confirmations', async () => {
   let created;
   const emails = [];
   const form = { requiresConsent: true, dynamicFields: [{ label: 'Full Name', isRequired: true }],
@@ -61,7 +61,7 @@ test('booking stays in General Enquiries and validates the configured generic fo
   const input = { formTag: 'book-an-appointment', fullName: 'Customer', phone: '9999999999', email: 'a@example.com',
     preferredDate: '2099-12-01', showroom: 'showroom', selectedTimeSlot: '11:00 AM', consentAccepted: true, magentoCustomerId: 99 };
   const ctx = { state: {}, request: { body: { data: input } }, badRequest: error => ({ error }) };
-  const result = await controller.submit(ctx);
+  const result = await controller.create(ctx);
   assert.match(result.data.appointmentId, /^BA-/);
   assert.equal(created.fullName, 'Customer');
   assert.equal(created.preferredDate, '2099-12-01');

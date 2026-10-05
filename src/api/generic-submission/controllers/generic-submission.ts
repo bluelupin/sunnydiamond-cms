@@ -52,6 +52,14 @@ const requestData = (ctx: any) => {
 
 
 export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ strapi }) => ({
+  async create(ctx) {
+    // Website clients also post bookings to the standard collection endpoint.
+    if (stringOrUndefined(requestData(ctx).formTag) === 'book-an-appointment') {
+      return this.submit(ctx, undefined);
+    }
+    return super.create(ctx);
+  },
+
   async submit(ctx) {
     if (ctx.request.files && Object.keys(ctx.request.files).length > 0) {
       return ctx.badRequest('File uploads are not supported for generic submissions.');
