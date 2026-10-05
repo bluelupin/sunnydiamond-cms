@@ -85,3 +85,15 @@ test('customer and schedule still separate groups, and missing optional lines eq
     assert.notEqual((await submit(strapi, { ...input, addressLine2: undefined, ...change })).groupDocumentId, first.groupDocumentId);
   }
 });
+
+test('video-call forms share one address-independent group, separate from home trials', async () => {
+  const { strapi, groups } = harness();
+  const first = await submit(strapi, { ...input, formTag: 'schedule-video-call' });
+  const second = await submit(strapi, { ...input, formTag: 'product-video-call', addressLine1: 'Other address' });
+  const home = await submit(strapi, input);
+  assert.equal(first.groupDocumentId, second.groupDocumentId);
+  assert.match(first.appointmentReference, /^VC-\d{4}-\d{6}$/);
+  assert.equal(first.appointmentReference, second.appointmentReference);
+  assert.notEqual(first.groupDocumentId, home.groupDocumentId);
+  assert.equal(groups.length, 2);
+});

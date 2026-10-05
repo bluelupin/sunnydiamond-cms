@@ -2,6 +2,16 @@ import { createHash } from 'node:crypto';
 import { validAppointmentDate } from './appointment-schedule';
 
 export const HOME_TRIAL_FORM_TAGS = ['try-at-home', 'try-at-home-form'];
+export const VIDEO_CALL_FORM_TAGS = ['schedule-video-call', 'product-video-call'];
+export const GROUPED_APPOINTMENT_FORM_TAGS = [...HOME_TRIAL_FORM_TAGS, ...VIDEO_CALL_FORM_TAGS];
+
+/** Video-call groups ignore addresses and never share a key with home trials. */
+export function appointmentGroupScheduleKey(customerId: number, date: string, slot: string, data: any) {
+  if (VIDEO_CALL_FORM_TAGS.includes(data.formTag)) {
+    return createHash('sha256').update(JSON.stringify(['video-call', legacyHomeTrialScheduleKey(customerId, date, slot)])).digest('hex');
+  }
+  return homeTrialScheduleKey(customerId, date, slot, data);
+}
 
 type HomeTrialAddress = {
   addressLine1?: string; addressLine2?: string; city?: string; pincode?: string;

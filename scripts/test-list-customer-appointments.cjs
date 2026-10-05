@@ -14,6 +14,38 @@ function load(name) {
 }
 const { listCustomerAppointments } = load('list-customer-appointments');
 
+test('video-call groups list as one appointment with all products and their shared reschedule count', async () => {
+  const group = { id: 1, documentId: 'video-group', requestedDate: '2099-10-14', selectedTimeSlot: '11:00 AM',
+    workflowStatus: 'Scheduled', createdAt: '2026-10-05T12:00:00Z', priorRescheduleCount: 1 };
+  const products = [1, 2].map(id => ({ id, documentId: `video-${id}`, formTag: 'schedule-video-call',
+    requestedDate: group.requestedDate, selectedTimeSlot: group.selectedTimeSlot,
+    appointmentGroup: { documentId: group.documentId }, productId: String(id), productName: `Ring ${id}` }));
+  const strapi = { db: { query(uid) {
+    if (uid.includes('appointment-change')) return { findMany: async ({ where }) => where.eventType === 'Cancelled' ? [] : [{
+      sourceGroup: { documentId: group.documentId }, previousData: { requestedDate: '2099-10-12' },
+      newData: { requestedDate: group.requestedDate },
+    }] };
+    const grouped = uid.includes('appointment-group');
+    return { count: async () => grouped ? 1 : 0,
+      findMany: async ({ select, where }) => {
+        if (grouped) {
+          assert.ok(where.submissions.formTag.$in.includes('schedule-video-call'));
+          return [group];
+        }
+        return select.includes('rescheduleHistory') ? products : [];
+      } };
+  } } };
+  const result = await listCustomerAppointments(strapi, {
+    customerId: 7, page: 1, pageSize: 10, formTags: ['schedule-video-call', 'product-video-call'],
+  });
+  assert.equal(result.data.length, 1);
+  assert.equal(result.meta.pagination.total, 1);
+  assert.equal(result.data[0].products.length, 2);
+  assert.equal(result.data[0].rescheduleCount, 2);
+  assert.equal(result.data[0].reschedulesLeft, 0);
+  assert.equal(Object.hasOwn(result.data[0], 'priorRescheduleCount'), false);
+});
+
 test('listing exposes cancellation timestamps for groups and individuals only when cancelled', async () => {
   const changedAt = '2026-10-02T10:00:00.000Z';
   const groups = [{ id: 1, documentId: 'group', workflowStatus: 'Cancelled', createdAt: changedAt }];

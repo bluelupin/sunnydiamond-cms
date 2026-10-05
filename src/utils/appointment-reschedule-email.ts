@@ -43,7 +43,7 @@ export async function sendAppointmentRescheduleEmail(strapi: Core.Strapi, data: 
             .map(value => value?.trim()).filter(Boolean).join(', '),
           manageUrl: manageUrl(data.documentId),
         })
-      : data.formTag === 'product-video-call'
+      : ['product-video-call', 'schedule-video-call'].includes(data.formTag)
         ? videoCallRescheduledTemplate({
             appointmentId: data.appointmentReference || data.documentId, customerName: data.customerName,
             appointmentDate: data.requestedDate, appointmentTime: data.selectedTimeSlot,

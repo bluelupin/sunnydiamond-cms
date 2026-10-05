@@ -69,3 +69,19 @@ test('daily video call reminder sends eligible appointments once', async () => {
   assert.equal(strapi.updates.length, 1);
   assert.match(strapi.sent[0].subject, /Video Call Appointment Is Tomorrow/);
 });
+
+test('a grouped video call sends one reminder containing all products', async () => {
+  const strapi = mock();
+  const group = { ...data, documentId: 'video-group', formTag: 'schedule-video-call',
+    submissions: [{ ...data, productName: 'Ring 1' }, { ...data, documentId: 'video-2', productName: 'Ring 2' }] };
+  strapi.documents = uid => ({
+    findMany: async () => uid.includes('appointment-group') ? [group] : [],
+    update: async request => strapi.updates.push(request),
+  });
+  const result = await reminders.sendTomorrowVideoCallAppointmentReminders(strapi, '2099-10-04');
+  assert.equal(result.sent, 1);
+  assert.equal(strapi.sent.length, 1);
+  assert.match(strapi.sent[0].html, /Ring 1/);
+  assert.match(strapi.sent[0].html, /Ring 2/);
+  assert.equal(strapi.updates[0].documentId, 'video-group');
+});

@@ -16,6 +16,8 @@
     { "name": "appt_groups_customer_schedule_idx", "columns": ["magento_customer_id", "requested_date", "selected_time_slot"] }
   ],
   "attributes": {
+    "formTag": { "type": "string" },
+    "priorRescheduleCount": { "type": "integer", "default": 0, "min": 0, "private": true },
     "magentoCustomerId": { "type": "integer", "private": true },
     "requestedDate": { "type": "date" },
     "selectedTimeSlot": { "type": "string" },

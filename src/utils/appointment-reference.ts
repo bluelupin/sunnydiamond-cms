@@ -20,11 +20,12 @@ export async function assignAppointmentReference(strapi: Core.Strapi, uid: strin
 /** Idempotently gives historical customer appointments a readable public reference. */
 export async function backfillAppointmentReferences(strapi: Core.Strapi) {
   const [groups, storeVisits] = await Promise.all([
-    strapi.db.query(GROUP).findMany({ where: { appointmentReference: { $null: true } }, select: ['id', 'documentId', 'createdAt'] }),
+    strapi.db.query(GROUP).findMany({ where: { appointmentReference: { $null: true } }, select: ['id', 'documentId', 'createdAt', 'formTag'] }),
     strapi.db.query(PRODUCT).findMany({ where: { formTag: { $in: ['store-visit', 'product-store-visit'] }, appointmentReference: { $null: true } },
       select: ['id', 'documentId', 'createdAt'] }),
   ]);
-  for (const group of groups) await assignAppointmentReference(strapi, GROUP, group, 'TAH');
+  for (const group of groups) await assignAppointmentReference(strapi, GROUP, group,
+    ['schedule-video-call', 'product-video-call'].includes(group.formTag) ? 'VC' : 'TAH');
   for (const visit of storeVisits) await assignAppointmentReference(strapi, PRODUCT, visit, 'SV');
   if (groups.length || storeVisits.length) {
     strapi.log.info(`Appointment references backfilled: ${groups.length} Try at Home, ${storeVisits.length} showroom visits.`);

@@ -4,7 +4,7 @@ import { checkFormSubmissionRateLimit, clientIp } from '../../../utils/form-subm
 import { requestLocale } from '../../../utils/request-locale';
 import { RESCHEDULABLE_FORM_TAGS, validateAppointmentSchedule, validateReschedulingWindow, appointmentToday, appointmentStartsAt,
   countScheduleChanges, MAX_RESCHEDULES, RESCHEDULE_LIMIT_MESSAGE, validAppointmentDate } from '../../../utils/appointment-schedule';
-import { HOME_TRIAL_FORM_TAGS } from '../../../utils/home-trial-group-key';
+import { GROUPED_APPOINTMENT_FORM_TAGS } from '../../../utils/home-trial-group-key';
 import { createHomeTrialSubmission } from '../../../utils/create-home-trial-submission';
 import { mutateHomeTrialGroup } from '../../../utils/mutate-home-trial-group';
 import { listCustomerAppointments } from '../../../utils/list-customer-appointments';
@@ -225,7 +225,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       sourcePage: stringOrUndefined(input.sourcePage),
       consentAccepted: booleanValue(input.consentAccepted),
     };
-    const grouped = HOME_TRIAL_FORM_TAGS.includes(formTag)
+    const grouped = GROUPED_APPOINTMENT_FORM_TAGS.includes(formTag) && magentoCustomerId
       ? await createHomeTrialSubmission(strapi, submissionData)
       : undefined;
     const entity = grouped?.entity ?? await strapi.db.transaction(async ({ trx }) => {
@@ -352,7 +352,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       const appointment = await strapi.db.query(PRODUCT_SUBMISSION_UID).findOne({
         where: { id: locked.id }, populate: { appointmentGroup: true, preferredShowroom: true, state: true },
       });
-      if (appointment.appointmentGroup && HOME_TRIAL_FORM_TAGS.includes(appointment.formTag)) {
+      if (appointment.appointmentGroup && GROUPED_APPOINTMENT_FORM_TAGS.includes(appointment.formTag)) {
         return { error: 'Appointment grouping changed. Please retry the request.', status: 409 };
       }
       if (!RESCHEDULABLE_FORM_TAGS.includes(appointment.formTag) && !['store-visit', 'product-store-visit'].includes(appointment.formTag)) {
@@ -452,7 +452,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       const appointment = await strapi.db.query(PRODUCT_SUBMISSION_UID).findOne({
         where: { id: locked.id }, populate: { appointmentGroup: true, preferredShowroom: true },
       });
-      if (appointment.appointmentGroup && HOME_TRIAL_FORM_TAGS.includes(appointment.formTag)) {
+      if (appointment.appointmentGroup && GROUPED_APPOINTMENT_FORM_TAGS.includes(appointment.formTag)) {
         return { error: 'Appointment grouping changed. Please retry the request.', status: 409 };
       }
       if (!APPOINTMENT_FORM_TAGS.includes(appointment.formTag)) {

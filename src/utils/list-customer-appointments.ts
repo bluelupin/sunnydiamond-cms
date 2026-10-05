@@ -1,4 +1,4 @@
-import { HOME_TRIAL_FORM_TAGS } from './home-trial-group-key';
+import { GROUPED_APPOINTMENT_FORM_TAGS } from './home-trial-group-key';
 import { countScheduleChanges, MAX_RESCHEDULES } from './appointment-schedule';
 
 const GROUP = 'api::appointment-group.appointment-group';
@@ -16,7 +16,7 @@ export async function listCustomerAppointments(strapi: any, options: any) {
   const { customerId, page, pageSize, locale, formTags } = options;
   const productScope = { magentoCustomerId: customerId, formTag: { $in: formTags } };
   const groupWhere = { magentoCustomerId: customerId, mergedInto: { $null: true },
-    submissions: { magentoCustomerId: customerId, formTag: { $in: HOME_TRIAL_FORM_TAGS } } };
+    submissions: { magentoCustomerId: customerId, formTag: { $in: formTags.filter((tag: string) => GROUPED_APPOINTMENT_FORM_TAGS.includes(tag)) } } };
   // Until the explicit migration, historical rows remain individual appointments.
   const legacyWhere = { ...productScope,
     appointmentGroup: { $null: true } };
@@ -41,7 +41,7 @@ export async function listCustomerAppointments(strapi: any, options: any) {
     selectedGroupIds.length ? strapi.db.query(GROUP).findMany({
       where: { ...groupWhere, documentId: { $in: selectedGroupIds } },
       select: ['documentId', 'appointmentReference', 'requestedDate', 'selectedTimeSlot', 'workflowStatus',
-        'addressLine1', 'addressLine2', 'city', 'pincode', 'createdAt', 'updatedAt'],
+        'addressLine1', 'addressLine2', 'city', 'pincode', 'createdAt', 'updatedAt', 'priorRescheduleCount'],
       populate: { state: populate.state },
     }) : [],
     units.length ? strapi.db.query(PRODUCT).findMany({
@@ -67,8 +67,8 @@ export async function listCustomerAppointments(strapi: any, options: any) {
       orderBy: { changedAt: 'desc' },
     }) : [],
   ]);
-  const rescheduleDetails = (entries: unknown) => {
-    const rescheduleCount = countScheduleChanges(entries);
+  const rescheduleDetails = (entries: unknown, priorCount = 0) => {
+    const rescheduleCount = priorCount + countScheduleChanges(entries);
     return { rescheduleCount, reschedulesLeft: Math.max(0, MAX_RESCHEDULES - rescheduleCount) };
   };
   const cancellationDetails = (appointment: any, grouped: boolean, history?: unknown) => {
@@ -113,11 +113,16 @@ export async function listCustomerAppointments(strapi: any, options: any) {
     }
     const group = groups.find((row: any) => row.documentId === unit.documentId);
     if (!group) return [];
-    return [{ ...members[0], ...group, documentId: members[0].documentId,
+    const added = matched.flatMap(product => product.pieces.filter((piece: any) => piece?.productId).map((piece: any) => ({
+      ...product.safe, documentId: `${product.safe.documentId}:piece:${piece.productId}`,
+      productId: piece.productId, productName: piece.productName ?? null,
+    })));
+    const { priorRescheduleCount, ...safeGroup } = group;
+    return [{ ...members[0], ...safeGroup, documentId: members[0].documentId,
       appointmentId: group.appointmentReference ?? group.documentId,
-      appointmentGroupId: group.documentId, products: members,
+      appointmentGroupId: group.documentId, products: [...members, ...added],
       ...cancellationDetails(group, true),
-      ...rescheduleDetails(groupChanges.filter((change: any) => change.sourceGroup?.documentId === group.documentId)) }];
+      ...rescheduleDetails(groupChanges.filter((change: any) => change.sourceGroup?.documentId === group.documentId), priorRescheduleCount ?? 0) }];
   });
   const total = groupCount + legacyCount;
   return { data, meta: { pagination: { page, pageSize, total, pageCount: Math.ceil(total / pageSize) } } };
