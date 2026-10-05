@@ -135,7 +135,6 @@ export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ 
       }
     }
 
-    if (formTag === 'book-an-appointment' && !showroomRef) return ctx.badRequest('preferredShowroom is required.');
     const entity = await strapi.documents(GENERIC_SUBMISSION_UID as any).create({
       data: {
         formTag,

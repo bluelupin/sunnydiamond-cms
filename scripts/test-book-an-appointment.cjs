@@ -46,11 +46,24 @@ test('generic time dropdown options validate bookings while unrelated dropdown v
   }), /available time slot/);
 });
 
+test('customer-facing required field labels map to the generic submission keys', () => {
+  const { fieldValue } = load('src/utils/generic-form-input.ts');
+  const input = { fullName: 'Customer', phone: '+919555000000', email: 'customer@example.com' };
+  assert.equal(fieldValue(input, 'Your Name'), 'fullName');
+  assert.equal(fieldValue(input, ' Your   Full Name '), 'fullName');
+  assert.equal(fieldValue(input, 'Your Phone Number'), 'phone');
+  assert.equal(fieldValue(input, 'Your Email Address'), 'email');
+  assert.equal(fieldValue({ fullName: '   ' }, 'Your Name'), undefined);
+  assert.equal(fieldValue({ 'Custom Field': 'value' }, 'Custom Field'), 'Custom Field');
+});
+
 test('standard create and submit endpoints save generic bookings and send confirmations', async () => {
   let created;
   const emails = [];
-  const form = { requiresConsent: true, dynamicFields: [{ label: 'Full Name', isRequired: true },
-    { label: 'Preferred Time Slot', fieldType: 'dropdown', isRequired: true, dropdownOptions: [{ optionValue: '11:00 AM' }] }],
+  const form = { requiresConsent: true, dynamicFields: [{ label: 'Your Name', isRequired: true },
+    { label: 'Phone No.', isRequired: true }, { label: 'Email', isRequired: true }, { label: 'Date', isRequired: true },
+    { label: 'Time Slots', fieldType: 'dropdown', isRequired: true, dropdownOptions: [{ optionValue: '11:00 AM' }] },
+    { label: 'Describe more about your visit', isRequired: true }],
     showrooms: [{ documentId: 'showroom' }] };
   const strapi = { documents: uid => {
     assert.ok(['api::generic-form.generic-form', 'api::showroom.showroom', 'api::generic-submission.generic-submission'].includes(uid));
@@ -75,7 +88,8 @@ test('standard create and submit endpoints save generic bookings and send confir
     '../../../utils/request-locale': { requestLocale: () => 'en' },
   }).default;
   const input = { formTag: 'book-an-appointment', fullName: 'Customer', phone: '9999999999', email: 'a@example.com',
-    preferredDate: '2099-12-01', showroom: 'showroom', selectedTimeSlot: '11:00 AM', consentAccepted: true, magentoCustomerId: 99 };
+    preferredDate: '2099-12-01', showroom: 'showroom', selectedTimeSlot: '11:00 AM', consentAccepted: true, magentoCustomerId: 99,
+    notes: 'I want to book an appointment' };
   const ctx = { state: {}, request: { body: { data: input } }, badRequest: error => ({ error }) };
   const result = await controller.create(ctx);
   assert.match(result.data.appointmentId, /^BA-/);
@@ -96,6 +110,15 @@ test('standard create and submit endpoints save generic bookings and send confir
   ctx.request.body = { ...input, consentAccepted: false };
   assert.match((await controller.submit(ctx)).error, /consentAccepted/);
   assert.equal(emails.length, 2, 'Rejected submissions must not send confirmations');
+  form.requiresConsent = false;
+  ctx.request.body = { ...input, showroom: undefined, consentAccepted: false };
+  assert.ok((await controller.create(ctx)).data.documentId);
+  assert.equal(created.preferredShowroom, undefined);
+  assert.equal(created.consentAccepted, false);
+  assert.equal(emails.length, 3);
+  ctx.request.body = { ...ctx.request.body, notes: '' };
+  assert.equal((await controller.create(ctx)).error, 'Describe more about your visit is required.');
+  assert.equal(emails.length, 3);
 });
 
 function mutationFixture(owner = 42) {
