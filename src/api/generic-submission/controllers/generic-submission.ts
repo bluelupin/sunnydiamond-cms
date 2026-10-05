@@ -1,3 +1,6 @@
+import { validateAppointmentSchedule } from '../../../utils/appointment-schedule';
+import { assignAppointmentReference } from '../../../utils/appointment-reference';
+import { fieldValue } from '../../../utils/generic-form-input';
 import { factories } from '@strapi/strapi';
 import { checkFormSubmissionRateLimit, clientIp } from '../../../utils/form-submission-rate-limit';
 import { requestLocale } from '../../../utils/request-locale';
@@ -46,27 +49,6 @@ const requestData = (ctx: any) => {
   return body.data && typeof body.data === 'object' ? body.data : body;
 };
 
-const fieldValue = (input: any, label: string) => {
-  const normalized = label.toLowerCase();
-  const aliases: Record<string, string[]> = {
-    name: ['fullName', 'name'],
-    'full name': ['fullName', 'name'],
-    phone: ['phone'],
-    'phone no.': ['phone'],
-    'phone no': ['phone'],
-    email: ['email'],
-    'email id': ['email'],
-    message: ['notes', 'message'],
-    notes: ['notes', 'message'],
-    'reason for contacting us': ['reasonForContact', 'reason'],
-    'reason for contacting': ['reasonForContact', 'reason'],
-    'preferred showroom': ['preferredShowroom', 'showroom'],
-    'preferred date': ['preferredDate', 'date'],
-  };
-
-  const keys = aliases[normalized] ?? [label];
-  return keys.find((key) => stringOrUndefined(input[key]) !== undefined);
-};
 
 export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ strapi }) => ({
   async submit(ctx) {
@@ -100,11 +82,16 @@ export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ 
       locale,
       filters: { formTag },
       populate: {
-        dynamicFields: true,
+        dynamicFields: true, availableTimeSlots: true, showrooms: true,
       },
     } as any);
 
     if (!form) return ctx.badRequest('Unknown formTag.');
+    if (formTag === 'book-an-appointment') {
+      if (!phone || !email) return ctx.badRequest('A valid phone and email are required for appointments.');
+      const error = validateAppointmentSchedule(preferredDate, stringOrUndefined(input.selectedTimeSlot), form);
+      if (error) return ctx.badRequest(error);
+    }
 
     const missingField = (form.dynamicFields ?? []).find(
       (field: any) => field.isRequired && !fieldValue(input, field.label)
@@ -128,15 +115,21 @@ export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ 
           ]
         }
       } as any);
+      if (formTag === 'book-an-appointment' && (!showroom ||
+          (form.showrooms?.length && !form.showrooms.some((item: any) => item.documentId === showroom.documentId)))) {
+        return ctx.badRequest('preferredShowroom must reference a showroom available for this form.');
+      }
       if (showroom) {
         showroomRef = showroom.documentId;
       }
     }
 
+    if (formTag === 'book-an-appointment' && !showroomRef) return ctx.badRequest('preferredShowroom is required.');
     const entity = await strapi.documents(GENERIC_SUBMISSION_UID as any).create({
       data: {
         formTag,
         fullName,
+        ...(formTag === 'book-an-appointment' ? { magentoCustomerId: ctx.state.magentoCustomer?.id } : {}),
         phone,
         email,
         preferredShowroom: showroomRef,
@@ -149,6 +142,8 @@ export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ 
       },
     } as any);
 
+    const appointmentId = formTag === 'book-an-appointment'
+      ? await assignAppointmentReference(strapi, GENERIC_SUBMISSION_UID, entity, 'BA') : undefined;
     if (formTag === 'reach-out-to-us') {
       await sendReachOutConfirmationEmail(strapi, {
         documentId: entity.documentId,
@@ -162,6 +157,7 @@ export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ 
         id: entity.id,
         documentId: entity.documentId,
         formTag: entity.formTag,
+        ...(appointmentId ? { appointmentId } : {}),
       },
       meta: {},
     };

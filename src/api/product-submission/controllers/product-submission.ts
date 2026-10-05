@@ -1,3 +1,4 @@
+import { mutateGenericAppointment, linkGuestGenericAppointments } from '../../../utils/generic-appointments';
 import { factories } from '@strapi/strapi';
 import { recordVideoCallChange } from '../../../utils/video-call-change-log';
 import { checkFormSubmissionRateLimit, clientIp } from '../../../utils/form-submission-rate-limit';
@@ -331,6 +332,11 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       return ctx.tooManyRequests('Too many rescheduling requests. Please try again later.');
     }
 
+    const generic = await mutateGenericAppointment(strapi, ctx, 'reschedule', input);
+    if (generic) {
+      if (generic.error) return generic.status === 404 ? ctx.notFound(generic.error) : ctx.badRequest(generic.error);
+      return generic;
+    }
     const grouped = await mutateHomeTrialGroup(strapi, {
       documentId, customerId: ctx.state.magentoCustomer.id, action: 'reschedule',
       requestedDate, selectedTimeSlot, locale: requestLocale(ctx, input),
@@ -436,6 +442,11 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       ctx.set('Retry-After', String(rateLimit.retryAfterSeconds));
       return ctx.tooManyRequests('Too many cancellation requests. Please try again later.');
     }
+    const generic = await mutateGenericAppointment(strapi, ctx, 'cancel');
+    if (generic) {
+      if (generic.error) return generic.status === 404 ? ctx.notFound(generic.error) : ctx.badRequest(generic.error);
+      return generic;
+    }
     const grouped = await mutateHomeTrialGroup(strapi, {
       documentId, customerId: ctx.state.magentoCustomer.id, action: 'cancel',
     });
@@ -484,6 +495,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
 
   async customerAppointments(ctx) {
     await linkGuestStoreVisits(strapi, ctx.state.magentoCustomer);
+    await linkGuestGenericAppointments(strapi, ctx.state.magentoCustomer);
     const locale = requestLocale(ctx);
     const requestedPage = Number(ctx.query.page);
     const requestedPageSize = Number(ctx.query.pageSize);

@@ -21,6 +21,10 @@
     "newData": { "type": "json", "required": true },
     "sourceGroup": { "type": "relation", "relation": "manyToOne", "target": "api::appointment-group.appointment-group" },
     "targetGroup": { "type": "relation", "relation": "manyToOne", "target": "api::appointment-group.appointment-group" },
+    "affectedGenericSubmissions": {
+      "type": "relation", "relation": "manyToMany",
+      "target": "api::generic-submission.generic-submission", "inversedBy": "appointmentChanges"
+    },
     "affectedSubmissions": {
       "type": "relation", "relation": "manyToMany",
       "target": "api::product-submission.product-submission", "inversedBy": "appointmentChanges"

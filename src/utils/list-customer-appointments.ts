@@ -1,3 +1,4 @@
+import { GENERIC_APPOINTMENT_UID, genericAppointmentView } from './generic-appointments';
 import { GROUPED_APPOINTMENT_FORM_TAGS } from './home-trial-group-key';
 import { countScheduleChanges, MAX_RESCHEDULES } from './appointment-schedule';
 
@@ -13,6 +14,33 @@ const populate = {
 };
 
 export async function listCustomerAppointments(strapi: any, options: any) {
+  if (!options.formTags.includes('book-an-appointment')) return listProductAppointments(strapi, options);
+  const { page, pageSize, customerId, locale } = options;
+  const prefix = page * pageSize;
+  const where = { formTag: 'book-an-appointment', magentoCustomerId: customerId };
+  const [products, genericRows, count] = await Promise.all([
+    listProductAppointments(strapi, { ...options, page: 1, pageSize: prefix, formTags: options.formTags.filter((tag: string) => tag !== 'book-an-appointment') }),
+    strapi.db.query(GENERIC_APPOINTMENT_UID).findMany({ where, orderBy: [{ createdAt: 'desc' }, { id: 'desc' }], limit: prefix,
+      populate: { preferredShowroom: { select: ['documentId', 'slug', 'city', 'state'] },
+        appointmentChanges: { select: ['eventType', 'changedAt', 'previousData', 'newData', 'actorType'] } } }),
+    strapi.db.query(GENERIC_APPOINTMENT_UID).count({ where }),
+  ]);
+  const generic = await Promise.all(genericRows.map(async (row: any) => {
+    const view = genericAppointmentView(row);
+    if (locale && view.preferredShowroom?.documentId) view.preferredShowroom = await strapi.documents('api::showroom.showroom').findOne({
+      documentId: view.preferredShowroom.documentId, status: 'published', locale, fields: ['documentId', 'slug', 'city', 'state'],
+    }) ?? view.preferredShowroom;
+    if (view.workflowStatus === 'Cancelled') view.cancelledAt = (row.appointmentChanges ?? [])
+      .filter((change: any) => change.eventType === 'Cancelled').sort((a: any, b: any) => Date.parse(b.changedAt) - Date.parse(a.changedAt))[0]?.changedAt ?? view.cancelledAt;
+    return view;
+  }));
+  const total = products.meta.pagination.total + count;
+  const data = [...products.data, ...generic].sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))
+    .slice((page - 1) * pageSize, prefix);
+  return { data, meta: { pagination: { page, pageSize, total, pageCount: Math.ceil(total / pageSize) } } };
+}
+
+async function listProductAppointments(strapi: any, options: any) {
   const { customerId, page, pageSize, locale, formTags } = options;
   const productScope = { magentoCustomerId: customerId, formTag: { $in: formTags } };
   const groupWhere = { magentoCustomerId: customerId, mergedInto: { $null: true },

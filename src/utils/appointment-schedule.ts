@@ -1,7 +1,7 @@
 import { appointmentAddressChanged } from './appointment-address';
 
 export const RESCHEDULABLE_FORM_TAGS = [
-  'try-at-home', 'schedule-video-call', 'try-at-home-form', 'product-video-call',
+  'try-at-home', 'schedule-video-call', 'try-at-home-form', 'product-video-call', 'book-an-appointment',
 ];
 
 export const validAppointmentDate = (value: unknown): value is string => {

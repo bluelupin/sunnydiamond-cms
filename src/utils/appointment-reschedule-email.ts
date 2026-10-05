@@ -34,7 +34,7 @@ export async function sendAppointmentRescheduleEmail(strapi: Core.Strapi, data: 
   if (!validAppointmentDate(data.requestedDate) || !data.selectedTimeSlot?.trim()) return;
   try {
     const showroom = data.preferredShowroom;
-    const template = ['store-visit', 'product-store-visit'].includes(data.formTag)
+    const template = ['store-visit', 'product-store-visit', 'book-an-appointment'].includes(data.formTag)
       ? showroomAppointmentRescheduledTemplate({
           appointmentId: data.appointmentReference || data.documentId, customerName: data.customerName,
           newDate: data.requestedDate, newTime: data.selectedTimeSlot,

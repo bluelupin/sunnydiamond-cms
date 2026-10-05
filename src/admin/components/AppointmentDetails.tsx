@@ -20,7 +20,7 @@ export const AppointmentDetails = (props: InputProps) => {
   const hideAffectedProducts = useForm('AppointmentDetails', state => {
     const snapshots = [state.values.previousData, state.values.newData]
       .filter(snapshot => snapshot && typeof snapshot === 'object' && !Array.isArray(snapshot));
-    const storeVisit = snapshots.some(snapshot => ['store-visit', 'product-store-visit'].includes(snapshot.formTag));
+    const storeVisit = snapshots.some(snapshot => ['store-visit', 'product-store-visit', 'book-an-appointment'].includes(snapshot.formTag));
     const hasProducts = snapshots.some(snapshot => [snapshot, ...(Array.isArray(snapshot.products) ? snapshot.products : [])]
       .some(product => [product?.productName, product?.productId]
         .some(value => typeof value === 'string' ? value.trim().length > 0 : value != null)));
