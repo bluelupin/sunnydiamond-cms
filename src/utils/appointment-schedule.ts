@@ -22,10 +22,10 @@ export const validateReschedulingWindow = (
   now = new Date(),
 ) => {
   if (!validAppointmentDate(scheduledDate)) return 'The current appointment date is missing or invalid.';
-  const noticeHours = ['try-at-home', 'try-at-home-form'].includes(formTag) ? 48 : 2;
+  const noticeHours = 72;
   const startsAt = appointmentStartsAt(scheduledDate, selectedTimeSlot);
   if (startsAt.getTime() - now.getTime() < noticeHours * 60 * 60_000) {
-    return `You cannot reschedule as at least ${noticeHours} hours' notice is required before the appointment.`;
+    return "You cannot reschedule as have passed the 3 days window period.";
   }
   return undefined;
 };

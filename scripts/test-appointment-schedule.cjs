@@ -13,18 +13,18 @@ function load(file) {
 }
 const { countScheduleChanges, appointmentStartsAt, validateReschedulingWindow } = load('src/utils/appointment-schedule.ts');
 
-test('rescheduling requires 48 hours for home trials and 2 hours for store visits and video calls', () => {
+test('rescheduling requires 3 days notice for every appointment type', () => {
   const startsAt = new Date('2026-10-12T05:30:00.000Z'); // 11 AM IST
   for (const [tag, hours] of [
-    ['try-at-home', 48], ['try-at-home-form', 48],
-    ['store-visit', 2], ['product-store-visit', 2],
-    ['schedule-video-call', 2], ['product-video-call', 2],
+    ['try-at-home', 72], ['try-at-home-form', 72],
+    ['store-visit', 72], ['product-store-visit', 72],
+    ['schedule-video-call', 72], ['product-video-call', 72], ['book-an-appointment', 72],
   ]) {
     const deadline = startsAt.getTime() - hours * 60 * 60_000;
     const validate = now => validateReschedulingWindow('2026-10-12', '11:00 AM - 12:00 PM', tag, new Date(now));
     assert.equal(validate(deadline - 1), undefined, `${tag}: before cutoff`);
     assert.equal(validate(deadline), undefined, `${tag}: exact cutoff`);
-    assert.match(validate(deadline + 1), new RegExp(`at least ${hours} hours`), `${tag}: after cutoff`);
+    assert.equal(validate(deadline + 1), "You cannot reschedule as at least 3 days' notice is required before the appointment.", `${tag}: after cutoff`);
     assert.ok(validate(startsAt.getTime()), `${tag}: appointment starting`);
     assert.ok(validate(startsAt.getTime() + 1), `${tag}: past appointment`);
   }
