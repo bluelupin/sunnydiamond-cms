@@ -1,5 +1,5 @@
 export const fieldValue = (input: any, label: string) => {
-  const normalized = label.toLowerCase();
+  const normalized = label.trim().toLowerCase();
   const aliases: Record<string, string[]> = {
     name: ['fullName', 'name'],
     'full name': ['fullName', 'name'],
@@ -15,6 +15,12 @@ export const fieldValue = (input: any, label: string) => {
     'preferred showroom': ['preferredShowroom', 'showroom'],
     'preferred date': ['preferredDate', 'date'],
     'preferred time': ['selectedTimeSlot'],
+    'preferred time slot': ['selectedTimeSlot'],
+    'preferred timeslot': ['selectedTimeSlot'],
+    'select time slot': ['selectedTimeSlot'],
+    'select time': ['selectedTimeSlot'],
+    'time': ['selectedTimeSlot'],
+    'timeslot': ['selectedTimeSlot'],
     'time slot': ['selectedTimeSlot'],
     'selected time slot': ['selectedTimeSlot'],
   };

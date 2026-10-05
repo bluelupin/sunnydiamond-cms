@@ -31,11 +31,27 @@ test('appointment changes create linked cancellation and reschedule logs', async
   assert.equal(logs[1].actorType, 'Admin');
 });
 
+test('generic time dropdown options validate bookings while unrelated dropdown values do not', () => {
+  const { validateGenericAppointmentSchedule: validate } = load('src/utils/generic-appointment-schedule.ts');
+  const form = { dynamicFields: [
+    { label: 'Preferred Time Slot', fieldType: 'dropdown', dropdownOptions: [{ optionValue: '10:00 AM - 11:00 AM' }] },
+    { label: 'Purpose of Visit', fieldType: 'dropdown', dropdownOptions: [{ optionValue: 'Consultation' }] },
+  ] };
+  assert.equal(validate('2099-10-08', '10:00 AM - 11:00 AM', form), undefined);
+  assert.match(validate('2099-10-08', 'Consultation', form), /available time slot/);
+  assert.match(validate('2099-10-08', '11:00 AM - 12:00 PM', form), /available time slot/);
+  assert.match(validate('2099-02-30', '10:00 AM - 11:00 AM', form), /valid date/);
+  assert.match(validate('2099-10-08', '10:00 AM - 11:00 AM', {
+    ...form, availableTimeSlots: [{ timeString: '12:00 PM - 1:00 PM' }],
+  }), /available time slot/);
+});
+
 test('standard create and submit endpoints save generic bookings and send confirmations', async () => {
   let created;
   const emails = [];
-  const form = { requiresConsent: true, dynamicFields: [{ label: 'Full Name', isRequired: true }],
-    availableTimeSlots: [{ timeString: '11:00 AM' }], showrooms: [{ documentId: 'showroom' }] };
+  const form = { requiresConsent: true, dynamicFields: [{ label: 'Full Name', isRequired: true },
+    { label: 'Preferred Time Slot', fieldType: 'dropdown', isRequired: true, dropdownOptions: [{ optionValue: '11:00 AM' }] }],
+    showrooms: [{ documentId: 'showroom' }] };
   const strapi = { documents: uid => {
     assert.ok(['api::generic-form.generic-form', 'api::showroom.showroom', 'api::generic-submission.generic-submission'].includes(uid));
     return {
@@ -96,7 +112,10 @@ function mutationFixture(owner = 42) {
       findOne: async ({ where }) => where.magentoCustomerId === undefined || where.magentoCustomerId === owner ? { ...record } : null,
     }; },
   }, documents: uid => ({
-    findFirst: async () => ({ availableTimeSlots: [{ timeString: '11:00 AM' }] }),
+    findFirst: async ({ populate }) => {
+      assert.equal(populate.dynamicFields.populate.dropdownOptions, true);
+      return { dynamicFields: [{ label: 'Preferred Time', fieldType: 'dropdown', dropdownOptions: [{ optionValue: '11:00 AM' }] }] };
+    },
     update: async ({ data }) => { assert.equal(uid, 'api::generic-submission.generic-submission'); Object.assign(record, data); },
     create: async ({ data }) => { assert.equal(uid, 'api::appointment-change.appointment-change'); logs.push(data); },
   }) };

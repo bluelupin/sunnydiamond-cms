@@ -1,5 +1,6 @@
 import { countScheduleChanges, MAX_RESCHEDULES, RESCHEDULE_LIMIT_MESSAGE,
-  validateAppointmentSchedule, validateReschedulingWindow } from './appointment-schedule';
+  validateReschedulingWindow } from './appointment-schedule';
+import { validateGenericAppointmentSchedule } from './generic-appointment-schedule';
 import { recordVideoCallChange } from './video-call-change-log';
 import { requestLocale } from './request-locale';
 import { notifyRescheduleAfterCommit } from './appointment-reschedule-email';
@@ -59,10 +60,11 @@ export async function mutateGenericAppointment(strapi: any, ctx: any, action: 'c
       }
       if (countScheduleChanges(before.rescheduleHistory) >= MAX_RESCHEDULES) return { error: RESCHEDULE_LIMIT_MESSAGE };
       const form = await strapi.documents('api::generic-form.generic-form').findFirst({
-        status: 'published', locale: requestLocale(ctx, input), filters: { formTag: before.formTag }, populate: { availableTimeSlots: true },
+        status: 'published', locale: requestLocale(ctx, input), filters: { formTag: before.formTag },
+        populate: { availableTimeSlots: true, dynamicFields: { populate: { dropdownOptions: true } } },
       });
       if (!form) return { error: 'The appointment form is unavailable.' };
-      const scheduleError = validateAppointmentSchedule(data.preferredDate, data.selectedTimeSlot, form);
+      const scheduleError = validateGenericAppointmentSchedule(data.preferredDate, data.selectedTimeSlot, form);
       if (scheduleError) return { error: scheduleError };
     }
     const after = { ...before, ...data };

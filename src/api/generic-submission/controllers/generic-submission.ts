@@ -1,4 +1,4 @@
-import { validateAppointmentSchedule } from '../../../utils/appointment-schedule';
+import { validateGenericAppointmentSchedule } from '../../../utils/generic-appointment-schedule';
 import { assignAppointmentReference } from '../../../utils/appointment-reference';
 import { fieldValue } from '../../../utils/generic-form-input';
 import { factories } from '@strapi/strapi';
@@ -91,14 +91,14 @@ export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ 
       locale,
       filters: { formTag },
       populate: {
-        dynamicFields: true, availableTimeSlots: true, showrooms: true,
+        dynamicFields: { populate: { dropdownOptions: true } }, availableTimeSlots: true, showrooms: true,
       },
     } as any);
 
     if (!form) return ctx.badRequest('Unknown formTag.');
     if (formTag === 'book-an-appointment') {
       if (!phone || !email) return ctx.badRequest('A valid phone and email are required for appointments.');
-      const error = validateAppointmentSchedule(preferredDate, stringOrUndefined(input.selectedTimeSlot), form);
+      const error = validateGenericAppointmentSchedule(preferredDate, stringOrUndefined(input.selectedTimeSlot), form);
       if (error) return ctx.badRequest(error);
     }
 
