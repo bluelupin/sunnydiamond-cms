@@ -10,21 +10,22 @@ export const validAppointmentDate = (value: unknown): value is string => {
   return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
 };
 
-export const appointmentToday = () => new Intl.DateTimeFormat('en-CA', {
+export const appointmentToday = (now = new Date()) => new Intl.DateTimeFormat('en-CA', {
   timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit',
-}).format(new Date());
+}).format(now);
 
-/** Minimum notice before the existing appointment starts, measured in elapsed hours. */
+/** Three calendar days before the appointment in IST; the entire cutoff date is allowed. */
 export const validateReschedulingWindow = (
   scheduledDate: unknown,
-  selectedTimeSlot: string | null | undefined,
-  formTag: string,
+  _selectedTimeSlot: string | null | undefined,
+  _formTag: string,
   now = new Date(),
 ) => {
   if (!validAppointmentDate(scheduledDate)) return 'The current appointment date is missing or invalid.';
-  const noticeHours = 72;
-  const startsAt = appointmentStartsAt(scheduledDate, selectedTimeSlot);
-  if (startsAt.getTime() - now.getTime() < noticeHours * 60 * 60_000) {
+  // Compare calendar dates rather than the appointment's slot start time.
+  const daysUntilAppointment = (Date.parse(scheduledDate + 'T00:00:00Z')
+    - Date.parse(appointmentToday(now) + 'T00:00:00Z')) / 86_400_000;
+  if (daysUntilAppointment < 3) {
     return "You cannot reschedule as have passed the 3 days window period.";
   }
   return undefined;

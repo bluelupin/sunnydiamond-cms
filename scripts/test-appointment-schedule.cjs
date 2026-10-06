@@ -13,20 +13,33 @@ function load(file) {
 }
 const { countScheduleChanges, appointmentStartsAt, validateReschedulingWindow } = load('src/utils/appointment-schedule.ts');
 
-test('rescheduling requires 3 days notice for every appointment type', () => {
-  const startsAt = new Date('2026-10-12T05:30:00.000Z'); // 11 AM IST
-  for (const [tag, hours] of [
-    ['try-at-home', 72], ['try-at-home-form', 72],
-    ['store-visit', 72], ['product-store-visit', 72],
-    ['schedule-video-call', 72], ['product-video-call', 72], ['book-an-appointment', 72],
+test('rescheduling allows the entire date three calendar days before every appointment type in IST', () => {
+  for (const tag of ['try-at-home', 'try-at-home-form', 'store-visit', 'product-store-visit',
+    'schedule-video-call', 'product-video-call', 'book-an-appointment']) {
+    for (const slot of ['9:00 AM - 10:00 AM', '11:00 AM - 12:00 PM', '11:00 PM', 'Evening', undefined]) {
+      const validate = now => validateReschedulingWindow('2026-10-09', slot, tag, new Date(now));
+      assert.equal(validate('2026-10-05T23:59:59.999+05:30'), undefined, tag + ': before cutoff date');
+      assert.equal(validate('2026-10-06T00:00:00+05:30'), undefined, tag + ': start of cutoff date');
+      assert.equal(validate('2026-10-06T09:00:00+05:30'), undefined, tag + ': former hourly cutoff');
+      assert.equal(validate('2026-10-06T12:00:00+05:30'), undefined, tag + ': after former hourly cutoff');
+      assert.equal(validate('2026-10-06T23:59:59.999+05:30'), undefined, tag + ': end of cutoff date');
+      assert.equal(validate('2026-10-07T00:00:00+05:30'),
+        'You cannot reschedule as have passed the 3 days window period.', tag + ': after cutoff date');
+      assert.ok(validate('2026-10-09T09:00:00+05:30'), tag + ': appointment starting');
+      assert.ok(validate('2026-10-10T00:00:00+05:30'), tag + ': past appointment');
+    }
+  }
+});
+
+test('calendar-day cutoff uses India time and handles month, year, and leap-day boundaries', () => {
+  for (const [date, allowed, denied] of [
+    ['2026-10-09', '2026-10-06T18:29:59.999Z', '2026-10-06T18:30:00Z'],
+    ['2026-11-02', '2026-10-30T23:59:59.999+05:30', '2026-10-31T00:00:00+05:30'],
+    ['2027-01-02', '2026-12-30T23:59:59.999+05:30', '2026-12-31T00:00:00+05:30'],
+    ['2028-03-02', '2028-02-28T23:59:59.999+05:30', '2028-02-29T00:00:00+05:30'],
   ]) {
-    const deadline = startsAt.getTime() - hours * 60 * 60_000;
-    const validate = now => validateReschedulingWindow('2026-10-12', '11:00 AM - 12:00 PM', tag, new Date(now));
-    assert.equal(validate(deadline - 1), undefined, `${tag}: before cutoff`);
-    assert.equal(validate(deadline), undefined, `${tag}: exact cutoff`);
-    assert.equal(validate(deadline + 1), "You cannot reschedule as at least 3 days' notice is required before the appointment.", `${tag}: after cutoff`);
-    assert.ok(validate(startsAt.getTime()), `${tag}: appointment starting`);
-    assert.ok(validate(startsAt.getTime() + 1), `${tag}: past appointment`);
+    assert.equal(validateReschedulingWindow(date, '9:00 AM', 'store-visit', new Date(allowed)), undefined);
+    assert.ok(validateReschedulingWindow(date, '9:00 AM', 'store-visit', new Date(denied)));
   }
 });
 
