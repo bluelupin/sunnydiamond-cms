@@ -1,3 +1,4 @@
+import { normalizeAppointmentPhone } from './normalize-appointment-phone';
 import { countScheduleChanges, MAX_RESCHEDULES, RESCHEDULE_LIMIT_MESSAGE,
   validateReschedulingWindow } from './appointment-schedule';
 import { validateGenericAppointmentSchedule, resolveGenericAppointmentSlot } from './generic-appointment-schedule';
@@ -82,12 +83,30 @@ export async function mutateGenericAppointment(strapi: any, ctx: any, action: 'c
   });
 }
 
-export async function linkGuestGenericAppointments(strapi: any, customer: { id: number; email?: string }) {
-  if (!customer.email) return;
-  await strapi.db.connection(strapi.db.metadata.get(GENERIC_APPOINTMENT_UID).tableName)
-    .where('form_tag', 'book-an-appointment').whereNull('magento_customer_id')
-    .whereRaw('LOWER(TRIM(??)) = ?', ['email', customer.email.trim().toLowerCase()])
-    .update({ magento_customer_id: customer.id });
+/** Link only unowned general appointments using verified phone before email. */
+export async function linkGuestGenericAppointments(strapi: any, customer: { id: number; email?: string; phone?: string }) {
+  const phone = normalizeAppointmentPhone(customer.phone);
+  const email = customer.email?.trim().toLowerCase();
+  if (!phone && !email) return;
+  const table = strapi.db.metadata.get(GENERIC_APPOINTMENT_UID).tableName;
+  let lastId = 0;
+  while (true) {
+    const rows = await strapi.db.connection(table).select('id', 'phone', 'email')
+      .where('form_tag', 'book-an-appointment').whereNull('magento_customer_id')
+      .where('id', '>', lastId).orderBy('id', 'asc').limit(250);
+    if (!rows.length) return;
+    for (const row of rows) {
+      const bookingPhone = normalizeAppointmentPhone(row.phone);
+      const matches = bookingPhone ? Boolean(phone && bookingPhone === phone)
+        : Boolean(email && typeof row.email === 'string' && row.email.trim().toLowerCase() === email);
+      if (!matches) continue;
+      await strapi.db.connection(table).where({ id: row.id, phone: row.phone, email: row.email })
+        .where('form_tag', 'book-an-appointment').whereNull('magento_customer_id')
+        .update({ magento_customer_id: customer.id });
+    }
+    lastId = rows[rows.length - 1].id;
+    if (rows.length < 250) return;
+  }
 }
 
 export function registerGenericAppointmentHistory(strapi: any) {

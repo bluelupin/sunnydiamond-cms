@@ -3,13 +3,13 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const ts = require('typescript');
-function load(name) {
-  const filename = path.resolve(__dirname, '../src/utils', `${name}.ts`);
+function load(name, base = path.resolve(__dirname, '../src/utils')) {
+  const filename = path.resolve(base, `${name}.ts`);
   const module = { exports: {} };
   const code = ts.transpileModule(fs.readFileSync(filename, 'utf8'), {
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
   }).outputText;
-  new Function('require', 'module', 'exports', code)(name => name.startsWith('.') ? load(name) : require(name), module, module.exports);
+  new Function('require', 'module', 'exports', code)(name => name.startsWith('.') ? load(name, path.dirname(filename)) : require(name), module, module.exports);
   return module.exports;
 }
 const { listCustomerAppointments } = load('list-customer-appointments');

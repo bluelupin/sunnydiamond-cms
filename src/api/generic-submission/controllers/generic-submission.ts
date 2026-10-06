@@ -1,6 +1,7 @@
 import { validateGenericAppointmentSchedule, resolveGenericAppointmentSlot } from '../../../utils/generic-appointment-schedule';
 import { assignAppointmentReference } from '../../../utils/appointment-reference';
-import { fieldValue } from '../../../utils/generic-form-input';
+import { normalizeAppointmentPhone } from '../../../utils/normalize-appointment-phone';
+import { fieldValue, isGenericEmailField } from '../../../utils/generic-form-input';
 import { factories } from '@strapi/strapi';
 import { checkFormSubmissionRateLimit, clientIp } from '../../../utils/form-submission-rate-limit';
 import { requestLocale } from '../../../utils/request-locale';
@@ -98,14 +99,15 @@ export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ 
 
     if (!form) return ctx.badRequest('Unknown formTag.');
     if (formTag === 'book-an-appointment') {
-      if (!phone || !email) return ctx.badRequest('A valid phone and email are required for appointments.');
+      if (!phone) return ctx.badRequest('A valid phone is required for appointments.');
       const error = validateGenericAppointmentSchedule(preferredDate, stringOrUndefined(input.selectedTimeSlot), form);
       if (error) return ctx.badRequest(error);
       selectedTimeSlot = resolveGenericAppointmentSlot(selectedTimeSlot, form) as string;
     }
 
     const missingField = (form.dynamicFields ?? []).find(
-      (field: any) => field.isRequired && !fieldValue(input, field.label)
+      (field: any) => field.isRequired &&
+        !(formTag === 'book-an-appointment' && isGenericEmailField(field)) && !fieldValue(input, field.label)
     );
     if (missingField) return ctx.badRequest(`${missingField.label} is required.`);
     if (form.requiresConsent && !consentAccepted) {
@@ -142,7 +144,7 @@ export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ 
         formTag,
         fullName,
         ...(formTag === 'book-an-appointment' ? { magentoCustomerId: ctx.state.magentoCustomer?.id } : {}),
-        phone,
+        phone: formTag === 'book-an-appointment' ? normalizeAppointmentPhone(input.phone) ?? phone : phone,
         email,
         preferredShowroom: showroomRef,
         preferredDate,

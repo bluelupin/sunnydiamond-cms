@@ -36,3 +36,8 @@ export const fieldValue = (input: any, label: string) => {
   return keys.find((key) => typeof input[key] === 'string' && input[key].trim().length > 0);
 };
 
+
+/** Email remains optional for general appointments even when older form configuration requires it. */
+export const isGenericEmailField = (field: { fieldType?: string; label?: string }) =>
+  field.fieldType?.toLowerCase() === 'email' ||
+  /^(?:your\s+)?e-?mail(?:\s+(?:id|address))?$/i.test((field.label ?? '').trim().replace(/[\s*]+$/, ''));

@@ -2,7 +2,7 @@ export default {
   routes: [
     {
       method: 'POST', path: '/generic-submissions/appointments/submit', handler: 'generic-submission.submit',
-      config: { policies: ['global::trusted-magento-customer'] },
+      config: { policies: [{ name: 'global::trusted-magento-customer', config: { allowGuestFormTags: ['book-an-appointment'] } }] },
     },
     {
       method: 'POST',

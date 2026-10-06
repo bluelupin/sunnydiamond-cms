@@ -316,3 +316,122 @@ test('customer listing merges generic appointments and products before paginatio
   assert.equal(first.meta.pagination.total, 2);
   assert.equal((await listCustomerAppointments(strapi, { ...options, page: 2 })).data[0].documentId, 'product');
 });
+
+
+test('guest and owned bookings accept blank email despite required CMS email fields', async () => {
+  let saved;
+  const form = { dynamicFields: [{ label: 'Your Email Address*', fieldType: 'email', isRequired: true }],
+    availableTimeSlots: [{ timeString: '11:00 AM - 12:00 PM' }] };
+  const strapi = { documents: uid => uid.includes('generic-form') ? { findFirst: async () => form }
+    : { create: async ({ data }) => { saved = data; return { ...data, id: 1, documentId: 'booking' }; } } };
+  const controller = load('src/api/generic-submission/controllers/generic-submission.ts', {
+    '@strapi/strapi': { factories: { createCoreController: (_, factory) => factory({ strapi }) } },
+    '../../../utils/form-submission-rate-limit': { checkFormSubmissionRateLimit: () => ({ allowed: true }), clientIp: () => '127.0.0.1' },
+    '../../../utils/appointment-reference': { assignAppointmentReference: async () => 'BA-1' },
+    '../../../utils/appointment-confirmation-email': { sendBookAppointmentConfirmationEmail: async () => {} },
+  }).default;
+  const context = (email, owner) => ({ state: owner ? { magentoCustomer: { id: owner } } : {}, request: { body: { data: {
+    formTag: 'book-an-appointment', fullName: 'Guest Customer', phone: '+1 202 555 0123', email,
+    preferredDate: '2099-12-01', selectedTimeSlot: '11:00 AM - 12:00 PM', magentoCustomerId: 99,
+  } } }, badRequest: error => ({ error }) });
+  for (const owner of [undefined, 7]) for (const email of [undefined, null, '', '   ']) {
+    assert.equal((await controller.submit(context(email, owner))).data.appointmentId, 'BA-1');
+    assert.equal(saved.email, undefined);
+    assert.equal(saved.phone, '+12025550123');
+    assert.equal(saved.magentoCustomerId, owner);
+  }
+  assert.match((await controller.submit(context('invalid'))).error, /valid email/);
+  const missingPhone = context(undefined); missingPhone.request.body.data.phone = '';
+  assert.match((await controller.submit(missingPhone)).error, /valid phone/);
+  const badSlot = context(undefined); badSlot.request.body.data.selectedTimeSlot = 'invalid';
+  assert.match((await controller.submit(badSlot)).error, /available time slot/);
+  form.dynamicFields.push({ label: 'Custom Field', isRequired: true });
+  assert.equal((await controller.submit(context(undefined))).error, 'Custom Field is required.');
+});
+
+test('trusted appointment submission route accepts guests and rejects unauthenticated identity assertions', async () => {
+  const route = load('src/api/generic-submission/routes/generic-submission-submit.ts').default.routes[0];
+  const config = route.config.policies[0].config;
+  const policy = load('src/policies/trusted-magento-customer.ts').default;
+  const ctx = { state: { auth: { strategy: { name: 'content-api-token' } } },
+    request: { method: 'POST', body: { data: { formTag: 'book-an-appointment' } } } };
+  assert.equal(await policy(ctx, config), true);
+  assert.equal(ctx.state.magentoCustomer, undefined);
+  ctx.request.body.data.magentoCustomerId = 7;
+  await policy(ctx, config); assert.equal(ctx.state.magentoCustomer.id, 7);
+  ctx.state.auth.strategy.name = 'users-permissions';
+  await assert.rejects(policy(ctx, config));
+});
+
+test('guest general appointments link by verified phone before listing and preserve ownership', async () => {
+  const { DatabaseSync } = require('node:sqlite');
+  const knex = require('knex')({ client: 'mysql2' });
+  const db = new DatabaseSync(':memory:');
+  try {
+    db.exec('CREATE TABLE generic_submissions (id INTEGER PRIMARY KEY, form_tag TEXT, phone TEXT, email TEXT, magento_customer_id INTEGER)');
+    const insert = db.prepare('INSERT INTO generic_submissions VALUES (?, ?, ?, ?, ?)');
+    for (const row of [
+      [1, 'book-an-appointment', '9876543210', null, null],
+      [2, 'book-an-appointment', '+91 98765-43210', 'different@example.com', null],
+      [3, 'book-an-appointment', '9123456789', 'person@example.com', null],
+      [4, 'book-an-appointment', '9876543210', null, 99],
+      [5, 'reach-out-to-us', '9876543210', 'person@example.com', null],
+      [6, 'book-an-appointment', null, ' Person@Example.com ', null],
+      [7, 'book-an-appointment', '+1 202 555 0123', null, null],
+    ]) insert.run(...row);
+    let beforeUpdate;
+    const strapi = { db: { metadata: { get: () => ({ tableName: 'generic_submissions' }) }, connection(table) {
+      const query = knex(table);
+      query.then = (resolve, reject) => { const { sql, bindings } = query.toSQL(); return Promise.resolve(db.prepare(sql).all(...bindings)).then(resolve, reject); };
+      const update = query.update.bind(query);
+      query.update = data => {
+        if (beforeUpdate) { const hook = beforeUpdate; beforeUpdate = undefined; hook(); }
+        const { sql, bindings } = update(data).toSQL(); return Promise.resolve(db.prepare(sql).run(...bindings).changes);
+      };
+      return query;
+    } } };
+    const { linkGuestGenericAppointments: link } = load('src/utils/generic-appointments.ts');
+    const owners = () => db.prepare('SELECT magento_customer_id FROM generic_submissions ORDER BY id').all().map(row => row.magento_customer_id);
+    await link(strapi, { id: 7, email: 'person@example.com' });
+    assert.deepEqual(owners(), [null, null, null, 99, null, 7, null]);
+    await link(strapi, { id: 7, email: 'person@example.com', phone: '+919876543210' });
+    assert.deepEqual(owners(), [7, 7, null, 99, null, 7, null]);
+    await link(strapi, { id: 8, phone: '9876543210' });
+    assert.deepEqual(owners(), [7, 7, null, 99, null, 7, null]);
+    await link(strapi, { id: 7, phone: '+12025550123' });
+    assert.equal(owners()[6], 7);
+    insert.run(8, 'book-an-appointment', '8765432109', null, null);
+    await Promise.all([link(strapi, { id: 7, phone: '8765432109' }), link(strapi, { id: 8, phone: '8765432109' })]);
+    assert.ok([7, 8].includes(owners()[7]));
+    insert.run(9, 'book-an-appointment', '7654321098', null, null);
+    beforeUpdate = () => db.prepare('UPDATE generic_submissions SET phone = ? WHERE id = 9').run('6543210987');
+    await link(strapi, { id: 7, phone: '7654321098' }); assert.equal(owners()[8], null);
+    for(let id = 10; id < 270; id++) insert.run(id, 'book-an-appointment', '9123456789', null, null);
+    insert.run(270, 'book-an-appointment', '7654321098', null, null);
+    await link(strapi, { id: 7, phone: '7654321098' });
+    assert.equal(db.prepare('SELECT magento_customer_id FROM generic_submissions WHERE id = 270').get().magento_customer_id, 7);
+    // Run the real customer listing controller and merger after a newly verified phone.
+    const { linkGuestGenericAppointments } = load('src/utils/generic-appointments.ts');
+    const ownedRows = owner => db.prepare('SELECT * FROM generic_submissions WHERE magento_customer_id = ? ORDER BY id DESC').all(owner)
+      .map(row => ({ id: row.id, documentId: String(row.id), formTag: row.form_tag, phone: row.phone, email: row.email,
+        createdAt: '2099-01-01T00:00:00Z', preferredDate: '2099-12-01', workflowStatus: 'New' }));
+    strapi.db.query = uid => ({
+      count: async ({ where }) => uid.includes('generic-submission') ? ownedRows(where.magentoCustomerId).length : 0,
+      findMany: async ({ where, limit }) => uid.includes('generic-submission') ? ownedRows(where.magentoCustomerId).slice(0, limit) : [],
+    });
+    const controller = load('src/api/product-submission/controllers/product-submission.ts', {
+      '@strapi/strapi': { factories: { createCoreController: (_, factory) => factory({ strapi }) } },
+      '../../../utils/link-guest-store-visits': { linkGuestStoreVisits: async () => {} },
+      '../../../utils/generic-appointments': { linkGuestGenericAppointments },
+    }).default;
+    insert.run(271, 'book-an-appointment', '8765432190', null, null);
+    insert.run(272, 'book-an-appointment', '8765432190', null, null);
+    const ctx = { state: { magentoCustomer: { id: 20, email: 'signup@example.com' } }, query: { page: '2', pageSize: '1' } };
+    assert.deepEqual((await controller.customerAppointments(ctx)).data, []);
+    ctx.state.magentoCustomer.phone = '+918765432190';
+    const listed = await controller.customerAppointments(ctx);
+    assert.equal(listed.data[0].documentId, '271');
+    assert.equal(listed.meta.pagination.total, 2);
+  } finally { db.close(); await knex.destroy(); }
+});
+
