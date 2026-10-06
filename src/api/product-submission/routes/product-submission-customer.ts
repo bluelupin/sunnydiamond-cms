@@ -1,6 +1,6 @@
 const customerOnly = { policies: ['global::trusted-magento-customer'] };
 const customerList = {
-  policies: [{ name: 'global::trusted-magento-customer', config: { acceptVerifiedEmail: true } }],
+  policies: [{ name: 'global::trusted-magento-customer', config: { acceptVerifiedEmail: true, acceptVerifiedPhone: true } }],
 };
 
 export default {

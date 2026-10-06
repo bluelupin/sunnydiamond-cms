@@ -110,7 +110,6 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     if (!customerName) return ctx.badRequest('customerName is required.');
     if (!customerPhone) return ctx.badRequest('customerPhone must be a valid phone number.');
     if (customerEmail === null) return ctx.badRequest('customerEmail must be a valid email address.');
-    if (['store-visit', 'product-store-visit'].includes(formTag) && !customerEmail) return ctx.badRequest('customerEmail is required for store visits.');
     if (requestedDate === null) return ctx.badRequest('requestedDate must use YYYY-MM-DD format.');
     if (input.purposeOfVisit != null && typeof input.purposeOfVisit !== 'string') {
       return ctx.badRequest('purposeOfVisit must be text.');

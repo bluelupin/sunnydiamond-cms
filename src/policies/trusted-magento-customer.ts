@@ -1,7 +1,8 @@
 import { errors } from '@strapi/utils';
+import { normalizeAppointmentPhone } from '../utils/normalize-appointment-phone';
 
 /** Customer identity asserted by the authenticated website server. */
-export default async (ctx: any, config: { allowGuestFormTags?: string[]; acceptVerifiedEmail?: boolean } = {}) => {
+export default async (ctx: any, config: { allowGuestFormTags?: string[]; acceptVerifiedEmail?: boolean; acceptVerifiedPhone?: boolean } = {}) => {
   if (ctx.state.auth?.strategy?.name !== 'content-api-token') {
     throw new errors.UnauthorizedError('A CMS API token is required.');
   }
@@ -32,6 +33,17 @@ export default async (ctx: any, config: { allowGuestFormTags?: string[]; acceptV
     }
     email = rawEmail.trim().toLowerCase();
   }
-  ctx.state.magentoCustomer = { id: Number(value), ...(email ? { email } : {}) };
+  // Only configured routes may trust phone ownership asserted by the website server.
+  const rawPhone = config.acceptVerifiedPhone
+    ? (ctx.request.method === 'GET' ? ctx.request.query?.magentoCustomerPhone : input?.magentoCustomerPhone)
+    : undefined;
+  let phone: string | undefined;
+  if (rawPhone !== undefined) {
+    phone = normalizeAppointmentPhone(rawPhone);
+    if (!phone) {
+      throw new errors.ValidationError('magentoCustomerPhone must be a valid verified phone supplied by the website server.');
+    }
+  }
+  ctx.state.magentoCustomer = { id: Number(value), ...(email ? { email } : {}), ...(phone ? { phone } : {}) };
   return true;
 };
