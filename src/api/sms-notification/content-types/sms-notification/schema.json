@@ -1,0 +1,22 @@
+{
+  "kind": "collectionType",
+  "collectionName": "sms_notifications",
+  "info": { "singularName": "sms-notification", "pluralName": "sms-notifications", "displayName": "SMS Notifications" },
+  "options": { "draftAndPublish": false },
+  "pluginOptions": { "content-manager": { "visible": false }, "content-type-builder": { "visible": false } },
+  "attributes": {
+    "deduplicationKey": { "type": "string", "required": true, "unique": true, "maxLength": 64, "private": true },
+    "applicationDocumentId": { "type": "string", "required": true },
+    "notificationType": { "type": "enumeration", "enum": ["careerApplicationReceived", "appointmentRequestReceived", "enquiryReceived", "serviceEnquiryReceived"], "required": true },
+    "recipient": { "type": "string", "required": true, "private": true },
+    "templateId": { "type": "string", "required": true },
+    "status": { "type": "enumeration", "enum": ["pending", "processing", "accepted", "delivered", "failed", "unknown"], "default": "pending", "required": true },
+    "providerMessageId": { "type": "string" },
+    "attempts": { "type": "integer", "default": 0, "min": 0 },
+    "lastErrorCode": { "type": "string" },
+    "lastAttemptAt": { "type": "datetime" },
+    "nextAttemptAt": { "type": "datetime" },
+    "acceptedAt": { "type": "datetime" },
+    "deliveredAt": { "type": "datetime" }
+  }
+}

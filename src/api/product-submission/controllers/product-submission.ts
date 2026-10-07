@@ -1,5 +1,7 @@
 import { mutateGenericAppointment, linkGuestGenericAppointments } from '../../../utils/generic-appointments';
 import { factories } from '@strapi/strapi';
+import { queueAppointmentRequestSms } from '../../../utils/appointment-request-sms';
+import { queueEnquirySms } from '../../../utils/enquiry-sms';
 import { recordVideoCallChange } from '../../../utils/video-call-change-log';
 import { checkFormSubmissionRateLimit, clientIp } from '../../../utils/form-submission-rate-limit';
 import { requestLocale } from '../../../utils/request-locale';
@@ -246,6 +248,17 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
         },
         files: upload,
       });
+    }
+
+    if (formTag === 'product-personalisation') {
+      await queueEnquirySms(strapi, { documentId: entity.documentId, phone: input.customerPhone }, 'enquiryReceived');
+    } else if (APPOINTMENT_FORM_TAGS.includes(formTag)) {
+      await queueAppointmentRequestSms(strapi, {
+        documentId: grouped?.groupDocumentId ?? entity.documentId,
+        phone: entity.customerPhone ?? input.customerPhone,
+      });
+    } else {
+      await queueEnquirySms(strapi, { documentId: entity.documentId, phone: input.customerPhone }, 'serviceEnquiryReceived');
     }
 
     const appointmentReference = grouped?.appointmentReference ??

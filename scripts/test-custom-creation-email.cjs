@@ -72,6 +72,11 @@ test('submission emails only after saving and optional upload; provider errors p
       '@strapi/strapi': { factories: { createCoreController: (_, factory) => factory({ strapi }) } },
       '../../../utils/form-submission-rate-limit': { checkFormSubmissionRateLimit: () => ({ allowed: true }), clientIp: () => '127.0.0.1' },
       '../../../utils/request-locale': { requestLocale: () => 'en' },
+      '../../../utils/enquiry-sms': { queueEnquirySms: async (_, data, type) => {
+        assert.equal(type, 'serviceEnquiryReceived');
+        assert.deepEqual(data, { documentId: 'request-1', phone: '9876543210' });
+        events.push('sms');
+      } },
     }).default;
     const ctx = { ip: '127.0.0.1', badRequest: error => ({ error }), request: {
       body: { fullName: 'Customer', phone: '9876543210', email: 'CUSTOMER@example.com',
@@ -86,7 +91,7 @@ test('submission emails only after saving and optional upload; provider errors p
       if (scenario === 'invalid') assert.deepEqual(events, []);
       else {
         assert.equal(result.data.documentId, 'request-1');
-        assert.deepEqual(events, scenario === 'no-image' ? ['save', 'email'] : ['save', 'upload', 'email']);
+        assert.deepEqual(events, scenario === 'no-image' ? ['save', 'sms', 'email'] : ['save', 'upload', 'sms', 'email']);
         if (scenario !== 'email-failure') {
           assert.equal(sent.length, 1);
           assert.equal(sent[0].to, 'customer@example.com');

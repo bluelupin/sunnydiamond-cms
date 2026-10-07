@@ -87,6 +87,7 @@ test('all general appointment email templates omit showroom wording without a se
 test('standard create and submit endpoints save generic bookings and send confirmations', async () => {
   let created;
   const emails = [];
+  const sms = [];
   const form = { requiresConsent: true, dynamicFields: [{ label: 'Your Name', isRequired: true },
     { label: 'Phone No.', isRequired: true }, { label: 'Email', isRequired: true }, { label: 'Date', isRequired: true },
     { label: 'Time Slots', fieldType: 'dropdown', isRequired: true, dropdownOptions: [{ optionValue: '11:00 AM' }, { optionValue: '12:00 PM - 1:00 PM' }] },
@@ -107,6 +108,10 @@ test('standard create and submit endpoints save generic bookings and send confir
   const controller = load('src/api/generic-submission/controllers/generic-submission.ts', {
     '@strapi/strapi': { factories: { createCoreController: (_uid, factory) => factory({ strapi }) } },
     '../../../utils/reach-out-confirmation-email': {},
+    '../../../utils/appointment-request-sms': { queueAppointmentRequestSms: async (_, data) => {
+      assert.ok(created, 'Save the appointment before queuing SMS');
+      sms.push(data);
+    } },
     '../../../utils/appointment-confirmation-email': { sendBookAppointmentConfirmationEmail: async (_strapi, data) => {
       assert.ok(created, 'The enquiry must be saved before sending its confirmation');
       emails.push(data);
@@ -124,6 +129,7 @@ test('standard create and submit endpoints save generic bookings and send confir
   assert.equal(created.preferredDate, '2099-12-01');
   assert.equal(created.magentoCustomerId, undefined);
   assert.equal(emails.length, 1);
+  assert.deepEqual(sms, [{ documentId: 'booking', phone: '9999999999' }]);
   assert.equal(emails[0].appointmentReference, result.data.appointmentId);
   assert.equal(emails[0].customerEmail, input.email);
   assert.equal(emails[0].requestedDate, input.preferredDate);
@@ -329,6 +335,7 @@ test('guest and owned bookings accept blank email despite required CMS email fie
     '../../../utils/form-submission-rate-limit': { checkFormSubmissionRateLimit: () => ({ allowed: true }), clientIp: () => '127.0.0.1' },
     '../../../utils/appointment-reference': { assignAppointmentReference: async () => 'BA-1' },
     '../../../utils/appointment-confirmation-email': { sendBookAppointmentConfirmationEmail: async () => {} },
+    '../../../utils/appointment-request-sms': { queueAppointmentRequestSms: async () => {} },
   }).default;
   const context = (email, owner) => ({ state: owner ? { magentoCustomer: { id: owner } } : {}, request: { body: { data: {
     formTag: 'book-an-appointment', fullName: 'Guest Customer', phone: '+1 202 555 0123', email,

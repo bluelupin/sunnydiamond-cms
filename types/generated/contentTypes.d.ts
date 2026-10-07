@@ -562,6 +562,10 @@ export interface ApiAppointmentChangeAppointmentChange
       ['Customer', 'Admin', 'Migration']
     > &
       Schema.Attribute.DefaultTo<'Customer'>;
+    affectedGenericSubmissions: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::generic-submission.generic-submission'
+    >;
     affectedSubmissions: Schema.Attribute.Relation<
       'manyToMany',
       'api::product-submission.product-submission'
@@ -634,6 +638,7 @@ export interface ApiAppointmentGroupAppointmentGroup
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    formTag: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -646,6 +651,15 @@ export interface ApiAppointmentGroupAppointmentGroup
       'api::appointment-group.appointment-group'
     >;
     pincode: Schema.Attribute.String;
+    priorRescheduleCount: Schema.Attribute.Integer &
+      Schema.Attribute.Private &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<0>;
     publishedAt: Schema.Attribute.DateTime;
     reminderSentForDate: Schema.Attribute.Date & Schema.Attribute.Private;
     requestedDate: Schema.Attribute.Date;
@@ -1674,6 +1688,12 @@ export interface ApiGenericSubmissionGenericSubmission
     draftAndPublish: false;
   };
   attributes: {
+    appointmentChanges: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::appointment-change.appointment-change'
+    > &
+      Schema.Attribute.Private;
+    appointmentReference: Schema.Attribute.String & Schema.Attribute.Private;
     consentAccepted: Schema.Attribute.Boolean &
       Schema.Attribute.DefaultTo<false>;
     createdAt: Schema.Attribute.DateTime;
@@ -1689,22 +1709,25 @@ export interface ApiGenericSubmissionGenericSubmission
       'api::generic-submission.generic-submission'
     > &
       Schema.Attribute.Private;
+    magentoCustomerId: Schema.Attribute.Integer & Schema.Attribute.Private;
     notes: Schema.Attribute.Text;
     phone: Schema.Attribute.String;
     preferredDate: Schema.Attribute.Date;
     preferredShowroom: Schema.Attribute.Relation<
-      'oneToOne',
+      'manyToOne',
       'api::showroom.showroom'
     >;
     publishedAt: Schema.Attribute.DateTime;
     reasonForContact: Schema.Attribute.String;
+    reminderSentForDate: Schema.Attribute.Date & Schema.Attribute.Private;
+    rescheduleHistory: Schema.Attribute.JSON & Schema.Attribute.Private;
     selectedTimeSlot: Schema.Attribute.String;
     sourcePage: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     workflowStatus: Schema.Attribute.Enumeration<
-      ['New', 'Contacted', 'Closed']
+      ['New', 'Contacted', 'Scheduled', 'Visited', 'Closed', 'Cancelled']
     > &
       Schema.Attribute.DefaultTo<'New'>;
   };
@@ -2852,6 +2875,82 @@ export interface ApiSkillAndLanguageSkillAndLanguage
   };
 }
 
+export interface ApiSmsNotificationSmsNotification
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'sms_notifications';
+  info: {
+    displayName: 'SMS Notifications';
+    pluralName: 'sms-notifications';
+    singularName: 'sms-notification';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: false;
+    };
+    'content-type-builder': {
+      visible: false;
+    };
+  };
+  attributes: {
+    acceptedAt: Schema.Attribute.DateTime;
+    applicationDocumentId: Schema.Attribute.String & Schema.Attribute.Required;
+    attempts: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<0>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    deduplicationKey: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Private &
+      Schema.Attribute.Unique &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 64;
+      }>;
+    deliveredAt: Schema.Attribute.DateTime;
+    lastAttemptAt: Schema.Attribute.DateTime;
+    lastErrorCode: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::sms-notification.sms-notification'
+    > &
+      Schema.Attribute.Private;
+    nextAttemptAt: Schema.Attribute.DateTime;
+    notificationType: Schema.Attribute.Enumeration<
+      [
+        'careerApplicationReceived',
+        'appointmentRequestReceived',
+        'enquiryReceived',
+        'serviceEnquiryReceived',
+      ]
+    > &
+      Schema.Attribute.Required;
+    providerMessageId: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    recipient: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Private;
+    status: Schema.Attribute.Enumeration<
+      ['pending', 'processing', 'accepted', 'delivered', 'failed', 'unknown']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'pending'>;
+    templateId: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiStateState extends Struct.CollectionTypeSchema {
   collectionName: 'states';
   info: {
@@ -3633,6 +3732,7 @@ declare module '@strapi/strapi' {
       'api::showroom.showroom': ApiShowroomShowroom;
       'api::size-guide.size-guide': ApiSizeGuideSizeGuide;
       'api::skill-and-language.skill-and-language': ApiSkillAndLanguageSkillAndLanguage;
+      'api::sms-notification.sms-notification': ApiSmsNotificationSmsNotification;
       'api::state.state': ApiStateState;
       'api::store-locator-page.store-locator-page': ApiStoreLocatorPageStoreLocatorPage;
       'api::submissions-job-opening.submissions-job-opening': ApiSubmissionsJobOpeningSubmissionsJobOpening;

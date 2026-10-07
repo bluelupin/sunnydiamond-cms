@@ -7,6 +7,8 @@ import { checkFormSubmissionRateLimit, clientIp } from '../../../utils/form-subm
 import { requestLocale } from '../../../utils/request-locale';
 import { sendReachOutConfirmationEmail } from '../../../utils/reach-out-confirmation-email';
 import { sendBookAppointmentConfirmationEmail } from '../../../utils/appointment-confirmation-email';
+import { queueAppointmentRequestSms } from '../../../utils/appointment-request-sms';
+import { queueEnquirySms } from '../../../utils/enquiry-sms';
 
 const GENERIC_SUBMISSION_UID = 'api::generic-submission.generic-submission';
 const GENERIC_FORM_UID = 'api::generic-form.generic-form';
@@ -54,8 +56,8 @@ const requestData = (ctx: any) => {
 
 export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ strapi }) => ({
   async create(ctx) {
-    // Website clients also post bookings to the standard collection endpoint.
-    if (stringOrUndefined(requestData(ctx).formTag) === 'book-an-appointment') {
+    // Website clients also post bookings and contact enquiries to the collection endpoint.
+    if (['book-an-appointment', 'reach-out-to-us'].includes(stringOrUndefined(requestData(ctx).formTag))) {
       return this.submit(ctx, undefined);
     }
     return super.create(ctx);
@@ -158,7 +160,11 @@ export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ 
 
     const appointmentId = formTag === 'book-an-appointment'
       ? await assignAppointmentReference(strapi, GENERIC_SUBMISSION_UID, entity, 'BA') : undefined;
+    if (formTag !== 'book-an-appointment') {
+      await queueEnquirySms(strapi, { documentId: entity.documentId, phone: input.phone });
+    }
     if (formTag === 'book-an-appointment') {
+      await queueAppointmentRequestSms(strapi, { documentId: entity.documentId, phone: input.phone });
       const location = [showroomDetails?.address, showroomDetails?.city, showroomDetails?.state, showroomDetails?.pincode]
         .map(value => stringOrUndefined(value))
         .filter(Boolean)

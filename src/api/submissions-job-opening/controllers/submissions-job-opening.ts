@@ -5,6 +5,7 @@
 import { factories } from '@strapi/strapi';
 import { checkFormSubmissionRateLimit, clientIp } from '../../../utils/form-submission-rate-limit';
 import { sendCareerApplicationReceivedEmail } from '../../../utils/career-application-email';
+import { queueCareerApplicationSms } from '../../../utils/career-application-sms';
 
 const UID = 'api::submissions-job-opening.submissions-job-opening';
 const CAREER_OPENING_UID = 'api::career-opening.career-opening';
@@ -227,6 +228,8 @@ export default factories.createCoreController(UID, ({ strapi }) => ({
       } as any);
       throw error;
     }
+
+    await queueCareerApplicationSms(strapi, { documentId: entity.documentId, phone });
 
     await sendCareerApplicationReceivedEmail(strapi, {
       documentId: entity.documentId,

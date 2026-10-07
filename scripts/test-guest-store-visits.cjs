@@ -254,6 +254,38 @@ test('store visit email is optional for guests and signed-in customers; supplied
   assert.notEqual(schema.attributes.customerEmail.required, true);
 });
 
+test('personalisation submissions queue Getting in touch after saving, without appointment SMS', async () => {
+  const events = [];
+  const strapi = {
+    documents: uid => uid.includes('product-form')
+      ? { findFirst: async () => ({ showroomOptions: [] }) }
+      : { create: async ({ data }) => { events.push('save'); return { ...data, id: 1, documentId: 'personalisation' }; } },
+    db: { transaction: async callback => callback({ trx: {} }) },
+  };
+  const controller = load('src/api/product-submission/controllers/product-submission.ts', name => {
+    if (name === '@strapi/strapi') return { factories: { createCoreController: (_, factory) => factory({ strapi }) } };
+    if (name.endsWith('/request-locale')) return { requestLocale: () => 'en' };
+    if (name.endsWith('/appointment-schedule')) return { RESCHEDULABLE_FORM_TAGS: [] };
+    if (name.endsWith('/home-trial-group-key')) return { GROUPED_APPOINTMENT_FORM_TAGS: [] };
+    if (name.endsWith('/form-submission-rate-limit')) return {
+      checkFormSubmissionRateLimit: () => ({ allowed: true }), clientIp: () => '127.0.0.1',
+    };
+    if (name.endsWith('/appointment-request-sms')) return { queueAppointmentRequestSms: async () => assert.fail('Unexpected appointment SMS') };
+    if (name.endsWith('/enquiry-sms')) return { queueEnquirySms: async (_, data, type) => {
+      assert.deepEqual(data, { documentId: 'personalisation', phone: '9876543210' });
+      assert.equal(type, 'enquiryReceived');
+      events.push('sms');
+    } };
+    if (name.endsWith('/product-personalisation-confirmation-email')) return { sendProductPersonalisationConfirmationEmail: async () => events.push('email') };
+    return {};
+  }).default;
+  const result = await controller.submit({ state: {}, request: { body: { data: {
+    formTag: 'product-personalisation', productName: 'Ring', customerName: 'Customer', customerPhone: '9876543210',
+  } } }, badRequest: message => { throw new Error(message); } });
+  assert.equal(result.data.documentId, 'personalisation');
+  assert.deepEqual(events, ['save', 'sms', 'email']);
+});
+
 test('store visit submission saves purposeOfVisit separately from requestDetails', async () => {
   let saved;
   const confirmations = [];
@@ -273,6 +305,10 @@ test('store visit submission saves purposeOfVisit separately from requestDetails
     };
     if (name.endsWith('/store-visit-clash')) return { storeVisitClash: async () => false };
     if (name.endsWith('/appointment-reference')) return { assignAppointmentReference: async () => 'SV-1' };
+    if (name.endsWith('/appointment-request-sms')) return { queueAppointmentRequestSms: async (_, data) => {
+      assert.deepEqual(data, { documentId: 'booking', phone: '9876543210' });
+      assert.ok(saved);
+    } };
     if (name.endsWith('/appointment-confirmation-email')) return { sendStoreVisitConfirmationEmail: async (_, data) => confirmations.push(data) };
     return {};
   }).default;
