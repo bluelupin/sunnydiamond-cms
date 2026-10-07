@@ -6,7 +6,7 @@ const bounded = (value: number | undefined, fallback: number, max: number) =>
   Number.isSafeInteger(value) && value > 0 ? Math.min(value, max) : fallback;
 
 /** Atomic claims protect against overlapping cron runs and multiple CMS instances. */
-export async function processSmsNotifications(strapi: Core.Strapi, request: typeof fetch = fetch) {
+export async function processSmsNotifications(strapi: Core.Strapi, request: typeof fetch = fetch, documentId?: string) {
   const config = smsConfig(strapi);
   if (!config?.enabled || !config.authKey?.trim() || !config.senderId?.trim()) return;
   const records = strapi.db.query(UID as any);
@@ -20,7 +20,7 @@ export async function processSmsNotifications(strapi: Core.Strapi, request: type
   await records.updateMany({ where: { status: 'processing', lastAttemptAt: {
     $lt: new Date(now.getTime() - timeout - 60000).toISOString(),
   } }, data: { status: 'unknown', lastErrorCode: 'worker-interrupted', nextAttemptAt: null } });
-  const rows = await records.findMany({ where: { status: 'pending', $or: [
+  const rows = await records.findMany({ where: { status: 'pending', ...(documentId ? { documentId } : {}), $or: [
     { nextAttemptAt: { $null: true } }, { nextAttemptAt: { $lte: now.toISOString() } },
   ] }, orderBy: { id: 'asc' }, limit: batchSize });
   for (const row of rows) {

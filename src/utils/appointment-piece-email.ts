@@ -15,6 +15,7 @@ const staffRecipient = (appointment: any) => ['store-visit', 'product-store-visi
 export async function sendPieceAddedEmails(strapi: Core.Strapi, appointment: any, added: any) {
   const piece = (value: any): AppointmentPiece => ({
     productId: value.productId, productName: value.productName, url: appointmentSourceUrl(value.productPath),
+    productSku: value.productSku, metalColour: value.metalColour, metalPurity: value.metalPurity,
   });
   const showroom = appointment.preferredShowroom;
   const data = {
@@ -25,6 +26,7 @@ export async function sendPieceAddedEmails(strapi: Core.Strapi, appointment: any
     showroom: [showroom?.address, showroom?.city].filter(Boolean).join(', ') || null,
     pieces: [
       ...(appointment.productId ? [{ productId: appointment.productId, productName: appointment.productName,
+        productSku: appointment.productSku, metalColour: appointment.metalColour, metalPurity: appointment.metalPurity,
         url: appointmentSourceUrl(appointment.sourcePage) }] : []),
       ...appointment.addedPieces.map(piece),
     ],

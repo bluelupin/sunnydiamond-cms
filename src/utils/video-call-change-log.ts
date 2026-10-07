@@ -1,10 +1,12 @@
 import type { Core } from '@strapi/strapi';
+import { productVariantSnapshot } from './product-variant-details';
 import { appointmentAddressChanged, appointmentAddressSnapshot } from './appointment-address';
 
 const loggedFormTags = ['book-an-appointment', 'schedule-video-call', 'product-video-call', 'product-store-visit', 'store-visit', 'try-at-home', 'try-at-home-form'];
 const snapshot = (row: any) => ({
   documentId: row.documentId, appointmentReference: row.appointmentReference ?? null,
   formTag: row.formTag, productId: row.productId ?? null, productName: row.productName ?? null,
+  ...productVariantSnapshot(row),
   requestedDate: row.requestedDate ?? null, selectedTimeSlot: row.selectedTimeSlot ?? null,
   workflowStatus: row.workflowStatus ?? null, requestDetails: row.requestDetails ?? null,
   customerName: row.customerName ?? null, customerEmail: row.customerEmail ?? null,

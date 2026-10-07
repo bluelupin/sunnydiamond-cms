@@ -2564,6 +2564,9 @@ export interface ApiProductSubmissionProductSubmission
     >;
     productId: Schema.Attribute.String;
     productName: Schema.Attribute.String;
+    productSku: Schema.Attribute.String & Schema.Attribute.SetMinMaxLength<{ maxLength: 64 }>;
+    metalColour: Schema.Attribute.String & Schema.Attribute.SetMinMaxLength<{ maxLength: 100 }>;
+    metalPurity: Schema.Attribute.String & Schema.Attribute.SetMinMaxLength<{ maxLength: 100 }>;
     publishedAt: Schema.Attribute.DateTime;
     purposeOfVisit: Schema.Attribute.Text;
     reminderSentForDate: Schema.Attribute.Date & Schema.Attribute.Private;

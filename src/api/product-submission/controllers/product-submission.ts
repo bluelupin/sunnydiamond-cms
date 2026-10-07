@@ -1,5 +1,6 @@
 import { mutateGenericAppointment, linkGuestGenericAppointments } from '../../../utils/generic-appointments';
 import { factories } from '@strapi/strapi';
+import { productVariantDetails, productVariantKey, productVariantSnapshot } from '../../../utils/product-variant-details';
 import { queueAppointmentRequestSms } from '../../../utils/appointment-request-sms';
 import { queueEnquirySms } from '../../../utils/enquiry-sms';
 import { recordVideoCallChange } from '../../../utils/video-call-change-log';
@@ -92,6 +93,8 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
   async submit(ctx) {
     const magentoCustomerId = ctx.state.magentoCustomer?.id;
     const input = requestData(ctx);
+    const variant = productVariantDetails(input);
+    if (variant.error) return ctx.badRequest(variant.error);
     const locale = requestLocale(ctx, input);
     const upload = firstFile(ctx.request.files);
     const formTag = stringOrUndefined(input.formTag);
@@ -210,6 +213,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       formTag,
       productName,
       productId: stringOrUndefined(input.productId),
+      ...variant.data,
       customerName,
       customerPhone,
       customerEmail,
@@ -312,6 +316,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
         id: entity.id,
         documentId: entity.documentId,
         formTag: entity.formTag,
+        ...productVariantSnapshot(entity),
         ...(appointmentReference ? { appointmentId: appointmentReference } : {}),
         ...(grouped ? { appointmentGroupId: grouped.groupDocumentId } : {}),
       },
@@ -528,7 +533,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     const rows = await strapi.db.query(PRODUCT_SUBMISSION_UID).findMany({
       where: { magentoCustomerId: ctx.state.magentoCustomer.id, formTag: { $in: PIECE_FORM_TAGS },
         workflowStatus: { $in: OPEN_STATUSES }, requestedDate: { $gte: appointmentToday() } },
-      select: ['documentId', 'appointmentReference', 'formTag', 'requestedDate', 'selectedTimeSlot', 'productId', 'addedPieces'],
+      select: ['documentId', 'appointmentReference', 'formTag', 'requestedDate', 'selectedTimeSlot', 'productId', 'productSku', 'metalColour', 'metalPurity', 'addedPieces'],
       populate: { preferredShowroom: { select: ['city'] } },
       orderBy: [{ createdAt: 'desc' }, { id: 'desc' }], limit: 5,
     });
@@ -540,12 +545,17 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
         showroomCity: row.preferredShowroom?.city ?? null,
         productIds: [row.productId, ...(Array.isArray(row.addedPieces) ? row.addedPieces : []).map((piece: any) => piece?.productId)]
           .filter(Boolean),
+        products: [row, ...(Array.isArray(row.addedPieces) ? row.addedPieces : [])]
+          .filter((piece: any) => piece?.productId)
+          .map((piece: any) => ({ productId: piece.productId, ...productVariantSnapshot(piece) })),
       })) };
   },
 
   /** R-AP-8/R-AP-10: add a piece to a booked store visit or video call; date, time and showroom stay. */
   async addPiece(ctx) {
     const input = requestData(ctx);
+    const variant = productVariantDetails(input);
+    if (variant.error) return ctx.badRequest(variant.error);
     const documentId = stringOrUndefined(ctx.params.documentId);
     const productId = stringOrUndefined(input.productId);
     const productName = stringOrUndefined(input.productName);
@@ -587,16 +597,19 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       const pieces = Array.isArray(appointment.addedPieces) ? appointment.addedPieces : [];
       const productIds = [appointment.productId, ...pieces.map((piece: any) => piece?.productId)].filter(Boolean);
       const data = { documentId, appointmentId: appointment.appointmentReference ?? documentId, productIds };
-      if (productIds.includes(productId)) return { data, changed: false };
+      const selectedPiece = { productId, ...variant.data };
+      if ([appointment, ...pieces].some(piece => productVariantKey(piece) === productVariantKey(selectedPiece))) {
+        return { data, changed: false };
+      }
       if (pieces.length >= MAX_ADDED_PIECES) {
         return { error: 'An appointment can have up to 10 added pieces. Please contact us to add more.', status: 400 };
       }
-      const piece = { productId, productName, productPath, addedAt: new Date().toISOString() };
+      const piece = { productId, productName, productPath, ...variant.data, addedAt: new Date().toISOString() };
       await strapi.documents(PRODUCT_SUBMISSION_UID as any).update({
         documentId, data: { addedPieces: [...pieces, piece] },
       } as any);
       notifyPieceAddedAfterCommit(strapi, onCommit, { ...appointment, addedPieces: [...pieces, piece] }, piece);
-      return { data: { ...data, productIds: [...productIds, productId] }, changed: true };
+      return { data: { ...data, productIds: [...productIds, productId], piece }, changed: true };
     });
     if (result.error) return result.status === 404 ? ctx.notFound(result.error) : ctx.badRequest(result.error);
     return { data: result.data, meta: { changed: result.changed } };

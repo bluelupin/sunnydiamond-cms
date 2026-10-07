@@ -1,10 +1,11 @@
 import { createHash } from 'node:crypto';
 import type { Core } from '@strapi/strapi';
 import { normalizeSmsPhone, smsConfig, smsReadiness, type SmsNotificationType } from './sms-service';
+import { processSmsNotifications } from './process-sms-notifications';
 
 const UID = 'api::sms-notification.sms-notification';
 
-/** Persistence only: does not send SMS. Invoke after the application and upload succeed. */
+/** Persist then immediately process this notification after the submission and upload succeed. */
 export async function enqueueSmsNotification(strapi: Core.Strapi, input: {
   applicationDocumentId: string; notificationType: SmsNotificationType; recipient: string;
 }) {
@@ -27,6 +28,11 @@ export async function enqueueSmsNotification(strapi: Core.Strapi, input: {
       deduplicationKey, applicationDocumentId, notificationType: input.notificationType,
       recipient, templateId: config.templates[input.notificationType].trim(), status: 'pending', attempts: 0,
     } });
+    // Target this message so an older backlog cannot delay the submission acknowledgement.
+    // Keep the request responsive; the durable queue and atomic claim also protect cron races.
+    void processSmsNotifications(strapi, undefined, notification.documentId).catch(() => {
+      strapi.log.error('Immediate SMS processing failed; the notification remains tracked by the queue.');
+    });
     return { status: 'queued' as const, notification };
   } catch (error) {
     // The unique index handles concurrent enqueues; read the winner after its insert.

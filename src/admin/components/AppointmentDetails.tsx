@@ -33,6 +33,12 @@ export const AppointmentDetails = (props: InputProps) => {
     ['Address', [data.addressLine1, data.addressLine2, data.city, data.pincode].filter(Boolean).join(', ') || 'Not recorded'],
   ];
   if (Object.prototype.hasOwnProperty.call(data, 'requestDetails')) rows.push(['Note', data.requestDetails || 'Not recorded']);
+  if (data.productId || data.productSku) rows.push(
+    ['Parent SKU', data.productId || 'Not recorded'],
+    ['Variant SKU', data.productSku || 'Not recorded'],
+    ['Metal colour', data.metalColour || 'Not recorded'],
+    ['Metal purity', data.metalPurity || 'Not recorded'],
+  );
   const details = (Array.isArray(data.customerDetails) ? data.customerDetails : [])
     .filter((detail: any) => detail && typeof detail === 'object');
   const customers = details.slice(0, 1);
@@ -54,6 +60,13 @@ export const AppointmentDetails = (props: InputProps) => {
             </div>
           ))}
         </dl>
+        {Array.isArray(data.products) && data.products.length > 0 && <Box marginTop={4}>
+          <Typography fontWeight="bold">Products</Typography>
+          {data.products.map((product: any, index: number) => <Box key={product.documentId || index} marginTop={2}>
+            <Typography>{[product.productName, product.productSku || product.productId, product.metalColour, product.metalPurity]
+              .filter(Boolean).join(' — ') || 'Not recorded'}</Typography>
+          </Box>)}
+        </Box>}
         {customers.length > 0 && <Box marginTop={4}>
           <Typography fontWeight="bold">Customer details</Typography>
           {customers.map((customer: any, index: number) => <dl key={index}>

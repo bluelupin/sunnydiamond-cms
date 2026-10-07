@@ -1,11 +1,12 @@
 import { GENERIC_APPOINTMENT_UID, genericAppointmentView } from './generic-appointments';
 import { GROUPED_APPOINTMENT_FORM_TAGS } from './home-trial-group-key';
 import { countScheduleChanges, MAX_RESCHEDULES } from './appointment-schedule';
+import { productVariantSnapshot, productVariantKey } from './product-variant-details';
 
 const GROUP = 'api::appointment-group.appointment-group';
 const PRODUCT = 'api::product-submission.product-submission';
 const CHANGE = 'api::appointment-change.appointment-change';
-const fields = ['documentId', 'appointmentReference', 'formTag', 'productName', 'productId', 'customerName',
+const fields = ['documentId', 'appointmentReference', 'formTag', 'productName', 'productId', 'productSku', 'metalColour', 'metalPurity', 'customerName',
   'customerPhone', 'customerEmail', 'requestedDate', 'requestDetails', 'purposeOfVisit', 'selectedTimeSlot',
   'workflowStatus', 'addressLine1', 'addressLine2', 'pincode', 'city', 'createdAt', 'updatedAt'];
 const populate = {
@@ -132,8 +133,9 @@ async function listProductAppointments(strapi: any, options: any) {
     if (!unit.grouped) {
       // Pieces added after booking (R-AP-8) are listed like the booked product.
       const added = matched[0].pieces.filter((piece: any) => piece?.productId).map((piece: any) => ({
-        ...members[0], documentId: `${members[0].documentId}:piece:${piece.productId}`,
+        ...members[0], documentId: `${members[0].documentId}:piece:${productVariantKey(piece)}`,
         productId: piece.productId, productName: piece.productName ?? null,
+        ...productVariantSnapshot(piece),
       }));
       return [{ ...members[0], appointmentId: members[0].appointmentReference ?? members[0].documentId,
         appointmentGroupId: null, products: [...members, ...added], ...rescheduleDetails(matched[0].history),
@@ -142,8 +144,9 @@ async function listProductAppointments(strapi: any, options: any) {
     const group = groups.find((row: any) => row.documentId === unit.documentId);
     if (!group) return [];
     const added = matched.flatMap(product => product.pieces.filter((piece: any) => piece?.productId).map((piece: any) => ({
-      ...product.safe, documentId: `${product.safe.documentId}:piece:${piece.productId}`,
+      ...product.safe, documentId: `${product.safe.documentId}:piece:${productVariantKey(piece)}`,
       productId: piece.productId, productName: piece.productName ?? null,
+      ...productVariantSnapshot(piece),
     })));
     const { priorRescheduleCount, ...safeGroup } = group;
     return [{ ...members[0], ...safeGroup, documentId: members[0].documentId,

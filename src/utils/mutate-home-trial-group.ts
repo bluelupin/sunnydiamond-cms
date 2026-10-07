@@ -148,7 +148,8 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
           previousData, newData: { ...canonical(target),
             ...noteChanges,
             ...(contactAudit ? { customerDetails: affected.map((row: any) => customerDetailsSnapshot(row, groupCustomerDetails)) } : {}),
-            products: affected.map((row: any) => ({ documentId: row.documentId, productId: row.productId ?? null, productName: row.productName ?? null })) },
+            products: affected.map((row: any) => ({ documentId: row.documentId, productId: row.productId ?? null, productName: row.productName ?? null,
+              productSku: row.productSku ?? null, metalColour: row.metalColour ?? null, metalPurity: row.metalPurity ?? null })) },
           affectedSubmissions: { connect: affected.map((row: any) => row.documentId) },
         } });
         if (videoCall && (action === 'cancel' || scheduleChanged)) {

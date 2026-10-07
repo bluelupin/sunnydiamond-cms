@@ -20,6 +20,11 @@ test('video-call groups list as one appointment with all products and their shar
   const products = [1, 2].map(id => ({ id, documentId: `video-${id}`, formTag: 'schedule-video-call',
     requestedDate: group.requestedDate, selectedTimeSlot: group.selectedTimeSlot,
     appointmentGroup: { documentId: group.documentId }, productId: String(id), productName: `Ring ${id}` }));
+  products[0].productSku = 'RING-YG';
+  products[0].metalColour = 'yellow-gold';
+  products[0].metalPurity = '18K';
+  products[0].addedPieces = [{ productId: '1', productSku: 'RING-RG', metalColour: 'rose-gold', metalPurity: '14K' },
+    { productId: 'legacy', productName: 'Older piece' }];
   const strapi = { db: { query(uid) {
     if (uid.includes('appointment-change')) return { findMany: async ({ where }) => where.eventType === 'Cancelled' ? [] : [{
       sourceGroup: { documentId: group.documentId }, previousData: { requestedDate: '2099-10-12' },
@@ -40,7 +45,13 @@ test('video-call groups list as one appointment with all products and their shar
   });
   assert.equal(result.data.length, 1);
   assert.equal(result.meta.pagination.total, 1);
-  assert.equal(result.data[0].products.length, 2);
+  assert.equal(result.data[0].products.length, 4);
+  assert.equal(result.data[0].products[0].productSku, 'RING-YG');
+  assert.equal(result.data[0].products[2].productSku, 'RING-RG');
+  assert.equal(result.data[0].products[2].metalColour, 'rose-gold');
+  assert.equal(result.data[0].products[2].metalPurity, '14K');
+  assert.equal(result.data[0].products[3].productSku, null);
+  assert.equal(result.data[0].products[3].metalColour, null);
   assert.equal(result.data[0].rescheduleCount, 2);
   assert.equal(result.data[0].reschedulesLeft, 0);
   assert.equal(Object.hasOwn(result.data[0], 'priorRescheduleCount'), false);

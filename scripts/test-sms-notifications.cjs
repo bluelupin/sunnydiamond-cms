@@ -10,6 +10,7 @@ function load(file, stubs = {}) {
   } }).outputText;
   new Function('require', 'module', 'exports', code)(name => {
     if (Object.hasOwn(stubs, name)) return stubs[name];
+    if (name === './process-sms-notifications') return { processSmsNotifications: async () => {} };
     if (!name.startsWith('.')) return require(name);
     return load(path.relative(path.resolve(__dirname, '..'), path.resolve(path.dirname(filename), name + '.ts')), stubs);
   }, module, module.exports);
@@ -20,6 +21,38 @@ const { enqueueSmsNotification: enqueue } = load('src/utils/sms-notification-que
 const config = { enabled: true, authKey: 'test-key', senderId: 'SNNYDS', templates: { careerApplicationReceived: 'career-flow' } };
 const input = { applicationDocumentId: 'application-1', notificationType: 'careerApplicationReceived', recipient: '9876543210' };
 const { processSmsNotifications: processQueue } = load('src/utils/process-sms-notifications.ts');
+test('a new submission immediately triggers its own notification once and contains worker failure', async () => {
+  const h = harness();
+  const calls = [];
+  const immediateEnqueue = load('src/utils/sms-notification-queue.ts', {
+    './process-sms-notifications': { processSmsNotifications: async (_, request, documentId) => {
+      assert.equal(request, undefined);
+      assert.equal(h.rows.length, 1, 'Persist before processing');
+      calls.push(documentId);
+      throw new Error('private processing error');
+    } },
+  }).enqueueSmsNotification;
+  assert.equal((await immediateEnqueue(h.strapi, input)).status, 'queued');
+  assert.deepEqual(calls, [h.rows[0].documentId]);
+  assert.equal(h.errors.length, 1);
+  assert.equal((await immediateEnqueue(h.strapi, input)).status, 'existing');
+  assert.equal(calls.length, 1);
+});
+
+test('immediate processing selects the submitted notification and safely overlaps cron', async () => {
+  const h = workerHarness();
+  let sends = 0;
+  const request = async () => {
+    sends++;
+    await new Promise(resolve => setImmediate(resolve));
+    return new Response(JSON.stringify({ type: 'success', message: 'id' }));
+  };
+  await processQueue(h.strapi, request, 'another-notification');
+  assert.equal(sends, 0);
+  await Promise.all([processQueue(h.strapi, request, h.row.documentId), processQueue(h.strapi, request)]);
+  assert.equal(sends, 1);
+  assert.equal(h.row.status, 'accepted');
+});
 test('Enquiry SMS uses its own approved flow while general contact keeps Getting in touch', async () => {
   const settings = load('config/sms.ts').default({ env: Object.assign((key, fallback) => fallback, { bool: () => true }) });
   settings.authKey = 'test-key';

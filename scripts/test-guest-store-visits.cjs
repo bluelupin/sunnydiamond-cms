@@ -11,7 +11,8 @@ function load(file, resolve = require) {
   const code = ts.transpileModule(fs.readFileSync(path.resolve(__dirname, '..', file), 'utf8'), {
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
   }).outputText;
-  new Function('require', 'module', 'exports', code)(resolve, module, module.exports);
+  new Function('require', 'module', 'exports', code)(name => name.endsWith('/product-variant-details')
+    ? load('src/utils/product-variant-details.ts') : resolve(name), module, module.exports);
   return module.exports;
 }
 const { normalizeAppointmentPhone } = load('src/utils/normalize-appointment-phone.ts');
@@ -281,8 +282,12 @@ test('personalisation submissions queue Getting in touch after saving, without a
   }).default;
   const result = await controller.submit({ state: {}, request: { body: { data: {
     formTag: 'product-personalisation', productName: 'Ring', customerName: 'Customer', customerPhone: '9876543210',
+    productId: 'RING', productSku: ' RING-RG-18K ', metalColour: ' rose-gold ', metalPurity: ' 18K ',
   } } }, badRequest: message => { throw new Error(message); } });
   assert.equal(result.data.documentId, 'personalisation');
+  assert.equal(result.data.productSku, 'RING-RG-18K');
+  assert.equal(result.data.metalColour, 'rose-gold');
+  assert.equal(result.data.metalPurity, '18K');
   assert.deepEqual(events, ['save', 'sms', 'email']);
 });
 

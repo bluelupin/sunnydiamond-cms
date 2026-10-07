@@ -51,6 +51,16 @@ function harness() {
   };
   return { strapi, groups, products };
 }
+
+test('group members retain their own SKU, colour and purity for the same parent product', async () => {
+  const { strapi, products } = harness();
+  const first = await submit(strapi, { ...input, productId: 'RING', productSku: 'RING-YG', metalColour: 'yellow-gold', metalPurity: '18K' });
+  const second = await submit(strapi, { ...input, productId: 'RING', productSku: 'RING-RG', metalColour: 'rose-gold', metalPurity: '14K' });
+  assert.equal(first.groupDocumentId, second.groupDocumentId);
+  assert.deepEqual(products.map(row => [row.productId, row.productSku, row.metalColour, row.metalPurity]), [
+    ['RING', 'RING-YG', 'yellow-gold', '18K'], ['RING', 'RING-RG', 'rose-gold', '14K'],
+  ]);
+});
 test('matching addresses join; every different address field creates a separate group', async () => {
   const { strapi, groups } = harness();
   const first = await submit(strapi, input);
