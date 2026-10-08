@@ -60,13 +60,6 @@ export const AppointmentDetails = (props: InputProps) => {
             </div>
           ))}
         </dl>
-        {Array.isArray(data.products) && data.products.length > 0 && <Box marginTop={4}>
-          <Typography fontWeight="bold">Products</Typography>
-          {data.products.map((product: any, index: number) => <Box key={product.documentId || index} marginTop={2}>
-            <Typography>{[product.productName, product.productSku || product.productId, product.metalColour, product.metalPurity]
-              .filter(Boolean).join(' — ') || 'Not recorded'}</Typography>
-          </Box>)}
-        </Box>}
         {customers.length > 0 && <Box marginTop={4}>
           <Typography fontWeight="bold">Customer details</Typography>
           {customers.map((customer: any, index: number) => <dl key={index}>
