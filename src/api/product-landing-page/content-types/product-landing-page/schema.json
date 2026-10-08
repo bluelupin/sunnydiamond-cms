@@ -35,6 +35,16 @@
         }
       }
     },
+    "listingCards": {
+      "type": "component",
+      "component": "shared.product-listing-card",
+      "repeatable": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
     "seo": {
       "type": "component",
       "component": "shared.seo",

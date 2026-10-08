@@ -3,7 +3,7 @@
  */
 
 import { factories } from '@strapi/strapi';
-import { fullSeoPopulate, heroPopulate, imageAssetPopulate } from '../../../utils/populate';
+import { ctaPopulate, fullSeoPopulate, heroPopulate, imageAssetPopulate } from '../../../utils/populate';
 
 const populate = {
   hero: heroPopulate,
@@ -11,6 +11,12 @@ const populate = {
     populate: {
       icon: true,
       image: imageAssetPopulate,
+    },
+  },
+  listingCards: {
+    populate: {
+      image: imageAssetPopulate,
+      cta: ctaPopulate,
     },
   },
   seo: fullSeoPopulate,

@@ -1613,6 +1613,36 @@ export interface SharedProcessStep extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedProductListingCard extends Struct.ComponentSchema {
+  collectionName: 'components_shared_product_listing_cards';
+  info: {
+    description: 'Promotional card with separate desktop and mobile product-grid positions (starting at 1)';
+    displayName: 'Product Listing Card';
+  };
+  attributes: {
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    description: Schema.Attribute.Text;
+    desktopPosition: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 1;
+        },
+        number
+      >;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    mobilePosition: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 1;
+        },
+        number
+      >;
+  };
+}
+
 export interface SharedProductSku extends Struct.ComponentSchema {
   collectionName: 'components_shared_product_skus';
   info: {
@@ -2076,6 +2106,7 @@ declare module '@strapi/strapi' {
       'shared.policy-page-header': SharedPolicyPageHeader;
       'shared.process-section': SharedProcessSection;
       'shared.process-step': SharedProcessStep;
+      'shared.product-listing-card': SharedProductListingCard;
       'shared.product-sku': SharedProductSku;
       'shared.profile-side-tab': SharedProfileSideTab;
       'shared.profile-trust-badge-section': SharedProfileTrustBadgeSection;

@@ -2489,6 +2489,15 @@ export interface ApiProductLandingPageProductLandingPage
           localized: true;
         };
       }>;
+    listingCards: Schema.Attribute.Component<
+      'shared.product-listing-card',
+      true
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -2557,6 +2566,14 @@ export interface ApiProductSubmissionProductSubmission
     > &
       Schema.Attribute.Private;
     magentoCustomerId: Schema.Attribute.Integer & Schema.Attribute.Private;
+    metalColour: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+      }>;
+    metalPurity: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+      }>;
     pincode: Schema.Attribute.String;
     preferredShowroom: Schema.Attribute.Relation<
       'manyToOne',
@@ -2564,9 +2581,10 @@ export interface ApiProductSubmissionProductSubmission
     >;
     productId: Schema.Attribute.String;
     productName: Schema.Attribute.String;
-    productSku: Schema.Attribute.String & Schema.Attribute.SetMinMaxLength<{ maxLength: 64 }>;
-    metalColour: Schema.Attribute.String & Schema.Attribute.SetMinMaxLength<{ maxLength: 100 }>;
-    metalPurity: Schema.Attribute.String & Schema.Attribute.SetMinMaxLength<{ maxLength: 100 }>;
+    productSku: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 64;
+      }>;
     publishedAt: Schema.Attribute.DateTime;
     purposeOfVisit: Schema.Attribute.Text;
     reminderSentForDate: Schema.Attribute.Date & Schema.Attribute.Private;
