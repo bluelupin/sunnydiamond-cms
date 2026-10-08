@@ -1392,6 +1392,7 @@ export interface SharedLinkItem extends Struct.ComponentSchema {
     displayName: 'Link Item';
   };
   attributes: {
+    cards: Schema.Attribute.Component<'shared.featured-story-card', true>;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     label: Schema.Attribute.String & Schema.Attribute.Required;
     targetType: Schema.Attribute.Enumeration<
