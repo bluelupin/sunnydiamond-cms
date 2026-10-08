@@ -37,6 +37,15 @@
       },
       "required": true
     },
+    "postedDate": {
+      "type": "date",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
     "experience": {
       "type": "enumeration",
       "enum": [

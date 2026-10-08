@@ -8,23 +8,25 @@ const recipient = (value?: string | null) => {
 };
 
 /** Store visits notify the showroom's own inbox; video calls have no showroom, so one configured inbox. */
-const staffRecipient = (appointment: any) => appointment.formTag === 'product-store-visit'
+const staffRecipient = (appointment: any) => ['store-visit', 'product-store-visit'].includes(appointment.formTag)
   ? recipient(appointment.preferredShowroom?.email)
   : recipient(process.env.APPOINTMENT_STAFF_EMAIL);
 
 export async function sendPieceAddedEmails(strapi: Core.Strapi, appointment: any, added: any) {
   const piece = (value: any): AppointmentPiece => ({
     productId: value.productId, productName: value.productName, url: appointmentSourceUrl(value.productPath),
+    productSku: value.productSku, metalColour: value.metalColour, metalPurity: value.metalPurity,
   });
   const showroom = appointment.preferredShowroom;
   const data = {
     appointmentId: appointment.appointmentReference || appointment.documentId,
-    appointmentType: appointment.formTag === 'product-store-visit' ? 'Showroom Visit' as const : 'Video Call' as const,
+    appointmentType: ['store-visit', 'product-store-visit'].includes(appointment.formTag) ? 'Showroom Visit' as const : 'Video Call' as const,
     customerName: appointment.customerName, requestedDate: appointment.requestedDate,
     selectedTimeSlot: appointment.selectedTimeSlot,
     showroom: [showroom?.address, showroom?.city].filter(Boolean).join(', ') || null,
     pieces: [
       ...(appointment.productId ? [{ productId: appointment.productId, productName: appointment.productName,
+        productSku: appointment.productSku, metalColour: appointment.metalColour, metalPurity: appointment.metalPurity,
         url: appointmentSourceUrl(appointment.sourcePage) }] : []),
       ...appointment.addedPieces.map(piece),
     ],

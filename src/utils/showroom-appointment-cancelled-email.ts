@@ -4,6 +4,7 @@ import { showroomAppointmentCancelledTemplate } from '../emails/showroom-appoint
 
 interface ShowroomCancellationNotification {
   documentId: string;
+  formTag?: string | null;
   appointmentReference?: string | null;
   customerName?: string | null;
   customerEmail?: string | null;
@@ -34,6 +35,7 @@ export async function sendShowroomAppointmentCancelledEmail(
       to,
       ...showroomAppointmentCancelledTemplate({
         appointmentId: data.appointmentReference || data.documentId,
+        generalAppointment: data.formTag === 'book-an-appointment',
         customerName: data.customerName,
         appointmentDate: data.requestedDate,
         appointmentTime: data.selectedTimeSlot,

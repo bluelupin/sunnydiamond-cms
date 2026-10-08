@@ -19,7 +19,7 @@ export async function storeVisitClash(strapi: any, trx: any, visit: {
     .where({ magento_customer_id: magentoCustomerId, requested_date: requestedDate, selected_time_slot: selectedTimeSlot })
     .forUpdate();
   const count = await strapi.db.query(PRODUCT).count({ where: {
-    formTag: 'product-store-visit', requestedDate, selectedTimeSlot,
+    formTag: { $in: ['store-visit', 'product-store-visit'] }, requestedDate, selectedTimeSlot,
     workflowStatus: { $in: ['New', 'Contacted', 'Scheduled'] },
     preferredShowroom: { documentId: showroom },
     magentoCustomerId,

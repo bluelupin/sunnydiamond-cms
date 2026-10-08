@@ -1,5 +1,7 @@
+import { appointmentAddressChanged } from './appointment-address';
+
 export const RESCHEDULABLE_FORM_TAGS = [
-  'try-at-home', 'schedule-video-call', 'try-at-home-form', 'product-video-call',
+  'try-at-home', 'schedule-video-call', 'try-at-home-form', 'product-video-call', 'book-an-appointment',
 ];
 
 export const validAppointmentDate = (value: unknown): value is string => {
@@ -8,17 +10,23 @@ export const validAppointmentDate = (value: unknown): value is string => {
   return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
 };
 
-export const appointmentToday = () => new Intl.DateTimeFormat('en-CA', {
+export const appointmentToday = (now = new Date()) => new Intl.DateTimeFormat('en-CA', {
   timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit',
-}).format(new Date());
+}).format(now);
 
-/** Last permitted day is three calendar days before the existing appointment. */
-export const validateReschedulingWindow = (scheduledDate: unknown, today = appointmentToday()) => {
+/** Three calendar days before the appointment in IST; the entire cutoff date is allowed. */
+export const validateReschedulingWindow = (
+  scheduledDate: unknown,
+  _selectedTimeSlot: string | null | undefined,
+  _formTag: string,
+  now = new Date(),
+) => {
   if (!validAppointmentDate(scheduledDate)) return 'The current appointment date is missing or invalid.';
-  const deadline = new Date(`${scheduledDate}T00:00:00Z`);
-  deadline.setUTCDate(deadline.getUTCDate() - 3);
-  if (today > deadline.toISOString().slice(0, 10)) {
-    return 'You cannot reschedule as it is outside the 3-day rescheduling window period.';
+  // Compare calendar dates rather than the appointment's slot start time.
+  const daysUntilAppointment = (Date.parse(scheduledDate + 'T00:00:00Z')
+    - Date.parse(appointmentToday(now) + 'T00:00:00Z')) / 86_400_000;
+  if (daysUntilAppointment < 3) {
+    return "You cannot reschedule as have passed the 3 days window period.";
   }
   return undefined;
 };
@@ -36,10 +44,11 @@ export const validateAppointmentSchedule = (date: unknown, slot: unknown, form: 
 export const MAX_RESCHEDULES = 2;
 export const RESCHEDULE_LIMIT_MESSAGE = 'You have already rescheduled this appointment twice. Please contact us.';
 
-/** History and change rows also record contact/note-only edits; only a new date or time counts. */
+/** Date, time and address changes count; contact/note-only edits do not. */
 export const countScheduleChanges = (entries: unknown) => (Array.isArray(entries) ? entries : [])
   .filter((entry: any) => entry?.previousData?.requestedDate !== entry?.newData?.requestedDate ||
-    entry?.previousData?.selectedTimeSlot !== entry?.newData?.selectedTimeSlot).length;
+    entry?.previousData?.selectedTimeSlot !== entry?.newData?.selectedTimeSlot ||
+    appointmentAddressChanged(entry?.previousData ?? {}, entry?.newData ?? {})).length;
 
 /** "11:00 AM - 12:00 PM" starts at 11:00 IST; an unreadable slot counts from midnight. */
 export const appointmentStartsAt = (date: string, slot?: string | null) => {

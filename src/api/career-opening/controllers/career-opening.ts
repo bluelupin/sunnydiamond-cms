@@ -27,6 +27,8 @@ export default factories.createCoreController(
   'api::career-opening.career-opening' as any,
   () => ({
     async find(ctx) {
+      ctx.query = { ...ctx.query, sort: ['postedDate:desc'] } as any;
+
       if (ctx.query.populate === '*') {
         ctx.query = { ...ctx.query, populate } as any;
       }

@@ -1,3 +1,4 @@
+import { registerGenericAppointmentHistory } from './utils/generic-appointments';
 import type { Core } from '@strapi/strapi';
 import { seedCms } from './utils/seeder';
 // import { repairHomepageSections } from './utils/repair-homepage-sections';
@@ -41,6 +42,7 @@ export default {
     registerCareerOpeningSlug(strapi);
     registerReachOutSubmissionProtection(strapi);
     registerAdminRescheduleEmail(strapi);
+    registerGenericAppointmentHistory(strapi);
     registerCareerSubmissionProtection(strapi);
   },
 

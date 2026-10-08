@@ -9,6 +9,7 @@
   "scripts": {
     "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
     "build": "npm run clean && strapi build",
+    "test:store-visits": "node --test scripts/test-guest-store-visits.cjs",
     "test:resume": "node --test scripts/test-resume-parser.cjs scripts/test-resume-extraction.mjs scripts/test-resume-rate-limit.cjs",
     "test:resume:redis": "node --test scripts/test-resume-redis.cjs",
     "generate:blog-seed": "node scripts/fetch-blog-seed.mjs",

@@ -19,6 +19,7 @@ function load(file) {
 
 const template = load('src/emails/appointment-confirmed.ts').appointmentConfirmedTemplate;
 const { sendStoreVisitConfirmationEmail: send } = load('src/utils/appointment-confirmation-email.ts');
+const { sendBookAppointmentConfirmationEmail: sendBookAppointment } = load('src/utils/appointment-confirmation-email.ts');
 const data = {
   documentId: 'appointment & one', customerEmail: 'customer@example.com', customerName: '<Customer & Co>',
   requestedDate: '2099-10-05', selectedTimeSlot: '<11:00 AM>', location: '<Sunny & Kochi>',
@@ -74,4 +75,20 @@ test('provider failures remain best-effort and do not leak provider details', as
   await assert.doesNotReject(send(strapi, data));
   assert.equal(strapi.errors.length, 1);
   assert.ok(!strapi.errors[0].includes('secret-provider-details'));
+});
+
+test('General Enquiries confirmations use general appointment copy and preserve BA references', async () => {
+  const strapi = mailMock();
+  await sendBookAppointment(strapi, { ...data, location: '', appointmentReference: 'BA-2099-000001' });
+  assert.equal(strapi.sent.length, 1);
+  assert.equal(strapi.sent[0].to, data.customerEmail);
+  assert.match(strapi.sent[0].text, /Appointment ID: BA-2099-000001/);
+  assert.match(strapi.sent[0].text, /Appointment Type: Appointment/);
+  assert.ok(!/showroom/i.test(strapi.sent[0].text));
+  assert.ok(!/showroom/i.test(strapi.sent[0].html));
+  assert.match(strapi.sent[0].html, /cid:sunny-diamonds-logo/);
+  const failed = mailMock(true);
+  await assert.doesNotReject(sendBookAppointment(failed, data));
+  assert.equal(failed.errors.length, 1);
+  assert.ok(!failed.errors[0].includes('secret-provider-details'));
 });

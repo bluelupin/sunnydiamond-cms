@@ -26,9 +26,9 @@ const data = {
 };
 const flush = () => new Promise(resolve => setImmediate(resolve));
 
-test('both video-call forms record linked reschedule and cancellation history with before/after snapshots', async () => {
+test('video-call and store-visit forms record linked reschedule and cancellation history with before/after snapshots', async () => {
   const { recordVideoCallChange } = load('src/utils/video-call-change-log.ts');
-  for (const formTag of ['schedule-video-call', 'product-video-call']) {
+  for (const formTag of ['schedule-video-call', 'product-video-call', 'product-store-visit', 'store-visit', 'try-at-home', 'try-at-home-form']) {
     for (const actorType of ['Customer', 'Admin']) {
       const logs = [];
       const strapi = { documents: uid => {
@@ -51,6 +51,11 @@ test('both video-call forms record linked reschedule and cancellation history wi
       await recordVideoCallChange(strapi, before, { ...before, customerName: 'Changed' }, actorType);
       await recordVideoCallChange(strapi, { ...after, workflowStatus: 'Cancelled' }, { ...after, workflowStatus: 'Cancelled' }, actorType);
       assert.equal(logs.length, 2);
+      await recordVideoCallChange(strapi, { ...before, addressLine1: 'Old road' },
+        { ...before, addressLine1: 'New road' }, actorType);
+      assert.equal(logs[2].eventType, 'Rescheduled');
+      assert.equal(logs[2].previousData.addressLine1, 'Old road');
+      assert.equal(logs[2].newData.addressLine1, 'New road');
       await assert.rejects(recordVideoCallChange({ documents: () => ({ create: async () => { throw new Error('audit unavailable'); } }) }, before, after, actorType), /audit unavailable/);
     }
   }
@@ -119,7 +124,7 @@ function transactionHarness(strapi, rollback = false) {
 }
 
 test('group appointment changes register exactly one email after updating multiple products', async () => {
-  for (const scenario of ['reschedule', 'unchanged', 'notes', 'cancel', 'rollback', 'merge']) {
+  for (const scenario of ['reschedule', 'unchanged', 'notes', 'address', 'address-limit', 'cancel', 'rollback', 'merge']) {
     const strapi = mailMock();
     const harness = transactionHarness(strapi, scenario === 'rollback');
     const rows = [1, 2].map(id => ({ id, documentId: `product-${id}`, magentoCustomerId: 7,
@@ -130,28 +135,55 @@ test('group appointment changes register exactly one email after updating multip
     const target = { ...group, documentId: 'group-2', appointmentReference: 'TAH-2026-000035', requestedDate: data.requestedDate, selectedTimeSlot: data.selectedTimeSlot,
       activeScheduleKey: load('src/utils/home-trial-group-key.ts').homeTrialScheduleKey(
         7, data.requestedDate, data.selectedTimeSlot, group) };
-    const updates = [];
+    const updates = [], logs = [];
     strapi.db.query = () => ({ findOne: async () => rows[0], findMany: async () => rows });
     strapi.documents = uid => ({
       findOne: async ({ documentId }) => documentId === 'group-2' ? target : group,
       findFirst: async () => uid.includes('product-form') ? {} : scenario === 'merge' ? target : undefined,
-      update: async request => { updates.push({ uid, ...request }); return request.data; }, create: async () => ({}),
+      update: async request => { updates.push({ uid, ...request }); return request.data; },
+      create: async ({ data }) => { logs.push(data); return {}; },
     });
     const { mutateHomeTrialGroup } = load('src/utils/mutate-home-trial-group.ts', {
       './find-home-trial-group': { findHomeTrialGroup: async () => scenario === 'merge' ? target : undefined },
       './create-home-trial-submission': { retryableGroupRace: () => false },
       './appointment-schedule': { validateAppointmentSchedule: () => undefined, validateReschedulingWindow: () => undefined,
         validAppointmentDate: value => /^\d{4}-\d{2}-\d{2}$/.test(value),
-        countScheduleChanges: () => 0, MAX_RESCHEDULES: 2 },
+        countScheduleChanges: () => scenario === 'address-limit' ? 2 : 0, MAX_RESCHEDULES: 2,
+        RESCHEDULE_LIMIT_MESSAGE: 'Limit reached' },
     });
-    const same = ['unchanged', 'notes'].includes(scenario);
+    const same = ['unchanged', 'notes', 'address', 'address-limit'].includes(scenario);
     const request = { documentId: 'product-1', customerId: 7, action: scenario === 'cancel' ? 'cancel' : 'reschedule',
       requestedDate: same ? data.previousDate : data.requestedDate,
       selectedTimeSlot: same ? data.previousTimeSlot : data.selectedTimeSlot,
       noteChanges: scenario === 'notes' ? { requestDetails: 'updated note' } : {},
+      addressChanges: scenario.startsWith('address') ? { addressLine1: 'New road', state: 'state-2' } : {},
     };
+    if (scenario.startsWith('address')) {
+      delete request.requestedDate;
+      delete request.selectedTimeSlot;
+    }
     if (scenario === 'rollback') await assert.rejects(mutateHomeTrialGroup(strapi, request), /rollback/);
-    else await mutateHomeTrialGroup(strapi, request);
+    else {
+      const result = await mutateHomeTrialGroup(strapi, request);
+      if (scenario === 'address-limit') {
+        assert.equal(result.error, 'Limit reached');
+        assert.equal(updates.length, 0);
+        assert.equal(logs.length, 0);
+      }
+    }
+    if (scenario === 'address') {
+      assert.equal(logs.length, 1);
+      assert.equal(logs[0].eventType, 'Rescheduled');
+      assert.equal(logs[0].previousData.addressLine1, null);
+      assert.equal(logs[0].newData.addressLine1, 'New road');
+      assert.equal(logs[0].newData.state, 'state-2');
+      assert.equal(logs[0].newData.requestedDate, group.requestedDate);
+      const products = updates.filter(update => update.uid.includes('product-submission'));
+      assert.equal(products.length, 2);
+      assert.ok(products.every(update => update.data.addressLine1 === 'New road' && update.data.state === 'state-2'));
+      assert.equal(updates.find(update => update.uid.includes('appointment-group')).data.activeScheduleKey,
+        load('src/utils/home-trial-group-key.ts').homeTrialScheduleKey(7, group.requestedDate, group.selectedTimeSlot, request.addressChanges));
+    }
     assert.equal(strapi.sent.length, 0, scenario);
     const shouldSend = ['reschedule', 'merge', 'cancel'].includes(scenario);
     assert.equal(harness.callbacks.length, shouldSend ? 1 : 0, scenario);
@@ -174,7 +206,9 @@ test('CMS schedule save sends only after commit; API requests and cancelled appo
     const strapi = mailMock();
     const harness = transactionHarness(strapi);
     let middleware, reads = 0;
-    strapi.documents = { use: fn => { middleware = fn; } };
+    const logs = [];
+    strapi.documents = () => ({ create: async ({ data }) => { logs.push(data); } });
+    strapi.documents.use = fn => { middleware = fn; };
     strapi.requestContext = { get: () => ({ state: { user: { id: 1 } }, request: {
       url: scenario === 'api' ? '/api/product-submissions/reschedule' : '/content-manager/collection-types/product',
     } }) };
@@ -190,6 +224,8 @@ test('CMS schedule save sends only after commit; API requests and cancelled appo
     });
     if (scenario === 'failure') await assert.rejects(run(), /save failed/);
     else await run();
+    assert.equal(logs.length, scenario === 'changed' ? 1 : 0, scenario);
+    if (logs.length) assert.equal(logs[0].actorType, 'Admin');
     assert.equal(strapi.sent.length, 0);
     await harness.commit();
     assert.equal(strapi.sent.length, scenario === 'changed' ? 1 : 0, scenario);
@@ -197,16 +233,18 @@ test('CMS schedule save sends only after commit; API requests and cancelled appo
 });
 
 test('single-appointment API queues only committed schedule changes and uses updated contact details', async () => {
-  for (const scenario of ['changed', 'unchanged', 'contact', 'invalid', 'rollback']) {
+  for (const scenario of ['changed', 'unchanged', 'contact', 'address', 'invalid', 'rollback']) {
     const strapi = mailMock();
     const harness = transactionHarness(strapi, scenario === 'rollback');
-    const appointment = { ...data, id: 1, formTag: 'product-store-visit', workflowStatus: 'Scheduled',
+    const appointment = { ...data, id: 1, formTag: scenario === 'address' ? 'store-visit' : 'product-store-visit', workflowStatus: 'Scheduled',
       requestedDate: data.previousDate, selectedTimeSlot: data.previousTimeSlot };
     const chain = new Proxy({}, { get: (_, key) => key === 'then' ? undefined
       : key === 'first' ? async () => ({ id: 1 }) : () => chain });
     strapi.db.connection = () => chain;
     strapi.db.query = () => ({ findOne: async () => appointment });
-    strapi.documents = () => ({ findFirst: async () => ({}), update: async () => ({}) });
+    const logs = [];
+    strapi.documents = () => ({ findFirst: async () => ({}), update: async () => ({}),
+      create: async ({ data }) => { logs.push(data); } });
     const prefix = '../../../utils/';
     const controller = load('src/api/product-submission/controllers/product-submission.ts', {
       '@strapi/strapi': { factories: { createCoreController: (_uid, factory) => factory({ strapi }) } },
@@ -219,18 +257,22 @@ test('single-appointment API queues only committed schedule changes and uses upd
       [prefix + 'mutate-home-trial-group']: { mutateHomeTrialGroup: async () => undefined },
       [prefix + 'list-customer-appointments']: {},
     }).default;
-    const same = ['unchanged', 'contact'].includes(scenario);
+    const same = ['unchanged', 'contact', 'address'].includes(scenario);
     const ctx = {
       params: { documentId: data.documentId }, state: { magentoCustomer: { id: 7 } }, ip: '127.0.0.1',
       request: { body: {
         requestedDate: same ? data.previousDate : data.requestedDate,
         selectedTimeSlot: same ? data.previousTimeSlot : data.selectedTimeSlot,
         ...(scenario === 'unchanged' ? {} : { customerEmail: 'updated@example.com' }),
+        ...(scenario === 'address' ? { addressLine1: 'New road' } : {}),
       } },
       badRequest: message => ({ error: message }),
     };
     if (scenario === 'rollback') await assert.rejects(controller.reschedule(ctx), /rollback/);
     else await controller.reschedule(ctx);
+    assert.equal(logs.length, ['changed', 'rollback', 'address'].includes(scenario) ? 1 : 0, scenario);
+    if (scenario === 'address') assert.equal(logs[0].newData.addressLine1, 'New road');
+    if (logs.length) assert.equal(logs[0].actorType, 'Customer');
     assert.equal(strapi.sent.length, 0);
     await harness.commit();
     assert.equal(strapi.sent.length, scenario === 'changed' ? 1 : 0, scenario);

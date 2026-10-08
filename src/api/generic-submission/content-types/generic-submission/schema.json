@@ -27,7 +27,7 @@
     },
     "preferredShowroom": {
       "type": "relation",
-      "relation": "oneToOne",
+      "relation": "manyToOne",
       "target": "api::showroom.showroom"
     },
     "preferredDate": {
@@ -35,6 +35,10 @@
     },
     "selectedTimeSlot": {
       "type": "string"
+    },
+    "reminderSentForDate": {
+      "type": "date",
+      "private": true
     },
     "notes": {
       "type": "text"
@@ -58,8 +62,30 @@
       "enum": [
         "New",
         "Contacted",
-        "Closed"
+        "Scheduled",
+        "Visited",
+        "Closed",
+        "Cancelled"
       ]
+    },
+    "magentoCustomerId": {
+      "type": "integer",
+      "private": true
+    },
+    "appointmentReference": {
+      "type": "string",
+      "private": true
+    },
+    "rescheduleHistory": {
+      "type": "json",
+      "private": true
+    },
+    "appointmentChanges": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::appointment-change.appointment-change",
+      "mappedBy": "affectedGenericSubmissions",
+      "private": true
     }
   }
 }

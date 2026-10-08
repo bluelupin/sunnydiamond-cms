@@ -1,4 +1,4 @@
-import { HOME_TRIAL_FORM_TAGS, homeTrialScheduleKey } from './home-trial-group-key';
+import { GROUPED_APPOINTMENT_FORM_TAGS, VIDEO_CALL_FORM_TAGS, appointmentGroupScheduleKey } from './home-trial-group-key';
 import { customerContactDetails } from './appointment-customer-details';
 import { assignAppointmentReference } from './appointment-reference';
 import { findHomeTrialGroup } from './find-home-trial-group';
@@ -15,8 +15,8 @@ export const retryableGroupRace = (error: any) => {
 
 /** Called only with a customer ID resolved by the Magento policy. */
 export async function createHomeTrialSubmission(strapi: any, data: any) {
-  if (!HOME_TRIAL_FORM_TAGS.includes(data.formTag)) throw new Error('Only home-trial submissions may join appointment groups.');
-  const key = homeTrialScheduleKey(data.magentoCustomerId, data.requestedDate, data.selectedTimeSlot, data);
+  if (!GROUPED_APPOINTMENT_FORM_TAGS.includes(data.formTag)) throw new Error('This submission type cannot join appointment groups.');
+  const key = appointmentGroupScheduleKey(data.magentoCustomerId, data.requestedDate, data.selectedTimeSlot, data);
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
       return await strapi.db.transaction(async ({ trx }: any) => {
@@ -25,13 +25,15 @@ export async function createHomeTrialSubmission(strapi: any, data: any) {
         const existingGroup = Boolean(group);
         if (!group) {
           group = await groups.create({ data: {
+            formTag: data.formTag,
             magentoCustomerId: data.magentoCustomerId,
             requestedDate: data.requestedDate, selectedTimeSlot: data.selectedTimeSlot,
             activeScheduleKey: key, workflowStatus: 'New',
             addressLine1: data.addressLine1, addressLine2: data.addressLine2,
             city: data.city, pincode: data.pincode, state: data.state,
           } });
-          group.appointmentReference = await assignAppointmentReference(strapi, GROUP_UID, group, 'TAH');
+          group.appointmentReference = await assignAppointmentReference(strapi, GROUP_UID, group,
+            VIDEO_CALL_FORM_TAGS.includes(data.formTag) ? 'VC' : 'TAH');
         }
         if (group.magentoCustomerId !== data.magentoCustomerId ||
           group.requestedDate !== data.requestedDate || group.selectedTimeSlot !== data.selectedTimeSlot ||

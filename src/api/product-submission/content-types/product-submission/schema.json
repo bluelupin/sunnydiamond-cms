@@ -15,12 +15,14 @@
       "required": true
     },
     "productName": {
-      "type": "string",
-      "required": true
+      "type": "string"
     },
     "productId": {
       "type": "string"
     },
+    "productSku": { "type": "string", "maxLength": 64 },
+    "metalColour": { "type": "string", "maxLength": 100 },
+    "metalPurity": { "type": "string", "maxLength": 100 },
     "customerName": {
       "type": "string",
       "required": true
@@ -59,6 +61,9 @@
       "private": true
     },
     "requestDetails": {
+      "type": "text"
+    },
+    "purposeOfVisit": {
       "type": "text"
     },
     "addressLine1": {

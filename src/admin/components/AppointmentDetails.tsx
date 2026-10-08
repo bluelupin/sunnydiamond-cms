@@ -1,4 +1,4 @@
-import { useField, type InputProps } from '@strapi/strapi/admin';
+import { useField, useForm, type InputProps } from '@strapi/strapi/admin';
 import { Box, Field, Typography } from '@strapi/design-system';
 
 const statuses: Record<string, string> = {
@@ -17,6 +17,15 @@ const dateText = (value: unknown) => {
 export const AppointmentDetails = (props: InputProps) => {
   const field = useField<Record<string, any>>(props.name);
   const data = field.value && typeof field.value === 'object' && !Array.isArray(field.value) ? field.value : {};
+  const hideAffectedProducts = useForm('AppointmentDetails', state => {
+    const snapshots = [state.values.previousData, state.values.newData]
+      .filter(snapshot => snapshot && typeof snapshot === 'object' && !Array.isArray(snapshot));
+    const storeVisit = snapshots.some(snapshot => ['store-visit', 'product-store-visit', 'book-an-appointment'].includes(snapshot.formTag));
+    const hasProducts = snapshots.some(snapshot => [snapshot, ...(Array.isArray(snapshot.products) ? snapshot.products : [])]
+      .some(product => [product?.productName, product?.productId]
+        .some(value => typeof value === 'string' ? value.trim().length > 0 : value != null)));
+    return storeVisit && !hasProducts;
+  });
   const rows = [
     ['Date', dateText(data.requestedDate)],
     ['Time', data.selectedTimeSlot || 'Not recorded'],
@@ -24,11 +33,23 @@ export const AppointmentDetails = (props: InputProps) => {
     ['Address', [data.addressLine1, data.addressLine2, data.city, data.pincode].filter(Boolean).join(', ') || 'Not recorded'],
   ];
   if (Object.prototype.hasOwnProperty.call(data, 'requestDetails')) rows.push(['Note', data.requestDetails || 'Not recorded']);
+  if (data.productId || data.productSku) rows.push(
+    ['Parent SKU', data.productId || 'Not recorded'],
+    ['Variant SKU', data.productSku || 'Not recorded'],
+    ['Metal colour', data.metalColour || 'Not recorded'],
+    ['Metal purity', data.metalPurity || 'Not recorded'],
+  );
   const details = (Array.isArray(data.customerDetails) ? data.customerDetails : [])
     .filter((detail: any) => detail && typeof detail === 'object');
   const customers = details.slice(0, 1);
   return (
     <Field.Root name={props.name}>
+      {props.name === 'previousData' && hideAffectedProducts && <style>{`
+        /* Match the relation control and its direct sibling list, never the edit-page container. */
+        div:has(input[name="affectedSubmissions"]):has(> div:nth-child(2):last-child > div > ol) {
+          display: none;
+        }
+      `}</style>}
       <Field.Label>{props.name === 'previousData' ? 'Previous appointment' : 'Updated appointment'}</Field.Label>
       <Box background="neutral0" borderColor="neutral150" hasRadius padding={4}>
         <dl style={{ margin: 0 }}>

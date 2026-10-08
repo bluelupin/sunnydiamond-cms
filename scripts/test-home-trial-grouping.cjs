@@ -51,6 +51,16 @@ function harness() {
   };
   return { strapi, groups, products };
 }
+
+test('group members retain their own SKU, colour and purity for the same parent product', async () => {
+  const { strapi, products } = harness();
+  const first = await submit(strapi, { ...input, productId: 'RING', productSku: 'RING-YG', metalColour: 'yellow-gold', metalPurity: '18K' });
+  const second = await submit(strapi, { ...input, productId: 'RING', productSku: 'RING-RG', metalColour: 'rose-gold', metalPurity: '14K' });
+  assert.equal(first.groupDocumentId, second.groupDocumentId);
+  assert.deepEqual(products.map(row => [row.productId, row.productSku, row.metalColour, row.metalPurity]), [
+    ['RING', 'RING-YG', 'yellow-gold', '18K'], ['RING', 'RING-RG', 'rose-gold', '14K'],
+  ]);
+});
 test('matching addresses join; every different address field creates a separate group', async () => {
   const { strapi, groups } = harness();
   const first = await submit(strapi, input);
@@ -84,4 +94,16 @@ test('customer and schedule still separate groups, and missing optional lines eq
   for (const change of [{ magentoCustomerId: 8 }, { requestedDate: '2099-10-02' }, { selectedTimeSlot: '11:00 AM' }]) {
     assert.notEqual((await submit(strapi, { ...input, addressLine2: undefined, ...change })).groupDocumentId, first.groupDocumentId);
   }
+});
+
+test('video-call forms share one address-independent group, separate from home trials', async () => {
+  const { strapi, groups } = harness();
+  const first = await submit(strapi, { ...input, formTag: 'schedule-video-call' });
+  const second = await submit(strapi, { ...input, formTag: 'product-video-call', addressLine1: 'Other address' });
+  const home = await submit(strapi, input);
+  assert.equal(first.groupDocumentId, second.groupDocumentId);
+  assert.match(first.appointmentReference, /^VC-\d{4}-\d{6}$/);
+  assert.equal(first.appointmentReference, second.appointmentReference);
+  assert.notEqual(first.groupDocumentId, home.groupDocumentId);
+  assert.equal(groups.length, 2);
 });

@@ -379,6 +379,7 @@ export interface SharedBespokeCustomDesignForm extends Struct.ComponentSchema {
     displayName: 'Bespoke Custom Design Form';
   };
   attributes: {
+    description: Schema.Attribute.Text;
     emailLabel: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'Email ID'>;
@@ -1193,8 +1194,8 @@ export interface SharedImageAsset extends Struct.ComponentSchema {
     displayName: 'Image Asset';
   };
   attributes: {
-    desktopImage: Schema.Attribute.Media<'images'>;
-    mobileImage: Schema.Attribute.Media<'images'>;
+    desktopImage: Schema.Attribute.Media<'images' | 'videos'>;
+    mobileImage: Schema.Attribute.Media<'images' | 'videos'>;
   };
 }
 
@@ -1391,6 +1392,7 @@ export interface SharedLinkItem extends Struct.ComponentSchema {
     displayName: 'Link Item';
   };
   attributes: {
+    cards: Schema.Attribute.Component<'shared.featured-story-card', true>;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     label: Schema.Attribute.String & Schema.Attribute.Required;
     targetType: Schema.Attribute.Enumeration<
@@ -1612,6 +1614,36 @@ export interface SharedProcessStep extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedProductListingCard extends Struct.ComponentSchema {
+  collectionName: 'components_shared_product_listing_cards';
+  info: {
+    description: 'Promotional card with separate desktop and mobile product-grid positions (starting at 1)';
+    displayName: 'Product Listing Card';
+  };
+  attributes: {
+    cta: Schema.Attribute.Component<'shared.cta', false>;
+    description: Schema.Attribute.Text;
+    desktopPosition: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 1;
+        },
+        number
+      >;
+    image: Schema.Attribute.Component<'shared.image-asset', false>;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    mobilePosition: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 1;
+        },
+        number
+      >;
+  };
+}
+
 export interface SharedProductSku extends Struct.ComponentSchema {
   collectionName: 'components_shared_product_skus';
   info: {
@@ -1663,6 +1695,27 @@ export interface SharedPromoCard extends Struct.ComponentSchema {
     steps: Schema.Attribute.Component<'shared.process-step', true>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
     video: Schema.Attribute.Component<'shared.video-asset', false>;
+  };
+}
+
+export interface SharedSearchLink extends Struct.ComponentSchema {
+  collectionName: 'components_shared_search_links';
+  info: {
+    description: 'A link the search dropdown can show. Keywords (comma separated) decide when a shortcut or education link appears; popular searches ignore them.';
+    displayName: 'Search Link';
+  };
+  attributes: {
+    href: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 300;
+      }>;
+    keywords: Schema.Attribute.Text;
+    label: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 80;
+      }>;
   };
 }
 
@@ -1748,6 +1801,30 @@ export interface SharedStoreLocationFilter extends Struct.ComponentSchema {
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     label: Schema.Attribute.String & Schema.Attribute.Required;
     value: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedStripCartItem extends Struct.ComponentSchema {
+  collectionName: 'components_shared_strip_cart_items';
+  info: {
+    displayName: 'Strip Cart Item';
+  };
+  attributes: {
+    badgeTitle: Schema.Attribute.String;
+    icon: Schema.Attribute.Media<'images'>;
+    showBadge: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+  };
+}
+
+export interface SharedStripCartItemsSection extends Struct.ComponentSchema {
+  collectionName: 'components_shared_strip_cart_sections';
+  info: {
+    displayName: 'Strip Cart Items';
+  };
+  attributes: {
+    items: Schema.Attribute.Component<'shared.strip-cart-item', true>;
+    title: Schema.Attribute.String;
+    tncCta: Schema.Attribute.Component<'shared.cta', false>;
   };
 }
 
@@ -1845,30 +1922,6 @@ export interface SharedTimelineSection extends Struct.ComponentSchema {
       'shared.timeline-milestone',
       true
     >;
-  };
-}
-
-export interface SharedStripCartItem extends Struct.ComponentSchema {
-  collectionName: 'components_shared_strip_cart_items';
-  info: {
-    displayName: 'Strip Cart Item';
-  };
-  attributes: {
-    badgeTitle: Schema.Attribute.String;
-    icon: Schema.Attribute.Media<'images'>;
-    showBadge: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
-  };
-}
-
-export interface SharedStripCartItemsSection extends Struct.ComponentSchema {
-  collectionName: 'components_shared_strip_cart_sections';
-  info: {
-    displayName: 'Strip Cart Items';
-  };
-  attributes: {
-    items: Schema.Attribute.Component<'shared.strip-cart-item', true>;
-    title: Schema.Attribute.String;
-    tncCta: Schema.Attribute.Component<'shared.cta', false>;
   };
 }
 
@@ -2054,10 +2107,12 @@ declare module '@strapi/strapi' {
       'shared.policy-page-header': SharedPolicyPageHeader;
       'shared.process-section': SharedProcessSection;
       'shared.process-step': SharedProcessStep;
+      'shared.product-listing-card': SharedProductListingCard;
       'shared.product-sku': SharedProductSku;
       'shared.profile-side-tab': SharedProfileSideTab;
       'shared.profile-trust-badge-section': SharedProfileTrustBadgeSection;
       'shared.promo-card': SharedPromoCard;
+      'shared.search-link': SharedSearchLink;
       'shared.seo': SharedSeo;
       'shared.showroom-section': SharedShowroomSection;
       'shared.sidebar-navigation-item': SharedSidebarNavigationItem;

@@ -311,13 +311,7 @@ export function normalizeResumeAutofill(raw: any, sourceText = '', now = new Dat
     ...(data.workExperience.positions.length ? [] : ['workExperience.positions']),
   ];
   const warnings = [
-    ...(dates.duration !== null ? ['Work experience was calculated from listed dates; job relevance was not assessed.'] : []),
-    ...(dates.future ? ['Work history contains future dates; future months were excluded from experience.'] : []),
-    ...(dates.approximate ? ['Year-only work dates use January boundaries; experience is approximate.'] : []),
-    ...(dates.invalid ? ['Work experience could not be calculated because some job dates are missing or invalid.'] : []),
-    ...(recoveredPositions.length ? ['Some work roles were recovered from resume text; verify the positions.'] : []),
-    ...(rejected.length ? ['Some extracted values lacked source evidence and were omitted; verify the resume fields.'] : []),
-    ...(emails.length > 1 ? ['Multiple email addresses were found; verify the selected address.'] : []),
+    ...(rejected.length ? ['Some extracted values lacked source evidence and were omitted; verify the resume fields.'] : [])
   ];
   return { data, missingFields, warnings };
 }

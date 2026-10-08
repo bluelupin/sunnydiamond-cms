@@ -8,17 +8,34 @@ export async function configureProductSubmissionTracker(strapi: Core.Strapi) {
   const edit = (configuration.layouts?.edit ?? [])
     .map((row: { name: string; size: number }[]) => row.filter((field) => !readonlyFields.includes(field.name)))
     .filter((row: { name: string }[]) => row.length > 0);
-  edit.push([{ name: 'addedPieces', size: 12 }], [{ name: 'appointmentGroup', size: 12 }], [{ name: 'appointmentChanges', size: 12 }]);
+  if (!edit.some((row: { name: string }[]) => row.some(field => field.name === 'purposeOfVisit'))) {
+    edit.push([{ name: 'purposeOfVisit', size: 6 }]);
+  }
+  for (const name of ['productSku', 'metalColour', 'metalPurity']) {
+    if (!edit.some((row: { name: string }[]) => row.some(field => field.name === name))) {
+      edit.push([{ name, size: 6 }]);
+    }
+  }
+  edit.push([{ name: 'appointmentGroup', size: 12 }], [{ name: 'appointmentChanges', size: 12 }]);
   const metadata = configuration.metadatas?.rescheduleHistory ?? {};
   const metadatas = {
     ...configuration.metadatas,
+    ...Object.fromEntries([['productSku', 'Variant SKU'], ['metalColour', 'Metal colour'], ['metalPurity', 'Metal purity']]
+      .map(([name, label]) => [name, {
+        ...configuration.metadatas?.[name],
+        edit: { ...configuration.metadatas?.[name]?.edit, label, editable: false, visible: true },
+      }])),
+    purposeOfVisit: {
+      ...configuration.metadatas?.purposeOfVisit,
+      edit: { ...configuration.metadatas?.purposeOfVisit?.edit, label: 'Purpose of Visit', editable: false, visible: true },
+    },
     rescheduleHistory: {
       ...metadata,
       edit: { ...metadata.edit, editable: false, visible: false },
     },
     addedPieces: {
       ...configuration.metadatas?.addedPieces,
-      edit: { ...configuration.metadatas?.addedPieces?.edit, label: 'Pieces added by the customer', editable: false, visible: true },
+      edit: { ...configuration.metadatas?.addedPieces?.edit, editable: false, visible: false },
     },
     appointmentGroup: {
       ...configuration.metadatas?.appointmentGroup,

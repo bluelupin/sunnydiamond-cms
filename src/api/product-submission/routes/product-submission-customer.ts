@@ -1,4 +1,7 @@
 const customerOnly = { policies: ['global::trusted-magento-customer'] };
+const customerList = {
+  policies: [{ name: 'global::trusted-magento-customer', config: { acceptVerifiedEmail: true, acceptVerifiedPhone: true } }],
+};
 
 export default {
   routes: [
@@ -24,13 +27,13 @@ export default {
       method: 'GET',
       path: '/customer/appointments/open',
       handler: 'product-submission.openAppointments',
-      config: customerOnly,
+      config: customerList,
     },
     {
       method: 'GET',
       path: '/customer/appointments',
       handler: 'product-submission.customerAppointments',
-      config: customerOnly,
+      config: customerList,
     },
   ],
 };

@@ -33,6 +33,10 @@ const EXPORTS = {
       'formTag',
       'productName',
       'productId',
+      'productSku',
+      'metalColour',
+      'metalPurity',
+      'addedPieces',
       'appointmentGroupId',
       'appointmentRequestedDate',
       'appointmentSelectedTimeSlot',
@@ -68,7 +72,7 @@ const EXPORTS = {
       appointmentGroup: { populate: { state: true } },
       appointmentChanges: { populate: {
         sourceGroup: true, targetGroup: true,
-        affectedSubmissions: { select: ['documentId', 'productId', 'productName'] },
+        affectedSubmissions: { select: ['documentId', 'productId', 'productName', 'productSku', 'metalColour', 'metalPurity'] },
       } },
     },
   },
@@ -219,6 +223,7 @@ const getCellValue = (record, field, baseUrl) => {
       previousData: change.previousData, newData: change.newData,
       affectedProducts: (change.affectedSubmissions ?? []).map(product => ({
         documentId: product.documentId, productId: product.productId, productName: product.productName,
+        productSku: product.productSku ?? null, metalColour: product.metalColour ?? null, metalPurity: product.metalPurity ?? null,
       })),
     }));
   if (

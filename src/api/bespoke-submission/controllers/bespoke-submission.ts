@@ -2,6 +2,7 @@ import { factories } from '@strapi/strapi';
 import { checkFormSubmissionRateLimit, clientIp } from '../../../utils/form-submission-rate-limit';
 import { requestLocale } from '../../../utils/request-locale';
 import { sendCustomCreationReceivedEmail } from '../../../utils/custom-creation-email';
+import { queueEnquirySms } from '../../../utils/enquiry-sms';
 
 const BESPOKE_SUBMISSION_UID = 'api::bespoke-submission.bespoke-submission';
 const BESPOKE_PAGE_UID = 'api::contact-bespoke-page.contact-bespoke-page';
@@ -95,6 +96,7 @@ export default factories.createCoreController(BESPOKE_SUBMISSION_UID as any, ({ 
       });
     }
 
+    await queueEnquirySms(strapi, { documentId: entity.documentId, phone }, 'serviceEnquiryReceived');
     await sendCustomCreationReceivedEmail(strapi, {
       documentId: entity.documentId, customerName: fullName, customerEmail: email,
     });

@@ -5,7 +5,7 @@ export async function configureAppointmentHistory(strapi: Core.Strapi) {
   const service = strapi.plugin('content-manager').service('content-types');
   for (const [uid, mainField, readonlyFields] of [
     ['api::appointment-group.appointment-group', 'appointmentReference', ['submissions', 'mergedInto']],
-    ['api::appointment-change.appointment-change', 'eventType', ['sourceGroup', 'targetGroup', 'affectedSubmissions']],
+    ['api::appointment-change.appointment-change', 'eventType', ['sourceGroup', 'targetGroup', 'affectedSubmissions', 'affectedGenericSubmissions']],
   ] as const) {
     const model = strapi.contentTypes[uid];
     const configuration = await service.findConfiguration(model);
@@ -26,7 +26,7 @@ export async function configureAppointmentHistory(strapi: Core.Strapi) {
       const labels: Record<string, string> = {
         eventType: 'Action', changedAt: 'Changed on', actorType: 'Changed by',
         previousData: 'Previous appointment', newData: 'Updated appointment',
-        affectedSubmissions: 'Affected products',
+        affectedSubmissions: 'Affected products', affectedGenericSubmissions: 'General enquiries appointments',
       };
       for (const [name, label] of Object.entries(labels)) {
         metadatas[name] = { ...metadatas[name],
@@ -42,7 +42,7 @@ export async function configureAppointmentHistory(strapi: Core.Strapi) {
         [{ name: 'eventType', size: 6 }, { name: 'changedAt', size: 6 }],
         [{ name: 'actorType', size: 12 }],
         [{ name: 'previousData', size: 12 }], [{ name: 'newData', size: 12 }],
-        [{ name: 'affectedSubmissions', size: 12 }],
+        [{ name: 'affectedSubmissions', size: 12 }], [{ name: 'affectedGenericSubmissions', size: 12 }],
       ];
       list = ['changedAt', 'eventType', 'affectedSubmissions', 'actorType'];
     }

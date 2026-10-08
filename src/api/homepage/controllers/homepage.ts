@@ -165,6 +165,14 @@ const globalHeaderPopulate = {
   },
   headerNavigationLinks: {
     fields: ['label', 'url', 'targetType', 'isActive'],
+    populate: {
+      cards: {
+        populate: {
+          image: imageAssetPopulate,
+          cta: ctaPopulate,
+        },
+      },
+    },
   },
   sidebarNavigation: {
     fields: ['label', 'sectionId', 'showField'],

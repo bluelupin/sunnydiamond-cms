@@ -1,6 +1,9 @@
 import { formatEmailDate, restyleSunnyEmail, sunnyEmailLogoAttachments } from './sunny-email-layout';
 
-export interface AppointmentPiece { productId: string; productName?: string | null; url?: string | null }
+export interface AppointmentPiece {
+  productId: string; productName?: string | null; url?: string | null;
+  productSku?: string | null; metalColour?: string | null; metalPurity?: string | null;
+}
 
 export interface AppointmentPiecesData {
   appointmentId: string;
@@ -17,7 +20,8 @@ const escapeHtml = (value: string) => value.replace(/[&<>"']/g, char => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
 }[char]!));
 
-const pieceLabel = (piece: AppointmentPiece) => `${piece.productName || 'Selected jewellery'} (${piece.productId})`;
+const pieceLabel = (piece: AppointmentPiece) => `${piece.productName || 'Selected jewellery'} (${piece.productSku || piece.productId})${
+  [piece.metalColour, piece.metalPurity].filter(Boolean).length ? ` — ${[piece.metalColour, piece.metalPurity].filter(Boolean).join(', ')}` : ''}`;
 
 const details = (data: AppointmentPiecesData, extra: string[][] = []) => [
   ['Appointment ID', data.appointmentId], ['Appointment Type', data.appointmentType],

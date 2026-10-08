@@ -1,6 +1,7 @@
 import type { Core } from '@strapi/strapi';
 import { tryAtHomeReminderTemplate } from '../emails/try-at-home-reminder';
 import { nextCalendarDate } from './showroom-appointment-reminder';
+import { VIDEO_CALL_FORM_TAGS } from './home-trial-group-key';
 
 const GROUP_UID = 'api::appointment-group.appointment-group';
 
@@ -18,6 +19,7 @@ const manageUrl = (documentId?: string) => {
 export async function sendTryAtHomeReminder(strapi: Core.Strapi, group: any) {
   const products = Array.isArray(group.submissions) ? group.submissions : [];
   const representative = products[0];
+  if (VIDEO_CALL_FORM_TAGS.includes(group.formTag) || VIDEO_CALL_FORM_TAGS.includes(representative?.formTag)) return false;
   const to = representative?.customerEmail?.trim();
   if (!to || !/^[^\s<>@,;]+@[^\s<>@,;]+\.[^\s<>@,;]+$/.test(to) ||
       !group.requestedDate || !group.selectedTimeSlot?.trim()) return false;

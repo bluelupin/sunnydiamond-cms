@@ -562,6 +562,10 @@ export interface ApiAppointmentChangeAppointmentChange
       ['Customer', 'Admin', 'Migration']
     > &
       Schema.Attribute.DefaultTo<'Customer'>;
+    affectedGenericSubmissions: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::generic-submission.generic-submission'
+    >;
     affectedSubmissions: Schema.Attribute.Relation<
       'manyToMany',
       'api::product-submission.product-submission'
@@ -634,6 +638,7 @@ export interface ApiAppointmentGroupAppointmentGroup
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    formTag: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -646,6 +651,15 @@ export interface ApiAppointmentGroupAppointmentGroup
       'api::appointment-group.appointment-group'
     >;
     pincode: Schema.Attribute.String;
+    priorRescheduleCount: Schema.Attribute.Integer &
+      Schema.Attribute.Private &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<0>;
     publishedAt: Schema.Attribute.DateTime;
     reminderSentForDate: Schema.Attribute.Date & Schema.Attribute.Private;
     requestedDate: Schema.Attribute.Date;
@@ -1183,8 +1197,15 @@ export interface ApiCareerOpeningCareerOpening
       'api::career-opening.career-opening'
     >;
     location: Schema.Attribute.Enumeration<
-      ['COCHIN', 'COIMBATORE', 'THRISSUR', 'CHENNAI', 'NEW DELHI']
+      ['Cochin', 'Coimbatore', 'Thrissur', 'Chennai', 'New Delhi']
     > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    postedDate: Schema.Attribute.Date &
+      Schema.Attribute.Required &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -1667,6 +1688,12 @@ export interface ApiGenericSubmissionGenericSubmission
     draftAndPublish: false;
   };
   attributes: {
+    appointmentChanges: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::appointment-change.appointment-change'
+    > &
+      Schema.Attribute.Private;
+    appointmentReference: Schema.Attribute.String & Schema.Attribute.Private;
     consentAccepted: Schema.Attribute.Boolean &
       Schema.Attribute.DefaultTo<false>;
     createdAt: Schema.Attribute.DateTime;
@@ -1682,22 +1709,25 @@ export interface ApiGenericSubmissionGenericSubmission
       'api::generic-submission.generic-submission'
     > &
       Schema.Attribute.Private;
+    magentoCustomerId: Schema.Attribute.Integer & Schema.Attribute.Private;
     notes: Schema.Attribute.Text;
     phone: Schema.Attribute.String;
     preferredDate: Schema.Attribute.Date;
     preferredShowroom: Schema.Attribute.Relation<
-      'oneToOne',
+      'manyToOne',
       'api::showroom.showroom'
     >;
     publishedAt: Schema.Attribute.DateTime;
     reasonForContact: Schema.Attribute.String;
+    reminderSentForDate: Schema.Attribute.Date & Schema.Attribute.Private;
+    rescheduleHistory: Schema.Attribute.JSON & Schema.Attribute.Private;
     selectedTimeSlot: Schema.Attribute.String;
     sourcePage: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     workflowStatus: Schema.Attribute.Enumeration<
-      ['New', 'Contacted', 'Closed']
+      ['New', 'Contacted', 'Scheduled', 'Visited', 'Closed', 'Cancelled']
     > &
       Schema.Attribute.DefaultTo<'New'>;
   };
@@ -2322,7 +2352,10 @@ export interface ApiProductDisplayPageProductDisplayPage
         };
       }>;
     publishedAt: Schema.Attribute.DateTime;
-    stripCartItems: Schema.Attribute.Component<'shared.strip-cart-items-section', false> &
+    stripCartItems: Schema.Attribute.Component<
+      'shared.strip-cart-items-section',
+      false
+    > &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -2456,6 +2489,15 @@ export interface ApiProductLandingPageProductLandingPage
           localized: true;
         };
       }>;
+    listingCards: Schema.Attribute.Component<
+      'shared.product-listing-card',
+      true
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -2524,14 +2566,27 @@ export interface ApiProductSubmissionProductSubmission
     > &
       Schema.Attribute.Private;
     magentoCustomerId: Schema.Attribute.Integer & Schema.Attribute.Private;
+    metalColour: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+      }>;
+    metalPurity: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+      }>;
     pincode: Schema.Attribute.String;
     preferredShowroom: Schema.Attribute.Relation<
       'manyToOne',
       'api::showroom.showroom'
     >;
     productId: Schema.Attribute.String;
-    productName: Schema.Attribute.String & Schema.Attribute.Required;
+    productName: Schema.Attribute.String;
+    productSku: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 64;
+      }>;
     publishedAt: Schema.Attribute.DateTime;
+    purposeOfVisit: Schema.Attribute.Text;
     reminderSentForDate: Schema.Attribute.Date & Schema.Attribute.Private;
     requestDetails: Schema.Attribute.Text;
     requestedDate: Schema.Attribute.Date;
@@ -2622,6 +2677,37 @@ export interface ApiSavedCreationSavedCreation
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 64;
       }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiSearchConfigSearchConfig extends Struct.SingleTypeSchema {
+  collectionName: 'search_configs';
+  info: {
+    description: 'What the website search dropdown offers besides products: popular searches, service shortcuts and education links.';
+    displayName: 'Search Config';
+    pluralName: 'search-configs';
+    singularName: 'search-config';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    educationLinks: Schema.Attribute.Component<'shared.search-link', true>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::search-config.search-config'
+    > &
+      Schema.Attribute.Private;
+    popularSearches: Schema.Attribute.Component<'shared.search-link', true>;
+    publishedAt: Schema.Attribute.DateTime;
+    serviceShortcuts: Schema.Attribute.Component<'shared.search-link', true>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -2804,6 +2890,82 @@ export interface ApiSkillAndLanguageSkillAndLanguage
     publishedAt: Schema.Attribute.DateTime;
     type: Schema.Attribute.Enumeration<['Skill', 'Language']> &
       Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiSmsNotificationSmsNotification
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'sms_notifications';
+  info: {
+    displayName: 'SMS Notifications';
+    pluralName: 'sms-notifications';
+    singularName: 'sms-notification';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: false;
+    };
+    'content-type-builder': {
+      visible: false;
+    };
+  };
+  attributes: {
+    acceptedAt: Schema.Attribute.DateTime;
+    applicationDocumentId: Schema.Attribute.String & Schema.Attribute.Required;
+    attempts: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<0>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    deduplicationKey: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Private &
+      Schema.Attribute.Unique &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 64;
+      }>;
+    deliveredAt: Schema.Attribute.DateTime;
+    lastAttemptAt: Schema.Attribute.DateTime;
+    lastErrorCode: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::sms-notification.sms-notification'
+    > &
+      Schema.Attribute.Private;
+    nextAttemptAt: Schema.Attribute.DateTime;
+    notificationType: Schema.Attribute.Enumeration<
+      [
+        'careerApplicationReceived',
+        'appointmentRequestReceived',
+        'enquiryReceived',
+        'serviceEnquiryReceived',
+      ]
+    > &
+      Schema.Attribute.Required;
+    providerMessageId: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    recipient: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Private;
+    status: Schema.Attribute.Enumeration<
+      ['pending', 'processing', 'accepted', 'delivered', 'failed', 'unknown']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'pending'>;
+    templateId: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -3587,9 +3749,11 @@ declare module '@strapi/strapi' {
       'api::product-submission.product-submission': ApiProductSubmissionProductSubmission;
       'api::profile-page.profile-page': ApiProfilePageProfilePage;
       'api::saved-creation.saved-creation': ApiSavedCreationSavedCreation;
+      'api::search-config.search-config': ApiSearchConfigSearchConfig;
       'api::showroom.showroom': ApiShowroomShowroom;
       'api::size-guide.size-guide': ApiSizeGuideSizeGuide;
       'api::skill-and-language.skill-and-language': ApiSkillAndLanguageSkillAndLanguage;
+      'api::sms-notification.sms-notification': ApiSmsNotificationSmsNotification;
       'api::state.state': ApiStateState;
       'api::store-locator-page.store-locator-page': ApiStoreLocatorPageStoreLocatorPage;
       'api::submissions-job-opening.submissions-job-opening': ApiSubmissionsJobOpeningSubmissionsJobOpening;

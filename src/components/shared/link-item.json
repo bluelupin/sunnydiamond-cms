@@ -22,6 +22,11 @@
       ],
       "default": "internal"
     },
+    "cards": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.featured-story-card"
+    },
     "isActive": {
       "type": "boolean",
       "default": true

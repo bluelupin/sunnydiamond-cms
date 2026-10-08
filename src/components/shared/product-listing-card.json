@@ -1,0 +1,36 @@
+{
+  "collectionName": "components_shared_product_listing_cards",
+  "info": {
+    "displayName": "Product Listing Card",
+    "description": "Promotional card with separate desktop and mobile product-grid positions (starting at 1)"
+  },
+  "attributes": {
+    "description": {
+      "type": "text"
+    },
+    "cta": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": false
+    },
+    "image": {
+      "type": "component",
+      "component": "shared.image-asset",
+      "repeatable": false
+    },
+    "desktopPosition": {
+      "type": "integer",
+      "required": true,
+      "min": 1
+    },
+    "mobilePosition": {
+      "type": "integer",
+      "required": true,
+      "min": 1
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

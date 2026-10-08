@@ -1,13 +1,18 @@
+import { mutateGenericAppointment, linkGuestGenericAppointments } from '../../../utils/generic-appointments';
 import { factories } from '@strapi/strapi';
+import { productVariantDetails, productVariantKey, productVariantSnapshot } from '../../../utils/product-variant-details';
+import { queueAppointmentRequestSms } from '../../../utils/appointment-request-sms';
+import { queueEnquirySms } from '../../../utils/enquiry-sms';
 import { recordVideoCallChange } from '../../../utils/video-call-change-log';
 import { checkFormSubmissionRateLimit, clientIp } from '../../../utils/form-submission-rate-limit';
 import { requestLocale } from '../../../utils/request-locale';
 import { RESCHEDULABLE_FORM_TAGS, validateAppointmentSchedule, validateReschedulingWindow, appointmentToday, appointmentStartsAt,
   countScheduleChanges, MAX_RESCHEDULES, RESCHEDULE_LIMIT_MESSAGE, validAppointmentDate } from '../../../utils/appointment-schedule';
-import { HOME_TRIAL_FORM_TAGS } from '../../../utils/home-trial-group-key';
+import { GROUPED_APPOINTMENT_FORM_TAGS } from '../../../utils/home-trial-group-key';
 import { createHomeTrialSubmission } from '../../../utils/create-home-trial-submission';
 import { mutateHomeTrialGroup } from '../../../utils/mutate-home-trial-group';
 import { listCustomerAppointments } from '../../../utils/list-customer-appointments';
+import { linkGuestStoreVisits } from '../../../utils/link-guest-store-visits';
 import { appointmentCustomerChanges, customerDetailsChanged, customerDetailsSnapshot } from '../../../utils/appointment-customer-details';
 import { appointmentNoteChanges } from '../../../utils/appointment-note';
 import { notifyRescheduleAfterCommit } from '../../../utils/appointment-reschedule-email';
@@ -19,18 +24,20 @@ import { sendVideoCallConfirmationEmail, notifyVideoCallCancellationAfterCommit 
 import { sendProductPersonalisationConfirmationEmail } from '../../../utils/product-personalisation-confirmation-email';
 import { notifyPieceAddedAfterCommit } from '../../../utils/appointment-piece-email';
 import { storeVisitClash, STORE_VISIT_CLASH_MESSAGE } from '../../../utils/store-visit-clash';
+import { appointmentAddressChanges, appointmentAddressChanged, appointmentAddressSnapshot } from '../../../utils/appointment-address';
 
 const PRODUCT_SUBMISSION_UID = 'api::product-submission.product-submission';
 const PRODUCT_FORM_UID = 'api::product-form.product-form';
 const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
 // Appointments a customer can add pieces to (R-AP-8/R-AP-10); try-at-home groups by booking instead.
-const PIECE_FORM_TAGS = ['product-store-visit', 'product-video-call'];
+const PIECE_FORM_TAGS = ['store-visit', 'product-store-visit', 'product-video-call'];
 const OPEN_STATUSES = ['New', 'Contacted', 'Scheduled'];
 const MAX_ADDED_PIECES = 10;
 const APPOINTMENT_FORM_TAGS = [
 ...RESCHEDULABLE_FORM_TAGS,
 'product-video-call',
 'product-personalisation',
+'store-visit',
 'try-at-home-form',
 'product-store-visit'
 ];
@@ -86,6 +93,8 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
   async submit(ctx) {
     const magentoCustomerId = ctx.state.magentoCustomer?.id;
     const input = requestData(ctx);
+    const variant = productVariantDetails(input);
+    if (variant.error) return ctx.badRequest(variant.error);
     const locale = requestLocale(ctx, input);
     const upload = firstFile(ctx.request.files);
     const formTag = stringOrUndefined(input.formTag);
@@ -102,11 +111,14 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     }
 
     if (!formTag) return ctx.badRequest('formTag is required.');
-    if (!productName) return ctx.badRequest('productName is required.');
+    if (!['store-visit', 'product-store-visit'].includes(formTag) && !productName) return ctx.badRequest('productName is required.');
     if (!customerName) return ctx.badRequest('customerName is required.');
     if (!customerPhone) return ctx.badRequest('customerPhone must be a valid phone number.');
     if (customerEmail === null) return ctx.badRequest('customerEmail must be a valid email address.');
     if (requestedDate === null) return ctx.badRequest('requestedDate must use YYYY-MM-DD format.');
+    if (input.purposeOfVisit != null && typeof input.purposeOfVisit !== 'string') {
+      return ctx.badRequest('purposeOfVisit must be text.');
+    }
 
     const form = await strapi.documents(PRODUCT_FORM_UID as any).findFirst({
       status: 'published',
@@ -166,8 +178,8 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       preferredShowroomDetails = preferredShowroom;
     }
 
-    if (formTag === 'product-store-visit' && !preferredShowroomRef) {
-      return ctx.badRequest('preferredShowroom is required for product-store-visit.');
+    if (['store-visit', 'product-store-visit'].includes(formTag) && !preferredShowroomRef) {
+      return ctx.badRequest(`preferredShowroom is required for ${formTag}.`);
     }
 
     if (ctx.request.files && Object.keys(ctx.request.files).length > 0 && !upload) {
@@ -201,6 +213,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       formTag,
       productName,
       productId: stringOrUndefined(input.productId),
+      ...variant.data,
       customerName,
       customerPhone,
       customerEmail,
@@ -208,6 +221,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       requestedDate,
       selectedTimeSlot: stringOrUndefined(input.selectedTimeSlot),
       requestDetails: stringOrUndefined(input.requestDetails),
+      purposeOfVisit: stringOrUndefined(input.purposeOfVisit),
       addressLine1: stringOrUndefined(input.addressLine1),
       addressLine2: stringOrUndefined(input.addressLine2),
       pincode: stringOrUndefined(input.pincode),
@@ -217,11 +231,11 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       sourcePage: stringOrUndefined(input.sourcePage),
       consentAccepted: booleanValue(input.consentAccepted),
     };
-    const grouped = HOME_TRIAL_FORM_TAGS.includes(formTag)
+    const grouped = GROUPED_APPOINTMENT_FORM_TAGS.includes(formTag) && magentoCustomerId
       ? await createHomeTrialSubmission(strapi, submissionData)
       : undefined;
     const entity = grouped?.entity ?? await strapi.db.transaction(async ({ trx }) => {
-      if (formTag === 'product-store-visit' && await storeVisitClash(strapi, trx, {
+      if (['store-visit', 'product-store-visit'].includes(formTag) && await storeVisitClash(strapi, trx, {
         magentoCustomerId, showroom: preferredShowroomRef,
         requestedDate, selectedTimeSlot: submissionData.selectedTimeSlot,
       })) return undefined;
@@ -240,12 +254,23 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       });
     }
 
+    if (formTag === 'product-personalisation') {
+      await queueEnquirySms(strapi, { documentId: entity.documentId, phone: input.customerPhone }, 'enquiryReceived');
+    } else if (APPOINTMENT_FORM_TAGS.includes(formTag)) {
+      await queueAppointmentRequestSms(strapi, {
+        documentId: grouped?.groupDocumentId ?? entity.documentId,
+        phone: entity.customerPhone ?? input.customerPhone,
+      });
+    } else {
+      await queueEnquirySms(strapi, { documentId: entity.documentId, phone: input.customerPhone }, 'serviceEnquiryReceived');
+    }
+
     const appointmentReference = grouped?.appointmentReference ??
-      (formTag === 'product-store-visit' || formTag === 'product-video-call'
-        ? await assignAppointmentReference(strapi, PRODUCT_SUBMISSION_UID, entity, formTag === 'product-store-visit' ? 'SV' : 'VC')
+      (['store-visit', 'product-store-visit'].includes(formTag) || formTag === 'product-video-call'
+        ? await assignAppointmentReference(strapi, PRODUCT_SUBMISSION_UID, entity, ['store-visit', 'product-store-visit'].includes(formTag) ? 'SV' : 'VC')
         : undefined);
 
-    if (formTag === 'product-store-visit') {
+    if (['store-visit', 'product-store-visit'].includes(formTag)) {
       const showroom = preferredShowroomDetails;
       const location = [showroom?.address, showroom?.city, showroom?.state, showroom?.pincode]
         .map(value => stringOrUndefined(value))
@@ -291,6 +316,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
         id: entity.id,
         documentId: entity.documentId,
         formTag: entity.formTag,
+        ...productVariantSnapshot(entity),
         ...(appointmentReference ? { appointmentId: appointmentReference } : {}),
         ...(grouped ? { appointmentGroupId: grouped.groupDocumentId } : {}),
       },
@@ -307,6 +333,15 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     if (customerChanges.error) return ctx.badRequest(customerChanges.error);
     const noteChanges = appointmentNoteChanges(input);
     if (noteChanges.error) return ctx.badRequest(noteChanges.error);
+    const addressChanges = appointmentAddressChanges(input);
+    if (addressChanges.error) return ctx.badRequest(addressChanges.error);
+    if (addressChanges.data.state) {
+      const state = await strapi.documents('api::state.state').findFirst({
+        filters: { $or: [{ documentId: addressChanges.data.state }, { name: addressChanges.data.state }, { code: addressChanges.data.state }] },
+      } as any);
+      if (!state) return ctx.badRequest('Unknown state.');
+      addressChanges.data.state = state.documentId;
+    }
     if (!documentId) return ctx.badRequest('Appointment documentId is required.');
     const rateLimit = checkFormSubmissionRateLimit(['reschedule', clientIp(ctx), documentId]);
     if (!rateLimit.allowed) {
@@ -314,11 +349,17 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       return ctx.tooManyRequests('Too many rescheduling requests. Please try again later.');
     }
 
+    const generic = await mutateGenericAppointment(strapi, ctx, 'reschedule', input);
+    if (generic) {
+      if (generic.error) return generic.status === 404 ? ctx.notFound(generic.error) : ctx.badRequest(generic.error);
+      return generic;
+    }
     const grouped = await mutateHomeTrialGroup(strapi, {
       documentId, customerId: ctx.state.magentoCustomer.id, action: 'reschedule',
       requestedDate, selectedTimeSlot, locale: requestLocale(ctx, input),
       customerChanges: customerChanges.data,
       noteChanges: noteChanges.data,
+      addressChanges: addressChanges.data,
     });
     if (grouped) {
       if (grouped.error) return grouped.status === 404 ? ctx.notFound(grouped.error) : ctx.badRequest(grouped.error);
@@ -332,28 +373,31 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
         .forUpdate().first();
       if (!locked) return { error: 'Appointment not found.', status: 404 };
       const appointment = await strapi.db.query(PRODUCT_SUBMISSION_UID).findOne({
-        where: { id: locked.id }, populate: { appointmentGroup: true, preferredShowroom: true },
+        where: { id: locked.id }, populate: { appointmentGroup: true, preferredShowroom: true, state: true },
       });
-      if (appointment.appointmentGroup && HOME_TRIAL_FORM_TAGS.includes(appointment.formTag)) {
+      if (appointment.appointmentGroup && GROUPED_APPOINTMENT_FORM_TAGS.includes(appointment.formTag)) {
         return { error: 'Appointment grouping changed. Please retry the request.', status: 409 };
       }
-      if (!RESCHEDULABLE_FORM_TAGS.includes(appointment.formTag) && appointment.formTag !== 'product-store-visit') {
+      if (!RESCHEDULABLE_FORM_TAGS.includes(appointment.formTag) && !['store-visit', 'product-store-visit'].includes(appointment.formTag)) {
         return { error: 'This appointment type cannot be rescheduled.', status: 400 };
       }
       if (['Visited', 'Closed', 'Cancelled'].includes(appointment.workflowStatus)) {
         return { error: 'Completed, closed or cancelled appointments cannot be rescheduled.', status: 400 };
       }
-      const windowError = validateReschedulingWindow(appointment.requestedDate);
+      const windowError = validateReschedulingWindow(appointment.requestedDate, appointment.selectedTimeSlot, appointment.formTag);
       if (windowError) return { error: windowError, status: 400 };
+      const requestedDate = stringOrUndefined(input.requestedDate) ?? appointment.requestedDate;
+      const selectedTimeSlot = stringOrUndefined(input.selectedTimeSlot) ?? appointment.selectedTimeSlot;
       const scheduleChanged = appointment.requestedDate !== requestedDate || appointment.selectedTimeSlot !== selectedTimeSlot;
-      if (!scheduleChanged && !customerDetailsChanged([appointment], { ...customerChanges.data, ...noteChanges.data })) {
+      const addressChanged = appointmentAddressChanged(appointment, { ...appointment, ...addressChanges.data });
+      if (!scheduleChanged && !addressChanged && !customerDetailsChanged([appointment], { ...customerChanges.data, ...noteChanges.data })) {
         return { data: { documentId, appointmentId: appointment.appointmentReference ?? documentId,
           requestedDate, selectedTimeSlot }, changed: false };
       }
-      if (scheduleChanged && countScheduleChanges(appointment.rescheduleHistory) >= MAX_RESCHEDULES) {
+      if ((scheduleChanged || addressChanged) && countScheduleChanges(appointment.rescheduleHistory) >= MAX_RESCHEDULES) {
         return { error: RESCHEDULE_LIMIT_MESSAGE, status: 400 };
       }
-      if (scheduleChanged && appointment.formTag === 'product-store-visit' && await storeVisitClash(strapi, trx, {
+      if (scheduleChanged && ['store-visit', 'product-store-visit'].includes(appointment.formTag) && await storeVisitClash(strapi, trx, {
         documentId, magentoCustomerId: ctx.state.magentoCustomer.id,
         showroom: appointment.preferredShowroom?.documentId, requestedDate, selectedTimeSlot,
       })) return { error: STORE_VISIT_CLASH_MESSAGE, status: 400 };
@@ -372,13 +416,16 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
           requestedDate, selectedTimeSlot,
           ...customerChanges.data,
           ...noteChanges.data,
+          ...addressChanges.data,
           rescheduleHistory: [
             ...(Array.isArray(appointment.rescheduleHistory) ? appointment.rescheduleHistory : []),
             {
               previousData: { requestedDate: appointment.requestedDate ?? null, selectedTimeSlot: appointment.selectedTimeSlot ?? null,
+                ...appointmentAddressSnapshot(appointment),
                 ...(Object.keys(noteChanges.data).length ? { requestDetails: appointment.requestDetails ?? null } : {}),
                 ...(Object.keys(customerChanges.data).length ? { customerDetails: [customerDetailsSnapshot(appointment)] } : {}) },
               newData: { requestedDate, selectedTimeSlot,
+                ...appointmentAddressSnapshot({ ...appointment, ...addressChanges.data }),
                 ...noteChanges.data,
                 ...(Object.keys(customerChanges.data).length ? { customerDetails: [customerDetailsSnapshot(appointment, customerChanges.data)] } : {}) },
               productId: appointment.productId ?? null,
@@ -388,7 +435,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
         },
       } as any);
       await recordVideoCallChange(strapi, appointment, {
-        ...appointment, requestedDate, selectedTimeSlot, ...customerChanges.data, ...noteChanges.data,
+        ...appointment, requestedDate, selectedTimeSlot, ...customerChanges.data, ...noteChanges.data, ...addressChanges.data,
       }, 'Customer');
       if (scheduleChanged) notifyRescheduleAfterCommit(strapi, onCommit, {
         ...customerDetailsSnapshot(appointment, customerChanges.data),
@@ -398,7 +445,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
         requestedDate, selectedTimeSlot,
       });
       return { data: { documentId, appointmentId: appointment.appointmentReference ?? documentId,
-        requestedDate, selectedTimeSlot, ...customerChanges.data, ...noteChanges.data }, changed: true };
+        requestedDate, selectedTimeSlot, ...customerChanges.data, ...noteChanges.data, ...addressChanges.data }, changed: true };
     });
     if (result.error) return result.status === 404 ? ctx.notFound(result.error) : result.status === 409 ? ctx.conflict(result.error) : ctx.badRequest(result.error);
     return { data: result.data, meta: { changed: result.changed } };
@@ -411,6 +458,11 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     if (!rateLimit.allowed) {
       ctx.set('Retry-After', String(rateLimit.retryAfterSeconds));
       return ctx.tooManyRequests('Too many cancellation requests. Please try again later.');
+    }
+    const generic = await mutateGenericAppointment(strapi, ctx, 'cancel');
+    if (generic) {
+      if (generic.error) return generic.status === 404 ? ctx.notFound(generic.error) : ctx.badRequest(generic.error);
+      return generic;
     }
     const grouped = await mutateHomeTrialGroup(strapi, {
       documentId, customerId: ctx.state.magentoCustomer.id, action: 'cancel',
@@ -428,7 +480,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       const appointment = await strapi.db.query(PRODUCT_SUBMISSION_UID).findOne({
         where: { id: locked.id }, populate: { appointmentGroup: true, preferredShowroom: true },
       });
-      if (appointment.appointmentGroup && HOME_TRIAL_FORM_TAGS.includes(appointment.formTag)) {
+      if (appointment.appointmentGroup && GROUPED_APPOINTMENT_FORM_TAGS.includes(appointment.formTag)) {
         return { error: 'Appointment grouping changed. Please retry the request.', status: 409 };
       }
       if (!APPOINTMENT_FORM_TAGS.includes(appointment.formTag)) {
@@ -447,7 +499,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
         },
       } as any);
       await recordVideoCallChange(strapi, appointment, { ...appointment, workflowStatus: 'Cancelled' }, 'Customer');
-      if (appointment.formTag === 'product-store-visit') {
+      if (['store-visit', 'product-store-visit'].includes(appointment.formTag)) {
         notifyShowroomCancellationAfterCommit(strapi, onCommit, appointment);
       } else if (appointment.formTag === 'product-video-call') {
         notifyVideoCallCancellationAfterCommit(strapi, onCommit, appointment);
@@ -459,6 +511,8 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
   },
 
   async customerAppointments(ctx) {
+    await linkGuestStoreVisits(strapi, ctx.state.magentoCustomer);
+    await linkGuestGenericAppointments(strapi, ctx.state.magentoCustomer);
     const locale = requestLocale(ctx);
     const requestedPage = Number(ctx.query.page);
     const requestedPageSize = Number(ctx.query.pageSize);
@@ -473,14 +527,15 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     });
   },
 
-  /** Upcoming store visits and video calls that can still take a piece (at most 5, soonest first). */
+  /** Upcoming store visits and video calls that can still take a piece (at most 5, newest first). */
   async openAppointments(ctx) {
+    await linkGuestStoreVisits(strapi, ctx.state.magentoCustomer);
     const rows = await strapi.db.query(PRODUCT_SUBMISSION_UID).findMany({
       where: { magentoCustomerId: ctx.state.magentoCustomer.id, formTag: { $in: PIECE_FORM_TAGS },
         workflowStatus: { $in: OPEN_STATUSES }, requestedDate: { $gte: appointmentToday() } },
-      select: ['documentId', 'appointmentReference', 'formTag', 'requestedDate', 'selectedTimeSlot', 'productId', 'addedPieces'],
+      select: ['documentId', 'appointmentReference', 'formTag', 'requestedDate', 'selectedTimeSlot', 'productId', 'productSku', 'metalColour', 'metalPurity', 'addedPieces'],
       populate: { preferredShowroom: { select: ['city'] } },
-      orderBy: [{ requestedDate: 'asc' }, { id: 'asc' }], limit: 5,
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }], limit: 5,
     });
     const now = new Date();
     return { data: rows.filter((row: any) => appointmentStartsAt(row.requestedDate, row.selectedTimeSlot) > now)
@@ -490,12 +545,17 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
         showroomCity: row.preferredShowroom?.city ?? null,
         productIds: [row.productId, ...(Array.isArray(row.addedPieces) ? row.addedPieces : []).map((piece: any) => piece?.productId)]
           .filter(Boolean),
+        products: [row, ...(Array.isArray(row.addedPieces) ? row.addedPieces : [])]
+          .filter((piece: any) => piece?.productId)
+          .map((piece: any) => ({ productId: piece.productId, ...productVariantSnapshot(piece) })),
       })) };
   },
 
   /** R-AP-8/R-AP-10: add a piece to a booked store visit or video call; date, time and showroom stay. */
   async addPiece(ctx) {
     const input = requestData(ctx);
+    const variant = productVariantDetails(input);
+    if (variant.error) return ctx.badRequest(variant.error);
     const documentId = stringOrUndefined(ctx.params.documentId);
     const productId = stringOrUndefined(input.productId);
     const productName = stringOrUndefined(input.productName);
@@ -537,16 +597,19 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       const pieces = Array.isArray(appointment.addedPieces) ? appointment.addedPieces : [];
       const productIds = [appointment.productId, ...pieces.map((piece: any) => piece?.productId)].filter(Boolean);
       const data = { documentId, appointmentId: appointment.appointmentReference ?? documentId, productIds };
-      if (productIds.includes(productId)) return { data, changed: false };
+      const selectedPiece = { productId, ...variant.data };
+      if ([appointment, ...pieces].some(piece => productVariantKey(piece) === productVariantKey(selectedPiece))) {
+        return { data, changed: false };
+      }
       if (pieces.length >= MAX_ADDED_PIECES) {
         return { error: 'An appointment can have up to 10 added pieces. Please contact us to add more.', status: 400 };
       }
-      const piece = { productId, productName, productPath, addedAt: new Date().toISOString() };
+      const piece = { productId, productName, productPath, ...variant.data, addedAt: new Date().toISOString() };
       await strapi.documents(PRODUCT_SUBMISSION_UID as any).update({
         documentId, data: { addedPieces: [...pieces, piece] },
       } as any);
       notifyPieceAddedAfterCommit(strapi, onCommit, { ...appointment, addedPieces: [...pieces, piece] }, piece);
-      return { data: { ...data, productIds: [...productIds, productId] }, changed: true };
+      return { data: { ...data, productIds: [...productIds, productId], piece }, changed: true };
     });
     if (result.error) return result.status === 404 ? ctx.notFound(result.error) : ctx.badRequest(result.error);
     return { data: result.data, meta: { changed: result.changed } };
