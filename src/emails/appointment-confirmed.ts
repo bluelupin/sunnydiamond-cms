@@ -19,7 +19,7 @@ export function appointmentConfirmedTemplate(data: AppointmentConfirmedData) {
   const appointmentDate = formatEmailDate(data.requestedDate);
   const details = [
     ['Appointment ID', data.appointmentReference || data.documentId],
-    ['Appointment Type', 'Showroom Visit'],
+    ['Appointment Type', data.generalAppointment ? 'Appointment' : 'Showroom Visit'],
     ['Date', appointmentDate],
     ['Time', data.selectedTimeSlot],
     ...(!data.generalAppointment || data.location ? [['Showroom', data.location]] : []),
