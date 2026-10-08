@@ -15,7 +15,7 @@ const escapeHtml = (value: string) => value.replace(/[&<>"']/g, char => ({
 export function showroomAppointmentReminderTemplate(data: ShowroomAppointmentReminderData) {
   const name = data.customerName?.trim() || 'there';
   const details = [
-    ['Appointment Type', data.generalAppointment ? 'Appointment' : 'Showroom Visit'], ['Date', formatEmailDate(data.appointmentDate)], ['Time', data.appointmentTime],
+    ['Appointment Type', 'Showroom Visit'], ['Date', formatEmailDate(data.appointmentDate)], ['Time', data.appointmentTime],
     ...(!data.generalAppointment || data.showroomName ? [['Showroom', data.showroomName || 'Sunny Diamonds showroom']] : []), ...(!data.generalAppointment || data.showroomAddress ? [['Location', data.showroomAddress || 'Not specified']] : []),
   ];
   const manageText = data.manageUrl

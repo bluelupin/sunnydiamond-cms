@@ -69,7 +69,7 @@ test('generic slots accept equivalent hour formatting but still reject different
   }
 });
 
-test('all general appointment email templates omit showroom wording without a selected showroom', () => {
+test('general appointment emails omit showroom details without a selected showroom', () => {
   const cases = [
     ['appointment-confirmed', 'appointmentConfirmedTemplate', { documentId: 'booking', requestedDate: '2099-12-01', selectedTimeSlot: '11:00 AM', location: '' }],
     ['showroom-appointment-rescheduled', 'showroomAppointmentRescheduledTemplate', { appointmentId: 'BA-2099-000001', newDate: '2099-12-01', newTime: '11:00 AM' }],
@@ -78,7 +78,12 @@ test('all general appointment email templates omit showroom wording without a se
   ];
   for (const [file, fn, data] of cases) {
     const message = load(`src/emails/${file}.ts`)[fn]({ ...data, generalAppointment: true });
-    assert.ok(!/showroom/i.test(message.subject + message.text + message.html), file);
+    assert.ok(!/^Showroom:/m.test(message.text), file);
+    assert.ok(!/>Showroom<\/th>/.test(message.html), file);
+    if (file !== 'showroom-appointment-cancelled') {
+      assert.match(message.text, /Appointment Type: Showroom Visit/, file);
+      assert.match(message.html, />Showroom Visit<\/td>/, file);
+    }
     assert.ok(!/Not specified/.test(message.text), file);
     assert.match(message.html, /cid:sunny-diamonds-logo/);
   }

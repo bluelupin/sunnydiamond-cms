@@ -17,7 +17,7 @@ export function showroomAppointmentRescheduledTemplate(data: ShowroomAppointment
   const name = data.customerName?.trim() || 'there';
   const details = [
     ['Appointment ID', data.appointmentId],
-    ['Appointment Type', data.generalAppointment ? 'Appointment' : 'Showroom Visit'],
+    ['Appointment Type', 'Showroom Visit'],
     ['New Date', formatEmailDate(data.newDate)],
     ['New Time', data.newTime],
     ...(!data.generalAppointment || data.showroomName ? [['Showroom', data.showroomName || 'Sunny Diamonds showroom']] : []),
