@@ -105,6 +105,16 @@
         }
       }
     },
+    "navigationCards": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.featured-story-card",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
     "seo": {
       "type": "component",
       "repeatable": false,

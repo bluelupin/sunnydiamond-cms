@@ -88,6 +88,12 @@ const populate = {
       icon: imageAssetPopulate,
     },
   },
+  navigationCards: {
+    populate: {
+      image: imageAssetPopulate,
+      cta: true,
+    },
+  },
   seo: true,
 };
 
