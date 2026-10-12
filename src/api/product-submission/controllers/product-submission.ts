@@ -95,13 +95,6 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     const customerPhone = phoneOrUndefined(input.customerPhone);
     const customerEmail = emailOrUndefined(input.customerEmail);
     const requestedDate = dateOrUndefined(input.requestedDate);
-    const rateLimit = checkFormSubmissionRateLimit(['product', clientIp(ctx), formTag]);
-
-    if (!rateLimit.allowed) {
-      ctx.set('Retry-After', String(rateLimit.retryAfterSeconds));
-      return ctx.tooManyRequests('Too many form submissions. Please try again later.');
-    }
-
     if (!formTag) return ctx.badRequest('formTag is required.');
     if (!productName) return ctx.badRequest('productName is required.');
     if (!customerName) return ctx.badRequest('customerName is required.');
@@ -126,6 +119,12 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     } as any);
 
     if (!form) return ctx.badRequest('Unknown formTag.');
+    const rateLimit = await checkFormSubmissionRateLimit(['product', clientIp(ctx), form.formTag], strapi.log);
+    if (!rateLimit.allowed) {
+      ctx.set('Retry-After', String(rateLimit.retryAfterSeconds));
+      if (rateLimit.unavailable) return ctx.serviceUnavailable('Form submissions are temporarily unavailable. Please try again later.');
+      return ctx.tooManyRequests('Too many form submissions. Please try again later.');
+    }
     if (RESCHEDULABLE_FORM_TAGS.includes(formTag)) {
       const scheduleError = validateAppointmentSchedule(requestedDate, stringOrUndefined(input.selectedTimeSlot), form);
       if (scheduleError) return ctx.badRequest(scheduleError);
@@ -314,9 +313,10 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     const noteChanges = appointmentNoteChanges(input);
     if (noteChanges.error) return ctx.badRequest(noteChanges.error);
     if (!documentId) return ctx.badRequest('Appointment documentId is required.');
-    const rateLimit = checkFormSubmissionRateLimit(['reschedule', clientIp(ctx), documentId]);
+    const rateLimit = await checkFormSubmissionRateLimit(['reschedule', clientIp(ctx), documentId], strapi.log);
     if (!rateLimit.allowed) {
       ctx.set('Retry-After', String(rateLimit.retryAfterSeconds));
+      if (rateLimit.unavailable) return ctx.serviceUnavailable('Form submissions are temporarily unavailable. Please try again later.');
       return ctx.tooManyRequests('Too many rescheduling requests. Please try again later.');
     }
 
@@ -413,9 +413,10 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
   async cancel(ctx) {
     const documentId = stringOrUndefined(ctx.params.documentId);
     if (!documentId) return ctx.badRequest('Appointment documentId is required.');
-    const rateLimit = checkFormSubmissionRateLimit(['cancel', clientIp(ctx), documentId]);
+    const rateLimit = await checkFormSubmissionRateLimit(['cancel', clientIp(ctx), documentId], strapi.log);
     if (!rateLimit.allowed) {
       ctx.set('Retry-After', String(rateLimit.retryAfterSeconds));
+      if (rateLimit.unavailable) return ctx.serviceUnavailable('Form submissions are temporarily unavailable. Please try again later.');
       return ctx.tooManyRequests('Too many cancellation requests. Please try again later.');
     }
     const grouped = await mutateHomeTrialGroup(strapi, {
@@ -518,9 +519,10 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
     if (!productPath || !productPath.startsWith('/') || productPath.startsWith('//') || productPath.includes('\\') || productPath.length > 500) {
       return ctx.badRequest('productPath must be a path on the website.');
     }
-    const rateLimit = checkFormSubmissionRateLimit(['piece', clientIp(ctx), documentId]);
+    const rateLimit = await checkFormSubmissionRateLimit(['piece', clientIp(ctx), documentId], strapi.log);
     if (!rateLimit.allowed) {
       ctx.set('Retry-After', String(rateLimit.retryAfterSeconds));
+      if (rateLimit.unavailable) return ctx.serviceUnavailable('Form submissions are temporarily unavailable. Please try again later.');
       return ctx.tooManyRequests('Too many requests. Please try again later.');
     }
     const result = await strapi.db.transaction(async ({ trx, onCommit }) => {

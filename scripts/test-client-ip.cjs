@@ -1,12 +1,7 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const path = require('node:path');
-const ts = require('typescript');
-const file = path.resolve(__dirname, '../src/utils/form-submission-rate-limit.ts'), loaded = { exports: {} };
-new Function('require', 'module', 'exports', ts.transpileModule(fs.readFileSync(file, 'utf8'),
-  { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText)(require, loaded, loaded.exports);
-const { clientIp } = loaded.exports;
+const { loadTs } = require('./resume-test-helpers.cjs');
+const { clientIp } = loadTs('src/utils/form-submission-rate-limit.ts');
 const ctx = headers => ({ ip: '127.0.0.1', get: name => headers[name] ?? '' });
 
 test('a forwarded shopper IP counts only with the shared secret', () => {

@@ -3,7 +3,7 @@ import { createClient } from 'redis';
 
 const DEFAULT_PREFIX = 'sunnydiamond:resume-rate-limit:v1';
 const TIMEOUT_MS = 2_000;
-type CounterClient = { eval(script: string, options: { keys: string[]; arguments: string[] }): Promise<unknown> };
+export type CounterClient = { eval(script: string, options: { keys: string[]; arguments: string[] }): Promise<unknown> };
 const createRateLimitClient = () => createClient({
   url: process.env.REDIS_URL || 'redis://127.0.0.1:6379',
   RESP: 2,
@@ -78,13 +78,23 @@ export function resumeRateLimitKey(keyParts: Array<string | undefined>, prefix =
 }
 
 export async function checkResumeParserRateLimit(keyParts: Array<string | undefined>, client?: CounterClient, prefix?: string) {
+  return checkSharedRateLimit(keyParts, {
+    max: positiveInteger(process.env.FORM_SUBMISSION_RATE_LIMIT_MAX, 5),
+    windowMs: positiveInteger(process.env.FORM_SUBMISSION_RATE_LIMIT_WINDOW_MS, 60 * 60 * 1000),
+    prefix: prefix ?? process.env.RESUME_RATE_LIMIT_REDIS_PREFIX ?? DEFAULT_PREFIX,
+  }, client);
+}
+
+/** Shared Redis transport and atomic fixed-window counter, also used by form admission. */
+export async function checkSharedRateLimit(
+  keyParts: Array<string | undefined>,
+  config: { max: number; windowMs: number; prefix: string },
+  client?: CounterClient,
+) {
   const counter = client ?? await rateLimitRedis();
   const result = await bounded(counter.eval(RESUME_RATE_LIMIT_SCRIPT, {
-    keys: [resumeRateLimitKey(keyParts, prefix)],
-    arguments: [
-      String(positiveInteger(process.env.FORM_SUBMISSION_RATE_LIMIT_MAX, 5)),
-      String(positiveInteger(process.env.FORM_SUBMISSION_RATE_LIMIT_WINDOW_MS, 60 * 60 * 1000)),
-    ],
+    keys: [resumeRateLimitKey(keyParts, config.prefix)],
+    arguments: [String(config.max), String(config.windowMs)],
   }), () => { if (counter === redis) destroyClient(redis); });
   if (!Array.isArray(result) || result.length !== 2 || ![0, 1].includes(result[0])
     || !Number.isFinite(result[1]) || result[1] < 0) {

@@ -120,7 +120,7 @@ coverage
 ############################
 # Strapi
 ############################
-
+/tmp
 .env
 google_mailer_token.json
 google_mailer_credentials.json

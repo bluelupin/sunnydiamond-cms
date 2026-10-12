@@ -25,6 +25,7 @@ import { registerCareerSubmissionProtection } from './utils/protect-career-submi
 import { backfillAppointmentReferences } from './utils/appointment-reference';
 import { registerCareerOpeningSlug } from './utils/career-opening-slug';
 import { closeResumeRateLimitRedis } from './utils/resume-parser-rate-limit';
+import { formRateLimitConfig } from './utils/form-submission-rate-limit';
 // import { cleanStaleAdminPermissions } from './utils/clean-stale-admin-permissions';
 
 export default {
@@ -38,6 +39,7 @@ export default {
    * This gives you an opportunity to extend code.
    */
   register({ strapi }: { strapi: Core.Strapi }) {
+    formRateLimitConfig(); // Reject invalid rate-limit settings before accepting requests.
     registerCareerOpeningSlug(strapi);
     registerReachOutSubmissionProtection(strapi);
     registerAdminRescheduleEmail(strapi);

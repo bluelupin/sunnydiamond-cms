@@ -11,6 +11,8 @@
     "build": "npm run clean && strapi build",
     "test:resume": "node --test scripts/test-resume-parser.cjs scripts/test-resume-extraction.mjs scripts/test-resume-rate-limit.cjs",
     "test:resume:redis": "node --test scripts/test-resume-redis.cjs",
+    "test:forms": "node --test scripts/test-form-rate-limit.cjs scripts/test-client-ip.cjs scripts/test-resume-rate-limit.cjs",
+    "test:forms:redis": "node --test scripts/test-form-rate-limit-redis.cjs",
     "generate:blog-seed": "node scripts/fetch-blog-seed.mjs",
     "generate:career-seed": "node scripts/fetch-career-seed.mjs",
     "console": "strapi console",

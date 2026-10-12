@@ -82,13 +82,6 @@ export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ 
     const email = emailOrUndefined(input.email);
     const preferredDate = dateOrUndefined(input.preferredDate);
     const consentAccepted = booleanValue(input.consentAccepted);
-    const rateLimit = checkFormSubmissionRateLimit(['generic', clientIp(ctx), formTag]);
-
-    if (!rateLimit.allowed) {
-      ctx.set('Retry-After', String(rateLimit.retryAfterSeconds));
-      return ctx.tooManyRequests('Too many form submissions. Please try again later.');
-    }
-
     if (!formTag) return ctx.badRequest('formTag is required.');
     if (!fullName) return ctx.badRequest('fullName is required.');
     if (phone === null) return ctx.badRequest('phone must be a valid phone number.');
@@ -105,6 +98,13 @@ export default factories.createCoreController(GENERIC_SUBMISSION_UID as any, ({ 
     } as any);
 
     if (!form) return ctx.badRequest('Unknown formTag.');
+
+    const rateLimit = await checkFormSubmissionRateLimit(['generic', clientIp(ctx), form.formTag], strapi.log);
+    if (!rateLimit.allowed) {
+      ctx.set('Retry-After', String(rateLimit.retryAfterSeconds));
+      if (rateLimit.unavailable) return ctx.serviceUnavailable('Form submissions are temporarily unavailable. Please try again later.');
+      return ctx.tooManyRequests('Too many form submissions. Please try again later.');
+    }
 
     const missingField = (form.dynamicFields ?? []).find(
       (field: any) => field.isRequired && !fieldValue(input, field.label)
