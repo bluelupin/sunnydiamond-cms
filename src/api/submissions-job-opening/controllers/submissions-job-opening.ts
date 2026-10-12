@@ -80,14 +80,14 @@ export default factories.createCoreController(UID, ({ strapi }) => ({
     const resume = firstFile(ctx.request.files);
     const personalDetails = input.personalDetails ?? {};
     const email = stringOrUndefined(personalDetails.EmailId)?.toLowerCase();
-    const rateLimit = checkFormSubmissionRateLimit([
+    const rateLimit = await checkFormSubmissionRateLimit([
       'job-opening',
       clientIp(ctx),
-      email,
-    ]);
+    ], strapi.log);
 
     if (!rateLimit.allowed) {
       ctx.set('Retry-After', String(rateLimit.retryAfterSeconds));
+      if (rateLimit.unavailable) return ctx.serviceUnavailable('Form submissions are temporarily unavailable. Please try again later.');
       return ctx.tooManyRequests(
         'Too many job applications. Please try again later.'
       );

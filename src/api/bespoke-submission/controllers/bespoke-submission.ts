@@ -40,10 +40,11 @@ export default factories.createCoreController(BESPOKE_SUBMISSION_UID as any, ({ 
     const email = stringOrUndefined(input.email)?.toLowerCase();
     const designVision = stringOrUndefined(input.designVision);
     const upload = firstFile(ctx.request.files);
-    const rateLimit = checkFormSubmissionRateLimit(['bespoke', clientIp(ctx)]);
+    const rateLimit = await checkFormSubmissionRateLimit(['bespoke', clientIp(ctx)], strapi.log);
 
     if (!rateLimit.allowed) {
       ctx.set('Retry-After', String(rateLimit.retryAfterSeconds));
+      if (rateLimit.unavailable) return ctx.serviceUnavailable('Form submissions are temporarily unavailable. Please try again later.');
       return ctx.tooManyRequests('Too many form submissions. Please try again later.');
     }
 

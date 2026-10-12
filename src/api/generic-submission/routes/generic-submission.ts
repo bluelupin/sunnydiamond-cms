@@ -1,3 +1,5 @@
 import { factories } from '@strapi/strapi';
 
-export default factories.createCoreRouter('api::generic-submission.generic-submission' as any);
+export default factories.createCoreRouter('api::generic-submission.generic-submission' as any, {
+  except: ['create'], // Public writes must pass through submit admission and validation.
+});

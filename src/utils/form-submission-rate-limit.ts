@@ -1,51 +1,48 @@
 import { timingSafeEqual } from 'node:crypto';
 import { isIP } from 'node:net';
+import { checkSharedRateLimit } from './resume-parser-rate-limit';
 
-type RateLimitEntry = {
-  count: number;
-  resetAt: number;
+type RateLimitResult = {
+  allowed: boolean;
+  retryAfterSeconds: number;
+  unavailable?: boolean;
 };
 
-const DEFAULT_WINDOW_MS = 60 * 60 * 1000;
-const DEFAULT_MAX_ATTEMPTS = 5;
-
-const attempts = new Map<string, RateLimitEntry>();
-
-const numberFromEnv = (value: string | undefined, fallback: number) => {
-  const parsed = Number(value);
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+const positiveInteger = (name: string, fallback: number) => {
+  const raw = process.env[name];
+  if (raw === undefined || raw === '') return fallback;
+  const parsed = Number(raw);
+  if (!Number.isSafeInteger(parsed) || parsed <= 0) throw new Error(`Invalid ${name}.`);
+  return parsed;
 };
 
-const windowMs = () => numberFromEnv(process.env.FORM_SUBMISSION_RATE_LIMIT_WINDOW_MS, DEFAULT_WINDOW_MS);
-const maxAttempts = () => numberFromEnv(process.env.FORM_SUBMISSION_RATE_LIMIT_MAX, DEFAULT_MAX_ATTEMPTS);
+export const formRateLimitConfig = () => ({
+  max: positiveInteger('FORM_SUBMISSION_RATE_LIMIT_MAX', 5),
+  totalMax: positiveInteger('FORM_SUBMISSION_RATE_LIMIT_TOTAL_MAX', 20),
+  windowMs: positiveInteger('FORM_SUBMISSION_RATE_LIMIT_WINDOW_MS', 60 * 60 * 1000),
+  prefix: process.env.FORM_SUBMISSION_RATE_LIMIT_REDIS_PREFIX || 'sunnydiamond:form-rate-limit:v1',
+});
 
-const cleanupExpiredEntries = (now: number) => {
-  for (const [key, entry] of attempts.entries()) {
-    if (entry.resetAt <= now) attempts.delete(key);
+/** Career email never defines a fresh quota; other forms retain their form/action scope. */
+export async function checkFormSubmissionRateLimit(
+  keyParts: Array<string | undefined>,
+  logger?: { error(message: string): unknown },
+): Promise<RateLimitResult> {
+  const config = formRateLimitConfig();
+  const [scope, ip, formTag] = keyParts;
+  // UID lookup can be case-insensitive in the database. Case variants share a quota.
+  const discriminator = scope === 'generic' || scope === 'product' ? formTag?.trim().toLowerCase() : formTag;
+  const keys = scope === 'job-opening' || scope === 'bespoke' || scope === 'submission-total'
+    ? [scope, ip]
+    : [scope, ip, discriminator && discriminator.length <= 100 ? discriminator : 'invalid-form'];
+  try {
+    return await checkSharedRateLimit(keys, {
+      ...config, max: scope === 'submission-total' ? config.totalMax : config.max,
+    });
+  } catch {
+    logger?.error('Form submission Redis rate limiter unavailable.');
+    return { allowed: false, retryAfterSeconds: 5, unavailable: true };
   }
-};
-
-export const checkFormSubmissionRateLimit = (keyParts: Array<string | undefined>) => {
-  const now = Date.now();
-  cleanupExpiredEntries(now);
-
-  const key = keyParts.map((part) => part || 'unknown').join(':');
-  const existing = attempts.get(key);
-
-  if (!existing || existing.resetAt <= now) {
-    attempts.set(key, { count: 1, resetAt: now + windowMs() });
-    return { allowed: true, retryAfterSeconds: 0 };
-  }
-
-  if (existing.count >= maxAttempts()) {
-    return {
-      allowed: false,
-      retryAfterSeconds: Math.max(1, Math.ceil((existing.resetAt - now) / 1000)),
-    };
-  }
-
-  existing.count += 1;
-  return { allowed: true, retryAfterSeconds: 0 };
 };
 
 const sameSecret = (given: string, expected: string) => {
