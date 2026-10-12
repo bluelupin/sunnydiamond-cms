@@ -4,6 +4,7 @@ import { PolicySlugInput } from './components/PolicySlugInput';
 import { AppointmentDetails } from './components/AppointmentDetails';
 import { GenericSubmissionField } from './components/GenericSubmissionField';
 import { AppointmentReferenceField } from './components/AppointmentReferenceField';
+import { ProductListingPositionInput } from './components/ProductListingPositionInput';
 import './styles/read-only-appointment-relations.css';
 
 const CHUNK_RELOAD_KEY = 'strapi-admin-chunk-reload';
@@ -25,6 +26,7 @@ export default {
     app.addFields({ type: 'appointment-details', Component: AppointmentDetails as ComponentType });
     app.addFields({ type: 'generic-submission-field', Component: GenericSubmissionField as ComponentType });
     app.addFields({ type: 'appointment-reference', Component: AppointmentReferenceField as ComponentType });
+    app.addFields({ type: 'product-listing-position', Component: ProductListingPositionInput as ComponentType });
   },
   bootstrap(app: { registerHook: (name: string, handler: (args: any) => any) => void }) {
     app.registerHook('Admin/CM/pages/EditView/mutate-edit-view-layout', (args) => {
@@ -76,6 +78,28 @@ export default {
         )).filter(row => row.length > 0)).filter((panel: any[][]) => panel.length > 0),
       },
     }));
+    app.registerHook('Admin/CM/pages/EditView/mutate-edit-view-layout', (args) => {
+      const component = args.layout.components?.['shared.product-listing-card'];
+      if (!component || args.layout.settings?.displayName !== 'Product Landing Page') return args;
+      return {
+        ...args,
+        layout: {
+          ...args.layout,
+          components: {
+            ...args.layout.components,
+            'shared.product-listing-card': {
+              ...component,
+              layout: component.layout.map((row: { name: string }[]) =>
+                row.map((field) => ['desktopPosition', 'mobilePosition'].includes(field.name)
+                  ? { ...field, type: 'product-listing-position' }
+                  : field
+                )
+              ),
+            },
+          },
+        },
+      };
+    });
     app.registerHook('Admin/CM/pages/EditView/mutate-edit-view-layout', (args) => {
       const components = { ...args.layout.components };
       for (const uid of ['shared.policy-category', 'shared.policy-entry']) {

@@ -26,6 +26,7 @@ import { registerCareerSubmissionProtection } from './utils/protect-career-submi
 import { backfillAppointmentReferences } from './utils/appointment-reference';
 import { registerCareerOpeningSlug } from './utils/career-opening-slug';
 import { closeResumeRateLimitRedis } from './utils/resume-parser-rate-limit';
+import { registerProductListingCardValidation } from './utils/product-listing-card-validation';
 // import { cleanStaleAdminPermissions } from './utils/clean-stale-admin-permissions';
 
 export default {
@@ -44,6 +45,7 @@ export default {
     registerAdminRescheduleEmail(strapi);
     registerGenericAppointmentHistory(strapi);
     registerCareerSubmissionProtection(strapi);
+    registerProductListingCardValidation(strapi);
   },
 
   /**
