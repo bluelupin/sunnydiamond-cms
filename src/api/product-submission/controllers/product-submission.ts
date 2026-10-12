@@ -8,7 +8,7 @@ import { checkFormSubmissionRateLimit, clientIp } from '../../../utils/form-subm
 import { requestLocale } from '../../../utils/request-locale';
 import { RESCHEDULABLE_FORM_TAGS, validateAppointmentSchedule, validateReschedulingWindow, appointmentToday, appointmentStartsAt,
   countScheduleChanges, MAX_RESCHEDULES, RESCHEDULE_LIMIT_MESSAGE, validAppointmentDate } from '../../../utils/appointment-schedule';
-import { GROUPED_APPOINTMENT_FORM_TAGS } from '../../../utils/home-trial-group-key';
+import { GROUPED_APPOINTMENT_FORM_TAGS, HOME_TRIAL_FORM_TAGS } from '../../../utils/home-trial-group-key';
 import { createHomeTrialSubmission } from '../../../utils/create-home-trial-submission';
 import { mutateHomeTrialGroup } from '../../../utils/mutate-home-trial-group';
 import { listCustomerAppointments } from '../../../utils/list-customer-appointments';
@@ -25,6 +25,7 @@ import { sendProductPersonalisationConfirmationEmail } from '../../../utils/prod
 import { notifyPieceAddedAfterCommit } from '../../../utils/appointment-piece-email';
 import { storeVisitClash, STORE_VISIT_CLASH_MESSAGE } from '../../../utils/store-visit-clash';
 import { appointmentAddressChanges, appointmentAddressChanged, appointmentAddressSnapshot } from '../../../utils/appointment-address';
+import { notifyTryAtHomeChangeAfterCommit } from '../../../utils/try-at-home-change-email';
 
 const PRODUCT_SUBMISSION_UID = 'api::product-submission.product-submission';
 const PRODUCT_FORM_UID = 'api::product-form.product-form';
@@ -437,7 +438,19 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       await recordVideoCallChange(strapi, appointment, {
         ...appointment, requestedDate, selectedTimeSlot, ...customerChanges.data, ...noteChanges.data, ...addressChanges.data,
       }, 'Customer');
-      if (scheduleChanged) notifyRescheduleAfterCommit(strapi, onCommit, {
+      if (HOME_TRIAL_FORM_TAGS.includes(appointment.formTag) && (scheduleChanged || addressChanged)) {
+        const updatedAddress = appointmentAddressSnapshot({ ...appointment, ...addressChanges.data });
+        notifyTryAtHomeChangeAfterCommit(strapi, onCommit, 'reschedule', {
+          documentId: appointment.documentId,
+          manageDocumentId: appointment.documentId,
+          appointmentReference: appointment.appointmentReference,
+          ...customerDetailsSnapshot(appointment, customerChanges.data),
+          requestedDate, selectedTimeSlot,
+          ...updatedAddress,
+          productNames: appointment.productName ? [appointment.productName] : [],
+          sourcePage: appointment.sourcePage,
+        });
+      } else if (scheduleChanged) notifyRescheduleAfterCommit(strapi, onCommit, {
         ...customerDetailsSnapshot(appointment, customerChanges.data),
         appointmentReference: appointment.appointmentReference,
         formTag: appointment.formTag, preferredShowroom: appointment.preferredShowroom, productName: appointment.productName,

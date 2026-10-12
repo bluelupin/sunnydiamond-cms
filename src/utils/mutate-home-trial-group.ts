@@ -164,7 +164,7 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
           };
           if (action === 'cancel') notifyVideoCallCancellationAfterCommit(strapi, onCommit, notification);
           else notifyRescheduleAfterCommit(strapi, onCommit, notification);
-        } else if (action === 'cancel' || scheduleChanged) notifyTryAtHomeChangeAfterCommit(strapi, onCommit, action, {
+        } else if (action === 'cancel' || scheduleChanged || addressChanged) notifyTryAtHomeChangeAfterCommit(strapi, onCommit, action, {
           documentId: target.documentId, manageDocumentId: notificationProducts[0]?.documentId,
           appointmentReference: target.appointmentReference,
           ...groupCustomerDetails, requestedDate: target.requestedDate, selectedTimeSlot: target.selectedTimeSlot,
