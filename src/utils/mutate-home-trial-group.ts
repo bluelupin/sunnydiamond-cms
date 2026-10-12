@@ -80,6 +80,7 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
         let affected = rows;
         let notificationProducts = rows;
         let scheduleChanged = false;
+        let addressChanged = false;
         if (action === 'cancel') {
           affected = rows.filter((row: any) => !inactive(row));
           if (!affected.length && group.workflowStatus === 'Cancelled') return response(group, false);
@@ -93,7 +94,7 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
           const windowError = validateReschedulingWindow(group.requestedDate, group.selectedTimeSlot, initial.formTag);
           if (windowError) return { error: windowError, status: 400 };
           scheduleChanged = group.requestedDate !== requestedDate || group.selectedTimeSlot !== selectedTimeSlot;
-          const addressChanged = appointmentAddressChanged(group, { ...group, ...addressChanges });
+          addressChanged = appointmentAddressChanged(group, { ...group, ...addressChanges });
           if (!scheduleChanged && !addressChanged && !customerDetailsChanged(rows, { ...customerChanges, ...noteChanges })) return response(group, false);
           // ponytail: counts this group's own moves; a group merged into another does not carry its count over.
           if ((scheduleChanged || addressChanged) && (group.priorRescheduleCount ?? 0) + countScheduleChanges(await strapi.db.query(CHANGE).findMany({
@@ -164,7 +165,7 @@ export async function mutateHomeTrialGroup(strapi: any, input: any): Promise<any
           };
           if (action === 'cancel') notifyVideoCallCancellationAfterCommit(strapi, onCommit, notification);
           else notifyRescheduleAfterCommit(strapi, onCommit, notification);
-        } else if (action === 'cancel' || scheduleChanged) notifyTryAtHomeChangeAfterCommit(strapi, onCommit, action, {
+        } else if (action === 'cancel' || scheduleChanged || addressChanged) notifyTryAtHomeChangeAfterCommit(strapi, onCommit, action, {
           documentId: target.documentId, manageDocumentId: notificationProducts[0]?.documentId,
           appointmentReference: target.appointmentReference,
           ...groupCustomerDetails, requestedDate: target.requestedDate, selectedTimeSlot: target.selectedTimeSlot,
