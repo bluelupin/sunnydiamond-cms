@@ -37,7 +37,6 @@ const MAX_ADDED_PIECES = 10;
 const APPOINTMENT_FORM_TAGS = [
 ...RESCHEDULABLE_FORM_TAGS,
 'product-video-call',
-'product-personalisation',
 'store-visit',
 'try-at-home-form',
 'product-store-visit'
