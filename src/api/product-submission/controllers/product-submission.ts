@@ -300,7 +300,7 @@ export default factories.createCoreController(PRODUCT_SUBMISSION_UID as any, ({ 
       });
     }
 
-    if (grouped) {
+    if (grouped && HOME_TRIAL_FORM_TAGS.includes(formTag)) {
       await sendTryAtHomeConfirmationEmail(strapi, {
         documentId: entity.documentId, appointmentId: appointmentReference ?? grouped.groupDocumentId,
         productName, customerName, customerEmail, requestedDate,
