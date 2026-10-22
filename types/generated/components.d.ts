@@ -1525,7 +1525,15 @@ export interface SharedPolicyAccordionItem extends Struct.ComponentSchema {
     displayName: 'Policy Accordion Item';
   };
   attributes: {
-    answer: Schema.Attribute.RichText & Schema.Attribute.Required;
+    answer: Schema.Attribute.RichText &
+      Schema.Attribute.Required &
+      Schema.Attribute.CustomField<
+        'plugin::ckeditor.CKEditor',
+        {
+          output: 'HTML';
+          preset: 'standard';
+        }
+      >;
     isOpenByDefault: Schema.Attribute.Boolean &
       Schema.Attribute.DefaultTo<false>;
     question: Schema.Attribute.String & Schema.Attribute.Required;
