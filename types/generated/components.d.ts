@@ -1738,7 +1738,6 @@ export interface SharedSeo extends Struct.ComponentSchema {
     metaKeywords: Schema.Attribute.String;
     metaTitle: Schema.Attribute.String;
     ogImage: Schema.Attribute.Media<'images'>;
-    structuredData: Schema.Attribute.JSON;
   };
 }
 

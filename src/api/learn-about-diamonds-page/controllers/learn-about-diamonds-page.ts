@@ -36,7 +36,6 @@ const populate = {
       'metaTitle',
       'metaDescription',
       'metaKeywords',
-      'structuredData',
     ],
     populate: {
       ogImage: true,
