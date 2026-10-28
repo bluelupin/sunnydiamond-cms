@@ -20,9 +20,6 @@
     },
     "metaKeywords": {
       "type": "string"
-    },
-    "structuredData": {
-      "type": "json"
     }
   }
 }

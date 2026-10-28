@@ -360,13 +360,11 @@ function mapSEO(seo: any): any {
   if (!seo) return null;
   const metaTitle = getVal(seo, 'metaTitle');
   const metaDescription = getVal(seo, 'metaDescription');
-  const structuredData = getVal(seo, 'structuredData');
   const ogImage = getVal(seo, 'ogImage');
 
   return {
     metaTitle: metaTitle || '',
     metaDescription: metaDescription || '',
-    structuredData: structuredData || null,
     ogImage: extractMediaId(ogImage),
   };
 }

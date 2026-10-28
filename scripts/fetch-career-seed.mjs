@@ -119,7 +119,6 @@ function cleanOpening(opening) {
           metaTitle: opening.seo.metaTitle,
           metaDescription: opening.seo.metaDescription,
           metaKeywords: opening.seo.metaKeywords,
-          structuredData: opening.seo.structuredData,
         }
       : null,
   };
