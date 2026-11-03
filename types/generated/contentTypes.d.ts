@@ -1405,6 +1405,45 @@ export interface ApiContactPageContactPage extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiCookieConsentCookieConsent
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'cookie_consent_events';
+  info: {
+    displayName: 'Cookie consent audit';
+    pluralName: 'cookie-consents';
+    singularName: 'cookie-consent';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    analytics: Schema.Attribute.Boolean & Schema.Attribute.Required;
+    browserId: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Private;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::cookie-consent.cookie-consent'
+    > &
+      Schema.Attribute.Private;
+    magentoCustomerId: Schema.Attribute.Integer & Schema.Attribute.Private;
+    marketing: Schema.Attribute.Boolean & Schema.Attribute.Required;
+    noticeVersion: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    recordedAt: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    requestId: Schema.Attribute.UID &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiDiamondsForEveryonePageDiamondsForEveryonePage
   extends Struct.SingleTypeSchema {
   collectionName: 'diamonds_for_everyone_pages';
@@ -3732,6 +3771,7 @@ declare module '@strapi/strapi' {
       'api::career-opening.career-opening': ApiCareerOpeningCareerOpening;
       'api::contact-bespoke-page.contact-bespoke-page': ApiContactBespokePageContactBespokePage;
       'api::contact-page.contact-page': ApiContactPageContactPage;
+      'api::cookie-consent.cookie-consent': ApiCookieConsentCookieConsent;
       'api::diamonds-for-everyone-page.diamonds-for-everyone-page': ApiDiamondsForEveryonePageDiamondsForEveryonePage;
       'api::editorial-collection.editorial-collection': ApiEditorialCollectionEditorialCollection;
       'api::featured-story.featured-story': ApiFeaturedStoryFeaturedStory;
