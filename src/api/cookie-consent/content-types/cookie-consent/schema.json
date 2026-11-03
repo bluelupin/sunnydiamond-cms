@@ -1,0 +1,19 @@
+{
+  "kind": "collectionType",
+  "collectionName": "cookie_consent_events",
+  "info": {
+    "singularName": "cookie-consent",
+    "pluralName": "cookie-consents",
+    "displayName": "Cookie consent audit"
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "requestId": { "type": "uid", "required": true, "unique": true },
+    "browserId": { "type": "string", "required": true, "private": true },
+    "magentoCustomerId": { "type": "integer", "private": true },
+    "noticeVersion": { "type": "string", "required": true },
+    "analytics": { "type": "boolean", "required": true },
+    "marketing": { "type": "boolean", "required": true },
+    "recordedAt": { "type": "datetime", "required": true }
+  }
+}
