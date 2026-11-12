@@ -37,7 +37,7 @@ export function showroomAppointmentCancelledTemplate(data: ShowroomAppointmentCa
       'Appointment Details', '', ...details.map(([label, value]) => `${label}: ${value}`), '',
       'If you cancelled the appointment by mistake or would like to visit us at another time, we’d be delighted to arrange a new appointment for you.',
       ...bookText, '',
-      'If you have any questions or need assistance, our customer care team will be happy to help.', '',
+      'If you have any questions or need assistance, please call our customer care team at +91 9744 355 555. We will be happy to help.', '',
       'We look forward to welcoming you to Sunny Diamonds soon.', '',
       'Warm regards,', 'Team Sunny Diamonds', 'Crafted to celebrate your moments',
     ].join('\n'),
@@ -56,7 +56,7 @@ export function showroomAppointmentCancelledTemplate(data: ShowroomAppointmentCa
       </table>
       <p>If you cancelled the appointment by mistake or would like to visit us at another time, we’d be delighted to arrange a new appointment for you.</p>
       ${bookHtml}
-      <p>If you have any questions or need assistance, our customer care team will be happy to help.</p>
+      <p>If you have any questions or need assistance, please call our customer care team at <a href="tel:+919744355555">+91 9744 355 555</a>. We will be happy to help.</p>
       <p>We look forward to welcoming you to <strong>Sunny Diamonds</strong> soon.</p>
       <p>Warm regards,<br><strong>Team Sunny Diamonds</strong><br><em>Crafted to celebrate your moments</em></p>
     </td></tr></table>
