@@ -19,7 +19,7 @@ export function tryAtHomeCancelledTemplate(data: TryAtHomeCancelledData) {
     text: [`Dear ${name},`, '', 'This is to confirm that your Sunny Diamonds Try at Home appointment has been successfully cancelled.', '',
       'Appointment Details', '', ...details.map(([label, value]) => `${label}: ${value}`), '', 'Selected Jewellery', '', ...products, '',
       'If you cancelled the appointment by mistake or would like to schedule another Try at Home experience, we’d be happy to assist you.',
-      ...bookText, '', 'If you have any questions or need assistance, our customer care team will be happy to help.', '',
+      ...bookText, '', 'If you have any questions or need assistance, please call our customer care team at +91 9744 355 555. We will be happy to help.', '',
       'We look forward to serving you again.', '', 'Warm regards,', 'Team Sunny Diamonds', 'Crafted to celebrate your moments'].join('\n'),
     html: restyleSunnyEmail(`<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Try at Home appointment cancelled</title></head>
@@ -31,7 +31,7 @@ export function tryAtHomeCancelledTemplate(data: TryAtHomeCancelledData) {
       <h2 style="font-size:19px">Appointment Details</h2><table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse">${details.map(([label, value]) => `<tr><th scope="row" align="left" style="padding:10px;border-bottom:1px solid #ddd;vertical-align:top">${escapeHtml(label)}</th><td style="padding:10px;border-bottom:1px solid #ddd">${escapeHtml(value)}</td></tr>`).join('')}</table>
       <h2 style="font-size:19px">Selected Jewellery</h2><ul>${products.map(product => `<li><strong>${escapeHtml(product)}</strong></li>`).join('')}</ul>
       <p>If you cancelled the appointment by mistake or would like to schedule another Try at Home experience, we’d be happy to assist you.</p>${bookHtml}
-      <p>If you have any questions or need assistance, our customer care team will be happy to help.</p>
+      <p>If you have any questions or need assistance, please call our customer care team at <a href="tel:+919744355555">+91 9744 355 555</a>. We will be happy to help.</p>
       <p>We look forward to serving you again.</p>
       <p>Warm regards,<br><strong>Team Sunny Diamonds</strong><br><em>Crafted to celebrate your moments</em></p>
     </td></tr></table>
